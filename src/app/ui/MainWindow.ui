@@ -1,0 +1,2816 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>omni::ui::MainWindow</class>
+ <widget class="QMainWindow" name="omni::ui::MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1161</width>
+    <height>852</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Omnidome Mapper</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="QSplitter" name="splitter_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QSplitter" name="splitter_5">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QFrame" name="settingsFrame">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QFrame" name="frameToolbar">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_13">
+            <property name="spacing">
+             <number>9</number>
+            </property>
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="btnAbout">
+              <property name="minimumSize">
+               <size>
+                <width>96</width>
+                <height>96</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>96</width>
+                <height>96</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../rc/ODM.qrc">
+                <normaloff>:/logo/omni1rainbow.png</normaloff>:/logo/omni1rainbow.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>84</width>
+                <height>84</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnNew">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>New</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>128</width>
+                <height>128</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnOpen">
+              <property name="minimumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Open Load Projection...</string>
+              </property>
+              <property name="text">
+               <string>Open</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnSave">
+              <property name="minimumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Save projection</string>
+              </property>
+              <property name="text">
+               <string>Save</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnSaveAs">
+              <property name="minimumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Save projection as...</string>
+              </property>
+              <property name="text">
+               <string>Save As...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnEditAsNew">
+              <property name="minimumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Edit current projection as new</string>
+              </property>
+              <property name="text">
+               <string>Edit as new</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="lineToolbar">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnHistory">
+              <property name="minimumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>History</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnUndo">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Undo last action</string>
+              </property>
+              <property name="text">
+               <string>Undo</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnRedo">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>96</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Redo last action</string>
+              </property>
+              <property name="text">
+               <string>Redo</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="lineToolbarSep">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSplitter" name="splitter_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QUndoView" name="undoView">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>256</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+           <widget class="QTabWidget" name="tabs">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>4</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial Black</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QTabBar::tab { height: 40px;  }</string>
+            </property>
+            <property name="tabPosition">
+             <enum>QTabWidget::North</enum>
+            </property>
+            <property name="tabShape">
+             <enum>QTabWidget::Rounded</enum>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="elideMode">
+             <enum>Qt::ElideRight</enum>
+            </property>
+            <property name="usesScrollButtons">
+             <bool>false</bool>
+            </property>
+            <property name="documentMode">
+             <bool>true</bool>
+            </property>
+            <property name="tabsClosable">
+             <bool>false</bool>
+            </property>
+            <property name="movable">
+             <bool>false</bool>
+            </property>
+            <widget class="QWidget" name="canvasProjectorsTab">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <attribute name="title">
+              <string>Canvas/Projectors</string>
+             </attribute>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QSplitter" name="splitter_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <widget class="QGroupBox" name="boxScreens">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>1</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>300</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="title">
+                  <string>Screens</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_11">
+                  <item>
+                   <widget class="QPushButton" name="btnUpdateScreens">
+                    <property name="text">
+                     <string>Update Screens</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnIdentify">
+                    <property name="text">
+                     <string>Identify</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="omni::ui::ScreenList" name="listScreens"/>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QGroupBox" name="boxProjectorsAddRemove">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>1</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>300</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="title">
+                  <string>Projectors</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <item>
+                   <widget class="QFrame" name="frameProjAddRemove">
+                    <layout class="QHBoxLayout" name="horizontalLayout_8">
+                     <property name="margin">
+                      <number>0</number>
+                     </property>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QScrollArea" name="projectorSetupList">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>90</width>
+                       <height>580</height>
+                      </rect>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QGroupBox" name="boxCanvasSelection">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>3</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>Canvas</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_4">
+                  <item>
+                   <widget class="QFrame" name="cbCanvasSettingsPreview">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_2">
+                     <item>
+                      <widget class="QSlider" name="canvasZoom">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSplitter" name="splitter">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <widget class="omni::ui::CanvasGL" name="canvasPreviewGL" native="true"/>
+                       <widget class="QFrame" name="frameCanvasSettings">
+                        <property name="frameShape">
+                         <enum>QFrame::NoFrame</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                       </widget>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="positioningTab">
+             <attribute name="title">
+              <string>Positioning</string>
+             </attribute>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QSplitter" name="splitter_3">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>1</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="opaqueResize">
+                 <bool>true</bool>
+                </property>
+                <property name="handleWidth">
+                 <number>6</number>
+                </property>
+                <widget class="QGroupBox" name="boxProjectors">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                   <horstretch>1</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>300</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="title">
+                  <string>Projectors</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_6">
+                  <item>
+                   <widget class="QScrollArea" name="projectorList">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents_2">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>272</width>
+                       <height>444</height>
+                      </rect>
+                     </property>
+                    </widget>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnResetProj">
+                    <property name="text">
+                     <string>Reset all to initial position</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="formGroupBox">
+                    <property name="title">
+                     <string>Test Image settings</string>
+                    </property>
+                    <layout class="QFormLayout" name="formLayout_6">
+                     <property name="fieldGrowthPolicy">
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     </property>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="rotateTestImageLabel">
+                       <property name="toolTip">
+                        <string>Yaw Angle</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/YAw_small.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QSlider" name="rotateSlider">
+                       <property name="minimum">
+                        <number>-180</number>
+                       </property>
+                       <property name="maximum">
+                        <number>180</number>
+                       </property>
+                       <property name="singleStep">
+                        <number>0</number>
+                       </property>
+                       <property name="value">
+                        <number>0</number>
+                       </property>
+                       <property name="tracking">
+                        <bool>true</bool>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="invertedAppearance">
+                        <bool>false</bool>
+                       </property>
+                       <property name="invertedControls">
+                        <bool>false</bool>
+                       </property>
+                       <property name="tickPosition">
+                        <enum>QSlider::TicksBelow</enum>
+                       </property>
+                       <property name="tickInterval">
+                        <number>45</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="viewLabel_2">
+                       <property name="text">
+                        <string>View</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QComboBox" name="boxViewModePositioning">
+                       <item>
+                        <property name="text">
+                         <string>Inside</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Outside</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QGroupBox" name="boxCanvasPosition">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>1</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>Preview</string>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_12">
+                  <property name="sizeConstraint">
+                   <enum>QLayout::SetMinimumSize</enum>
+                  </property>
+                  <item>
+                   <widget class="omni::ui::CanvasGL" name="canvasGL" native="true"/>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSlider" name="positioningZoom">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="warpTab">
+             <attribute name="title">
+              <string>Warp</string>
+             </attribute>
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <widget class="QSplitter" name="splitter_8">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <widget class="QFrame" name="frameWarpSettings">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>1</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>250</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Sunken</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_3">
+                  <item>
+                   <widget class="QComboBox" name="cbWarpProjectors">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>1</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnResizeWarp">
+                    <property name="text">
+                     <string>Resize</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="flat">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QFrame" name="warpSizeFrame">
+                    <layout class="QFormLayout" name="formLayout_3">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="lbHorizontal">
+                       <property name="text">
+                        <string>Horizontal</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QSpinBox" name="boxHorizontal">
+                       <property name="minimum">
+                        <number>2</number>
+                       </property>
+                       <property name="maximum">
+                        <number>12</number>
+                       </property>
+                       <property name="value">
+                        <number>6</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="lbVertical">
+                       <property name="text">
+                        <string>Vertical</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QSpinBox" name="boxVertical">
+                       <property name="minimum">
+                        <number>2</number>
+                       </property>
+                       <property name="maximum">
+                        <number>12</number>
+                       </property>
+                       <property name="value">
+                        <number>6</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnReset">
+                    <property name="text">
+                     <string>Reset</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnResetBezier">
+                    <property name="text">
+                     <string>Reset bezier</string>
+                    </property>
+                    <property name="flat">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btnShowBezier">
+                    <property name="text">
+                     <string>Show bezier</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer_3">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="groupBox">
+                    <property name="title">
+                     <string>Rotate Test Image</string>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_13">
+                     <property name="margin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="rotateTestImageLabel_2">
+                       <property name="toolTip">
+                        <string>Yaw Angle</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/YAw_small.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSlider" name="rotateSliderWarp">
+                       <property name="minimum">
+                        <number>-180</number>
+                       </property>
+                       <property name="maximum">
+                        <number>180</number>
+                       </property>
+                       <property name="singleStep">
+                        <number>0</number>
+                       </property>
+                       <property name="value">
+                        <number>0</number>
+                       </property>
+                       <property name="tracking">
+                        <bool>true</bool>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="invertedAppearance">
+                        <bool>false</bool>
+                       </property>
+                       <property name="invertedControls">
+                        <bool>false</bool>
+                       </property>
+                       <property name="tickPosition">
+                        <enum>QSlider::TicksBelow</enum>
+                       </property>
+                       <property name="tickInterval">
+                        <number>45</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="omni::ui::MappingGL" name="warpGL" native="true">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>5</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="blendTab">
+             <attribute name="title">
+              <string>Blend</string>
+             </attribute>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QSplitter" name="splitter_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <widget class="QFrame" name="toolbar">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>1</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>250</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Sunken</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout">
+                  <item>
+                   <widget class="QComboBox" name="cbBlendProjectors"/>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="grpBrush">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="title">
+                     <string>Brush</string>
+                    </property>
+                    <layout class="QFormLayout" name="formLayout_2">
+                     <property name="fieldGrowthPolicy">
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     </property>
+                     <item row="0" column="1">
+                      <widget class="QFrame" name="horizontalFrame">
+                       <layout class="QHBoxLayout" name="horizontalLayout_7">
+                        <item>
+                         <spacer name="horizontalSpacer">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                        <item>
+                         <widget class="omni::ui::BrushPreview" name="brushPreview" native="true">
+                          <property name="minimumSize">
+                           <size>
+                            <width>64</width>
+                            <height>64</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>64</width>
+                            <height>64</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <spacer name="horizontalSpacer_2">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_2">
+                       <property name="text">
+                        <string>Invert</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QCheckBox" name="chkBrushInvert">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="lbSize">
+                       <property name="toolTip">
+                        <string>Brush size</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/brush_size.png</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QSlider" name="sliderBrushSize">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>32</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="minimum">
+                        <number>10</number>
+                       </property>
+                       <property name="maximum">
+                        <number>100</number>
+                       </property>
+                       <property name="value">
+                        <number>50</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="lbFeather">
+                       <property name="toolTip">
+                        <string>Brush feather</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/FEATHER.png</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QSlider" name="sliderFeather">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="maximum">
+                        <number>200</number>
+                       </property>
+                       <property name="value">
+                        <number>100</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="grpEdgeMask">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="title">
+                     <string>Edge Mask</string>
+                    </property>
+                    <layout class="QFormLayout" name="formLayout_5">
+                     <property name="fieldGrowthPolicy">
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     </property>
+                     <property name="verticalSpacing">
+                      <number>3</number>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="lbGamma">
+                       <property name="toolTip">
+                        <string>Gamma</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/qss_icons/rc/buttons/GAMMA.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QSlider" name="sliderGamma">
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="minimum">
+                        <number>-100</number>
+                       </property>
+                       <property name="maximum">
+                        <number>100</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="lbOffset">
+                       <property name="toolTip">
+                        <string>Edge mask - Top border</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/GAMMA_TOP_SMALL.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QSlider" name="sliderTop">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="minimum">
+                        <number>0</number>
+                       </property>
+                       <property name="maximum">
+                        <number>50</number>
+                       </property>
+                       <property name="pageStep">
+                        <number>5</number>
+                       </property>
+                       <property name="value">
+                        <number>25</number>
+                       </property>
+                       <property name="tracking">
+                        <bool>true</bool>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="invertedAppearance">
+                        <bool>false</bool>
+                       </property>
+                       <property name="invertedControls">
+                        <bool>false</bool>
+                       </property>
+                       <property name="tickPosition">
+                        <enum>QSlider::NoTicks</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="lbLeft">
+                       <property name="toolTip">
+                        <string>Edge mask - Left border</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/GAMMA_LEFT_SMALL.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QSlider" name="sliderLeft">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="maximum">
+                        <number>50</number>
+                       </property>
+                       <property name="singleStep">
+                        <number>1</number>
+                       </property>
+                       <property name="pageStep">
+                        <number>5</number>
+                       </property>
+                       <property name="value">
+                        <number>25</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="lbBorderWidth">
+                       <property name="toolTip">
+                        <string>Edge mask - Right border</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/GAMMA_RIGHT_SMALL.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QSlider" name="sliderRight">
+                       <property name="maximum">
+                        <number>50</number>
+                       </property>
+                       <property name="pageStep">
+                        <number>5</number>
+                       </property>
+                       <property name="value">
+                        <number>25</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="bottomLabel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/GAMMA_BOTTOM_SMALL.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QSlider" name="sliderBottom">
+                       <property name="maximum">
+                        <number>50</number>
+                       </property>
+                       <property name="pageStep">
+                        <number>5</number>
+                       </property>
+                       <property name="value">
+                        <number>25</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer_2">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="groupBox_2">
+                    <property name="title">
+                     <string>Test Image Settings</string>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_15">
+                     <item>
+                      <widget class="QComboBox" name="boxMaskColor">
+                       <item>
+                        <property name="text">
+                         <string>Colored Mask</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>White Mask</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="omni::ui::MappingGL" name="blendGL" native="true">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>5</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="simulateTab">
+             <attribute name="title">
+              <string>Simulate</string>
+             </attribute>
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <item>
+               <widget class="QSplitter" name="splitter_9">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <widget class="QFrame" name="toolbar_2">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>1</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>350</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Sunken</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_2">
+                  <item>
+                   <widget class="QGroupBox" name="grpViewSettings">
+                    <property name="title">
+                     <string>View Settings</string>
+                    </property>
+                    <layout class="QFormLayout" name="formLayout_4">
+                     <property name="fieldGrowthPolicy">
+                      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     </property>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="showProjectorsLabel">
+                       <property name="text">
+                        <string>Show</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QFrame" name="frame_2">
+                       <property name="frameShape">
+                        <enum>QFrame::NoFrame</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QVBoxLayout" name="verticalLayout_15">
+                        <property name="margin">
+                         <number>2</number>
+                        </property>
+                        <item>
+                         <widget class="QCheckBox" name="chkShowProjectors">
+                          <property name="text">
+                           <string>Projectors</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="chkProjectorBorders">
+                          <property name="text">
+                           <string>Borders</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="rotateLabel">
+                       <property name="toolTip">
+                        <string>Yaw</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/YAw_small.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QSlider" name="sliderCanvasYaw">
+                       <property name="minimum">
+                        <number>-180</number>
+                       </property>
+                       <property name="maximum">
+                        <number>180</number>
+                       </property>
+                       <property name="tracking">
+                        <bool>true</bool>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="invertedAppearance">
+                        <bool>false</bool>
+                       </property>
+                       <property name="tickPosition">
+                        <enum>QSlider::TicksBelow</enum>
+                       </property>
+                       <property name="tickInterval">
+                        <number>45</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="canvasPitchLabel">
+                       <property name="toolTip">
+                        <string>Pitch</string>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/buttons/rc/buttons/PITCH_small.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QSlider" name="sliderCanvasPitch">
+                       <property name="minimum">
+                        <number>-180</number>
+                       </property>
+                       <property name="maximum">
+                        <number>180</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="tickPosition">
+                        <enum>QSlider::TicksBelow</enum>
+                       </property>
+                       <property name="tickInterval">
+                        <number>45</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="canvasRollLabel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap>:/qss_icons/rc/buttons/ROLL_NEW.svg</pixmap>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QSlider" name="sliderCanvasRoll">
+                       <property name="minimum">
+                        <number>-180</number>
+                       </property>
+                       <property name="maximum">
+                        <number>180</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="tickPosition">
+                        <enum>QSlider::TicksBelow</enum>
+                       </property>
+                       <property name="tickInterval">
+                        <number>45</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1">
+                      <widget class="QPushButton" name="btnResetRotation">
+                       <property name="text">
+                        <string>Reset</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="viewLabel">
+                       <property name="text">
+                        <string>View</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QComboBox" name="boxViewMode">
+                       <item>
+                        <property name="text">
+                         <string>Inside</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Outside</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="grpImageList">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                      <horstretch>3</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="title">
+                     <string>Images</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_12">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>6</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>6</number>
+                     </property>
+                     <item>
+                      <widget class="QFrame" name="frameAddRemoveImage">
+                       <layout class="QHBoxLayout" name="horizontalLayout_14">
+                        <property name="margin">
+                         <number>2</number>
+                        </property>
+                        <item>
+                         <widget class="QPushButton" name="btnAddImage">
+                          <property name="text">
+                           <string>Add</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnRemoveImage">
+                          <property name="text">
+                           <string>Remove</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="omni::ui::ImageList" name="imageList"/>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="omni::ui::CanvasGL" name="simulateGL" native="true">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>5</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                </widget>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSlider" name="simulationZoom">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="exportTab">
+             <attribute name="title">
+              <string>Export</string>
+             </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QFrame" name="settingsFrame_2">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>48</height>
+                 </size>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Sunken</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_10">
+                 <item>
+                  <widget class="QLineEdit" name="editExportFilename">
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnClear">
+                   <property name="text">
+                    <string>Clear</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnExport">
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton { background-color: red}
+</string>
+                   </property>
+                   <property name="text">
+                    <string>EXPORT</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="grpSettings">
+                <property name="title">
+                 <string>Settings</string>
+                </property>
+                <layout class="QFormLayout" name="formLayout">
+                 <property name="fieldGrowthPolicy">
+                  <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="separateImagesLabel">
+                   <property name="text">
+                    <string>Separate Output</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="imageTypeLabel">
+                   <property name="text">
+                    <string>Image Type</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QFrame" name="imageTypeFrame">
+                   <layout class="QVBoxLayout" name="verticalLayout_9">
+                    <item>
+                     <widget class="QRadioButton" name="rbNormalMap">
+                      <property name="text">
+                       <string>Normal Map</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="rbTextureCoordinates">
+                      <property name="text">
+                       <string>Texture Coordinates</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="cbMappingType"/>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="generateShaderLabel">
+                   <property name="text">
+                    <string>Generate shader</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QFrame" name="frameShaderGeneration">
+                   <layout class="QVBoxLayout" name="verticalLayout_14">
+                    <item>
+                     <widget class="QCheckBox" name="chkPlainGLSL">
+                      <property name="text">
+                       <string>Plain GLSL (usable in Quartz)</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="chkISF">
+                      <property name="text">
+                       <string>ISF shader format (e.g. for VDMX)</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QFrame" name="frame">
+                   <layout class="QVBoxLayout" name="verticalLayout_10">
+                    <item>
+                     <widget class="QRadioButton" name="rbSepScreens">
+                      <property name="text">
+                       <string>Separate Screens</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="rbSepProj">
+                      <property name="text">
+                       <string>Separate Projectors</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="rbSepNone">
+                      <property name="text">
+                       <string>No Separation</string>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QScrollArea" name="mappingList">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents_3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1141</width>
+          <height>76</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1161</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>omni::ui::CanvasGL</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/CanvasGL.h</header>
+   <container>1</container>
+   <slots>
+    <slot>changeZoom(int)</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::MappingGL</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/MappingGL.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::ScreenList</class>
+   <extends>QTreeView</extends>
+   <header location="global">omni/ui/ScreenList.h</header>
+   <slots>
+    <slot>identify()</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::ImageList</class>
+   <extends>QTreeView</extends>
+   <header location="global">omni/ui/ImageList.h</header>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::BrushPreview</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/BrushPreview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QUndoView</class>
+   <extends>QListView</extends>
+   <header location="global">QUndoView</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../rc/ODM.qrc"/>
+  <include location="../rc/style.qrc"/>
+  <include location="style.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>btnNew</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>newProjection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>132</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnOpen</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>openProjection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSave</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>saveProjection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSaveAs</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>saveProjectionAs()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>234</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnEditAsNew</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>editAsNew()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>268</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAbout</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>showAbout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>66</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnUndo</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>undo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>307</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRedo</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>redo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>341</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnUpdateScreens</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>updateScreens()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>631</x>
+     <y>127</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRemoveImage</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>identifyScreens()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>445</x>
+     <y>419</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnExport</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>exportSession()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>568</x>
+     <y>112</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>324</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnResetProj</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>initialPositions()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>317</x>
+     <y>531</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>486</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabs</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>tabChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>541</x>
+     <y>301</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>486</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbWarpProjectors</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>setMapping(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>112</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbBlendProjectors</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>setMapping(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>258</x>
+     <y>112</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnReset</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>resetWarp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>178</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnResizeWarp</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>resizeWarpMode(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>145</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxVertical</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>resizeWarp(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>212</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxHorizontal</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>resizeWarp(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>179</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddImage</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>addImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>224</x>
+     <y>232</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRemoveImage</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>removeImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>370</x>
+     <y>232</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>imageList</sender>
+   <signal>clicked(QModelIndex)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>selectImage(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>297</x>
+     <y>392</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rotateSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>rotateCanvas(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>317</x>
+     <y>519</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderCanvasYaw</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>simulationRotate(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>354</x>
+     <y>165</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkShowProjectors</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>showSimulationProjectors()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>354</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderCanvasPitch</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>simulationRotate(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderCanvasRoll</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>simulationRotate(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>286</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnResetRotation</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>simulationResetRotation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>323</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkProjectorBorders</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>showSimulationProjectors()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderGamma</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>changeBlendMaskSettings(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>365</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderTop</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>changeBlendMaskSettings(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>400</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderRight</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>changeBlendMaskSettings(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>470</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderLeft</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>changeBlendMaskSettings(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>435</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderBrushSize</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>changeBlendBrushSettings(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>259</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderFeather</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>changeBlendBrushSettings(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>294</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbTextureCoordinates</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>exportSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>586</x>
+     <y>317</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbNormalMap</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>exportSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>586</x>
+     <y>289</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnClear</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>clearExportFilename()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>779</x>
+     <y>112</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkBrushInvert</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>brushInvert()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnHistory</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>undoView</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>374</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>163</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSepScreens</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>exportSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>187</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSepNone</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>exportSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>243</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSepProj</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>exportSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>215</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkPlainGLSL</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>exportSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>396</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxViewMode</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>showSimulationProjectors()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>403</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderBottom</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>changeBlendMaskSettings(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>545</x>
+     <y>467</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>415</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>simulationZoom</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>simulateGL</receiver>
+   <slot>changeZoom(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>850</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>712</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positioningZoom</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>canvasGL</receiver>
+   <slot>changeZoom(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>850</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>762</x>
+     <y>345</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>canvasZoom</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>canvasPreviewGL</receiver>
+   <slot>changeZoom(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>832</x>
+     <y>345</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>769</x>
+     <y>345</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxViewModePositioning</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>rotateCanvas(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>560</x>
+     <y>507</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>446</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnIdentify</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>identifyScreens()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>470</x>
+     <y>165</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>446</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rotateSliderWarp</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>rotateCanvas(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>517</x>
+     <y>688</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>580</x>
+     <y>425</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxMaskColor</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>changeMaskColor()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>529</x>
+     <y>683</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>580</x>
+     <y>425</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>newProjection()</slot>
+  <slot>openProjection()</slot>
+  <slot>saveProjection()</slot>
+  <slot>saveProjectionAs()</slot>
+  <slot>editAsNew()</slot>
+  <slot>undo()</slot>
+  <slot>redo()</slot>
+  <slot>showAbout()</slot>
+  <slot>addMapping()</slot>
+  <slot>removeMapping()</slot>
+  <slot>changeCanvas(int)</slot>
+  <slot>identifyScreens()</slot>
+  <slot>updateScreens()</slot>
+  <slot>exportSession()</slot>
+  <slot>addImage()</slot>
+  <slot>removeImage()</slot>
+  <slot>initialPositions()</slot>
+  <slot>tabChanged(int)</slot>
+  <slot>setMapping(int)</slot>
+  <slot>resetWarp()</slot>
+  <slot>resizeWarpMode(bool)</slot>
+  <slot>resizeWarp(int)</slot>
+  <slot>selectImage(QModelIndex)</slot>
+  <slot>rotateCanvas(int)</slot>
+  <slot>showSimulationProjectors()</slot>
+  <slot>simulationRotate(int)</slot>
+  <slot>simulationResetRotation()</slot>
+  <slot>changeBlendMaskSettings(int)</slot>
+  <slot>changeBlendBrushSettings(int)</slot>
+  <slot>exportSettings()</slot>
+  <slot>clearExportFilename()</slot>
+  <slot>brushInvert()</slot>
+  <slot>changeMaskColor()</slot>
+ </slots>
+</ui>
