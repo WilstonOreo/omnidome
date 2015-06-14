@@ -120,13 +120,21 @@ setup_gl()
 
 set(EXTRA_LIBS GL )
 
+set(GSTREAMER_LIBS 
+  gstreamer-1.0
+  gstpbutils-1.0 
+  gstbase-1.0
+  gio-2.0 
+  gmodule-2.0 
+  gthread-2.0 
+  gobject-2.0 
+  glib-2.0
+)
+
+
 # Main Application
 ADD_EXECUTABLE(omnidome ./src/app/omnidome.cpp ${omni_src} )
 TARGET_LINK_LIBRARIES(omnidome omni slim-widgetz ${EXTRA_LIBS} ${Qt5_LIBRARIES} )
-
-# ISF generator tool
-#ADD_EXECUTABLE(omni-isf ./src/app/omni-isf.cpp )
-#TARGET_LINK_LIBRARIES(omni-isf ${Boost_LIBRARIES} ${EXTRA_LIBS} ${Qt5_LIBRARIES} )
 
 ########### Test #############
 
@@ -145,8 +153,8 @@ TARGET_LINK_LIBRARIES(test_GStreamer
   ${QT5_LIBRARIES} ${EXTRA_LIBS} 
   slim-widgetz 
   omni 
-  gstreamer-1.0
-  )
+  ${GSTREAMER_LIBS}
+)
 
 
 ADD_EXECUTABLE(test_ScreenSetup
@@ -158,6 +166,5 @@ ADD_EXECUTABLE(test_GL
   ./src/test/GL.cpp 
   ${omni_src} )
 TARGET_LINK_LIBRARIES(test_GL ${QT5_LIBRARIES} ${EXTRA_LIBS} slim-widgetz omni )
-
 
 

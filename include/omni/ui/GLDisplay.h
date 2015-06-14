@@ -9,6 +9,7 @@ namespace omni
 {  
   namespace ui
   {
+    /// A simple test widget for displaying a texture
     class GLDisplay : 
       public QOpenGLWidget,
       protected QOpenGLFunctions
@@ -18,6 +19,9 @@ namespace omni
       explicit GLDisplay(QWidget* _parent = nullptr);
       ~GLDisplay();
  
+      void setPort(int _port);
+      int port() const;
+
     protected:
       void initializeGL();
       void resizeGL(int _w, int _h);    
@@ -25,8 +29,7 @@ namespace omni
 
     private:
       GLuint texId_;
-
-//      QOpenGLTexture* tex_;
+      int port_;
     };
   }
 }

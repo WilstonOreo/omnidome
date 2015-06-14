@@ -10,6 +10,8 @@ int main(int ac, char* av[])
  
   omni::ui::GLDisplay _disp;
 
+  _disp.setPort(5000);
+
   _disp.show();
 
   return _a.exec();

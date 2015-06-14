@@ -8,25 +8,28 @@ namespace omni
   namespace ui
   {
     GLDisplay::GLDisplay(QWidget* _parent) :
-      QOpenGLWidget(_parent)
+      QOpenGLWidget(_parent),
+      port_(5000)
     {
     }
 
     GLDisplay::~GLDisplay()
     {
-      makeCurrent();
-      {
-      }
-      doneCurrent();
+    }
+
+    void GLDisplay::setPort(int _port)
+    {
+      port_=_port;
+    }
+
+    int GLDisplay::port() const
+    {
+      return port_;
     }
 
     void GLDisplay::initializeGL()
     {
       initializeOpenGLFunctions();
-      glEnable(GL_DEPTH_TEST);
-      glEnable(GL_POINT_SMOOTH);
-      glEnable(GL_LINE_SMOOTH);
-      glEnable(GL_TEXTURE);
       glEnable(GL_TEXTURE_2D);
 
       QImage _image(QString(":/spherical.jpg"));
@@ -34,16 +37,20 @@ namespace omni
       _image = _image.mirrored();
       
       glGenTextures(1, &texId_);
+
+      /// Setup our texture with RGBA format
       glBindTexture(GL_TEXTURE_2D, texId_);
-      glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 
-          _image.width(), 
-          _image.height(), 0, 
-          GL_RGBA, GL_UNSIGNED_BYTE, _image.bits());
+      {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 
+            _image.width(), 
+            _image.height(), 0, 
+            GL_RGBA, GL_UNSIGNED_BYTE, _image.bits());
+      }
     }
 
     void GLDisplay::resizeGL(int _w, int _h)
@@ -71,6 +78,7 @@ namespace omni
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
 
+      // Draw a simple quad with our texture
       glBindTexture(GL_TEXTURE_2D, texId_);
       {
         glBegin(GL_QUADS);
