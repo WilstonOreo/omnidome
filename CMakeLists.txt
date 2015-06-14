@@ -85,12 +85,14 @@ SET(omni_gui_cpp_files
     ./src/app/GLView3D.cpp
     ./src/app/About.cpp
     ./src/app/AboutGL.cpp
+    ./src/app/GLDisplay.cpp
 )
 
   SET(omni_headers 
         include/omni/ui/MainWindow.h
         include/omni/ui/About.h
         include/omni/ui/AboutGL.h
+        include/omni/ui/GLDisplay.h
         include/omni/ui/proj/Tuning.h 
         include/omni/ui/proj/TuningList.h 
         include/omni/ui/proj/TitleBar.h 
@@ -133,6 +135,19 @@ ADD_EXECUTABLE(test_Projector
   ${omni_src} )
 
 TARGET_LINK_LIBRARIES(test_Projector ${QT_LIBRARIES} ${EXTRA_LIBS} slim-widgetz omni )
+
+ADD_EXECUTABLE(test_GStreamer
+  ./src/test/GStreamer.cpp 
+  ${omni_src}
+  )
+
+TARGET_LINK_LIBRARIES(test_GStreamer 
+  ${QT5_LIBRARIES} ${EXTRA_LIBS} 
+  slim-widgetz 
+  omni 
+  gstreamer-1.0
+  )
+
 
 ADD_EXECUTABLE(test_ScreenSetup
   ./src/test/ScreenSetup.cpp 
