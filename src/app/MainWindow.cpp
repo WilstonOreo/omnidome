@@ -10,6 +10,7 @@
 
 #include <omni/Session.h>
 #include <omni/ui/proj/TuningList.h>
+#include <omni/ui/About.h>
 
 using namespace omni::ui;
 
@@ -24,7 +25,6 @@ MainWindow::MainWindow( QMainWindow *parent) :
   ui_->tuningList->setSession(session_.get());
 
   connect(ui_->btnAddTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(addTuning()));
-  connect(ui_->btnRemoveTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(removeTuning()));
 
   raise();
   show();
@@ -115,6 +115,14 @@ void MainWindow::editAsNew()
   modified_ = false;
   buttonState();
 }
+
+void MainWindow::showAbout()
+{
+  std::unique_ptr<About> _about(new About());
+  _about->exec();
+}
+
+
 
 void MainWindow::showEvent(QShowEvent *event)
 {

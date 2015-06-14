@@ -1,13 +1,15 @@
 #include <omni/visual/Sphere.h>
 
 #include <omni/visual/util.h>
+#include <QDebug>
 
 namespace omni
 {
   namespace visual
   {
     Sphere::Sphere(qreal _radius) :
-      radius_(_radius)
+      radius_(_radius),
+      scale_(1.0,1.0,1.0)
     {
       update();
     }
@@ -62,7 +64,8 @@ namespace omni
     {
       glPushMatrix();
       {
-        // Move offset
+        qDebug() << "Hallo";/*
+        // Scale offset
         glScalef(radius_ * scale_.x(),radius_ * scale_.y(),radius_ * scale_.z());
 
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -77,18 +80,20 @@ namespace omni
 
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisableClientState(GL_NORMAL_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);*/
       }
       glPopMatrix();
     }
 
     void Sphere::update()
     {
+      vertexVbo_.freeAndGen();
+      indexVbo_.freeAndGen();
+
       vertices_.clear();
       vertices_.reserve(2 * slices_ * stacks_);
       indices_.clear();
       indices_.reserve(6 * slices_ * stacks_);
-
 
       // If there are M lines of latitude (horizontal) and
       // N lines of longitude (vertical), then put dots at
@@ -113,8 +118,23 @@ namespace omni
         if (stackPos(i+1) > bottom_) return;
 
         generateStack(stackPos(i),stackPos(i+1),
-                            stackRadius(i),stackRadius(i+1));
+                      stackRadius(i),stackRadius(i+1));
       }
+
+      // bind VBO in order to use
+      glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
+      {
+        glBufferData(GL_ARRAY_BUFFER, vertices_.size()*sizeof(Vertex), vertices_.data(), GL_STATIC_DRAW);
+      }
+      glBindBuffer(GL_ARRAY_BUFFER,0);
+
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_.id());
+      {
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size()*sizeof(GLuint), indices_.data(), GL_STATIC_DRAW);
+      }
+
+      indices_.clear();
+      vertices_.clear();
     }
 
     void Sphere::generateStack(float _top, float _bottom,

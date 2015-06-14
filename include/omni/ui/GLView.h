@@ -6,6 +6,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QPointF>
+#include <omni/visual/Session.h>
 
 namespace omni
 {
@@ -42,11 +43,7 @@ namespace omni
       virtual void mousePressEvent(QMouseEvent*);
       
       QPointF mousePosition_;
-
-    private:
-
-      Session* session_;      
-    
+      std::unique_ptr<visual::Session> session_; 
     };
   }
 }

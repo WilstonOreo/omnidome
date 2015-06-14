@@ -18,7 +18,7 @@ namespace omni
     /// Returns the size of the box (= max - min)
     QVector3D size() const;
     
-    /// Returns radius of the box (= length of size vector)
+    /// Returns radius of the box (= half length of size vector)
     qreal radius() const;
 
     /// Returns the minimum point

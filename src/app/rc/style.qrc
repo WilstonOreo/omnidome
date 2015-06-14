@@ -1,0 +1,54 @@
+<RCC>
+  <qresource prefix="qss_icons">
+    <file>buttons/GAMMA.svg</file>
+    <file>buttons/ROLL_NEW.svg</file>
+    <file>style.qss</file>
+    <file>up_arrow_disabled.png</file>
+    <file>Hmovetoolbar.png</file>
+    <file>stylesheet-branch-end.png</file>
+    <file>branch_closed-on.png</file>
+    <file>stylesheet-vline.png</file>
+    <file>branch_closed.png</file>
+    <file>branch_open-on.png</file>
+    <file>transparent.png</file>
+    <file>right_arrow_disabled.png</file>
+    <file>sizegrip.png</file>
+    <file>close.png</file>
+    <file>down_arrow.png</file>
+    <file>Vmovetoolbar.png</file>
+    <file>left_arrow.png</file>
+    <file>stylesheet-branch-more.png</file>
+    <file>up_arrow.png</file>
+    <file>right_arrow.png</file>
+    <file>left_arrow_disabled.png</file>
+    <file>Hsepartoolbar.png</file>
+    <file>checkbox.png</file>
+    <file>branch_open.png</file>
+    <file>Vsepartoolbar.png</file>
+    <file>down_arrow_disabled.png</file>
+    <file>undock.png</file>
+  </qresource>
+  <qresource prefix="buttons">
+    <file>buttons/PROJ_SHIFT.svg</file>
+    <file>buttons/GAMMA_BOTTOM_SMALL.svg</file>
+    <file>buttons/DC83E9383815136E.png</file>
+    <file>buttons/DC83E93838151372.png</file>
+    <file>buttons/BRUSH_SIZE_SMALL.svg</file>
+    <file>buttons/brush_size.png</file>
+    <file>buttons/FEATHER.png</file>
+    <file>buttons/DIST_CENT_SMALL.svg</file>
+    <file>buttons/TOWER_HEIGHT_SMALL.svg</file>
+    <file>buttons/YAw_small.svg</file>
+    <file>buttons/PITCH_small.svg</file>
+    <file>buttons/GAMMA_TOP_SMALL.svg</file>
+    <file>buttons/GAMMA_LEFT_SMALL.svg</file>
+    <file>buttons/GAMMA_RIGHT_SMALL.svg</file>
+    <file>buttons/PROJ_YAW.svg</file>
+    <file>buttons/PROJ_ROLL.svg</file>
+    <file>buttons/PROJ_PITCH.svg</file>
+    <file>buttons/Projector_FOV_small.svg</file>
+    <file>buttons/Projector_Throw_small.svg</file>
+    <file>buttons/Screen_Height_small.svg</file>
+    <file>buttons/Screen_Width_small.svg</file>
+  </qresource>
+</RCC>

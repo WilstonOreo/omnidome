@@ -12,6 +12,25 @@ namespace omni
     HalfDome::~HalfDome()
     {
     }
+
+    void HalfDome::draw() const
+    {
+      glPushMatrix();
+      {
+        glLoadIdentity();
+
+        //glTranslatef(center_.x(),center_.y(),center_.y());
+        //glScalef(_r,_r,_r);
+
+        this->sphere_.draw();
+      }
+      glPopMatrix();
+
+    }
+
+    void HalfDome::drawAux() const
+    {
+    }
  
     EulerAngles& HalfDome::angles()
     {

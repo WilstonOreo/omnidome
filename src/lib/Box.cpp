@@ -17,6 +17,16 @@ namespace omni
     setMinMax(_min,_max);
   }
 
+  QVector3D Box::size() const
+  {
+    return max() - min();
+  }
+
+  qreal Box::radius() const
+  {
+    return size().length() * 0.5; 
+  }
+
   QVector3D Box::min() const
   {
     return min_;

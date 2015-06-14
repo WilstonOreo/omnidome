@@ -17,7 +17,7 @@ namespace omni
       return true;
     }
 
-    ProjectionMode Envelope::projectionMode() const
+    Envelope::ProjectionMode Envelope::projectionMode() const
     {
       return projectionMode_;
     }

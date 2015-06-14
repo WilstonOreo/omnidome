@@ -21,6 +21,7 @@ add_submodule(boostx-factory)
 SET(omni_cpp_files
   ./src/lib/canvas/Box.cpp
   ./src/lib/canvas/Planar.cpp
+  ./src/lib/canvas/Envelope.cpp
   ./src/lib/canvas/Dome.cpp
   ./src/lib/canvas/HalfDome.cpp
   ./src/lib/canvas/InflatableDome.cpp
@@ -34,6 +35,8 @@ SET(omni_cpp_files
   ./src/lib/visual/Tracker.cpp
   ./src/lib/visual/Light.cpp
   ./src/lib/visual/Camera.cpp
+  ./src/lib/visual/Session.cpp
+  ./src/lib/visual/VBO.cpp
   ./src/lib/proj/Screen.cpp
   ./src/lib/proj/ScreenSetup.cpp
   ./src/lib/proj/AngleSetup.cpp
@@ -68,7 +71,7 @@ SET(omni_cpp_files
   ./src/lib/WarpPoint.cpp
 )
 
-ADD_LIBRARY(omni ${omni_cpp_files})
+ADD_LIBRARY(omni STATIC ${omni_cpp_files})
 TARGET_LINK_LIBRARIES(omni ${QT5_LIBRARIES})
 
 SET(omni_gui_cpp_files
@@ -80,10 +83,14 @@ SET(omni_gui_cpp_files
     ./src/app/GLView.cpp
     ./src/app/GLView2D.cpp
     ./src/app/GLView3D.cpp
+    ./src/app/About.cpp
+    ./src/app/AboutGL.cpp
 )
 
   SET(omni_headers 
-        include/omni/ui/MainWindow.h 
+        include/omni/ui/MainWindow.h
+        include/omni/ui/About.h
+        include/omni/ui/AboutGL.h
         include/omni/ui/proj/Tuning.h 
         include/omni/ui/proj/TuningList.h 
         include/omni/ui/proj/TitleBar.h 
@@ -94,6 +101,7 @@ SET(omni_gui_cpp_files
   )
   SET(omni_forms   
     ./src/app/ui/omni_ui_MainWindow.ui
+    ./src/app/ui/omni_ui_About.ui
   )
 
   SET(omni_resources ./src/app/rc/style.qrc ./src/app/rc/ODM.qrc )

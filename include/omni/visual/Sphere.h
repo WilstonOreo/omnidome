@@ -3,6 +3,7 @@
 
 #include <omni/Vertex.h>
 #include <omni/visual/Interface.h>
+#include <omni/visual/VBO.h>
 
 namespace omni
 {
@@ -51,6 +52,7 @@ namespace omni
 
       std::vector<Vertex> vertices_;
       std::vector<int> indices_;
+      VBO vertexVbo_, indexVbo_;
     };
   }
 }

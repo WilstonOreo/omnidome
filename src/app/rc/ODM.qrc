@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="logo">
+    <file>omni1rainbow.png</file>
+  </qresource>
+  <qresource>
+    <file>spherical.jpg</file>
+  </qresource>
+  <qresource prefix="shaders">
+    <file>slow_fractal.frag</file>
+    <file>frustum.frag</file>
+    <file>frustum.vert</file>
+    <file>blend.frag</file>
+    <file>canvas.frag</file>
+  </qresource>
+</RCC>

@@ -21,13 +21,12 @@ namespace omni
     {
     public:
       /// Virtual destructor
-      virtual ~Interface();
-      
+      virtual ~Interface() {}
+ 
       /// Draws auxiliary elements which are not used for mapping (e.g. positioning grids)
       inline virtual void drawAux() const 
       {
       }
-
 
       /// Returns set of supported map modes (an empty set means that all map modes are supported)
       inline virtual MappingModeSet supportedMapModes() const 

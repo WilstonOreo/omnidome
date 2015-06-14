@@ -50,6 +50,9 @@ namespace omni
       bool openProjection(const QString& _filename);
       void editAsNew();
 
+      /// Show About dialog
+      void showAbout();
+
     protected:
       void closeEvent(QCloseEvent* _event);
       void showEvent(QShowEvent* _event);

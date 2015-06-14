@@ -21,6 +21,7 @@ namespace omni
     void Dome::setRadius(qreal _radius)
     {
       radius_=_radius;
+      update();
     }
 
     qreal Dome::diameter() const
@@ -43,6 +44,7 @@ namespace omni
       auto _r = radius();
       QVector3D _vr(_r,_r,_r);
       this->bounds_ = Box(-_vr,_vr); 
+      sphere_.update();
     }
 
     void Dome::toStream(QDataStream& _stream) const

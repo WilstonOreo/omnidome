@@ -76,6 +76,9 @@ namespace omni
       glVertex3f(-1.0, 1.0,0.0);
       
       glEnd();
+
+
+      this->session_->drawCanvas();
     }
 
 

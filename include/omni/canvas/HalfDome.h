@@ -12,7 +12,7 @@ namespace omni
     /// A generic half sphere dome
     class HalfDome : 
       public Dome, 
-      Registrar<HalfDome>
+      public Registrar<HalfDome>
     {
     public:
       OMNI_TYPEID("HalfDome")
@@ -21,8 +21,6 @@ namespace omni
 
       void draw() const;
       void drawAux() const;
-
-      MappingModeSet supportedMapModes() const; 
 
       EulerAngles& angles();
       EulerAngles const& angles() const;

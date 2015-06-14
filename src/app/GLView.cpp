@@ -31,12 +31,12 @@ namespace omni
 
     Session const* GLView::session() const
     {
-      return session_;
+      return !session_ ? nullptr : &session_->session();
     }
 
     void GLView::setSession(Session* _session)
     {
-      session_=_session;
+      session_.reset(new visual::Session(*_session));
       update();
     }
       
