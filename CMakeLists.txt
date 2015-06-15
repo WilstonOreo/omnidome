@@ -118,12 +118,19 @@ SET(omni_src ${omni_gui_cpp_files} ${omni_headers_moc} ${omni_forms_headers} ${o
 
 setup_gl()
 
+include_directories( 
+  /usr/include/glib-2.0 
+  /usr/lib/x86_64-linux-gnu/glib-2.0/include 
+  /usr/include/gstreamer-1.0
+)
+
 set(EXTRA_LIBS GL )
 
 set(GSTREAMER_LIBS 
   gstreamer-1.0
   gstpbutils-1.0 
   gstbase-1.0
+  gstapp-1.0
   gio-2.0 
   gmodule-2.0 
   gthread-2.0 
