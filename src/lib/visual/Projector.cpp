@@ -1,6 +1,7 @@
 #include <omni/visual/Projector.h>
 
 #include <omni/proj/Frustum.h>
+#include <omni/visual/util.h>
 
 namespace omni
 {
@@ -35,7 +36,12 @@ namespace omni
     void Projector::draw() const
     {
       this->color(color_);
-      const_cast<Projector*>(this)->glLineWidth(1.0);
+
+      with_current_context([this](QOpenGLFunctions& _)
+      {
+        _.glLineWidth(1.0);
+      });
+
       this->visualLine(eye_,topLeft_);
       this->visualLine(eye_,topRight_);
       this->visualLine(eye_,bottomLeft_);
@@ -45,13 +51,13 @@ namespace omni
       this->visualLine(topRight_,bottomRight_);
       this->visualLine(bottomLeft_,bottomRight_);
 
-      if (visualHalo_)
+      if (drawHalo_)
       {
-        visualHalo();
+        drawHalo();
       }
     }
 
-    void Projector::visualHalo() const
+    void Projector::drawHalo() const
     {
       glBegin(GL_TRIANGLE_FAN);
       this->color(color_,0.15);

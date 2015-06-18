@@ -59,14 +59,39 @@ namespace omni
       slices_ = _slices;
       update();
     }
+      
+    float Sphere::top() const
+    {
+      return top_;
+    }
+
+    void Sphere::setTop(float _top)
+    {
+      top_=_top;
+      update();
+    }
+
+    float Sphere::bottom() const
+    {
+      return bottom_;
+    }
+
+    void Sphere::setBottom(float _bottom)
+    {
+      bottom_=_bottom;
+      update();
+    }
 
     void Sphere::draw() const
     {
       glPushMatrix();
+      with_current_context([this](QOpenGLFunctions& _)
       {
-        qDebug() << "Hallo";/*
         // Scale offset
         glScalef(radius_ * scale_.x(),radius_ * scale_.y(),radius_ * scale_.z());
+        
+        _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
+        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_.id());
 
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glEnableClientState(GL_NORMAL_ARRAY);
@@ -76,12 +101,15 @@ namespace omni
         glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)Vertex::normalOffset());
         glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)Vertex::posOffset());
 
-        const_cast<Sphere*>(this)->glDrawElements(GL_TRIANGLES,indices_.size(),GL_UNSIGNED_INT,const_cast<int*>(indices_.data()));
+        _.glDrawElements(GL_TRIANGLES,indices_.size()-4,GL_UNSIGNED_INT,0);
 
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisableClientState(GL_NORMAL_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);*/
-      }
+        glDisableClientState(GL_VERTEX_ARRAY);
+      
+        _.glBindBuffer(GL_ARRAY_BUFFER, 0 );
+        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+      });
       glPopMatrix();
     }
 
@@ -107,33 +135,30 @@ namespace omni
         return cos(M_PI * float(index) / stacks_);
       };
 
-      /// Top cone
-      generateCone(1.0,stackPos(1),stackRadius(1));
-      /// Bottom cone
-      generateCone(-1.0,stackPos(stacks_ - 1),stackRadius(1));
-
-      for (size_t i = 1; i < stacks_-1; ++i)
+      for (size_t i = 0; i < stacks_; ++i)
       {
-        if (stackPos(i) < top_) return;
-        if (stackPos(i+1) > bottom_) return;
+        if (stackPos(i) > top_ || stackPos(i+1) < bottom_) continue;
 
         generateStack(stackPos(i),stackPos(i+1),
                       stackRadius(i),stackRadius(i+1));
       }
 
-      // bind VBO in order to use
-      glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
+      with_current_context([this](QOpenGLFunctions& _)
       {
-        glBufferData(GL_ARRAY_BUFFER, vertices_.size()*sizeof(Vertex), vertices_.data(), GL_STATIC_DRAW);
-      }
-      glBindBuffer(GL_ARRAY_BUFFER,0);
+        // bind VBO in order to use
+        _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
+        {
+          _.glBufferData(GL_ARRAY_BUFFER, vertices_.size()*sizeof(Vertex), vertices_.data(), GL_STATIC_DRAW);
+        }
+        _.glBindBuffer(GL_ARRAY_BUFFER,0);
 
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_.id());
-      {
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size()*sizeof(GLuint), indices_.data(), GL_STATIC_DRAW);
-      }
+        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_.id());
+        {
+          _.glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size()*sizeof(GLuint), indices_.data(), GL_STATIC_DRAW);
+        }
+        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+      });
 
-      indices_.clear();
       vertices_.clear();
     }
 
@@ -150,8 +175,8 @@ namespace omni
         QVector3D _bottomPoint(_cos * _bottomRadius,_sin * _bottomRadius,_bottom);
         QVector3D _normalTop(_topPoint.normalized());
         QVector3D _normalBottom(_bottomPoint.normalized());
-        vertices_.emplace_back(_topPoint,_normalTop,QVector2D(float(i)/slices_,acos(_normalTop.z()) / M_PI));
-        vertices_.emplace_back(_bottomPoint,_normalBottom,QVector2D(float(i)/slices_,acos(_normalBottom.z()) / M_PI));
+        vertices_.emplace_back(_topPoint,_normalTop,QVector2D(float(i)/slices_,1.0 - acos(_normalTop.z()) / M_PI));
+        vertices_.emplace_back(_bottomPoint,_normalBottom,QVector2D(float(i)/slices_,1.0 - acos(_normalBottom.z()) / M_PI));
 
         /// Top triangle
         indices_.push_back(_startIndex + 2 * i);
@@ -163,33 +188,6 @@ namespace omni
         indices_.push_back(_startIndex + 2 * (i + 1) +1 );
         indices_.push_back(_startIndex + 2 * (i + 1) );
       }
-    }
-
-    void Sphere::generateCone(float _top, float _bottom, float _radius)
-    {
-      size_t _startIndex = vertices_.size();
-
-      QVector3D _p(0,0,_top);
-      vertices_.emplace_back(_p,_p.normalized(),QVector2D(0.5,0.0));
-
-      util::for_each_circle_point(slices_,_radius,[&](size_t i, const QPointF& _p2)
-      {
-        _p = QVector3D(_p2.x(),_p2.y(),_bottom);
-        QVector3D _normal = _p.normalized();
-        vertices_.emplace_back(_p,_normal,QVector2D(float(i)/slices_,acos(_normal.z()) / M_PI));
-        if (_top > _bottom)
-        {
-          indices_.push_back(_startIndex);
-          indices_.push_back(_startIndex+1 + i);
-          indices_.push_back(_startIndex+1 + (i + 1) % slices_);
-        }
-        else
-        {
-          indices_.push_back(_startIndex+1 + (i + 1) % slices_);
-          indices_.push_back(_startIndex+1 + i);
-          indices_.push_back(_startIndex);
-        }
-      });
     }
   }
 }

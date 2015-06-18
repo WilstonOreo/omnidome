@@ -25,6 +25,7 @@ namespace omni
       void keyPressEvent(QKeyEvent* event);
 
     private:
+      bool initialize();
 
       bool keepAspectRatio_ = false;
     };

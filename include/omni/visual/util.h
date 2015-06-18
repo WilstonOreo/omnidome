@@ -4,6 +4,7 @@
 #include <QPointF>
 #include <QVector2D>
 #include <QVector3D>
+#include <QOpenGLFunctions>
 
 namespace omni
 {
@@ -46,7 +47,26 @@ namespace omni
         _cos = cos(_endAngle), _sin = sin(_endAngle);
         _f(i,QPointF(_cos*_radius,_sin*_radius));
       }
+
+      template<typename F>
+      void with_current_context(F f)
+      {
+        auto _currentContext = QOpenGLContext::currentContext();
+        if (!_currentContext) return;
+
+        QOpenGLFunctions glFuncs(_currentContext);
+        f(glFuncs);
+      }
+
+      /// Calculates the aspect ratio from a QSize
+      template<typename SIZE>
+      qreal aspect(SIZE const& _size)
+      {
+        return _size.width() / qreal(_size.height());
+      }
     }
+
+    using util::with_current_context;
   }
 }
 

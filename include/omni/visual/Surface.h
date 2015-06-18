@@ -11,23 +11,30 @@ namespace omni
     /**@brief visual::Surface handles painting on a orthogonal 2D canvas
       *@detail 
      **/
-    class Surface : public Interface
+    class Surface 
     {
     public:
+      bool ignoreAspect() const;
+      void setIgnoreAspect(bool); 
 
+      bool upsideDown() const;
+      void setUpsideDown(bool);
+
+      qreal border() const;
+      void setBorder(qreal);
+      
       QSize sceneSize() const;
       void setSceneSize(QSize);
-      qreal sceneAspect() const;
       QRectF sceneRect(bool _upsideDown = false) const;
 
       QSize windowSize() const;
       void setWindowSize(QSize);
-      qreal windowAspect() const;
       QRectF windowRect(bool _upsideDown) const;
 
     private:
       bool ignoreAspect_ = false;
-      float border_ = 0.0;
+      bool upsideDown_ = false;
+      qreal border_ = 0.0;
       QSize windowSize_;
       QSize sceneSize_;
       Cursor cursor_;

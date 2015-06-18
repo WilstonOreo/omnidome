@@ -15,8 +15,10 @@ namespace omni
   
   namespace ui
   {
-    class ProjectorWidget;
-    class GLView;
+    class GLView2D;
+    class GLView3D;
+    class ScreenSetup;
+    class Export;
 
     namespace Ui
     {
@@ -29,15 +31,12 @@ namespace omni
     public:
       enum Mode
       {
-        CANVAS,
-        SCREENS,
+        SCREENSETUP,
         POSITIONING,
         WARP,
         BLEND,
         EXPORT
       };
-
-      typedef std::set<GLView*> view_set_type;
 
       MainWindow (QMainWindow *parent = nullptr);
       ~MainWindow();
@@ -53,13 +52,28 @@ namespace omni
       /// Show About dialog
       void showAbout();
 
+      /// Show Screen Setup Page
+      void showScreenSetup();
+
+      /// Show Positioning Page
+      void showPositioning();
+
+      /// Show Warping Page
+      void showWarp();
+
+      /// Show Blending Page
+      void showBlend();
+
+      /// Show Export Page
+      void showExport();
+
     protected:
       void closeEvent(QCloseEvent* _event);
       void showEvent(QShowEvent* _event);
 
     private:
       void buttonState();
-
+      void setMode(Mode _mode);
       void toolButtonsVisible(bool);
       
       QMessageBox::StandardButton saveChangesPrompt();
@@ -69,8 +83,15 @@ namespace omni
       bool modified_ = false;
  
       std::unique_ptr<Ui::MainWindow> ui_;
-      
-      Mode mode_ = CANVAS;
+
+
+      QUniquePtr<ScreenSetup> screenSetup_;
+      QUniquePtr<GLView3D> positioning_;
+      QUniquePtr<GLView2D> warp_;
+      QUniquePtr<GLView2D> blend_;
+      QUniquePtr<Export> export_;
+
+      Mode mode_ = SCREENSETUP;
     };
   }
 }

@@ -16,15 +16,25 @@ namespace omni
       virtual ~Interface();
 
       virtual void bind() = 0;
+      inline virtual void release() {};
 
       inline virtual MappingModeSet mapModes() const
       {
         return  MappingModeSet({  });
       }
 
-      virtual void update() = 0;
+      inline virtual void update() {}
 
-      virtual GLuint textureId() const = 0;
+      /**@brief Free stored OpenGL Content (like textures, shaders etc)
+       * @detail Is called before destructor, when there is still an active OpenGL context 
+       **/
+      inline virtual void free() {}
+
+      inline virtual GLuint textureId() const 
+      {
+        return 0;
+      }
+
     };
 
     typedef AbstractFactory<Interface> Factory;

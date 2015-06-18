@@ -12,6 +12,11 @@
 #include <omni/ui/proj/TuningList.h>
 #include <omni/ui/About.h>
 
+#include <omni/ui/ScreenSetup.h>
+#include <omni/ui/GLView3D.h>
+#include <omni/ui/GLView2D.h>
+#include <omni/ui/Export.h>
+
 using namespace omni::ui;
 
 MainWindow::MainWindow( QMainWindow *parent) :
@@ -25,6 +30,32 @@ MainWindow::MainWindow( QMainWindow *parent) :
   ui_->tuningList->setSession(session_.get());
 
   connect(ui_->btnAddTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(addTuning()));
+
+  // Make and setup pages
+  {
+    QLayout* _layout = new QHBoxLayout();
+    screenSetup_.reset(new ScreenSetup());
+    _layout->addWidget(screenSetup_.get());
+
+    positioning_.reset(new GLView3D());
+    positioning_->setSession(session_.get());
+    _layout->addWidget(positioning_.get());
+
+    warp_.reset(new GLView2D());
+    warp_->setSession(session_.get());
+    _layout->addWidget(warp_.get());
+
+    blend_.reset(new GLView2D());
+    blend_->setSession(session_.get());
+    _layout->addWidget(blend_.get());
+
+    export_.reset(new Export(session_.get()));
+    _layout->addWidget(export_.get());
+    ui_->pages->setLayout(_layout);
+
+    setMode(SCREENSETUP);
+  }
+
 
   raise();
   show();
@@ -122,6 +153,36 @@ void MainWindow::showAbout()
   _about->exec();
 }
 
+/// Show Screen Setup Page
+void MainWindow::showScreenSetup()
+{
+  setMode(SCREENSETUP);
+}
+
+/// Show Positioning Page
+void MainWindow::showPositioning()
+{
+  setMode(POSITIONING);
+}
+
+/// Show Warping Page
+void MainWindow::showWarp()
+{
+  setMode(WARP);
+}
+
+/// Show Blending Page
+void MainWindow::showBlend()
+{
+  setMode(BLEND);
+}
+
+/// Show Export Page
+void MainWindow::showExport()
+{
+  setMode(EXPORT);
+}
+
 
 
 void MainWindow::showEvent(QShowEvent *event)
@@ -153,6 +214,62 @@ void MainWindow::buttonState()
 
   ui_->btnEditAsNew->setEnabled(!filename_.isEmpty());
   ui_->btnSave->setEnabled(modified_);
+}
+     
+void MainWindow::setMode(Mode _mode)
+{
+  screenSetup_->setVisible(_mode == SCREENSETUP);
+  positioning_->setVisible(_mode == POSITIONING);
+  warp_->setVisible(_mode == WARP);
+  blend_->setVisible(_mode == BLEND);
+  export_->setVisible(_mode == EXPORT);
+
+  switch (_mode)
+  {
+  case SCREENSETUP:
+    ui_->grpCanvas->show();
+    ui_->grpWarp->hide();
+    ui_->grpBlend->hide();
+    ui_->grpInputs->show();
+    ui_->grpMapping->show();
+    break;
+
+  case POSITIONING:
+    ui_->grpCanvas->show();
+    ui_->grpWarp->hide();
+    ui_->grpBlend->hide();
+    ui_->grpInputs->show();
+    ui_->grpMapping->show();
+    break;
+
+  case WARP:
+    ui_->grpCanvas->hide();
+    ui_->grpWarp->show();
+    ui_->grpBlend->hide();
+    ui_->grpInputs->show();
+    ui_->grpMapping->show();
+    break;
+
+  case BLEND:
+    ui_->grpCanvas->hide();
+    ui_->grpWarp->hide();
+    ui_->grpBlend->show();
+    ui_->grpInputs->show();
+    ui_->grpMapping->show();
+    break;
+
+  case EXPORT:
+    ui_->grpCanvas->hide();
+    ui_->grpWarp->hide();
+    ui_->grpBlend->hide();
+    ui_->grpInputs->show();
+    ui_->grpMapping->show();
+    break;
+
+  default: break;
+  }
+
+  mode_=_mode;
 }
 
 void MainWindow::toolButtonsVisible(bool _visible)

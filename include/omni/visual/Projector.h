@@ -24,13 +24,13 @@ namespace omni
       void draw() const;
 
     private:
-      void visualHalo() const;
+      void drawHalo() const;
 
       proj::Projector const& proj_;
 
       float size_ = 2.0;
 
-      bool visualHalo_ = true;
+      bool drawHalo_ = true;
       QColor color_;
       QVector3D eye_, topLeft_, topRight_, bottomLeft_, bottomRight_;
     };

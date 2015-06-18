@@ -36,6 +36,7 @@ namespace omni
       if (inputs_.count(_id) == 0) return;
 
       inputs_.erase(_id);
+      if (_id == currentId_) setCurrent("");
     }
 
     void List::fromStream(QDataStream& _stream) 
@@ -69,6 +70,35 @@ namespace omni
         _stream << _id << _typeId;
         _input->toStream(_stream);
       }
+    }
+      
+    Input const* List::current() const
+    {
+      if (!inputs_.count(currentId_)) return nullptr;
+
+      return inputs_.at(currentId_).get();
+    }
+    
+    Input* List::current()
+    {
+      if (!inputs_.count(currentId_)) return nullptr;
+      
+      return inputs_.at(currentId_).get();
+    }
+
+    Id List::currentId() const
+    {
+      return currentId_;
+    }
+
+    void List::setCurrent(Id const& _id)
+    {
+      if (!inputs_.count(_id)) 
+      {
+        currentId_ = "";
+        return;
+      }
+      currentId_ = _id; 
     }
   }
 }

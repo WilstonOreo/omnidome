@@ -6,6 +6,7 @@ namespace omni
   {
     HalfDome::HalfDome(qreal _diameter)
     {
+      this->sphere_.setBottom(0.0);
       setDiameter(_diameter);
     }
 
@@ -19,8 +20,7 @@ namespace omni
       {
         glLoadIdentity();
 
-        //glTranslatef(center_.x(),center_.y(),center_.y());
-        //glScalef(_r,_r,_r);
+        glTranslatef(center_.x(),center_.y(),center_.y());
 
         this->sphere_.draw();
       }
@@ -57,6 +57,7 @@ namespace omni
       auto _r = radius();
       QVector3D _vr(_r,_r,_r);
       this->bounds_ = Box(-_vr + center_,_vr + center_); 
+      sphere_.update();
     }
  
     void HalfDome::fromStream(QDataStream& _stream)

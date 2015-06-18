@@ -11,5 +11,7 @@
     <file>frustum.vert</file>
     <file>blend.frag</file>
     <file>canvas.frag</file>
+    <file>test_image.frag</file>
+    <file>test_image.vert</file>
   </qresource>
 </RCC>

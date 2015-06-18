@@ -1,10 +1,13 @@
 #include <omni/visual/VBO.h>
 
+#include <omni/visual/util.h>
+
 namespace omni
 {
   namespace visual
   {
-    VBO::VBO() : id_(0)
+    VBO::VBO(QOpenGLContext* _context) : 
+      id_(0)
     {
     }
 
@@ -15,21 +18,29 @@ namespace omni
 
     void VBO::gen()
     {
-      if (!id_)
-        glGenBuffers(1, &id_);
+      with_current_context([this](QOpenGLFunctions& _)
+      {
+        if (!id_)
+          _.glGenBuffers(1, &id_);
+      });
     }
       
     void VBO::freeAndGen()
     {
-      if (id_) free();
-
-      glGenBuffers(1,&id_);
+      with_current_context([this](QOpenGLFunctions& _)
+      {
+        if (id_) free();
+        _.glGenBuffers(1,&id_);
+      });
     }
 
     void VBO::free()
     {
-      if (id_)
-        glDeleteBuffers(1,&id_);
+      with_current_context([this](QOpenGLFunctions& _)
+      {
+        if (id_)
+          _.glDeleteBuffers(1,&id_);
+      });
     }
 
     GLuint VBO::id() const

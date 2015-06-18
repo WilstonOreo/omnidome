@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>omni::ui::ExportWidget</class>
- <widget class="QWidget" name="omni::ui::ExportWidget">
+ <class>omni::ui::Export</class>
+ <widget class="QWidget" name="omni::ui::Export">
   <property name="geometry">
    <rect>
     <x>0</x>

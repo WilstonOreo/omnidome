@@ -1,16 +1,16 @@
 #ifndef OMNI_VISUAL_VBO_H
 #define OMNI_VISUAL_VBO_H
 
-#include <QOpenGLFunctions>
+#include <QOpenGLContext>
 
 namespace omni
 {
   namespace visual
   {
     /// A small Vertex Buffer Object class
-    struct VBO : protected QOpenGLFunctions
+    struct VBO 
     {
-      VBO();
+      VBO(QOpenGLContext* = nullptr);
       
       /// Destructor. Frees VBO if necessary
       ~VBO();

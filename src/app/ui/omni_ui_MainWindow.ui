@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>912</width>
-    <height>454</height>
+    <width>1023</width>
+    <height>676</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Omnidome</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -65,7 +65,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnNew">
+        <widget class="QToolButton" name="btnNew">
          <property name="minimumSize">
           <size>
            <width>64</width>
@@ -87,13 +87,13 @@
            <height>54</height>
           </size>
          </property>
-         <property name="flat">
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnOpen">
+        <widget class="QToolButton" name="btnOpen">
          <property name="minimumSize">
           <size>
            <width>64</width>
@@ -115,13 +115,13 @@
            <height>54</height>
           </size>
          </property>
-         <property name="flat">
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnSave">
+        <widget class="QToolButton" name="btnSave">
          <property name="minimumSize">
           <size>
            <width>64</width>
@@ -143,13 +143,13 @@
            <height>54</height>
           </size>
          </property>
-         <property name="flat">
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnEditAsNew">
+        <widget class="QToolButton" name="btnEditAsNew">
          <property name="minimumSize">
           <size>
            <width>64</width>
@@ -171,7 +171,7 @@
            <height>54</height>
           </size>
          </property>
-         <property name="flat">
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
         </widget>
@@ -193,7 +193,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="btnScreenSetup">
+        <widget class="QToolButton" name="btnScreenSetup">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -215,59 +215,13 @@
          <property name="text">
           <string>Screen Setup</string>
          </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-         <property name="default">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnCanvas">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Canvas</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>54</width>
-           <height>54</height>
-          </size>
-         </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-         <property name="default">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnPositioning">
+        <widget class="QToolButton" name="btnPositioning">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -289,19 +243,13 @@
          <property name="text">
           <string>Positioning</string>
          </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-         <property name="default">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnWarp">
+        <widget class="QToolButton" name="btnWarp">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -323,19 +271,13 @@
          <property name="text">
           <string>Warp</string>
          </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-         <property name="default">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnBlend">
+        <widget class="QToolButton" name="btnBlend">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -357,19 +299,13 @@
          <property name="text">
           <string>Blend</string>
          </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-         <property name="default">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnExport">
+        <widget class="QToolButton" name="btnExport">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -391,13 +327,7 @@
          <property name="text">
           <string>Export</string>
          </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-         <property name="default">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
         </widget>
@@ -430,9 +360,23 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QGroupBox" name="grpSettings">
+           <widget class="omni::ui::Canvas" name="grpCanvas">
             <property name="title">
-             <string>Settings</string>
+             <string>Canvas</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="omni::ui::Blend" name="grpBlend">
+            <property name="title">
+             <string>Blend Settings</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="omni::ui::Warp" name="grpWarp">
+            <property name="title">
+             <string>Warp Grid Settings</string>
             </property>
            </widget>
           </item>
@@ -485,16 +429,37 @@
                  <number>2</number>
                 </property>
                 <item>
-                 <widget class="QPushButton" name="btnAddInput">
+                 <widget class="QToolButton" name="btnAddInput">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Add</string>
+                  </property>
+                  <property name="autoRaise">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="btnRemoveInput">
+                 <widget class="QToolButton" name="btnRemoveInput">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Remove</string>
+                  </property>
+                  <property name="popupMode">
+                   <enum>QToolButton::InstantPopup</enum>
+                  </property>
+                  <property name="autoRaise">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -505,23 +470,29 @@
               <widget class="QTreeView" name="inputList"/>
              </item>
              <item>
-              <widget class="QWidget" name="rotationWidget" native="true"/>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="grpInputOptions">
-               <property name="title">
-                <string>Input Options</string>
-               </property>
-              </widget>
+              <widget class="QWidget" name="inputWidget" native="true"/>
              </item>
             </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="omni::ui::Mapping" name="grpMapping">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Mapping</string>
+            </property>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="startScreen" native="true">
+        <widget class="QWidget" name="pages" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>4</horstretch>
@@ -565,9 +536,18 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnAddTuning">
+           <widget class="QToolButton" name="btnAddTuning">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Add</string>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -586,6 +566,30 @@
    <class>omni::ui::proj::TuningList</class>
    <extends>QWidget</extends>
    <header location="global">omni/ui/proj/TuningList.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::Mapping</class>
+   <extends>QGroupBox</extends>
+   <header location="global">omni/ui/Mapping.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::Blend</class>
+   <extends>QGroupBox</extends>
+   <header location="global">omni/ui/Blend.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::Warp</class>
+   <extends>QGroupBox</extends>
+   <header location="global">omni/ui/Warp.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::Canvas</class>
+   <extends>QGroupBox</extends>
+   <header location="global">omni/ui/Canvas.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -609,8 +613,162 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnNew</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>newProjection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>117</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnOpen</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>openProjection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>187</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPositioning</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>showPositioning()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>735</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnScreenSetup</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>showScreenSetup()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>530</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnEditAsNew</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>editAsNew()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>354</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSave</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>saveProjection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnWarp</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>showWarp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>827</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnBlend</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>showBlend()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>897</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnExport</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::MainWindow</receiver>
+   <slot>showExport()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>970</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>showAbout()</slot>
+  <slot>newProjection()</slot>
+  <slot>openProjection()</slot>
+  <slot>saveProjection()</slot>
+  <slot>editAsNew()</slot>
+  <slot>showScreenSetup()</slot>
+  <slot>showCanvas()</slot>
+  <slot>showPositioning()</slot>
+  <slot>showWarp()</slot>
+  <slot>showBlend()</slot>
+  <slot>showExport()</slot>
  </slots>
 </ui>

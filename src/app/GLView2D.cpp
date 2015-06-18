@@ -10,10 +10,8 @@ namespace omni
     GLView2D::GLView2D(QWidget* _parent) :
       GLView(_parent)
     {
-//      QSizePolicy qsp(QSizePolicy::Fixed,QSizePolicy::Expanding);
-//      this->setSizePolicy(qsp);
     }
-
+    
     GLView2D::~GLView2D()
     {
     }
@@ -44,6 +42,10 @@ namespace omni
     void GLView2D::keyPressEvent(QKeyEvent* event)
     {
     }
-
+      
+    bool GLView2D::initialize()
+    {
+      return false;
+    }
   }
 }

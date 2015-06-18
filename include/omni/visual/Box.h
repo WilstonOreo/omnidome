@@ -17,7 +17,7 @@ namespace omni
 
       void draw() const;
 
-      static void visual(omni::Box const& _box, bool _wireframe = false);
+      static void draw(omni::Box const& _box, bool _wireframe = false);
 
     private:
       omni::Box box_;

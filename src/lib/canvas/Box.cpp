@@ -17,7 +17,7 @@ namespace omni
 
     void Box::draw() const
     {
-      visual::Box::visual(this->bounds_);
+      visual::Box::draw(this->bounds_);
     }
 
     void Box::update() 

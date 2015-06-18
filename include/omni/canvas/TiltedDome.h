@@ -14,6 +14,7 @@ namespace omni
     public:
       OMNI_TYPEID("TiltedDome")
       TiltedDome();
+      ~TiltedDome();
 
       void draw() const;
       void drawAux() const;
@@ -22,8 +23,6 @@ namespace omni
       void update();
     };
   }
-
-  using dome::TiltedDome;
 }
 
 #endif /* OMNI_DOME_TILTEDDOME_H_ */

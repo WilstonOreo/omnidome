@@ -19,8 +19,6 @@ namespace omni
       GLView3D(QWidget* _parent = nullptr);
       ~GLView3D();
 
-      void initializeGL();
-
     public slots:
       void changeZoom(int _value);
 
@@ -32,7 +30,7 @@ namespace omni
       void mouseMoveEvent(QMouseEvent *event);
  
     private:
-      void initialize();
+      bool initialize();
 
       void updateLight();
 

@@ -18,7 +18,7 @@ namespace omni
     {
     }
 
-    void Box::visual(omni::Box const& _box, bool _wireframe)
+    void Box::draw(omni::Box const& _box, bool _wireframe)
     {
       float x = _box.min().x(), y = _box.min().y(), z = _box.min().z();
       float xs = _box.max().x(), ys = _box.max().y(), zs = _box.max().z();
@@ -88,7 +88,7 @@ namespace omni
 
     void Box::draw() const
     {
-      visual(box_,wireframe_);
+      draw(box_,wireframe_);
     }
   }
 }

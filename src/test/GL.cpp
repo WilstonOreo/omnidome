@@ -3,20 +3,27 @@
 
 #include <omni/Session.h>
 #include <omni/canvas/HalfDome.h>
+#include <omni/input/Image.h>
+#include <omni/input/TestImage.h>
+#include <omni/mapping/Equirectangular.h>
 
 #include <QApplication>
 
-using namespace std;
-using namespace omni;
-
 int main(int ac, char* av[])
 {
+  using namespace omni;
   /// Start gui
   QApplication _a(ac, av);
 
-  omni::canvas::Factory::reg<omni::canvas::HalfDome>();
+  canvas::Factory::reg<canvas::HalfDome>();
+  input::Factory::reg<input::Image>();
 
   Session _session;
+
+  _session.inputs().add<input::Image>("image",":/spherical.jpg");
+  _session.inputs().add<input::TestImage>("test_image");
+  
+  _session.inputs().setCurrent("test_image");
 
   Q_ASSERT(_session.setCanvas("HalfDome"));
 

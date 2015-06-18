@@ -41,7 +41,6 @@ namespace omni
       visual::Sphere sphere_;
       Box bounds_;
     private:
-      qreal radius_ = 5.0;
     };
   }
 }

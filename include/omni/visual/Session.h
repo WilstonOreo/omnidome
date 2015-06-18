@@ -11,17 +11,19 @@ namespace omni
     class Session 
     {
     public:
-      Session(omni::Session const&);
+      Session(omni::Session&);
 
       omni::Session const& session();
 
       void drawCanvas() const;
 
-      
+      void update();
+
+      void free();
 
     private:
 
-      omni::Session const& session_;
+      omni::Session& session_;
     };
 
   }

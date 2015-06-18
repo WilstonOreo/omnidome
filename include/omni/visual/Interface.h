@@ -8,8 +8,7 @@ namespace omni
   namespace visual
   {
     /// Basic visual interface
-    class Interface : 
-      protected QOpenGLFunctions
+    class Interface 
     {
     public:
       virtual ~Interface() {}

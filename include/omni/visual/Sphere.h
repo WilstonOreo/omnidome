@@ -9,7 +9,7 @@ namespace omni
 {
   namespace visual
   {
-    /// Draw Handler for visualing a centered sphere 
+    /// Draw Handler for visualizing a centered sphere 
     class Sphere : public Interface
     {
     public:
@@ -31,12 +31,17 @@ namespace omni
       int slices() const;
       void setSlices(int _slices);
 
+      float top() const;
+      void setTop(float);
+      
+      float bottom() const;
+      void setBottom(float);
+
       void draw() const;
 
       void update();
 
     private:
-      void generateCone(float _top, float _bottom, float _radius);
       void generateStack(
           float _top, float _bottom,
           float _topRadius, float _bottomRadius);
@@ -44,8 +49,8 @@ namespace omni
       int stacks_ = 64;
       int slices_ = 128;
 
-      float top_ = -1.0; 
-      float bottom_ = 1.0;
+      float top_ = 1.0; 
+      float bottom_ = 0.0;
 
       qreal radius_ = 1.0;
       QVector3D scale_;

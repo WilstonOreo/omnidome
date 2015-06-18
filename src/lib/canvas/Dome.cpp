@@ -15,12 +15,12 @@ namespace omni
 
     qreal Dome::radius() const
     {
-      return radius_;
+      return sphere_.radius();
     }
 
     void Dome::setRadius(qreal _radius)
     {
-      radius_=_radius;
+      sphere_.setRadius(_radius);
       update();
     }
 
@@ -49,12 +49,15 @@ namespace omni
 
     void Dome::toStream(QDataStream& _stream) const
     {
-      _stream << radius_;
+      _stream << radius();
     }
 
     void Dome::fromStream(QDataStream& _stream)
     {
-      _stream >> radius_; 
+      qreal _radius;
+      _stream >> _radius;
+      setRadius(_radius);
+      update();
     }
   }
 }

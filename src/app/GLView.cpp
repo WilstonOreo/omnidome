@@ -11,17 +11,20 @@ namespace omni
   namespace ui
   {
     GLView::GLView(QWidget* _parent) :
-      QOpenGLWidget(_parent),
-      session_(nullptr)
+      QOpenGLWidget(_parent)
     {
     }
-
+    
     GLView::~GLView()
     {
-    }
-
-    void GLView::free()
-    {
+      if (initialized() && QOpenGLContext::currentContext())
+      {
+        makeCurrent();
+        {
+          if (session_) session_->free();
+        }
+        doneCurrent();
+      }
     }
 
     float GLView::aspect() const
@@ -37,12 +40,17 @@ namespace omni
     void GLView::setSession(Session* _session)
     {
       session_.reset(new visual::Session(*_session));
-      update();
+      initialized_ = initialize();
     }
-      
+  
     QPointF GLView::mousePosition() const
     {
       return mousePosition_;
+    }
+      
+    bool GLView::initialized() const
+    {
+      return initialized_;
     }
 
     void GLView::initializeGL()
@@ -62,6 +70,8 @@ namespace omni
       glEnable(GL_NORMALIZE);
       // fix outlines z-fighting with quads
       glPolygonOffset(1, 1);
+
+      initialized_ = initialize();
     }
 
     void GLView::resizeGL(int _w, int _h)

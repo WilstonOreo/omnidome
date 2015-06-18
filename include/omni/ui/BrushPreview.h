@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <QWidget>
-#include <tbd/property.h>
 
 namespace omni
 {  
@@ -15,11 +14,14 @@ namespace omni
     public:
       BrushPreview(QWidget* _parent = nullptr);
       
-      TBD_PROPERTY_REF(float,feather)
-      TBD_PROPERTY_REF(bool,invert)
     protected:
       void paintEvent(QPaintEvent* event);
+      
+    private:
+      qreal feather_ = 1.0;
+      bool invert_ = false;
       std::unique_ptr<QImage> image_;
+
     };
   }
 }

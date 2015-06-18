@@ -4,7 +4,7 @@ namespace omni
 {
   namespace visual
   {
-    Session::Session(omni::Session const& _session) : 
+    Session::Session(omni::Session& _session) : 
       session_(_session)
     {
     }
@@ -20,7 +20,30 @@ namespace omni
 
       if (!_canvas) return; 
 
+
+      auto* _input = session_.inputs().current();
+      if (_input) _input->bind();
+
       _canvas->draw();
+
+      if (_input) _input->release();
+    }
+
+    void Session::update()
+    {
+      auto* _canvas = session_.canvas();
+      if (!_canvas) return;
+
+      _canvas->update();
+
+      auto* _input = session_.inputs().current();
+      if (_input) _input->update();
+    }
+
+    void Session::free()
+    {
+      auto* _input = session_.inputs().current();
+      if (_input) _input->free();
     }
   }
 }

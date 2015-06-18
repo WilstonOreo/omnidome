@@ -10,17 +10,16 @@ namespace omni
       GLView(_parent)
     {
     }
-
+    
     GLView3D::~GLView3D()
     {
     }
 
-    void GLView3D::initialize()
+    bool GLView3D::initialize()
     {
+      if (!session() || initialized()) return false;
+
       using namespace visual;
-
-      if (!session()) return;
-
       float _radius = 5.0;
 
       camera_ = Camera(
@@ -39,6 +38,8 @@ namespace omni
                              PolarVec(45.0,-45.0,_radius * 10.0)),0.2);
 
       updateLight();
+      this->session_->update();
+      return true;
     }
     
     void GLView3D::updateLight()
@@ -47,14 +48,6 @@ namespace omni
       for (auto& _light : lights_)
         _light.setup(++_index);
     }
-
-    void GLView3D::initializeGL()
-    {
-      GLView::initializeGL();
-    
-      initialize();
-    }
-
 
     void GLView3D::paintGL()
     {
@@ -67,17 +60,7 @@ namespace omni
 
       glLoadIdentity();
 
-      glColor3f(1.0,0.0,0.0);
-      glBegin(GL_QUADS);
-
-      glVertex3f(-1.0,-1.0,0.0);
-      glVertex3f( 1.0,-1.0,0.0);
-      glVertex3f( 1.0, 1.0,0.0);
-      glVertex3f(-1.0, 1.0,0.0);
-      
-      glEnd();
-
-
+      updateLight();
       this->session_->drawCanvas();
     }
 
@@ -108,7 +91,9 @@ namespace omni
           if( event->modifiers() & Qt::ControlModifier )
           {
             for (auto& _light : lights_)
+            {
               _light.track( event->pos().x() - mousePosition().x(), - event->pos().y() + mousePosition().y(), 0 );
+            }
             updateLight();
           }
           if( !(event->modifiers() & Qt::ControlModifier) )

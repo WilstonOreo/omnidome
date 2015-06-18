@@ -11,7 +11,7 @@ namespace omni
       ambient_("#111111"),
       diffuse_("#FFFFFF"),
       specular_("#FFFFFF"),
-      intensity_(1.0)
+      intensity_(_intensity)
     {
     }
 
@@ -31,9 +31,6 @@ namespace omni
 
     void Light::setup(GLuint _index)
     {
-      auto _eye = eye();
-      QVector4D _vec(_eye,0.0);
-
       // light and material
       glEnable(GL_LIGHTING);
       glEnable(GL_COLOR_MATERIAL);
@@ -87,9 +84,9 @@ namespace omni
     Light::param_type Light::colorParam(QColor _color) const
     {
       return param_type({ 
-          GLfloat(_color.red() * intensity_),
-          GLfloat(_color.green() * intensity_),
-          GLfloat(_color.blue() * intensity_),
+          GLfloat(_color.redF() * intensity_),
+          GLfloat(_color.greenF() * intensity_),
+          GLfloat(_color.blueF() * intensity_),
           GLfloat(1.0)
           });
     }

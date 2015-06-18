@@ -23,6 +23,8 @@ namespace omni
         layout_->setSpacing(3);
         layout_->setContentsMargins(0,0,0,0);
 
+        this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
         contents_ = new QWidget(this);
         contents_->setLayout(layout_);
         this->setWidget(contents_);

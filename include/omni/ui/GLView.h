@@ -21,12 +21,10 @@ namespace omni
       Q_OBJECT
     public:
       explicit GLView(QWidget* _parent = nullptr);
+      GLView(omni::Session*,QWidget* _parent = nullptr);
       ~GLView();
 
       typedef std::set<GLView*> view_set_type;
-
-      /// Frees textures
-      virtual void free();
 
       float aspect() const;
 
@@ -35,15 +33,21 @@ namespace omni
 
       QPointF mousePosition() const;
 
+      bool initialized() const;
+
     protected:
-      virtual void initializeGL();
+      void initializeGL();
       virtual void resizeGL(int _w, int _h);
       virtual void paintGL();
 
       virtual void mousePressEvent(QMouseEvent*);
       
       QPointF mousePosition_;
-      std::unique_ptr<visual::Session> session_; 
+      std::unique_ptr<visual::Session> session_;
+
+    private:
+      virtual bool initialize() = 0;
+      bool initialized_ = false;
     };
   }
 }
