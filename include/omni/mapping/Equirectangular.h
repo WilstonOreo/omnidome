@@ -37,6 +37,8 @@ namespace omni
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
 
+      friend bool operator==(Equirectangular const&,Equirectangular const&);
+
     private:
       /// Assures that strip bottom is always lower then strip top
       void validate();
@@ -45,5 +47,8 @@ namespace omni
     };
   }
 }
+
+OMNI_DECL_STREAM_OPERATORS(omni::mapping::Equirectangular)
+
 
 #endif /* OMNI_MAPPING_EQUIRECTANGULAR_H_ */

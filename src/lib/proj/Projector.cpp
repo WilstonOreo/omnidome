@@ -1,5 +1,7 @@
 #include <omni/proj/Projector.h>
 
+#include <omni/util.h>
+
 namespace omni
 {
   namespace proj
@@ -72,6 +74,13 @@ namespace omni
     QVector3D Projector::pos() const
     {
       return matrix().column(3).toVector3D();
+    }
+      
+    bool operator==(Projector const& _lhs,Projector const& _rhs)
+    {
+      return 
+        OMNI_TEST_MEMBER_EQUAL(matrix_) &&
+        OMNI_TEST_MEMBER_EQUAL(fov_);
     }
   }
 }

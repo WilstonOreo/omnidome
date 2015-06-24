@@ -13,7 +13,7 @@ namespace omni
   }
 
   /**@brief A blend mask consists of an edge mask and stroke mask with a brush
-   * @detail Edge mask and stroke mask are stored in diffrent buffers
+   * @detail Edge mask and stroke mask are stored in different buffers
    */
   class BlendMask
   {
@@ -71,6 +71,9 @@ namespace omni
     
     /// Returns mask buffer (read only)
     BlendBuffer const& maskBuffer() const;
+
+    /// Test for equality, buffers are ignored
+    friend bool operator==(BlendMask const&,BlendMask const&);
 
   private:
     /// Returns blend value for mask buffer at position x y

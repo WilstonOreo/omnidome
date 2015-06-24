@@ -59,6 +59,9 @@ namespace omni
     /// Return selection flag
     bool selected() const;
 
+    /// Test for equality
+    friend bool operator==(WarpPoint const&,WarpPoint const&);
+
   private:
     QPointF pos_, c1_, c2_;
     bool selected_ = false;

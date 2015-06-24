@@ -1,6 +1,7 @@
 #include <omni/mapping/Rotatable.h>
 
 #include <QOpenGLShaderProgram>
+#include <omni/util.h>
 
 namespace omni
 {
@@ -35,7 +36,7 @@ namespace omni
     {
       yaw_=_yaw;
     }
-    
+
     Angle Rotatable::pitch() const
     {
       return pitch_;
@@ -45,7 +46,7 @@ namespace omni
     {
       pitch_=_pitch;
     }
-    
+
     Angle Rotatable::roll() const
     {
       return roll_;
@@ -61,11 +62,21 @@ namespace omni
       Interface::fromStream(_stream);
       _stream >> yaw_ >> pitch_ >> roll_;
     }
- 
+
     void Rotatable::toStream(QDataStream& _stream) const
     {
       Interface::toStream(_stream);
       _stream << yaw_ << pitch_ << roll_;
     }
+
+    bool operator==(Rotatable const& _lhs, Rotatable const& _rhs)
+    {
+      return
+        OMNI_TEST_MEMBER_EQUAL(yaw_) &&
+        OMNI_TEST_MEMBER_EQUAL(pitch_) &&
+        OMNI_TEST_MEMBER_EQUAL(yaw_);
+    }
   }
 }
+
+

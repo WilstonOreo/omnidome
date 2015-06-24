@@ -1,5 +1,6 @@
 #include <omni/WarpPoint.h>
 
+#include <omni/util.h>
 #include <QDataStream>
 
 namespace omni
@@ -14,7 +15,8 @@ namespace omni
       QPointF const& _c2) :
     pos_(_pos),
     c1_(_c1),
-    c2_(_c2)
+    c2_(_c2),
+    selected_(false)
   {
   }
 
@@ -82,6 +84,15 @@ namespace omni
   {
     return selected_;
   }
+  
+  bool operator==(WarpPoint const& _lhs, WarpPoint const& _rhs)
+  {
+    return 
+      OMNI_TEST_MEMBER_EQUAL(pos_) &&
+      OMNI_TEST_MEMBER_EQUAL(c1_) &&
+      OMNI_TEST_MEMBER_EQUAL(c2_) &&
+      OMNI_TEST_MEMBER_EQUAL(selected_);
+  }
 }
 
 QDataStream& operator<<(QDataStream& _os, const omni::WarpPoint& _p)
@@ -95,6 +106,10 @@ QDataStream& operator>>(QDataStream& _is, omni::WarpPoint& _p)
   _is >> _p.pos();
   _is >> _p.c1();
   _is >> _p.c2();
+
+  bool _selected = false;
+  _is >> _selected;
+  _p.setSelected(_selected);
   return _is;
 }
 

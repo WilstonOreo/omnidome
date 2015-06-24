@@ -2,6 +2,7 @@
 
 #include <QDataStream>
 #include <QOpenGLShaderProgram>
+#include <omni/util.h>
 
 namespace omni
 {
@@ -66,6 +67,15 @@ namespace omni
     {
       Rotatable::toStream(_stream);
       _stream << stripBottom_ << stripTop_;
+    }
+      
+    bool operator==(Equirectangular const& _lhs, Equirectangular const& _rhs)
+    {
+      const Rotatable& _blhs(_lhs);
+      const Rotatable& _brhs(_rhs);
+      return (_blhs == _brhs) && 
+        OMNI_TEST_MEMBER_EQUAL(stripTop_) &&
+        OMNI_TEST_MEMBER_EQUAL(stripBottom_);
     }
   }
 }

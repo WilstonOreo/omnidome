@@ -14,6 +14,12 @@ namespace omni
     ScreenSetup ScreenSetup::current()
     {
       ScreenSetup _setup;
+      if (QApplication::startingUp()) 
+      {
+        _setup.screens_.emplace_back(standardScreen());
+        return _setup;
+      }
+
       QDesktopWidget* _desktop = QApplication::desktop();
       int _numberScreens = _desktop->screenCount();
 
@@ -53,6 +59,8 @@ namespace omni
       
     Screen ScreenSetup::standardScreen()
     {
+      // Return a default screen with 1024x768 resolution if there is no QApplication instance 
+      if (QCoreApplication::startingUp()) return Screen(QRect(0,0,1024,768));
       QDesktopWidget* _desktop = QApplication::desktop(); 
       QRect _screenRect = _desktop->screenGeometry(0);
       return Screen(_screenRect,0);

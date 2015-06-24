@@ -55,6 +55,9 @@ namespace omni
     /// Return const reference to current screen setup 
     ScreenSetup const& screenSetup() const;
 
+    /// Test for equality. ScreenSetup is ignored
+    friend bool operator==(Session const&,Session const&);
+
   private:
     /// List with all projector tunings
     proj::TuningList tunings_;

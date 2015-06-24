@@ -33,6 +33,8 @@ namespace omni
 
       QVector3D pos() const;
 
+      friend bool operator==(Projector const&,Projector const&);
+
     private:
       QMatrix4x4 matrix_;
       Screen const* screen_ = nullptr;

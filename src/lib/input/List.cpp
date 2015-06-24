@@ -1,5 +1,7 @@
 #include <omni/input/List.h>
 
+#include <omni/util.h>
+
 namespace omni
 {
   namespace input
@@ -9,7 +11,7 @@ namespace omni
       inputs_.clear();
     }
 
-    Input* List::add(Id const& _id, Id const& _typeId)
+    Input* List::add(Id const& _typeId, Id const& _id)
     {
       if (inputs_.count(_id) != 0) return nullptr;
 
@@ -41,34 +43,40 @@ namespace omni
 
     void List::fromStream(QDataStream& _stream) 
     {
+      using namespace omni::util;
       clear();
+
+      _stream >> currentId_;
 
       // Deserialize map of inputs
       int _size = 0;
       _stream >> _size;
       for (int i = 0; i < _size; ++i)
       {
-        Id _id, _typeId;
-        _stream >> _id >> _typeId;
-        if (!_id.valid() || !_typeId.valid()) continue;
-
-        auto* _input = add(_id,_typeId);
-        _input->fromStream(_stream);
+        Id _inputId;
+        _stream >> _inputId;
+        if (!_inputId.valid()) continue;
+ 
+        deserializePtr(_stream,[&](omni::Id const& _id) -> 
+            input::Interface*
+        {
+          return add(_id,_inputId);
+        });
       }
     }
 
     void List::toStream(QDataStream& _stream) const
     {
+      using namespace omni::util;
+      
+      _stream << currentId_;
+
       // serialize map of inputs
       _stream << int(inputs_.size());
       for (auto& _idInput : inputs_)
       {
-        auto& _id = _idInput.first;
-        auto& _input = _idInput.second;
-        auto _typeId = _input->getTypeId();
-
-        _stream << _id << _typeId;
-        _input->toStream(_stream);
+        _stream << _idInput.first;
+        serializePtr(_stream,_idInput.second.get());
       }
     }
       
@@ -99,6 +107,33 @@ namespace omni
         return;
       }
       currentId_ = _id; 
+    }
+      
+    bool List::empty() const
+    {
+      return inputs_.empty();
+    }
+
+    size_t List::size() const
+    {
+      return inputs_.size();
+    }
+ 
+    bool operator==(List const& _lhs, List const& _rhs)
+    {
+      if (_lhs.currentId_ != _rhs.currentId_) return false;
+      if (_lhs.inputs_.size() != _rhs.inputs_.size()) return false;
+
+      auto it = _lhs.inputs_.begin();
+      auto jt = _rhs.inputs_.begin();
+
+      for (; (it != _lhs.inputs_.end()) && (jt != _rhs.inputs_.end()); ++it,++jt)
+      {
+        if (it->first != jt->first) return false;
+
+        if (!it->second->equal(it->second.get())) return false; 
+      }
+      return true;
     }
   }
 }

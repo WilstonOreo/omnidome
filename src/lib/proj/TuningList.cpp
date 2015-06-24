@@ -1,5 +1,6 @@
 #include <omni/proj/TuningList.h>
 
+#include <omni/util.h>
 #include <omni/proj/Tuning.h>
 
 namespace omni
@@ -10,7 +11,7 @@ namespace omni
     {
       tunings_.emplace_back(new Tuning());
       auto* _tuning = tunings_.back().get();
-      if (_tuning && _makeCurrent)
+      if (_makeCurrent)
         setCurrentIndex(tunings_.size()-1);
 
       auto* _setup = _tuning->setupProjector("PeripheralSetup");
@@ -36,7 +37,7 @@ namespace omni
     {
       if (_currentIdx < 0)
       {
-        currentIdx_ = 0;
+        currentIdx_ = -1;
         return;
       }
       if (_currentIdx >= size())
@@ -72,6 +73,7 @@ namespace omni
     void TuningList::clear()
     {
       tunings_.clear();
+      currentIdx_ = -1;
     }
 
     Tuning* TuningList::operator[](int _index)
@@ -91,7 +93,7 @@ namespace omni
       int _size = 0;
       _stream >> _size;
 
-      int _currentIdx = 0;
+      int _currentIdx = -1;
       _stream >> _currentIdx;
 
       for (int i = 0; i < _size; ++i)
@@ -109,6 +111,25 @@ namespace omni
       _stream << currentIndex();
       for (auto& _tuning : tunings_)
         _stream << *_tuning;
+    }
+
+    bool operator==(TuningList const& _lhs, TuningList const& _rhs)
+    {
+      // Lambda for testing if pointers of two tunings are equal
+      auto _tuningsEqual = [](Tuning const* _a, Tuning const* _b) -> bool
+      {
+        return _a && _b // Test if pointer have same address 
+          ? 
+          // Derefence pointers and use equality operator to test equality
+          ((*_a) == (*_b)) 
+          : 
+          // Compare pointers and if test of pointer are not nullptrs 
+          (_a == _b);
+      };
+
+      return 
+        OMNI_TEST_MEMBER_EQUAL(currentIdx_) &&
+        util::testPtrVectorEqual(_lhs.tunings_,_rhs.tunings_,_tuningsEqual);
     }
 
     bool TuningList::validIndex(int _idx) const

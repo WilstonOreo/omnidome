@@ -1,5 +1,7 @@
 #include <omni/mapping/Cylindrical.h>
 
+#include <omni/util.h>
+
 namespace omni
 {
   namespace mapping
@@ -60,6 +62,15 @@ namespace omni
     {
       Rotatable::toStream(_stream);
       _stream << radius_ << height_;
+    }
+    
+    bool operator==(Cylindrical const& _lhs, Cylindrical const& _rhs)
+    {
+      const Rotatable& _blhs(_lhs);
+      const Rotatable& _brhs(_rhs);
+      return (_blhs == _brhs) && 
+        OMNI_TEST_MEMBER_EQUAL(radius_) &&
+        OMNI_TEST_MEMBER_EQUAL(height_);
     }
   }
 }

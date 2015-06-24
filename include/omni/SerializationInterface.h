@@ -16,7 +16,26 @@ namespace omni
     
     /// Deserialize from stream
     virtual void fromStream(QDataStream&) = 0;
+
+    /// Optional virtual member method for testing equality of two interfaces 
+    inline virtual bool equal(SerializationInterface const* _that) const
+    {
+      return this->getTypeId() == _that->getTypeId();
+    }
   };
 }
+
+#define OMNI_DECL_STREAM_OPERATORS(CLASS)\
+  inline QDataStream& operator>>(QDataStream& _stream, CLASS& _cls)\
+  {\
+    _cls.fromStream(_stream);\
+    return _stream;\
+  }\
+  inline QDataStream& operator<<(QDataStream& _stream, CLASS const& _cls)\
+  {\
+    _cls.toStream(_stream);\
+    return _stream;\
+  }
+  
 
 #endif /* OMNI_SERIALIZATIONINTERFACE_H_ */

@@ -58,6 +58,9 @@ namespace omni
     /// Return const reference to warp points
     std::vector<WarpPoint> const& points() const;
 
+    /// Test for equality (is equal if all warp points are equal
+    friend bool operator==(WarpGrid const&,WarpGrid const&);
+
   private:
     /// Return index to nearest point
     size_t getNearest(const QPointF& _p) const;

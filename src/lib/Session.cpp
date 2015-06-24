@@ -2,10 +2,74 @@
 
 #include <QDataStream>
 
+#include <omni/util.h>
+
+#include <omni/canvas/HalfDome.h>
+#include <omni/canvas/Radome.h>
+#include <omni/canvas/InflatableDome.h>
+#include <omni/canvas/TiltedDome.h>
+#include <omni/canvas/Box.h>
+#include <omni/canvas/Planar.h>
+#include <omni/input/Image.h>
+#include <omni/input/TestImage.h>
+
+#include <omni/mapping/Equirectangular.h>
+#include <omni/mapping/CubeMapSeparate.h>
+#include <omni/mapping/CubeMapSingle.h>
+#include <omni/mapping/Cylindrical.h>
+#include <omni/mapping/Fisheye.h>
+#include <omni/mapping/Planar.h>
+
+#include <omni/proj/FreeSetup.h>
+#include <omni/proj/PeripheralSetup.h>
+
+
 namespace omni
 {
   Session::Session()
-  {
+  { 
+    // Register all classes
+    
+    // Register canvases
+    {
+      using namespace canvas;
+      Factory::reg<HalfDome>();
+      Factory::reg<Radome>();
+      Factory::reg<InflatableDome>();
+      Factory::reg<TiltedDome>();
+      Factory::reg<HalfDome>();
+      Factory::reg<canvas::Box>();
+      Factory::reg<Planar>();
+    }
+    // END Register canvases
+
+    // Register inputs
+    {
+      using namespace input;
+      Factory::reg<Image>();
+      Factory::reg<TestImage>();
+    }
+    // END Register inputs
+
+    // Register mappings
+    {
+      using namespace mapping;
+      Factory::reg<Equirectangular>();
+      Factory::reg<CubeMapSingle>();
+      Factory::reg<CubeMapSeparate>();
+      Factory::reg<Cylindrical>();
+      Factory::reg<Fisheye>();
+      Factory::reg<Planar>();
+    }
+    // END Register mappings
+
+    // Register Projector Setups
+    {
+      using namespace proj;
+      SetupFactory::reg<FreeSetup>();
+      SetupFactory::reg<PeripheralSetup>();
+    }
+    // END Register Projector Setups
   }
 
   Session::~Session()
@@ -77,35 +141,49 @@ namespace omni
   {
     return screenSetup_;
   }
+
+  bool operator==(Session const& _lhs,Session const& _rhs)
+  {
+    return 
+      OMNI_TEST_MEMBER_EQUAL(tunings_) &&
+      OMNI_TEST_PTR_MEMBER_EQUAL(mapping_) &&
+      OMNI_TEST_MEMBER_EQUAL(inputs_) &&
+      OMNI_TEST_PTR_MEMBER_EQUAL(canvas_);
+  }
 }
 
 QDataStream& operator<<(QDataStream& _stream, omni::Session const& _session)
 {
+  using namespace omni::util;
+
   _stream << _session.tunings();
-  _stream << _session.mapping()->getTypeId();
-  _session.mapping()->toStream(_stream);
+  
+  serializePtr(_stream,_session.mapping());
+
   _stream << _session.inputs();
-  _stream << _session.canvas()->getTypeId();
-  _session.canvas()->toStream(_stream);
+  
+  serializePtr(_stream,_session.canvas()); 
   return _stream;
 }
 
 QDataStream& operator>>(QDataStream& _stream, omni::Session& _session)
 {
+  using namespace omni::util;
   _stream >> _session.tunings();
   
-  omni::Id _mappingId;
-  _stream >> _mappingId;
-  auto* _mapping = _session.setMapping(_mappingId);
-  if (_mapping)
-    _mapping->fromStream(_stream);
+  deserializePtr(_stream,[&](omni::Id const& _id) -> 
+      omni::mapping::Interface* 
+  {
+    return _session.setMapping(_id); 
+  });
 
   _stream >> _session.inputs();
 
-  omni::Id _id;
-  _stream >> _id;
-  auto* _canvas = _session.setCanvas(_id);
-  if (_canvas)
-    _canvas->fromStream(_stream);
+  deserializePtr(_stream,[&](omni::Id const& _id) -> 
+      omni::canvas::Interface*
+  {
+    return _session.setCanvas(_id);
+  });
+
   return _stream;
 }

@@ -9,9 +9,7 @@ namespace omni
 {
   namespace mapping
   {
-    class Cylindrical : 
-      public Rotatable,
-      Registrar<Cylindrical>
+    class Cylindrical : public Rotatable
     {
     public:
       OMNI_TYPEID("Cylindrical")
@@ -39,11 +37,15 @@ namespace omni
 
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
+      
+      friend bool operator==(Cylindrical const&,Cylindrical const&);
     
     private:
       qreal radius_ = 0.5, height_ = 1.0;
     };
   }
 }
+
+OMNI_DECL_STREAM_OPERATORS(omni::mapping::Cylindrical)
 
 #endif /* OMNI_MAPPING_CYLINDRICAL_H_ */

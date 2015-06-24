@@ -61,6 +61,9 @@ namespace omni
     float drawLine(const QPointF& _p0, const QPointF& _p1, 
         BlendBuffer& _buf, float _leftOver = 0.0);
 
+    /// Test for equality, buffer is ignored
+    friend bool operator==(BlendBrush const&,BlendBrush const&);
+
   private:
     /// Generate internal pixel buffer with given size and feather parameters
     void generate();

@@ -29,11 +29,15 @@ namespace omni
 
       virtual void fromStream(QDataStream&);
       virtual void toStream(QDataStream&) const;
+      
+      friend bool operator==(Rotatable const&,Rotatable const&);
 
     private:
       Angle yaw_, pitch_, roll_;
     };
   }
 }
+
+OMNI_DECL_STREAM_OPERATORS(omni::mapping::Rotatable)
 
 #endif /* OMNI_MAPPING_ROTATABLE_H_ */

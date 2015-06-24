@@ -18,7 +18,6 @@ namespace omni
 
       void draw() const;
       void drawAux() const;
-      MappingModeSet supportedMapModes() const; 
 
       void update();
     };

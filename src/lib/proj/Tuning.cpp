@@ -1,5 +1,6 @@
 #include <omni/proj/Tuning.h>
 
+#include <omni/util.h>
 #include <omni/proj/Setup.h>
 #include <omni/proj/ScreenSetup.h>
 #include <QColor>
@@ -101,19 +102,33 @@ namespace omni
     {
       return !projector_.screen() ? ScreenSetup::standardScreen().height() : projector_.screen()->width();
     }
+ 
+    bool operator==(Tuning const& _lhs, Tuning const& _rhs)
+    {
+      return 
+        OMNI_TEST_MEMBER_EQUAL(color_) &&
+        OMNI_TEST_MEMBER_EQUAL(projector_) &&
+        OMNI_TEST_PTR_MEMBER_EQUAL(projectorSetup_) &&
+        OMNI_TEST_MEMBER_EQUAL(warpGrid_) &&
+        OMNI_TEST_MEMBER_EQUAL(blendMask_);
+    }
   }
 }
 
 QDataStream& operator>>(QDataStream& _stream, omni::proj::Tuning& _tuning)
 {
+  using namespace omni::util;
+  
   QColor _color;
   _stream >> _color;
   _tuning.setColor(_color);
 
-  omni::Id _id;
-  _stream >> _id;
-  auto* _projSetup = _tuning.setupProjector(_id);
-  _projSetup->fromStream(_stream);
+  deserializePtr(_stream,[&](omni::Id const& _id) -> 
+      omni::proj::Setup*
+  {
+    return _tuning.setupProjector(_id);
+  });
+  
   _stream >> _tuning.warpGrid();
   _stream >> _tuning.blendMask();
 
@@ -122,9 +137,12 @@ QDataStream& operator>>(QDataStream& _stream, omni::proj::Tuning& _tuning)
 
 QDataStream& operator<<(QDataStream& _stream, omni::proj::Tuning const& _tuning)
 {
+  using namespace omni::util;
+  
   _stream << _tuning.color();
-  _stream << _tuning.projectorSetup()->getTypeId();
-  _tuning.projectorSetup()->toStream(_stream);
+  
+  serializePtr(_stream,_tuning.projectorSetup());
+  
   _stream << _tuning.warpGrid();
   _stream << _tuning.blendMask();
   return _stream;

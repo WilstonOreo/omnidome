@@ -1,5 +1,6 @@
 #include <omni/WarpGrid.h>
 
+#include <omni/util.h>
 #include <QDataStream>
 
 namespace omni
@@ -124,6 +125,14 @@ namespace omni
   std::vector<WarpPoint> const& WarpGrid::points() const
   {
     return points_;
+  }
+  
+  bool operator==(WarpGrid const& _lhs,WarpGrid const& _rhs)
+  {
+    return 
+      OMNI_TEST_MEMBER_EQUAL(horizontal_) &&
+      OMNI_TEST_MEMBER_EQUAL(vertical_) &&
+      OMNI_TEST_MEMBER_EQUAL(points_);
   }
 }
 

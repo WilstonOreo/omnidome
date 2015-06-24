@@ -34,6 +34,8 @@ namespace omni
 
     Angle const& operator+=(Angle const&);
     Angle const& operator-=(Angle const&);
+      
+    friend bool operator==(Angle const&,Angle const&);
 
   private:
     qreal angle_;

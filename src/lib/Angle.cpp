@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <QDataStream>
+#include <omni/util.h>
 
 namespace omni
 {
@@ -60,6 +61,11 @@ namespace omni
   {
     angle_ -= _angle.degrees();
     return *this;
+  }
+    
+  bool operator==(Angle const& _lhs, Angle const& _rhs)
+  {
+    return OMNI_TEST_MEMBER_EQUAL(angle_);
   }
 }
 

@@ -77,7 +77,7 @@ namespace omni
       center_=_center;
     }
       
-    Box Planar::bounds() const
+    omni::Box Planar::bounds() const
     {
       QVector2D _vec(width_,height_);
       _vec *= 0.5;

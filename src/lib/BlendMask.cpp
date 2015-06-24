@@ -1,5 +1,6 @@
 #include <omni/BlendMask.h>
 
+#include <omni/util.h>
 #include <omni/proj/Tuning.h>
 
 namespace omni
@@ -123,6 +124,14 @@ namespace omni
       edgeValue *= std::min((1.0f - _y) / bottomWidth(), 1.0f);
     }
     return 1.0f - pow(qBound(edgeValue,0.0f,1.0f),gamma_);
+  }
+    
+  bool operator==(BlendMask const& _lhs, BlendMask const& _rhs)
+  {
+    return 
+      OMNI_TEST_MEMBER_EQUAL(rect_) &&
+      OMNI_TEST_MEMBER_EQUAL(gamma_) &&
+      OMNI_TEST_MEMBER_EQUAL(brush_);
   }
 }
 

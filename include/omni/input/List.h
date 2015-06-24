@@ -15,9 +15,7 @@ namespace omni
      **/
     class List
     {
-    public:
-      void clear();
-      
+    public: 
       /**@brief Add new input with id and type id. Returns nullptr if mapping already exists 
         *@param _typeId Type id of input to determine which kind of input is created
         *@param _id Id for input
@@ -47,15 +45,43 @@ namespace omni
       /// Returns input with id (const version)
       Input const* operator[](Id const&) const;
 
+      /// Removes input with custom ID
       void remove(Id const& _id);
 
+      /// Delete all inputs
+      void clear();
+      
+      /// Deserialize from stream
       void fromStream(QDataStream&);
+
+      /// Serialize to stream
       void toStream(QDataStream&) const;
 
+      /**@brief Returns pointer to current input
+       * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
+       **/
       Input* current();
+      
+      /**@brief Returns pointer to current input (const version)
+       * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
+       **/
       Input const* current() const;
+      
+      /// Return ID of current input
       Id currentId() const; 
+
+      /// Set current input by ID
       void setCurrent(Id const& _id);
+
+      /// Test whether list is empty
+      bool empty() const;
+
+      /// Returns number of inputs
+      size_t size() const;
+
+
+      /// Test for equality
+      friend bool operator==(List const&,List const&);
 
     private:
       Id currentId_;

@@ -1,5 +1,6 @@
 #include <omni/BlendBrush.h>
 
+#include <omni/util.h>
 #include <QPointF>
 #include <QVector2D>
 #include <QDataStream>
@@ -161,6 +162,13 @@ namespace omni
       }
   }
 
+  bool operator==(BlendBrush const& _lhs, BlendBrush const& _rhs)
+  {
+    return 
+      OMNI_TEST_MEMBER_EQUAL(size_) &&
+      OMNI_TEST_MEMBER_EQUAL(feather_) &&
+      OMNI_TEST_MEMBER_EQUAL(invert_);
+  }
 }
 
 QDataStream& operator>>(QDataStream& _is, omni::BlendBrush& _brush)

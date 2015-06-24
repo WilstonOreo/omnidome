@@ -71,6 +71,8 @@ namespace omni
       /// Returns height of screen
       int height() const;
 
+      friend bool operator==(Tuning const&,Tuning const&);
+
     private:
       QColor color_;
       Projector projector_;

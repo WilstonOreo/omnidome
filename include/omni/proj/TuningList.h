@@ -21,25 +21,54 @@ namespace omni
       **/
       Tuning* add(bool _makeCurrent = true);
 
+      /// Remove tuning with current index
       void remove();
+
+      /// Remove tuning with custom index
       void remove(int);
 
+      /**@brief Returns pointer to current tuning
+       * @detail Returns nullptr if currentIdx_ == -1 or tuning list is empty
+       **/
       Tuning* current();
+      
+      /**@brief Returns pointer to current tuning (const version)
+       * @detail Returns nullptr if currentIdx_ == -1 or tuning list is empty
+       **/
       Tuning const* current() const;
+
+      /// Set new current index, must be between 0 and size()-1
       void setCurrentIndex(int);
+
+      /// Return current index
       int currentIndex() const;
 
+      /// Returns true if list is empty
       bool empty() const;
+
+      /// Returns number of tunings
       int size() const;
+
+      /// Deletes all tunings
       void clear();
 
+      /// Returns tuning at a specific index
       Tuning* operator[](int);
+      
+      /// Returns tuning at a specific index (const version)
       Tuning const* operator[](int) const;
 
+      /// Deserialize list from stream
       void fromStream(QDataStream&);
+
+      /// Serialize list to stream
       void toStream(QDataStream&) const;
+      
+      /// Test both lists for equality
+      friend bool operator==(TuningList const&,TuningList const&);
 
     private:
+      /// Test of index is between 0 and size()-1
       bool validIndex(int) const;
 
       int currentIdx_ = -1;

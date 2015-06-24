@@ -34,7 +34,7 @@ namespace omni
       EulerAngles& angles();
       EulerAngles const& angles() const;
        
-      Box bounds() const;
+      omni::Box bounds() const;
 
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
