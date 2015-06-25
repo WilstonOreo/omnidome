@@ -28,6 +28,18 @@ namespace omni
 
       if (_input) _input->release();
     }
+      
+    void Session::drawProjectors() const
+    {
+      for (auto& _proj : projectors_)
+        _proj.draw();
+    }
+      
+    void Session::drawProjectorHalos() const
+    {
+      for (auto& _proj : projectors_)
+        _proj.drawHalo();
+    }
 
     void Session::update()
     {
@@ -38,6 +50,15 @@ namespace omni
 
       auto* _input = session_.inputs().current();
       if (_input) _input->update();
+
+      // Update projector visualizers
+      projectors_.clear();
+      for (int i = 0; i < session_.tunings().size(); ++i)
+      {
+        projectors_.emplace_back(session_.tunings()[i]->projector());
+        projectors_.back().setColor(session_.tunings()[i]->color());
+        projectors_.back().update();
+      }
     }
 
     void Session::free()

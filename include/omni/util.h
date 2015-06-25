@@ -47,30 +47,34 @@ namespace omni
     bool testPtrEqual(T const* _a, T const* _b)
     {
       return _a && _b ? 
-        _a->equal(_b) : 
-        // Compare pointers 
+        // Call equal() member function from SerializationInterface
+        _a->equal(_b) : // Otherwise 
+        // Compare pointer adresses 
         (_a == _b);
     }
 
-    /// Test if two vectors with hold unique_ptr's of SerializationInterface's are equal
+    /// Test if two vectors which hold unique_ptr's of SerializationInterfaces are equal
     template<typename T, typename F>
     bool testPtrVectorEqual(T const& _a, T const& _b, F f)
     {
       typedef typename T::value_type value_type;
       // T = std::vector<std::unique_ptr<Interface>>
       // value_type = std::unique_ptr<Interface>>
-      
+     
+      // Size of vector must be equal
       if (_a.size() != _b.size()) return false;
 
       // Test each element for equality
       size_t _size = _a.size();
       for (size_t i = 0; i < _size; ++i)
       {
+        // Call functor with pointers as arguments
         if (!f(_a[i].get(),_b[i].get())) return false;
       }
       return true;
     }
 
+    /// Test if two vectors are equal  
     template<typename T>
     bool testPtrVectorEqual(T const& _a, T const& _b)
     {
@@ -80,6 +84,7 @@ namespace omni
     }
 
 
+    /// Serialize object behind SerializationInterface to stream
     template<typename STREAM, typename T>
     void serializePtr(STREAM& _stream, T const* _t)
     {
@@ -93,10 +98,11 @@ namespace omni
       _t->toStream(_stream);
     }
 
-    /**@brief Deserialize a pointer from stream
-       @detail Functor f must return a pointer which is constructed from an id.
-               If pointer is not null, it will be serialized from stream.
-               Otherwise, an serialization exception is thrown
+    /**@brief Deserialize a pointer from stream.
+       @detail Functor f must return a pointer which is constructed 
+               from a factory with an id.
+               If pointer is not null, it will be deserialized from stream.
+               Otherwise, a serialization exception is thrown.
      **/
     template<typename STREAM, typename F>
     void deserializePtr(STREAM& _stream, F f)

@@ -21,16 +21,18 @@ namespace omni
       qreal size() const;
       void setSize(qreal);
 
+      QColor color() const;
+      void setColor(QColor);
+
       void draw() const;
+      void drawHalo() const;
 
     private:
-      void drawHalo() const;
 
       proj::Projector const& proj_;
 
       float size_ = 2.0;
 
-      bool drawHalo_ = true;
       QColor color_;
       QVector3D eye_, topLeft_, topRight_, bottomLeft_, bottomRight_;
     };

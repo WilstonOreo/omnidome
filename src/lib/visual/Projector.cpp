@@ -22,6 +22,16 @@ namespace omni
       size_=_size;
       update();
     }
+      
+    QColor Projector::color() const
+    {
+      return color_; 
+    }
+
+    void Projector::setColor(QColor _color) 
+    {
+      color_=_color;
+    }
 
     void Projector::update()
     {
@@ -35,7 +45,7 @@ namespace omni
 
     void Projector::draw() const
     {
-      this->color(color_);
+      Interface::color(color_);
 
       with_current_context([this](QOpenGLFunctions& _)
       {
@@ -50,19 +60,14 @@ namespace omni
       this->visualLine(topLeft_,bottomLeft_);
       this->visualLine(topRight_,bottomRight_);
       this->visualLine(bottomLeft_,bottomRight_);
-
-      if (drawHalo_)
-      {
-        drawHalo();
-      }
     }
 
     void Projector::drawHalo() const
     {
       glBegin(GL_TRIANGLE_FAN);
-      this->color(color_,0.15);
+      Interface::color(color_,0.15);
       this->vertex3(eye_);
-      this->color(color_,0.0);
+      Interface::color(color_,0.0);
       this->vertex3(topLeft_);
       this->vertex3(topRight_);
       this->vertex3(bottomRight_);

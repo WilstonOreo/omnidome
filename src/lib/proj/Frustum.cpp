@@ -16,13 +16,13 @@ namespace omni
       qreal _width = _height * _proj.aspectRatio();
       eye_ = _proj.pos();
       auto& _m = _proj.matrix();
-      topLeft_ = _m * QVector3D(1.0,-_width,_height);
-      topRight_ = _m * QVector3D(1.0,_width,_height);
-      bottomLeft_ = _m * QVector3D(1.0,-_width,-_height);
-      bottomRight_ = _m * QVector3D(1.0,_width,-_height);
-      lookAt_ = _m * QVector3D(1.0,0.0,0.0);
-      up_      = _m * QVector3D(0.0,0.0,1.0);
-      side_    = _m * QVector3D(0.0,1.0,0.0);
+      topLeft_ = _m * QVector3D(1.0,-_width,_height) - eye_;
+      topRight_ = _m * QVector3D(1.0,_width,_height) - eye_;
+      bottomLeft_ = _m * QVector3D(1.0,-_width,-_height) - eye_;
+      bottomRight_ = _m * QVector3D(1.0,_width,-_height) - eye_;
+      lookAt_ = _m * QVector3D(1.0,0.0,0.0) - eye_;
+      up_      = _m * QVector3D(0.0,0.0,1.0) - eye_;
+      side_    = _m * QVector3D(0.0,1.0,0.0) - eye_;
     }
 
     QVector3D Frustum::screenDir(const QVector2D& _screenCoord) const

@@ -7,6 +7,7 @@ namespace omni
 {
   namespace mapping
   {
+    /// A cubical mapping with 6 separate input (one for each side)
     class CubeMapSeparate : 
       public Rotatable,
       Registrar<CubeMapSeparate>

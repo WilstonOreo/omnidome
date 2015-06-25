@@ -31,7 +31,8 @@ namespace omni
 
     qreal Projector::aspectRatio() const
     {
-      return qreal(screen_->width()) / screen_->height();
+      return 
+        screen_ ? qreal(screen_->width()) / screen_->height() : 1.333;
     }
 
     qreal Projector::throwRatio() const

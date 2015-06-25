@@ -68,6 +68,7 @@ namespace omni
       friend bool operator==(TuningList const&,TuningList const&);
 
     private:
+      
       /// Test of index is between 0 and size()-1
       bool validIndex(int) const;
 

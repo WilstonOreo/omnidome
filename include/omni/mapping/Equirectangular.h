@@ -34,9 +34,13 @@ namespace omni
       /// Bottom border position of strip. Value is clamped between 0.0 and 1.0 
       void setStripBottom(qreal _stripBottom);
 
+      /// Deserialize from stream
       void fromStream(QDataStream&);
+
+      /// Serialize to stream
       void toStream(QDataStream&) const;
 
+      /// Test for equality
       friend bool operator==(Equirectangular const&,Equirectangular const&);
 
     private:

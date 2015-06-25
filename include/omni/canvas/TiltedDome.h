@@ -7,6 +7,7 @@ namespace omni
 {
   namespace canvas
   {
+    /// A dome which is rotatable
     class TiltedDome :
       public Dome,
       Registrar<TiltedDome> 

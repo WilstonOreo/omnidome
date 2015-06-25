@@ -1,7 +1,9 @@
 #ifndef OMNI_VISUAL_SESSION_H_
 #define OMNI_VISUAL_SESSION_H_
 
+#include <list>
 #include <omni/Session.h>
+#include <omni/visual/Projector.h>
 
 namespace omni
 {
@@ -21,9 +23,14 @@ namespace omni
 
       void free();
 
+      void drawProjectors() const;
+      void drawProjectorHalos() const;
+
     private:
 
       omni::Session& session_;
+
+      std::list<visual::Projector> projectors_;
     };
 
   }

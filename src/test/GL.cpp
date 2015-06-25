@@ -26,24 +26,20 @@ int main(int ac, char* av[])
   
   _session.inputs().setCurrent("test_image");
 
-  for (int i = 0; i < 3; ++i)
+  for (int i = 0; i < 18; ++i)
   {
     auto* _tuning = _session.tunings().add();
   
     auto* _projSetup = static_cast<proj::PeripheralSetup*>(_tuning->setupProjector("PeripheralSetup"));
 
-    _projSetup->setYaw(i*120);
-    _projSetup->setDistanceCenter(4.0);
+    _projSetup->setYaw(i*20);
+    _projSetup->setPitch(i*5);
+    _projSetup->setDistanceCenter(9.0);
+    _projSetup->setup(const_cast<proj::Projector&>(_tuning->projector()));
   }
 
   Q_ASSERT(_session.setCanvas("HalfDome"));
 
-  for (int i = 0; i < 4; ++i)
-  {
-    auto* _tuning = _session.tunings().add();
-
-    Q_ASSERT(_tuning);
-  }
   
   ui::GLView3D _view;
 

@@ -38,11 +38,11 @@ namespace omni
       QVector2D _p = _shiftVec +  distanceCenter_ * QVector2D(_ct,_st);
 
       QVector3D _pos = QVector3D(_p.x(),_p.y(),towerHeight_);
+      _matrix.translate(_pos);
 
       _matrix.rotate(yaw().degrees() + deltaYaw_.degrees(),QVector3D(0.0,0.0,1.0));
       _matrix.rotate(-pitch().degrees(),QVector3D(0.0,1.0,0.0));
       _matrix.rotate(roll().degrees(),QVector3D(1.0,0.0,0.0));
-      _matrix.translate(_pos);
       _proj.setMatrix(_matrix);
     }
 

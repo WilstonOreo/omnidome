@@ -10,19 +10,26 @@ namespace omni
 {
   namespace input
   {
+    /// Generic input interface
     class Interface : public SerializationInterface
     {
     public:
+      /// Virtual destructor
       virtual ~Interface();
 
+      /// Bind input to OpenGL context (to be implement)
       virtual void bind() = 0;
+
+      /// Release input from OpenGL context
       inline virtual void release() {};
 
+      /// Return supported map modes (if set is empty, all map modes are supported)
       inline virtual MappingModeSet mapModes() const
       {
         return  MappingModeSet({  });
       }
 
+      /// Update interface
       inline virtual void update() {}
 
       /**@brief Free stored OpenGL Content (like textures, shaders etc)
@@ -30,6 +37,7 @@ namespace omni
        **/
       inline virtual void free() {}
 
+      /// Return texture id
       inline virtual GLuint textureId() const 
       {
         return 0;
@@ -37,6 +45,7 @@ namespace omni
 
     };
 
+    /// Input Factory typedef 
     typedef AbstractFactory<Interface> Factory;
 
     /// Template alias for our registrar (for auto registration)

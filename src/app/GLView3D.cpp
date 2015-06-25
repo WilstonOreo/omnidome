@@ -59,9 +59,14 @@ namespace omni
       glMatrixMode(GL_MODELVIEW);
 
       glLoadIdentity();
+      
+      this->session_->drawProjectors();
 
       updateLight();
+      
       this->session_->drawCanvas();
+
+      this->session_->drawProjectorHalos();
     }
 
 

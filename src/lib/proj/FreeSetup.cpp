@@ -26,8 +26,8 @@ namespace omni
 
     void FreeSetup::setup(Projector& _proj)
     {
-      AngleSetup::setup(_proj);
       _proj.matrix().translate(pos_);
+      AngleSetup::setup(_proj);
     }
 
     QVector3D FreeSetup::pos() const
