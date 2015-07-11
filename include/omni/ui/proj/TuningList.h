@@ -28,6 +28,7 @@ namespace omni
       public slots:
         void addTuning();
         void removeTuning();
+        void setCurrentTuning();
 
         /// Removes all mappings from session and all associated widgets
         void clear();
@@ -36,10 +37,11 @@ namespace omni
         void resizeEvent(QResizeEvent*);
 
       private:
+
         QWidget* contents_;
         QLayout* layout_;
 
-        Session* session_;
+        Session* session_ = nullptr;
         std::vector<QUniquePtr<Tuning>> widgets_;
       };
     }

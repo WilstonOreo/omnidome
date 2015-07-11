@@ -56,8 +56,14 @@ namespace omni
 
         if (!_tuning) return;
 
+
+
         widgets_.emplace_back(new ui::proj::Tuning(_tuning,this));
-        contents_->layout()->addWidget(widgets_.back().get()); 
+        
+        auto _widget = widgets_.back().get();
+        contents_->layout()->addWidget(_widget); 
+     
+        _widget->connect(_widget,SIGNAL(selected()),this,SLOT(setCurrentTuning()));
       }
 
       void TuningList::removeTuning()
@@ -76,6 +82,22 @@ namespace omni
         QScrollArea::resizeEvent(event);
         for (auto& _widget : widgets_) 
           _widget->reorderWidgets();
+      }
+        
+      void TuningList::setCurrentTuning()
+      {
+        if (!session_) return;
+
+        int _index = 0;
+        for (auto& _widget : widgets_) 
+        {
+          if (_widget->isSelected()) 
+          {
+            session_->tunings().setCurrentIndex(_index);
+            break;
+          }
+          ++_index;
+        }
       }
     }
   }

@@ -15,8 +15,8 @@ namespace omni
 
       ScreenSetup();
 
-      static ScreenSetup current();
-      static ScreenSetup debug();
+      static ScreenSetup& current();
+      static ScreenSetup& debug();
 
       static Screen standardScreen();
 

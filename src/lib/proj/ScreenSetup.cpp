@@ -11,9 +11,9 @@ namespace omni
     {
     }
 
-    ScreenSetup ScreenSetup::current()
+    ScreenSetup& ScreenSetup::current()
     {
-      ScreenSetup _setup;
+      static ScreenSetup _setup;
       if (QApplication::startingUp()) 
       {
         _setup.screens_.emplace_back(standardScreen());
@@ -41,9 +41,9 @@ namespace omni
       return _setup;
     }
 
-    ScreenSetup ScreenSetup::debug()
+    ScreenSetup& ScreenSetup::debug()
     {
-      ScreenSetup _debug;
+      static ScreenSetup _debug;
 
       QRect _rect(0,0,1920,1080);
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1023</width>
-    <height>676</height>
+    <height>749</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -383,7 +383,7 @@
           <item>
            <widget class="QGroupBox" name="grpInputs">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -415,6 +415,12 @@
              </property>
              <item>
               <widget class="QFrame" name="frameAddRemoveImage">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <layout class="QHBoxLayout" name="horizontalLayout_15">
                 <property name="leftMargin">
                  <number>2</number>
@@ -478,7 +484,7 @@
           <item>
            <widget class="omni::ui::Mapping" name="grpMapping">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>

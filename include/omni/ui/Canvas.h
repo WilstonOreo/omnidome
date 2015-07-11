@@ -24,7 +24,14 @@ namespace omni
 
       Session const* session() const;
       void setSession(Session* _session);
-      
+
+    signals:
+      void canvasTypeChanged();
+      void canvasChanged();
+
+    public slots:
+      void canvasTypeSelected(QString const&);
+
     private:
       Session* session_ = nullptr;
       std::unique_ptr<Ui::Canvas> ui_;

@@ -9,6 +9,8 @@
 
 namespace omni
 {
+  class Session;
+ 
   namespace ui
   {
     class ScreenSetup : public QWidget
@@ -18,6 +20,9 @@ namespace omni
       ScreenSetup(QWidget* = nullptr);
       ~ScreenSetup();
 
+        
+      Session const* session() const;
+      void setSession(Session*);
 
       float zoom() const;
 
@@ -29,6 +34,9 @@ namespace omni
       void paintEvent(QPaintEvent*);
 
       void mouseMoveEvent(QMouseEvent*);
+      
+      void dragEnterEvent(QDragEnterEvent*);
+      void dropEvent(QDropEvent*);
 
     private:
       friend class Item;
@@ -70,13 +78,19 @@ namespace omni
       /// Returns Transformed copy of the rect, based on transformed desktop rect
       QRectF transformedRect(QRectF const&) const;
 
+      /**@brief Returns pointer to a ScreenSetup::Item under given position
+        *@detail Returns null otherwise
+      **/
+      Item* getItemAtPos(QPoint const&);
+
       /// Returns the scaling factor which is needed so that desktopRect_ fits into window
       float scalingFactor() const;
 
       float zoom_ = 0.9;
       std::list<Item> screenItems_;
       QRectF desktopRect_;
-      omni::proj::ScreenSetup setup_;
+      omni::proj::ScreenSetup* setup_;
+      Session* session_ = nullptr;
     };
 
   }

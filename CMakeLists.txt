@@ -38,6 +38,7 @@ SET(omni_gui_cpp_files
     ./src/app/Mapping.cpp
     ./src/app/Blend.cpp
     ./src/app/BrushPreview.cpp
+    ./src/app/ParameterWidget.cpp
     ./src/app/Warp.cpp
 )
 
@@ -52,6 +53,7 @@ SET(omni_headers
         include/omni/ui/GLView.h 
         include/omni/ui/GLView2D.h 
         include/omni/ui/GLView3D.h 
+        include/omni/ui/ParameterWidget.h 
         include/omni/ui/Export.h 
         include/omni/ui/Canvas.h 
         include/omni/ui/Mapping.h 

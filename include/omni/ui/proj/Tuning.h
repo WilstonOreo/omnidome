@@ -1,13 +1,13 @@
 #ifndef OMNI_UI_PROJ_TUNING_H
 #define OMNI_UI_PROJ_TUNING_H
 
-#include <set>
-#include <QWidget>
-#include <slim/RangedFloat.h>
+#include <omni/ui/ParameterWidget.h>
 #include <omni/proj/Tuning.h>
 
 namespace omni
 {
+  class Session;
+
   namespace proj
   {
     class Tuning;
@@ -24,7 +24,7 @@ namespace omni
       /**@brief Widget for manipulating projector parameters
          @detail Also holds a preview OpenGL widget
        **/
-      class Tuning : public QWidget
+      class Tuning : public ParameterWidget
       {
         Q_OBJECT
       public:
@@ -55,9 +55,15 @@ namespace omni
         
         /// Return tuning (const version)
         omni::proj::Tuning const* tuning() const;
-        
+    
+        Session const* session() const;
+        void setSession(Session*);
+
         /// Set tuning
         void setTuning(omni::proj::Tuning*);
+
+        /// Return selected flag
+        bool isSelected() const;
 
       public slots:
         /// Sets ViewMode
@@ -69,11 +75,13 @@ namespace omni
         /**@brief Sets flag if Tuning Widget is active
            @detail A tuning widget should only be active when 
          **/
-        void setActive(bool);
+        void setSelected(bool);
         
         /// Reorders widgets according to given view mode
         void reorderWidgets();
 
+      signals:
+        void selected();
 
       protected:
         /// Handles resizing of sliders and preview 
@@ -84,11 +92,22 @@ namespace omni
 
         /// Paint border
         void paintEvent(QPaintEvent*);
-        
+
+        /// Mouse Move Event and handler for dragging to ScreenSetup widget
+        void mouseMoveEvent(QMouseEvent*);
+
         /// Handles focus events from child widgets
         bool eventFilter(QObject*,QEvent*);
 
+        /// Focus in event used by TuningList to set current tuning for session
+        void focusInEvent(QFocusEvent*);
+        
+        /// Focus out for deselecting tuning
+        void focusOutEvent(QFocusEvent*);
+
       private slots:
+
+        void startDrag();
 
         /// Set parameters from sliders to tuning
         void updateParameters();
@@ -100,27 +119,12 @@ namespace omni
         /// Setup (only called in constructor)
         void setup();
 
-        /// Adds a widget with a name, a value and min-max range
-        slim::RangedFloat* addWidget(QString const&,float,float,float);
-        
-        /// Adds an angle widget with a name, a value and min-max range
-        slim::RangedFloat* addAngleWidget(QString const&,float,float,float);
-        
-        /// Adds an offset widget with a name, a value and min-max range
-        slim::RangedFloat* addOffsetWidget(QString const&,float,float,float);
-
         /// The associated tuning 
         omni::proj::Tuning* tuning_ = nullptr;
       
-        /// Slider parameter widgets
-        std::vector<QWidget*> parameters_;
-        
         /// Slider parameter widgets, grouped
         std::map<QString,std::vector<QWidget*>> sliderGroups_;
-        
-        /// Slider widgets, sorted by their label
-        std::map<QString,QWidget*> parameterMap_;
-      
+         
         /// Title bar widget
         TitleBar* titleBar_ = nullptr;
         
@@ -130,8 +134,8 @@ namespace omni
         /// View mode
         ViewMode mode_ = ADJUSTMENT_SLIDERS;
 
-        /// Active flag (should be true when widget is currently selected) 
-        bool active_ = true;
+        /// isSelected_ flag (should be true when widget is currently selected) 
+        bool isSelected_ = true;
       };
     }
   }

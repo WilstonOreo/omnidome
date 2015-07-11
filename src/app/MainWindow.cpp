@@ -27,7 +27,10 @@ MainWindow::MainWindow( QMainWindow *parent) :
 {
   ui_->setupUi(this);
 
+  // Attach session pointer
   ui_->tuningList->setSession(session_.get());
+  ui_->grpCanvas->setSession(session_.get());
+  ui_->grpMapping->setSession(session_.get());
 
   connect(ui_->btnAddTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(addTuning()));
 

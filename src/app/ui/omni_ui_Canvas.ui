@@ -18,10 +18,38 @@
     <widget class="QComboBox" name="boxCanvasSelect"/>
    </item>
    <item>
-    <widget class="QWidget" name="widget" native="true"/>
+    <widget class="omni::ui::ParameterWidget" name="widget" native="true"/>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>omni::ui::ParameterWidget</class>
+   <extends>QWidget</extends>
+   <header>omni/ui/ParameterWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>boxCanvasSelect</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>omni::ui::Canvas</receiver>
+   <slot>canvasTypeSelected(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>22</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>canvasTypeSelected(QString)</slot>
+ </slots>
 </ui>

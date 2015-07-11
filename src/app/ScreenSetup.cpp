@@ -1,11 +1,16 @@
 #include <omni/ui/ScreenSetup.h>
 
+#include <omni/Session.h>
+#include <omni/ui/proj/Tuning.h>
 #include <omni/proj/ScreenSetup.h>
 
 #include <QGraphicsScene>
 #include <QMouseEvent>
 #include <QDebug>
 #include <QPainter>
+#include <QMimeData>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 
 namespace omni
 {
@@ -21,6 +26,17 @@ namespace omni
 
     ScreenSetup::~ScreenSetup()
     {
+    }
+      
+    Session const* ScreenSetup::session() const
+    {
+      return session_;
+    }
+      
+    void ScreenSetup::setSession(Session* _session)
+    {
+      session_ = _session;
+      updateScreens();
     }
       
     float ScreenSetup::zoom() const
@@ -39,9 +55,9 @@ namespace omni
       screenItems_.clear();
       desktopRect_ = QRect(0,0,0,0);
 
-      setup_ = proj::ScreenSetup::current();
+      setup_ = session_ ? &session_->screenSetup() : &omni::proj::ScreenSetup::current();
 
-      for (auto& _screen : setup_.screens())
+      for (auto& _screen : setup_->screens())
       {
         screenItems_.push_back(Item(*this,_screen));
 
@@ -90,21 +106,6 @@ namespace omni
           _rect.width() * _zoom,
           _rect.height() * _zoom);
     }
-
-      
-    void ScreenSetup::mouseMoveEvent(QMouseEvent* _event)
-    {
-      bool _update = false;
-      for (auto& _item : screenItems_)
-      {
-        bool _pointInRect = _item.rect().contains(_event->pos());
-        _update |= _pointInRect != _item.mouseOver();
-        _item.setMouseOver(_pointInRect);
-      }
-
-      if (_update)
-        update();
-    }
  
     void ScreenSetup::paintEvent(QPaintEvent*)
     {
@@ -118,6 +119,56 @@ namespace omni
       {
         _item.paint(_p);
       }
+    }
+      
+    void ScreenSetup::mouseMoveEvent(QMouseEvent* _event)
+    {
+      bool _update = false;
+      
+      for (auto& _item : screenItems_)
+      {
+        bool _pointInRect = _item.rect().contains(_event->pos());
+        _update |= _pointInRect != _item.mouseOver();
+        _item.setMouseOver(_pointInRect);
+      }
+
+      if (_update)
+        update();
+    }
+      
+    ScreenSetup::Item* ScreenSetup::getItemAtPos(QPoint const& _pos)
+    {
+      Item* _itemAtPos = nullptr;
+      for (auto& _item : screenItems_)
+      {
+        if (_item.rect().contains(_pos)) 
+        {
+          _itemAtPos = &_item;
+          break;
+        }
+      }
+
+      return _itemAtPos;
+    }
+ 
+    void ScreenSetup::dragEnterEvent(QDragEnterEvent* event)
+    {
+      auto* _screenItem = getItemAtPos(event->pos());
+  
+      if (event->mimeData()->hasFormat("text/plain") && _screenItem)
+        event->acceptProposedAction();
+    }
+      
+    void ScreenSetup::dropEvent(QDropEvent* event)
+    { 
+      auto* _screenItem = getItemAtPos(event->pos());
+
+      if (_screenItem) 
+      {
+        _screenItem->attachTuning(static_cast<proj::Tuning*>(event->source())->tuning()); 
+        event->acceptProposedAction();
+      }
+      
     }
 
 
@@ -161,7 +212,11 @@ namespace omni
     void ScreenSetup::Item::paint(QPainter& _p)
     {
       // Draw rectangle with tuning color
-      QColor _color = tuning_ ? tuning_->color() : "#cccccc";
+      QColor _color = tuning_ != nullptr ? tuning_->color() : "#cccccc";
+
+      qDebug() << tuning_ << " " << _color;
+      if (tuning_) 
+        qDebug() << tuning_->color();
 
       if (mouseOver_)
       {

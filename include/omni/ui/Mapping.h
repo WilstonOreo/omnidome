@@ -25,6 +25,13 @@ namespace omni
       Session const* session() const;
       void setSession(Session* _session);
       
+    signals:
+      void mappingTypeChanged();
+      void mappingChanged();
+
+    public slots:
+      void mappingTypeSelected(QString const&);
+
     private:
       Session* session_ = nullptr;
       std::unique_ptr<Ui::Mapping> ui_;

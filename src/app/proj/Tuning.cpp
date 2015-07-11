@@ -6,6 +6,8 @@
 #include <QResizeEvent>
 #include <QPaintEvent>
 #include <QPainter>
+#include <QDrag>
+#include <QMimeData>
 
 #include <omni/ui/proj/TitleBar.h>
 #include <omni/ui/GLView2D.h>
@@ -21,7 +23,7 @@ namespace omni
       Tuning::Tuning(
         omni::proj::Tuning* _tuning,
         QWidget* _parent) :
-        QWidget(_parent)
+        ParameterWidget(_parent)
       {
         setup();
         setTuning(_tuning);
@@ -29,7 +31,7 @@ namespace omni
 
       Tuning::Tuning(
         QWidget* _parent) :
-        QWidget(_parent)
+        ParameterWidget(_parent)
       {
         setup();
       }
@@ -53,40 +55,8 @@ namespace omni
         tuning_=_tuning;
         setViewMode(mode_);
       }
-
-      slim::RangedFloat* Tuning::addWidget(QString const& _str,float _value,float _min,float _max)
-      {
-        auto* _widget = new slim::RangedFloat(_str,_value,_min,_max,this);
-        _widget->setUseDefaultValue(true);
         
-        /// Install event filter to pipe through focus event to parent widget
-        _widget->installEventFilter(this);
 
-        /// Signal-slot connection for updating the data model 
-        connect(_widget,SIGNAL(valueChanged()),this,SLOT(updateParameters()));
-        parameterMap_[_str] = _widget;
-        parameters_.push_back(_widget);
-        return _widget;
-      }
-
-      slim::RangedFloat* Tuning::addAngleWidget(QString const& _str,float _value,float _min,float _max)
-      {
-        auto* _angle = addWidget(_str,_value,_min,_max);
-        _angle->setSuffix("°");
-        _angle->setSingleStep(5.0);
-        _angle->setPageStep(45.0);
-        return _angle;
-      }
-
-      slim::RangedFloat* Tuning::addOffsetWidget(QString const& _str,float _value, float _min, float _max)
-      {
-        auto* _offset = addWidget(_str,_value,_min,_max);
-        _offset->setSuffix("m");
-        _offset->setSingleStep(0.1);
-        _offset->setPageStep(0.1);
-        return _offset;
-      }
-        
       void Tuning::updateParameters()
       {
         if(!tuning_) return;
@@ -98,7 +68,7 @@ namespace omni
         /// Lambda for retrieving the value from a slider
         auto getParamAsFloat = [this](QString const& _str) -> double
         {
-          auto* _widget = static_cast<slim::RangedFloat*>(parameterMap_.at(_str));
+          auto* _widget = static_cast<slim::RangedFloat*>(this->parameterMap_.at(_str));
           return _widget->value();
         };
 
@@ -226,7 +196,7 @@ namespace omni
 
         /// Hide all widgets
         glView_->hide();
-        for (auto& _slider : parameters_)
+        for (auto& _slider : this->parameters_)
           _slider->hide();
 
 
@@ -295,18 +265,24 @@ namespace omni
         setViewMode(static_cast<ViewMode>((int(mode_) + 1) % int(NUM_MODES)));
       }
 
-      void Tuning::setActive(bool _active)
+      void Tuning::setSelected(bool _isSelected)
       {
-        active_=_active;
+        isSelected_ = _isSelected;
+        if (isSelected_) emit selected();
+
+        updateColor();
       }
 
       void Tuning::updateColor()
       {
         /// Widget color has the same color as tuning
-        for (auto& _widget : parameters_)
+        for (auto& _widget : this->parameters_)
         { 
-          QColor _color = active_ ? titleBar_->color().name() : "#cccccc";
+          QColor _color = isSelected_ ? titleBar_->color().name() : "#cccccc";
           _widget->setStyleSheet("selection-background-color  : "+_color.name());
+       
+          if (tuning_ && isSelected_)
+            tuning_->setColor(_color);
         }
         update();
       }
@@ -331,7 +307,7 @@ namespace omni
         auto _rect = rect().adjusted(2,2,-2,-2);
         
         /// Paint board if active or color is selected
-        if (titleBar_->isMoving() || active_)
+        if (titleBar_->isMoving() || isSelected_)
         {
           _p.setPen(QPen(titleBar_->color(),5));
         } else
@@ -344,26 +320,68 @@ namespace omni
 
         QWidget::paintEvent(event);
       }
+        
+      /// Mouse Move Event and handler for dragging to ScreenSetup widget
+      void Tuning::mouseMoveEvent(QMouseEvent* event)
+      {   
+        // Handle drag to ScreenWidget
+        if (event->button() == Qt::LeftButton) 
+        {
+          startDrag();
+        }
+      }
+ 
+      void Tuning::startDrag()
+      {
+        qDebug() << "startDrag ";
+          QDrag *drag = new QDrag(this);
+          QMimeData *mimeData = new QMimeData;
+
+          mimeData->setText("Hallo"); // TODO add tuning index here
+          drag->setMimeData(mimeData);
+
+          Qt::DropAction dropAction = drag->exec();
+      }
 
         
       bool Tuning::eventFilter(QObject* _obj, QEvent* _event)
       {
-        /// Handle focus events
+        if (_event->type() == QEvent::MouseMove && (_obj == glView_ || _obj == titleBar_)) 
+        {
+          startDrag();
+        }
 
+        /// Handle focus events
         if (_event->type() == QEvent::FocusIn)
         {
-          active_ = true;
-          updateColor();
+          setSelected(true);
           return true;
         } else
         if (_event->type() == QEvent::FocusOut)
         {
-          active_ = false;
-          updateColor();
+          setSelected(false);
           return false;
         }
           
         return false;
+      }
+        
+      bool Tuning::isSelected() const
+      {
+        return isSelected_;
+      }
+ 
+      /// Focus event used by TuningList to set current tuning for session
+      void Tuning::focusInEvent(QFocusEvent* event)
+      {
+        setSelected(true);
+        QWidget::focusInEvent(event);
+      }
+
+      void Tuning::focusOutEvent(QFocusEvent* event)
+      {
+        setSelected(false);
+        QWidget::focusOutEvent(event);
       }
     }
   }
