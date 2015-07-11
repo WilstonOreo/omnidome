@@ -1,5 +1,5 @@
-#ifndef OMNI_ANGLE_HPP_
-#define OMNI_ANGLE_HPP_
+#ifndef OMNI_ANGLE_H_
+#define OMNI_ANGLE_H_
 
 #include <QtGlobal>
 
@@ -48,4 +48,4 @@ QDataStream& operator>>(QDataStream& _is, omni::Angle& _angle);
 
 
 
-#endif /* OMNI_ANGLE_HPP_ */
+#endif /* OMNI_ANGLE_H_ */
