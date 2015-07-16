@@ -69,7 +69,7 @@ common_cxx_flags()
 
 ########### Plugins ############
 
-#include(src/plugins/gstreamer/gstreamer.cmake)
+include(src/plugins/gstreamer/gstreamer.cmake)
 
 ################################
 
@@ -82,9 +82,6 @@ SET(omni_src ${omni_gui_cpp_files} ${omni_headers_moc} ${omni_forms_headers} ${o
 set(omni_extra_libs GL )
 
 
-# Main Application
-ADD_EXECUTABLE(omnidome ./src/app/omnidome.cpp ${omni_src} )
-TARGET_LINK_LIBRARIES(omnidome omni slim-widgetz ${omni_extra_libs} ${Qt5_LIBRARIES} )
 
 ########### Tests #############
 
@@ -92,6 +89,8 @@ if(DEFINED OMNI_GSTREAMER)
   omni_gstreamer_test()
 endif()
 
+
+message(STATUS ${omni_extra_libs})
 ADD_EXECUTABLE(test_Projector
   ./src/test/Projector.cpp 
   ${omni_src} )
@@ -114,4 +113,8 @@ ADD_EXECUTABLE(test_Serialization
   ${omni_src} )
 TARGET_LINK_LIBRARIES(test_Serialization ${QT5_LIBRARIES} ${omni_extra_libs} slim-widgetz omni )
 
+
+# Main Application
+ADD_EXECUTABLE(omnidome ./src/app/omnidome.cpp ${omni_src} )
+TARGET_LINK_LIBRARIES(omnidome omni slim-widgetz ${omni_extra_libs} ${Qt5_LIBRARIES} )
 
