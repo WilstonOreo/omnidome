@@ -21,12 +21,13 @@ namespace omni
     namespace proj
     {
       Tuning::Tuning(
+        int _index,
         omni::proj::Tuning* _tuning,
         QWidget* _parent) :
         ParameterWidget(_parent)
       {
         setup();
-        setTuning(_tuning);
+        setTuning(_index,_tuning);
       }
 
       Tuning::Tuning(
@@ -38,6 +39,7 @@ namespace omni
 
       Tuning::~Tuning()
       {
+        tuning_ = nullptr;
       }
 
       omni::proj::Tuning* Tuning::tuning()
@@ -50,13 +52,20 @@ namespace omni
         return tuning_;
       }
 
-      void Tuning::setTuning(omni::proj::Tuning* _tuning)
+      void Tuning::setTuning(int _index, omni::proj::Tuning* _tuning)
       {
+        bool _newTuning = tuning_ != _tuning;
         tuning_=_tuning;
-        setViewMode(mode_);
+        index_=_index;
+        
+        if (_newTuning) setViewMode(mode_);
       }
         
-
+      int Tuning::index() const
+      {
+        return index_;
+      }
+  
       void Tuning::updateParameters()
       {
         if(!tuning_) return;
@@ -97,7 +106,11 @@ namespace omni
           _p->setDistanceCenter(getParamAsFloat("Distance"));
           _p->setTowerHeight(getParamAsFloat("Tower Height"));
           _p->setShift(getParamAsFloat("Shift"));
+
         }
+        tuning_->setupProjector();
+        
+        emit projectorSetupChanged();
       }
 
       void Tuning::setup()
@@ -108,6 +121,7 @@ namespace omni
         titleBar_ = new TitleBar("Projector",this);
         titleBar_->installEventFilter(this);
         connect(titleBar_,SIGNAL(valueChanged()),this,SLOT(updateColor()));
+        connect(titleBar_,SIGNAL(closeButtonClicked()),this,SLOT(prepareRemove()));
 
         /// Setup preview window
         glView_ = new GLView2D(this);
@@ -285,6 +299,11 @@ namespace omni
             tuning_->setColor(_color);
         }
         update();
+      }
+        
+      void Tuning::prepareRemove()
+      {
+        emit closed(index_);
       }
 
       void Tuning::resizeEvent(QResizeEvent* event)

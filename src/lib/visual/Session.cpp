@@ -20,13 +20,16 @@ namespace omni
 
       if (!_canvas) return; 
 
-
       auto* _input = session_.inputs().current();
-      if (_input) _input->bind();
+      auto* _mapping = session_.mapping();
+
+      qDebug() << _input << " " << _mapping;
+
+      if (_input) _input->bind(_mapping);
 
       _canvas->draw();
 
-      if (_input) _input->release();
+      if (_input) _input->release(_mapping);
     }
       
     void Session::drawProjectors() const

@@ -8,7 +8,9 @@ namespace omni
   namespace input
   {
     /// Still image input
-    class Image : public Interface
+    class Image : 
+      public Interface,
+      private Registrar<Image>
     {
     public:
       OMNI_TYPEID("Image")
@@ -22,11 +24,11 @@ namespace omni
       /// Destructor
       ~Image();
 
-      /// Bind image texture to OpenGL context
-      void bind();
+      /// Bind image texture to OpenGL context, together with mapping shader
+      void bind(mapping::Interface* _mapping);
 
       /// Release image texture from OpenGL context
-      void release();
+      void release(mapping::Interface* _mapping);
 
       /// Free image from OpenGL context
       void free();
@@ -45,6 +47,9 @@ namespace omni
 
       /// Return stored path
       QString path() const;
+   
+      /// InfoText is basename of stored path
+      QString infoText() const;
      
       /// Serialize image path to stream
       void toStream(QDataStream&) const;

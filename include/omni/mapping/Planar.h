@@ -15,12 +15,12 @@ namespace omni
     {
     public:
       OMNI_TYPEID("Planar")
-      Planar(input::List const&);
+      Planar();
 
       ~Planar();
 
       MappingMode mode() const;
-      void bindShader();
+      void bind();
 
       QVector2D& offset();
       QVector2D const& offset() const;

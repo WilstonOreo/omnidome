@@ -57,18 +57,16 @@ namespace omni
       camera_.setup(30.0,aspect());
     
       glMatrixMode(GL_MODELVIEW);
-
       glLoadIdentity();
-      
+
+      this->session_->update();
       this->session_->drawProjectors();
 
       updateLight();
       
       this->session_->drawCanvas();
-
       this->session_->drawProjectorHalos();
     }
-
 
     void GLView3D::wheelEvent(QWheelEvent* event)
     {

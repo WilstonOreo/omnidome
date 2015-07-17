@@ -28,12 +28,10 @@ namespace omni
         PLANAR, // Planar mapping 
         FISHEYE, // Fish eye mapping, e.g. for half domes
         EQUIRECTANGULAR, // Equirectangular mappings, e.g. for inflatable domes or fullsphere domes
-        CUBEMAP_SINGLE, // Cube mapping with a single input
-        CUBEMAP_SEPARATE, // Cube mapping with 6 inputs for each side of the cube
-        CYLINDRICAL // Cylindrical mapping with optional top and bottom image
+        CUBEMAP // Cube mapping 
       };
 
-      Interface(input::List const& _inputList);
+      Interface();
 
       virtual ~Interface();
 
@@ -41,37 +39,13 @@ namespace omni
       virtual Mode mode() const = 0;
 
       /// Initialized OpenGL shader
-      void initializeShader();
+      void initialize();
 
       /// Bind shaders and set uniforms
-      virtual void bindShader();
+      virtual void bind();
 
       /// Release shader
-      void releaseShader();
-      
-      /// Returns true if mapping has only one input ID
-      bool hasSingleInput() const;
-
-      /**@brief Returns IDs which can be accepted as input
-        *@detail Returns single id "input" by default.
-                 If set to be returned is empty, any can accepted
-       **/
-      inline virtual IdSet inputIDs() const
-      {
-        return IdSet({ "input" });
-      }
-
-      /**@brief Add input with certain id
-       * @detail Throws exception if mapping cannot be added
-       * @param _id Id of mapping 
-       * @param _input Id of input
-       **/
-      void addInput(Id const& _id, Id const&);
-
-      /**@brief Remove input with certain id
-        *@detail Nothing happens when id does not exist
-       **/
-      void removeInput(Id const& _id);
+      void release();
 
       virtual void fromStream(QDataStream&);
       virtual void toStream(QDataStream&) const;
@@ -88,16 +62,10 @@ namespace omni
 
       /// Abstract method for returning path to fragment shader (is :/shader/$TYPEID by default) 
       virtual QString fragmentShaderFile() const;
-
-      /// Map with inputs
-      std::map<Id,Id> inputs_;
-
-      /// Reference to input list to retrieve inputs from id directly
-      input::List const& inputList_;
     };
 
     /// Abstract mapping factory
-    typedef AbstractFactory<Interface,input::List const&> Factory;
+    typedef AbstractFactory<Interface> Factory;
 
     /// Template alias for our registrar (for auto registration)
     template<typename T>

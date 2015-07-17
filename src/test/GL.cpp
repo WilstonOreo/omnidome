@@ -21,10 +21,9 @@ int main(int ac, char* av[])
 
   Session _session;
 
-  _session.inputs().add<input::Image>("image",":/spherical.jpg");
-  _session.inputs().add<input::TestImage>("test_image");
-  
-  _session.inputs().setCurrent("test_image");
+  _session.inputs().add<input::Image>(":/spherical.jpg");
+
+  _session.inputs().setCurrentIndex(0);
 
   for (int i = 0; i < 18; ++i)
   {
@@ -45,7 +44,6 @@ int main(int ac, char* av[])
 
   _view.show();
   _view.setSession(&_session);
-
 
   return _a.exec();
 }

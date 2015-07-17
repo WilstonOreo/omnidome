@@ -1,6 +1,5 @@
 #include <omni/ui/proj/TuningList.h>
 
-#include <omni/ui/proj/Tuning.h>
 #include <omni/Session.h>
 
 #include <QVBoxLayout>
@@ -56,19 +55,41 @@ namespace omni
 
         if (!_tuning) return;
 
-
-
-        widgets_.emplace_back(new ui::proj::Tuning(_tuning,this));
+        widgets_.emplace_back(new ui::proj::Tuning(session_->tunings().size()-1,_tuning,this));
         
         auto _widget = widgets_.back().get();
+        _widget->setViewMode(viewMode_);
         contents_->layout()->addWidget(_widget); 
-     
+ 
         _widget->connect(_widget,SIGNAL(selected()),this,SLOT(setCurrentTuning()));
+        _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
+        _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(projectorSetupChanged()));
       }
 
-      void TuningList::removeTuning()
+      void TuningList::removeTuning(int _index)
       {
-        session_->tunings().remove();
+        if (_index == -1) return;
+
+        qDebug() << _index << " " << session_->tunings().size();
+        auto* _widget = widgets_[_index].get();
+        contents_->layout()->removeWidget(_widget); 
+        widgets_.erase(widgets_.begin() + _index);
+        session_->tunings().remove(_index);
+
+        // Reorder position indices
+        for (int i = 0; i < session_->tunings().size(); ++i)
+        {
+          widgets_[i]->setTuning(i,session_->tunings()[i]);
+        }
+      }
+        
+      /// Set view mode for all tuning widgets
+      void TuningList::setViewMode(Tuning::ViewMode _mode)
+      {
+        viewMode_ = _mode;
+        for (auto& _widget : widgets_) { 
+          _widget->setViewMode(_mode);
+        }
       }
 
       void TuningList::clear()

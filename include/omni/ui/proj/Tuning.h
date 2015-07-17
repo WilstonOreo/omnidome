@@ -42,7 +42,7 @@ namespace omni
         Tuning(QWidget* _parent = nullptr);
         
         /// Constructs with a given tuning (called by default from TuningList)
-        Tuning(omni::proj::Tuning* _tuning, QWidget* _parent = nullptr);
+        Tuning(int _index, omni::proj::Tuning* _tuning, QWidget* _parent = nullptr);
         
         /// Destructor
         ~Tuning();
@@ -56,11 +56,14 @@ namespace omni
         /// Return tuning (const version)
         omni::proj::Tuning const* tuning() const;
     
+        /// Return index of tuning
+        int index() const;
+
         Session const* session() const;
         void setSession(Session*);
 
         /// Set tuning
-        void setTuning(omni::proj::Tuning*);
+        void setTuning(int _index, omni::proj::Tuning*);
 
         /// Return selected flag
         bool isSelected() const;
@@ -82,6 +85,8 @@ namespace omni
 
       signals:
         void selected();
+        void closed(int);
+        void projectorSetupChanged();
 
       protected:
         /// Handles resizing of sliders and preview 
@@ -114,6 +119,9 @@ namespace omni
         
         /// Update slider and border color
         void updateColor();
+        
+        /// Clean up. 
+        void prepareRemove();
 
       private:
         /// Setup (only called in constructor)
@@ -121,7 +129,10 @@ namespace omni
 
         /// The associated tuning 
         omni::proj::Tuning* tuning_ = nullptr;
-      
+     
+        /// The index of the tuning
+        int index_ = -1;
+
         /// Slider parameter widgets, grouped
         std::map<QString,std::vector<QWidget*>> sliderGroups_;
          

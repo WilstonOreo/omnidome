@@ -43,6 +43,13 @@ namespace omni
       return projectorSetup_.get();
     }
 
+    void Tuning::setupProjector() 
+    {
+      if (!projectorSetup_) return;
+
+      projectorSetup_->setup(projector_);
+    }
+
     ProjectorSetup* Tuning::projectorSetup()
     {
       return projectorSetup_.get();

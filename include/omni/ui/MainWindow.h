@@ -74,8 +74,10 @@ namespace omni
     private:
       void buttonState();
       void setMode(Mode _mode);
+      void newSession();
       void toolButtonsVisible(bool);
-      
+
+ 
       QMessageBox::StandardButton saveChangesPrompt();
 
       QString filename_;

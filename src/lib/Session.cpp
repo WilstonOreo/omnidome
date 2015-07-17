@@ -14,9 +14,7 @@
 #include <omni/input/TestImage.h>
 
 #include <omni/mapping/Equirectangular.h>
-#include <omni/mapping/CubeMapSeparate.h>
-#include <omni/mapping/CubeMapSingle.h>
-#include <omni/mapping/Cylindrical.h>
+#include <omni/mapping/CubeMap.h>
 #include <omni/mapping/Fisheye.h>
 #include <omni/mapping/Planar.h>
 
@@ -55,9 +53,7 @@ namespace omni
     {
       using namespace mapping;
       Factory::reg<Equirectangular>();
-      Factory::reg<CubeMapSingle>();
-      Factory::reg<CubeMapSeparate>();
-      Factory::reg<Cylindrical>();
+      Factory::reg<CubeMap>();
       Factory::reg<Fisheye>();
       Factory::reg<Planar>();
     }
@@ -85,10 +81,10 @@ namespace omni
   {
     return tunings_;
   }
-    
+ 
   Mapping* Session::setMapping(Id const& _id)
   {
-    mapping_.reset(MappingFactory::create(_id,inputs_));
+    mapping_.reset(MappingFactory::create(_id));
     return mapping();
   }
 

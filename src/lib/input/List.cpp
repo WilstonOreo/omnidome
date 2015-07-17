@@ -1,44 +1,52 @@
 #include <omni/input/List.h>
 
 #include <omni/util.h>
+#include <omni/input/TestImage.h>
 
 namespace omni
 {
   namespace input
   {
+    List::List()
+    {
+      clear();
+    }
+
     void List::clear()
     {
-      inputs_.clear();
+      container_type::clear();
+
+      // At test image by default
+      add<TestImage>();
+      setCurrentIndex(0);
     }
 
-    Input* List::add(Id const& _typeId, Id const& _id)
+    Input* List::add(Id const& _typeId)
     {
-      if (inputs_.count(_id) != 0) return nullptr;
+      std::unique_ptr<Input> _input(Factory::create(_typeId));
+      if (!_input) return nullptr;
 
-      auto& _input = inputs_[_id];
-      _input.reset(Factory::create(_typeId));
-
-      return _input.get();
+      container_type::push_back(std::move(_input));
+      return container_type::back().get();
     }
 
-    Input* List::operator[](Id const& _id)
+    Input* List::operator[](int _index)
     {
-      if (inputs_.count(_id) == 0) return nullptr;
-      return inputs_.at(_id).get();;
+      return validIndex(_index) ? container_type::operator[](_index).get() : nullptr;
     }
 
-    Input const* List::operator[](Id const& _id) const
+    Input const* List::operator[](int _index) const
     {
-      if (inputs_.count(_id) == 0) return nullptr;
-      return inputs_.at(_id).get();;
+      return validIndex(_index) ? 
+        container_type::operator[](_index).get() : 
+        nullptr;
     }
 
-    void List::remove(Id const& _id)
+    void List::remove(int _index)
     {
-      if (inputs_.count(_id) == 0) return;
+      if (!validIndex(_index) || _index == 0) return;
 
-      inputs_.erase(_id);
-      if (_id == currentId_) setCurrent("");
+      container_type::erase(this->begin() + _index);
     }
 
     void List::fromStream(QDataStream& _stream) 
@@ -46,94 +54,77 @@ namespace omni
       using namespace omni::util;
       clear();
 
-      _stream >> currentId_;
+      _stream >> currentIndex_;
 
       // Deserialize map of inputs
       int _size = 0;
       _stream >> _size;
       for (int i = 0; i < _size; ++i)
       {
-        Id _inputId;
-        _stream >> _inputId;
-        if (!_inputId.valid()) continue;
- 
         deserializePtr(_stream,[&](omni::Id const& _id) -> 
             input::Interface*
         {
-          return add(_id,_inputId);
+          return add(_id);
         });
       }
+      setCurrentIndex(currentIndex_);
     }
 
     void List::toStream(QDataStream& _stream) const
     {
       using namespace omni::util;
       
-      _stream << currentId_;
+      _stream << currentIndex_;
 
       // serialize map of inputs
-      _stream << int(inputs_.size());
-      for (auto& _idInput : inputs_)
+      _stream << int(size());
+      for (auto& _input : (*this))
       {
-        _stream << _idInput.first;
-        serializePtr(_stream,_idInput.second.get());
+        serializePtr(_stream,_input.get());
       }
     }
       
     Input const* List::current() const
     {
-      if (!inputs_.count(currentId_)) return nullptr;
-
-      return inputs_.at(currentId_).get();
+      return container_type::at(currentIndex_).get();
     }
     
     Input* List::current()
     {
-      if (!inputs_.count(currentId_)) return nullptr;
+      return container_type::at(currentIndex_).get();
+    }
+
+    int List::currentIndex() const
+    {
+      return currentIndex_;
+    }
+
+    void List::setCurrentIndex(int _index)
+    {
+      if (!validIndex(_index)) return;
       
-      return inputs_.at(currentId_).get();
-    }
-
-    Id List::currentId() const
-    {
-      return currentId_;
-    }
-
-    void List::setCurrent(Id const& _id)
-    {
-      if (!inputs_.count(_id)) 
-      {
-        currentId_ = "";
-        return;
-      }
-      currentId_ = _id; 
+      currentIndex_ = _index;
     }
       
-    bool List::empty() const
-    {
-      return inputs_.empty();
-    }
-
-    size_t List::size() const
-    {
-      return inputs_.size();
-    }
  
     bool operator==(List const& _lhs, List const& _rhs)
     {
-      if (_lhs.currentId_ != _rhs.currentId_) return false;
-      if (_lhs.inputs_.size() != _rhs.inputs_.size()) return false;
+      if (_lhs.currentIndex_ != _rhs.currentIndex_) return false;
+      if (_lhs.size() != _rhs.size()) return false;
 
-      auto it = _lhs.inputs_.begin();
-      auto jt = _rhs.inputs_.begin();
+      auto it = _lhs.begin();
+      auto jt = _rhs.begin();
 
-      for (; (it != _lhs.inputs_.end()) && (jt != _rhs.inputs_.end()); ++it,++jt)
+      for (; (it != _lhs.end()) && (jt != _rhs.end()); ++it,++jt)
       {
-        if (it->first != jt->first) return false;
-
-        if (!it->second->equal(it->second.get())) return false; 
+        if (!(*it)->equal(jt->get())) return false;
       }
       return true;
+    }
+ 
+    bool List::validIndex(int _index) const
+    {
+      return (_index >= 0) && (_index < this->size()); 
     }
   }
 }
@@ -149,3 +140,4 @@ QDataStream& operator>>(QDataStream& _stream, omni::input::List& _list)
   _list.fromStream(_stream);
   return _stream;
 }
+

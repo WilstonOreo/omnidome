@@ -8,7 +8,9 @@ namespace omni
 {
   namespace input
   {
-    class TestImage : public Interface
+    class TestImage : 
+      public Interface,
+      private Registrar<TestImage>
     {
     public:
       OMNI_TYPEID("TestImage")
@@ -16,8 +18,8 @@ namespace omni
       TestImage();
       ~TestImage();
 
-      void bind();
-      void release();
+      void bind(mapping::Interface* _mapping);
+      void release(mapping::Interface* _mapping);
       void free();
       void update();
       

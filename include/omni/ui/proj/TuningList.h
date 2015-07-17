@@ -4,6 +4,7 @@
 #include <memory>
 #include <QScrollArea>
 #include <omni/util.h>
+#include <omni/ui/proj/Tuning.h>
 
 namespace omni
 {
@@ -27,14 +28,20 @@ namespace omni
 
       public slots:
         void addTuning();
-        void removeTuning();
+        void removeTuning(int _index);
         void setCurrentTuning();
 
-        /// Removes all mappings from session and all associated widgets
+        /// Set view mode for all tuning widgets
+        void setViewMode(Tuning::ViewMode);
+
+        /// Remove all mappings from session and all associated widgets
         void clear();
 
       protected:
         void resizeEvent(QResizeEvent*);
+
+      signals:
+        void projectorSetupChanged();
 
       private:
 
@@ -43,6 +50,7 @@ namespace omni
 
         Session* session_ = nullptr;
         std::vector<QUniquePtr<Tuning>> widgets_;
+        Tuning::ViewMode viewMode_ = Tuning::FOV_SLIDERS;
       };
     }
   }

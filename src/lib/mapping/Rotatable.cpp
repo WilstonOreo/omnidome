@@ -7,8 +7,7 @@ namespace omni
 {
   namespace mapping
   {
-    Rotatable::Rotatable(input::List const& _inputList) :
-      Interface(_inputList),
+    Rotatable::Rotatable() :
       yaw_(0.0),
       pitch_(0.0),
       roll_(0.0)
@@ -19,9 +18,9 @@ namespace omni
     {
     }
 
-    void Rotatable::bindShader()
+    void Rotatable::bind()
     {
-      Interface::bindShader();
+      Interface::bind();
       this->shader_->setUniformValue("yaw_angle",GLfloat(yaw().degrees()));
       this->shader_->setUniformValue("pitch_angle",GLfloat(pitch().degrees()));
       this->shader_->setUniformValue("roll_angle",GLfloat(roll().degrees()));

@@ -8,8 +8,7 @@ namespace omni
 {
   namespace mapping
   {
-    Equirectangular::Equirectangular(input::List const& _inputList) :
-      Rotatable(_inputList)
+    Equirectangular::Equirectangular()
     {
     }
 
@@ -22,9 +21,9 @@ namespace omni
       return EQUIRECTANGULAR;
     }
 
-    void Equirectangular::bindShader()     
+    void Equirectangular::bind()     
     {
-      Rotatable::bindShader();
+      Rotatable::bind();
       this->shader_->setUniformValue("strip_top",GLfloat(stripTop_));
       this->shader_->setUniformValue("strip_bottom",GLfloat(stripBottom_));
     }

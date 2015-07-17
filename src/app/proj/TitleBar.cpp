@@ -107,11 +107,13 @@ namespace omni
         layout()->removeWidget(this->label_);
 
         ///////////////////// Setup buttons
-        auto setupToolButton = [](QUniquePtr<QToolButton>& _btn)
+        auto setupToolButton = [this](QUniquePtr<QToolButton>& _btn)
         {
           _btn.reset(new QToolButton());
           _btn->setAutoRaise(true);
           _btn->setStyleSheet("background : transparent");
+          _btn->installEventFilter(this->parent());
+          _btn->installEventFilter(this);
         };
  
         setupToolButton(menuButton_);
@@ -133,10 +135,11 @@ namespace omni
         _free->setCheckable(true);
 
         setupToolButton(maximizeButton_);
-
         connect(maximizeButton_.get(),SIGNAL(clicked()),tuningWidget(),SLOT(setNextViewMode()));
 
         setupToolButton(closeButton_);
+        connect(closeButton_.get(),SIGNAL(clicked()),this,SIGNAL(closeButtonClicked()));
+
         ///////////////////// END Setup buttons
         
         /// Add widget in this left-to-right order to layout

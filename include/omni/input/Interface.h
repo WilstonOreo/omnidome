@@ -18,10 +18,13 @@ namespace omni
       virtual ~Interface();
 
       /// Bind input to OpenGL context (to be implement)
-      virtual void bind() = 0;
+      inline virtual void bind(mapping::Interface* _mapping = nullptr) = 0;
 
       /// Release input from OpenGL context
-      inline virtual void release() {};
+      inline virtual void release(mapping::Interface* _mapping = nullptr) 
+      {
+        if (_mapping) _mapping->release();
+      };
 
       /// Return supported map modes (if set is empty, all map modes are supported)
       inline virtual MappingModeSet mapModes() const
@@ -37,12 +40,8 @@ namespace omni
        **/
       inline virtual void free() {}
 
-      /// Return texture id
-      inline virtual GLuint textureId() const 
-      {
-        return 0;
-      }
-
+      /// Returns an optional string with some basic information about the object
+      inline virtual QString infoText() const { return QString(); };
     };
 
     /// Input Factory typedef 

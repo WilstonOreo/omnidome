@@ -12,11 +12,11 @@ namespace omni
     class Rotatable : public Interface
     {
     public:
-      Rotatable(input::List const&);
+      Rotatable();
       virtual ~Rotatable();
 
       /// Bind shader and set uniforms yaw_angle, pitch_angle and roll_angle
-      virtual void bindShader();
+      virtual void bind();
 
       /// Return yaw angle (rotates around Z axis)
       Angle yaw() const;

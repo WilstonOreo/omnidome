@@ -35,6 +35,9 @@ namespace omni
        **/
       ProjectorSetup* setupProjector(Id const& _setupId);
 
+      /// Update projector matrix by current setup
+      void setupProjector();
+
       /// Returns projector setup
       ProjectorSetup* projectorSetup();
 

@@ -15,12 +15,12 @@ namespace omni
     public:
       OMNI_TYPEID("Equirectangular")
 
-      Equirectangular(input::List const&); 
+      Equirectangular(); 
       ~Equirectangular();
       
       MappingMode mode() const;
 
-      void bindShader();
+      void bind();
 
       /// Value between 0.0 and 1.0 for top strip position
       qreal stripTop() const;

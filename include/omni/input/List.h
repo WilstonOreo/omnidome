@@ -10,17 +10,25 @@ namespace omni
 {
   namespace input
   {
-    /**@brief Mapping List contains a map of mappings (Id -> Mapping)
-      *@detail Mapping List is serializable via QDataStream
+    /**@brief Input List contains a list of inputs. A TestImage input is always present at index 0
+      *@detail Input List is serializable via QDataStream
      **/
-    class List
+    class List : private std::vector<std::unique_ptr<Input>>
     {
     public: 
-      /**@brief Add new input with id and type id. Returns nullptr if mapping already exists 
+      typedef std::vector<std::unique_ptr<Input>> container_type;
+      
+      using container_type::size;
+      using container_type::empty;
+      using container_type::begin;
+      using container_type::end;
+
+      List();
+
+      /**@brief Add new input with given type id. Returns nullptr if input with typeid does not exist 
         *@param _typeId Type id of input to determine which kind of input is created
-        *@param _id Id for input
        **/
-      Input* add(Id const& _typeId, Id const& _id);
+      Input* add(Id const& _typeId);
  
       /**@brief Add new input with id and type id. Returns nullptr if mapping already exists 
          @tparam TYPE Type of input
@@ -29,24 +37,20 @@ namespace omni
         *@param ..._args Arguments passed to constructor 
        **/
       template<typename TYPE, typename...ARGS>
-      TYPE* add(Id const& _id, ARGS&&..._args)
-      {
-        if (inputs_.count(_id) != 0) return nullptr;
-        
-        auto& _input = inputs_[_id];
-
-        _input.reset(new TYPE(_args...));
-        return static_cast<TYPE*>(_input.get());
+      TYPE* add(ARGS&&..._args)
+      {  
+        container_type::emplace_back(new TYPE(_args...));
+        return static_cast<TYPE*>(container_type::back().get());
       }
 
-      /// Return input with id 
-      Input* operator[](Id const&);
+      /// Return input at index 
+      Input* operator[](int);
       
-      /// Returns input with id (const version)
-      Input const* operator[](Id const&) const;
+      /// Returns input at index (const version)
+      Input const* operator[](int) const;
 
-      /// Removes input with custom ID
-      void remove(Id const& _id);
+      /// Removes input at index
+      void remove(int);
 
       /// Delete all inputs
       void clear();
@@ -68,24 +72,18 @@ namespace omni
       Input const* current() const;
       
       /// Return ID of current input
-      Id currentId() const; 
+      int currentIndex() const; 
 
       /// Set current input by ID
-      void setCurrent(Id const& _id);
-
-      /// Test whether list is empty
-      bool empty() const;
-
-      /// Returns number of inputs
-      size_t size() const;
-
+      void setCurrentIndex(int);
 
       /// Test for equality
       friend bool operator==(List const&,List const&);
 
     private:
-      Id currentId_;
-      std::map<Id,std::unique_ptr<Input>> inputs_;
+      bool validIndex(int) const;
+
+      int currentIndex_ = 0;
     };
   }
 

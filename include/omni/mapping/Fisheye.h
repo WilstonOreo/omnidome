@@ -14,12 +14,12 @@ namespace omni
     public:
       OMNI_TYPEID("Fisheye")
 
-      Fisheye(input::List const&);
+      Fisheye();
       ~Fisheye();
 
       MappingMode mode() const;
 
-      void bindShader();
+      void bind();
 
       qreal stretch() const;
       void setStretch(qreal _stretch);

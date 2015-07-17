@@ -7,8 +7,7 @@ namespace omni
 {
   namespace mapping
   {
-    Fisheye::Fisheye(input::List const& _inputList) :
-      Rotatable(_inputList)
+    Fisheye::Fisheye() 
     {
     }
 
@@ -21,9 +20,9 @@ namespace omni
       return FISHEYE;
     }
 
-    void Fisheye::bindShader()
+    void Fisheye::bind()
     {
-      Rotatable::bindShader();
+      Rotatable::bind();
       this->shader_->setUniformValue("stretch",GLfloat(stretch_));
     }
 

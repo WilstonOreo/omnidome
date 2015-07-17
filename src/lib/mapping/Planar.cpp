@@ -7,8 +7,7 @@ namespace omni
 {
   namespace mapping
   {
-    Planar::Planar(input::List const& _list) : 
-      Interface(_list),
+    Planar::Planar() : 
       offset_(0.0,0.0),
       stretch_(1.0,1.0),
       tileHorizontal_(false),
@@ -25,9 +24,9 @@ namespace omni
       return PLANAR;
     }
 
-    void Planar::bindShader()
+    void Planar::bind()
     {
-      Interface::bindShader();
+      Interface::bind();
       this->shader_->setUniformValue("offset",offset_);
       this->shader_->setUniformValue("stretch",stretch_);
       this->shader_->setUniformValue("tile_horizontal",GLint(tileHorizontal_));
