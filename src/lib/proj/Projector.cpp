@@ -71,7 +71,15 @@ namespace omni
     {
       matrix_=_matrix;
     }
-  
+      
+    QMatrix4x4 Projector::projectionMatrix() const
+    {
+      QMatrix4x4 _m;
+      _m.perspective(fov().degrees(), aspectRatio(), 0.01, 1000.0);
+      _m.lookAt(pos(), pos() + matrix().column(0).toVector3D(),matrix().column(2).toVector3D());
+      return _m;
+    }
+
     QVector3D Projector::pos() const
     {
       return matrix().column(3).toVector3D();

@@ -44,9 +44,10 @@ namespace omni
       void TuningList::setSession(Session* _session)
       {
         session_=_session;
-       
-        
         clear();
+
+        ///@todo add tunings from session here
+        sessionModeChange();
       }
 
       void TuningList::addTuning()
@@ -55,22 +56,21 @@ namespace omni
 
         if (!_tuning) return;
 
-        widgets_.emplace_back(new ui::proj::Tuning(session_->tunings().size()-1,_tuning,this));
+        widgets_.emplace_back(new ui::proj::Tuning(session_->tunings().size()-1,session_,this));
         
         auto _widget = widgets_.back().get();
-        _widget->setViewMode(viewMode_);
         contents_->layout()->addWidget(_widget); 
  
         _widget->connect(_widget,SIGNAL(selected()),this,SLOT(setCurrentTuning()));
         _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
         _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(projectorSetupChanged()));
+        _widget->sessionModeChange();
       }
 
       void TuningList::removeTuning(int _index)
       {
         if (_index == -1) return;
 
-        qDebug() << _index << " " << session_->tunings().size();
         auto* _widget = widgets_[_index].get();
         contents_->layout()->removeWidget(_widget); 
         widgets_.erase(widgets_.begin() + _index);
@@ -79,17 +79,14 @@ namespace omni
         // Reorder position indices
         for (int i = 0; i < session_->tunings().size(); ++i)
         {
-          widgets_[i]->setTuning(i,session_->tunings()[i]);
+          widgets_[i]->setTuning(i,session_);
         }
       }
-        
-      /// Set view mode for all tuning widgets
-      void TuningList::setViewMode(Tuning::ViewMode _mode)
+
+      void TuningList::sessionModeChange()
       {
-        viewMode_ = _mode;
-        for (auto& _widget : widgets_) { 
-          _widget->setViewMode(_mode);
-        }
+        for (auto& _widget : widgets_) 
+          _widget->sessionModeChange();
       }
 
       void TuningList::clear()
@@ -97,7 +94,7 @@ namespace omni
         widgets_.clear();
         session_->tunings().clear();
       }
-        
+  
       void TuningList::resizeEvent(QResizeEvent* event)
       {
         QScrollArea::resizeEvent(event);
@@ -115,6 +112,7 @@ namespace omni
           if (_widget->isSelected()) 
           {
             session_->tunings().setCurrentIndex(_index);
+            emit currentIndexChanged(_index);
             break;
           }
           ++_index;

@@ -9,19 +9,7 @@ uniform vec3 bottom_left;
 uniform vec3 bottom_right;
 
 /// Color of frustum border
-uniform vec4 color;
-
-#define MAP_SPHERICAL 1
-#define MAP_FISHEYE 2
-#define MAP_CUBE 3
-uniform int map_mode;
-uniform int map_only;
-
-uniform float map_yaw; // Any value allowed
-uniform float map_pitch; // Any value allowed
-uniform float map_roll; // Any value allowed
-
-uniform sampler2D texture;
+uniform vec3 color;
 
 uniform float tex_alpha;
 uniform int no_borders;
@@ -113,115 +101,17 @@ float frustum_intersection(in vec3 point)
   /// Return minimum distance
   return min(min(d_top,d_bottom),min(d_left,d_right));
 }
-vec3 map_normal()
-{
-  return rotationMatrix(map_yaw,map_pitch,map_roll) * vVertexNormal;
-}
-
-float map_spherical(out vec2 texCoords) 
-{
-  vec3 normal = map_normal();
-  texCoords.s =  fract(atan(normal.y,normal.x) / (2.0*PI) );
-  texCoords.t =  fract(acos(normal.z) / PI);
-
-  texCoords.t = fract(texCoords.y);
-  texCoords.s = fract(texCoords.x);
-  return 1.0;
-}
-
-float map_fisheye(out vec2 texCoords)
-{
-  vec3 n = map_normal();
-  float phi = atan(sqrt(n.x*n.x + n.y*n.y),n.z);
-  float r =  phi / PI * 2.0;
-  if ((r > 1.0) || (r <= 0.0)) return -1.0;
-  float theta = atan(n.x,n.y);
-  texCoords.s = fract(0.5 * (1.0 + r* sin(theta)));
-  texCoords.t = fract(0.5 * (1.0 + r * cos(theta)));
-  return 1.0; 
-}
-
-float map_cube(out vec2 texCoords)
-{
-  vec3 n = map_normal();
-  float sc, tc, ma;
-  float eps =  -0.02;
-  float _off = 0.0;
-  //n = n.yzx;
-
-  if ((abs(n.x) >= abs(n.y)) && (abs(n.x) >= abs(n.z)))
-  {
-    sc = (n.x > 0.0) ? -n.y : n.y;
-    tc = n.z;
-    ma = n.x;
-    _off += (n.x < 0.0) ? 0.0/6.0 : 2.0/6.0; // EAST / WEST
-  } else
-  if ((abs(n.y) >= abs(n.z)))
-  {
-    sc = (n.y < 0.0) ? -n.x : n.x;
-    tc = n.z;
-    ma = n.y;
-    _off += (n.y < 0.0) ? 1.0/6.0 : 3.0/6.0; // NORTH / SOUTH
-  } else
-  {
-    sc = (n.z > 0.0) ? n.y : n.y;
-    tc = (n.z > 0.0) ? n.x : -n.x;
-//    tc = -n.x; 
-    ma = n.z;
-    _off = (n.z < 0.0) ? 4.0/6.0 : 5.0 / 6.0;  // TOP / BOTTOM
-  }
-  texCoords = vec2(sc/(12.0 - eps)/abs(ma) + 0.5/6.0 + _off,0.5+tc/(2.0 - eps)/abs(ma)) ;
-  return 1.0;
-}
-
-float mapping(out vec2 texCoords)
-{
-  if (map_mode == MAP_SPHERICAL)
-  {
-    return map_spherical(texCoords);
-  }
-  if (map_mode == MAP_FISHEYE)
-  {
-    return map_fisheye(texCoords);
-  }
-  if (map_mode == MAP_CUBE)
-  {
-    return map_cube(texCoords);
-  }
-  texCoords = gl_TexCoord[0].st;
-  texCoords.x += map_yaw / 360.0;
-  return 1.0;
-}
-
-void map()
-{
-  vec2 texCoords = gl_TexCoord[0].st;
-  if (mapping(texCoords) > 0.0)
-  {
-    gl_FragColor = vec4(texture2D(texture,texCoords).rgb,tex_alpha);
-  }
-}
 
 void main()
 {
-  if (map_only == 1)
-  {
-    map();
-    return;
-  }
   float d = frustum_intersection(vVertexPosition);  
+
   if (d > 0.0)
   {
-    if ((d < 0.1) && (no_borders != 0))
-    {
-      gl_FragColor = color;
-    } else
-    {
-      map();
-    }
+    float alpha = d < 0.1 ? 0.5 : 0.1;
+    gl_FragColor = vec4(color,alpha);
   } else
   {
     gl_FragColor = vec4(0.0,0.0,0.0,0.0);
   }
-//  gl_FragColor = vec4(0.0,1.0,0.0,1.0);
 }

@@ -15,7 +15,7 @@
 
 #include <omni/ui/ScreenSetup.h>
 #include <omni/ui/GLView3D.h>
-#include <omni/ui/GLView2D.h>
+#include <omni/ui/TuningGLView.h>
 #include <omni/ui/Export.h>
 
 using namespace omni::ui;
@@ -33,33 +33,35 @@ MainWindow::MainWindow( QMainWindow *parent) :
     screenSetup_.reset(new ScreenSetup());
     _layout->addWidget(screenSetup_.get());
 
-    positioning_.reset(new GLView3D());
-    _layout->addWidget(positioning_.get());
+    projectionSetup_.reset(new GLView3D());
+    _layout->addWidget(projectionSetup_.get());
 
-    warp_.reset(new GLView2D());
+    warp_.reset(new TuningGLView());
     _layout->addWidget(warp_.get());
 
-    blend_.reset(new GLView2D());
+    blend_.reset(new TuningGLView());
     _layout->addWidget(blend_.get());
 
     export_.reset(new Export(session_.get()));
     _layout->addWidget(export_.get());
     ui_->pages->setLayout(_layout);
-
-    setMode(SCREENSETUP);
   }
+  
 
   // Connect signals and slots
   {
     // Connect projector position change with view update
-    connect(ui_->tuningList,SIGNAL(projectorSetupChanged()),positioning_.get(),SLOT(update()));
+    connect(ui_->tuningList,SIGNAL(projectorSetupChanged()),projectionSetup_.get(),SLOT(update()));
+
+    // Connect tuning index of tuning list for warp and blend widget
+    connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),warp_.get(),SLOT(setTuningIndex(int)));
+    connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),blend_.get(),SLOT(setTuningIndex(int)));
 
     // Connect add tuning button with tuning list 
-    connect(ui_->btnAddTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(addTuning()));
+    connect(ui_->btnAddTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(addTuning())); 
   }
 
   newSession();
-
 
   raise();
   show();
@@ -80,9 +82,12 @@ void MainWindow::newSession()
   ui_->grpInputs->setSession(session_.get());
   
   // Set session to pages
+  projectionSetup_->setSession(session_.get());
+
   blend_->setSession(session_.get());
   warp_->setSession(session_.get());
-  positioning_->setSession(session_.get());
+
+  setMode(session_->mode());
 }
 
 void MainWindow::newProjection()
@@ -99,8 +104,6 @@ void MainWindow::newProjection()
   reset();
   initialPositions();*/
 }
-
-
 
 void MainWindow::saveProjection()
 {
@@ -176,33 +179,32 @@ void MainWindow::showAbout()
 /// Show Screen Setup Page
 void MainWindow::showScreenSetup()
 {
-  setMode(SCREENSETUP);
+  setMode(Session::Mode::SCREENSETUP);
 }
 
-/// Show Positioning Page
-void MainWindow::showPositioning()
+/// Show ProjectionSetup Page
+void MainWindow::showProjectionSetup()
 {
-  setMode(POSITIONING);
+  setMode(Session::Mode::PROJECTIONSETUP);
 }
 
 /// Show Warping Page
 void MainWindow::showWarp()
 {
-  setMode(WARP);
+  setMode(Session::Mode::WARP);
 }
 
 /// Show Blending Page
 void MainWindow::showBlend()
 {
-  setMode(BLEND);
+  setMode(Session::Mode::BLEND);
 }
 
 /// Show Export Page
 void MainWindow::showExport()
 {
-  setMode(EXPORT);
+  setMode(Session::Mode::EXPORT);
 }
-
 
 
 void MainWindow::showEvent(QShowEvent *event)
@@ -236,74 +238,65 @@ void MainWindow::buttonState()
   ui_->btnSave->setEnabled(modified_);
 }
      
-void MainWindow::setMode(Mode _mode)
+void MainWindow::setMode(Session::Mode _mode)
 {
-  screenSetup_->setVisible(_mode == SCREENSETUP);
-  positioning_->setVisible(_mode == POSITIONING);
-  warp_->setVisible(_mode == WARP);
-  blend_->setVisible(_mode == BLEND);
-  export_->setVisible(_mode == EXPORT);
+  session_->setMode(_mode);
+
+  screenSetup_->setVisible(_mode == Session::Mode::SCREENSETUP);
+  projectionSetup_->setVisible(_mode == Session::Mode::PROJECTIONSETUP);
+  warp_->setVisible(_mode == Session::Mode::WARP);
+  blend_->setVisible(_mode == Session::Mode::BLEND);
+  export_->setVisible(_mode == Session::Mode::EXPORT);
 
   using omni::ui::proj::Tuning;
-  Tuning::ViewMode _tuningViewMode = Tuning::NO_DISPLAY;
-    
-  ui_->grpWarp->setVisible(_mode == WARP);
-  ui_->grpBlend->setVisible(_mode == BLEND);
-  ui_->grpCanvas->setVisible(_mode == POSITIONING);
+
+  ui_->btnAddTuning->setVisible(
+      _mode == Session::Mode::SCREENSETUP || 
+      _mode == Session::Mode::PROJECTIONSETUP);
+  ui_->grpWarp->setVisible(_mode == Session::Mode::WARP);
+  ui_->grpBlend->setVisible(_mode == Session::Mode::BLEND);
+  ui_->grpCanvas->setVisible(_mode == Session::Mode::PROJECTIONSETUP);
 
   switch (_mode)
   {
-  case SCREENSETUP:
+    case Session::Mode::SCREENSETUP:
     ui_->grpCanvas->hide();
     ui_->grpInputs->show();
     ui_->grpMapping->hide();
-    _tuningViewMode = Tuning::FOV_SLIDERS;
     break;
 
-  case POSITIONING:
+    case Session::Mode::PROJECTIONSETUP:
     ui_->grpCanvas->show();
     ui_->grpInputs->show();
     ui_->grpMapping->show();
-    _tuningViewMode = Tuning::ADJUSTMENT_SLIDERS;
     break;
 
-  case WARP:
+    case Session::Mode::WARP:
     ui_->grpCanvas->hide();
     ui_->grpInputs->show();
     ui_->grpMapping->show();
-    _tuningViewMode = Tuning::DISPLAY_ONLY;
     break;
 
-  case BLEND:
+    case Session::Mode::BLEND:
     ui_->grpCanvas->hide();
     ui_->grpWarp->hide();
     ui_->grpBlend->show();
     ui_->grpInputs->hide();
     ui_->grpMapping->hide();
-    _tuningViewMode = Tuning::DISPLAY_ONLY;
     break;
 
-  case EXPORT:
+    case Session::Mode::EXPORT:
     ui_->grpCanvas->hide();
     ui_->grpWarp->hide();
     ui_->grpBlend->hide();
     ui_->grpInputs->show();
     ui_->grpMapping->show();
-    _tuningViewMode = Tuning::DISPLAY_ONLY;
     break;
 
   default: break;
   }
 
-  ui_->tuningList->setViewMode(_tuningViewMode);
-
-  mode_=_mode;
-}
-
-void MainWindow::toolButtonsVisible(bool _visible)
-{
-  ui_->btnSave->setVisible(_visible);
-  ui_->btnEditAsNew->setVisible(_visible);
+  ui_->tuningList->sessionModeChange();
 }
 
 QMessageBox::StandardButton MainWindow::saveChangesPrompt()

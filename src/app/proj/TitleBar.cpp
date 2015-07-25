@@ -125,6 +125,7 @@ namespace omni
         
         /// Generate and add popup menu
         menuButton_->setMenu(menu_.get());
+        menuButton_->setPopupMode(QToolButton::InstantPopup);
         menu_->addAction("Reset color");
         menu_->addAction("Reset adjustment");
         menu_->addSeparator();
@@ -135,7 +136,7 @@ namespace omni
         _free->setCheckable(true);
 
         setupToolButton(maximizeButton_);
-        connect(maximizeButton_.get(),SIGNAL(clicked()),tuningWidget(),SLOT(setNextViewMode()));
+        connect(maximizeButton_.get(),SIGNAL(clicked()),tuningWidget(),SLOT(setNextWindowState()));
 
         setupToolButton(closeButton_);
         connect(closeButton_.get(),SIGNAL(clicked()),this,SIGNAL(closeButtonClicked()));

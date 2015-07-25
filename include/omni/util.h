@@ -56,11 +56,7 @@ namespace omni
     /// Test if two vectors which hold unique_ptr's of SerializationInterfaces are equal
     template<typename T, typename F>
     bool testPtrVectorEqual(T const& _a, T const& _b, F f)
-    {
-      typedef typename T::value_type value_type;
-      // T = std::vector<std::unique_ptr<Interface>>
-      // value_type = std::unique_ptr<Interface>>
-     
+    { 
       // Size of vector must be equal
       if (_a.size() != _b.size()) return false;
 
@@ -69,7 +65,7 @@ namespace omni
       for (size_t i = 0; i < _size; ++i)
       {
         // Call functor with pointers as arguments
-        if (!f(_a[i].get(),_b[i].get())) return false;
+        if (!f(_a[i],_b[i])) return false;
       }
       return true;
     }

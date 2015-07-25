@@ -29,8 +29,8 @@ SET(omni_gui_cpp_files
     ./src/app/proj/TitleBar.cpp
     ./src/app/ScreenSetup.cpp 
     ./src/app/GLView.cpp
-    ./src/app/GLView2D.cpp
     ./src/app/GLView3D.cpp
+    ./src/app/TuningGLView.cpp
     ./src/app/About.cpp
     ./src/app/AboutGL.cpp
     ./src/app/Export.cpp
@@ -51,8 +51,8 @@ SET(omni_headers
         include/omni/ui/proj/TuningList.h 
         include/omni/ui/proj/TitleBar.h 
         include/omni/ui/ScreenSetup.h 
-        include/omni/ui/GLView.h 
-        include/omni/ui/GLView2D.h 
+        include/omni/ui/GLView.h
+        include/omni/ui/TuningGLView.h
         include/omni/ui/GLView3D.h 
         include/omni/ui/ParameterWidget.h 
         include/omni/ui/Export.h 

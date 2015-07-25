@@ -15,6 +15,17 @@ namespace omni
   class Session
   {
   public:
+    /// General mode of the User Interface
+    enum class Mode 
+    {
+      SCREENSETUP, // Mode for setup screens
+      PROJECTIONSETUP, // Mode for setting up projectors and canvas
+      WARP, // Mode for adjusting warp grid
+      BLEND, // Mode for editing the blend mask
+      EXPORT, // Final export mode. Output is locked for faster display
+      NUM_MODES
+    };
+    
     /// Default constructor
     Session();
     ~Session();
@@ -55,6 +66,12 @@ namespace omni
     /// Return const reference to current screen setup 
     ScreenSetup const& screenSetup() const;
 
+    /// Return current mode
+    Mode mode() const;
+
+    /// Set mode of this session
+    void setMode(Mode);
+
     /// Test for equality. ScreenSetup is ignored
     friend bool operator==(Session const&,Session const&);
 
@@ -73,6 +90,9 @@ namespace omni
     
     /// Current screen setup
     ScreenSetup screenSetup_;
+
+    /// Current session mode
+    Mode mode_ = Mode::SCREENSETUP;
   };
 }
 

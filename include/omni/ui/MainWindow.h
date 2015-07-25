@@ -7,15 +7,13 @@
 #include <QModelIndex>
 #include <QMessageBox>
 #include <omni/util.h>
-
+#include <omni/Session.h>
 
 namespace omni
-{
-  class Session;
-  
+{ 
   namespace ui
   {
-    class GLView2D;
+    class TuningGLView;
     class GLView3D;
     class ScreenSetup;
     class Export;
@@ -29,42 +27,45 @@ namespace omni
     {
       Q_OBJECT
     public:
-      enum Mode
-      {
-        SCREENSETUP,
-        POSITIONING,
-        WARP,
-        BLEND,
-        EXPORT
-      };
 
       MainWindow (QMainWindow *parent = nullptr);
       ~MainWindow();
 
     public slots:
+      /// Initiaties a new session after dialog was confirmed 
       void newProjection();
+
+      /// Save current session 
       void saveProjection();
+
+      /// Set current session under a new filename
       void saveProjectionAs();
+
+      /// Open a new session
       void openProjection();
+
+      /// Open a new session from filename 
       bool openProjection(const QString& _filename);
+      
+      /// Edit current session with a new filename
       void editAsNew();
 
       /// Show About dialog
       void showAbout();
 
-      /// Show Screen Setup Page
+      /// Show Screen Setup Page (switches Session mode to Mode::SCREENSETUP)
       void showScreenSetup();
 
-      /// Show Positioning Page
-      void showPositioning();
+      /// Show Projection Setup Page (switches Session mode to Mode::PROJECTIONSETUP)
+      void showProjectionSetup();
 
-      /// Show Warping Page
+      /// Show Warp Grid Page (switches Session mode to Mode::WARP)
       void showWarp();
 
-      /// Show Blending Page
+      /// Show Blend Mask Page (switches Session mode to Mode::BLEND)
       void showBlend();
 
-      /// Show Export Page
+      /// Show Export Page (switches Session mode to Mode::EXPORT)
       void showExport();
 
     protected:
@@ -72,28 +73,44 @@ namespace omni
       void showEvent(QShowEvent* _event);
 
     private:
+      /// Sets enabled state of toolbar buttons
       void buttonState();
-      void setMode(Mode _mode);
-      void newSession();
-      void toolButtonsVisible(bool);
 
- 
+      /// Sets session mode
+      void setMode(Session::Mode _mode);
+      
+      /// Makes a new session
+      void newSession();
+
+      /// Message Box for changing changes
       QMessageBox::StandardButton saveChangesPrompt();
 
+      /// Current filename
       QString filename_;
+
+      /// Current projection session
       std::unique_ptr<Session> session_;
+      
+      /// Modified flag
       bool modified_ = false;
  
+      /// UI containing designed widgets of this window
       std::unique_ptr<Ui::MainWindow> ui_;
 
-
+      /// Screen Setup page
       QUniquePtr<ScreenSetup> screenSetup_;
-      QUniquePtr<GLView3D> positioning_;
-      QUniquePtr<GLView2D> warp_;
-      QUniquePtr<GLView2D> blend_;
-      QUniquePtr<Export> export_;
+      
+      /// ProjectionSetup/Canvas preview page
+      QUniquePtr<GLView3D> projectionSetup_;
 
-      Mode mode_ = SCREENSETUP;
+      /// Page for current warp grid
+      QUniquePtr<TuningGLView> warp_;
+      
+      /// Page for current blend mask
+      QUniquePtr<TuningGLView> blend_;
+      
+      /// Page for exporting projection
+      QUniquePtr<Export> export_;
     };
   }
 }

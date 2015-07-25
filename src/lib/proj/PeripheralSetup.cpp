@@ -36,7 +36,6 @@ namespace omni
       qreal _ct = -cos(_theta), _st = -sin(_theta);
       QVector2D _shiftVec = QVector2D(-_st,_ct) * shift_;
       QVector2D _p = _shiftVec +  distanceCenter_ * QVector2D(_ct,_st);
-
       QVector3D _pos = QVector3D(_p.x(),_p.y(),towerHeight_);
       _matrix.translate(_pos);
 

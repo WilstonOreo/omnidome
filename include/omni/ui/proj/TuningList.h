@@ -27,12 +27,17 @@ namespace omni
         void setSession(Session*);
 
       public slots:
-        void addTuning();
-        void removeTuning(int _index);
-        void setCurrentTuning();
+        /// Change current mode for all tuning widgets
+        void sessionModeChange();
 
-        /// Set view mode for all tuning widgets
-        void setViewMode(Tuning::ViewMode);
+        /// Add a new tuning and tuning widget
+        void addTuning();
+
+        /// Remove tuning 
+        void removeTuning(int _index);
+        
+        /// Set current tuning from currently selected widget 
+        void setCurrentTuning();
 
         /// Remove all mappings from session and all associated widgets
         void clear();
@@ -41,16 +46,15 @@ namespace omni
         void resizeEvent(QResizeEvent*);
 
       signals:
+        void currentIndexChanged(int);
         void projectorSetupChanged();
 
       private:
-
         QWidget* contents_;
         QLayout* layout_;
 
         Session* session_ = nullptr;
         std::vector<QUniquePtr<Tuning>> widgets_;
-        Tuning::ViewMode viewMode_ = Tuning::FOV_SLIDERS;
       };
     }
   }

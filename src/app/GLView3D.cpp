@@ -64,7 +64,10 @@ namespace omni
 
       updateLight();
       
+      
       this->session_->drawCanvas();
+      this->session_->drawCanvasWithFrustumIntersections();
+      
       this->session_->drawProjectorHalos();
     }
 

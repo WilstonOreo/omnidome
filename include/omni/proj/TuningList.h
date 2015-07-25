@@ -12,9 +12,17 @@ namespace omni
     /**@brief Tuning List contains a list of tunings
       *@detail Tuning List is serializable via QDataStream
      **/
-    class TuningList
+    class TuningList : private std::vector<std::unique_ptr<Tuning>>
     {
     public:
+      typedef std::vector<std::unique_ptr<Tuning>> container_type;
+      
+      
+      using container_type::size;
+      using container_type::empty;
+      using container_type::begin;
+      using container_type::end;
+      
       /**@brief Add tuning to list
        * @detail Returns pointer new tuning
        * @param _makeCurrent Flag whether to set current index when added successfully
@@ -42,12 +50,6 @@ namespace omni
 
       /// Return current index
       int currentIndex() const;
-
-      /// Returns true if list is empty
-      bool empty() const;
-
-      /// Returns number of tunings
-      int size() const;
 
       /// Deletes all tunings
       void clear();

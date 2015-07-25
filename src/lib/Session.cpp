@@ -138,6 +138,16 @@ namespace omni
     return screenSetup_;
   }
 
+  Session::Mode Session::mode() const
+  {
+    return mode_;
+  }
+
+  void Session::setMode(Mode _mode)
+  {
+    mode_=_mode;
+  }
+
   bool operator==(Session const& _lhs,Session const& _rhs)
   {
     return 
@@ -183,3 +193,4 @@ QDataStream& operator>>(QDataStream& _stream, omni::Session& _session)
 
   return _stream;
 }
+

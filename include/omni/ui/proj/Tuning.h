@@ -15,7 +15,7 @@ namespace omni
 
   namespace ui
   {
-    class GLView2D;
+    class TuningGLView;
 
     namespace proj
     {
@@ -29,59 +29,61 @@ namespace omni
         Q_OBJECT
       public:
         /// View mode (determines which elements are to be displayed)
-        enum ViewMode
+        enum WindowState
         {
           NO_DISPLAY, // Widget is minimized
           DISPLAY_ONLY, // Only preview is displayed
           FOV_SLIDERS, // Only FOV sliders are displayed
           ADJUSTMENT_SLIDERS, // Only sliders for adjustment are displayed
-          NUM_MODES
+          NUM_WINDOW_STATES
         };
 
         /// Default constructor 
         Tuning(QWidget* _parent = nullptr);
         
         /// Constructs with a given tuning (called by default from TuningList)
-        Tuning(int _index, omni::proj::Tuning* _tuning, QWidget* _parent = nullptr);
+        Tuning(int _index, omni::Session* _session, QWidget* _parent = nullptr);
         
         /// Destructor
         ~Tuning();
-
-        /// Returns current 
-        ViewMode mode() const;
-        
+   
         /// Return tuning
         omni::proj::Tuning* tuning();
         
         /// Return tuning (const version)
         omni::proj::Tuning const* tuning() const;
+        
+        /// Set tuning from session and index
+        void setTuning(int _index, omni::Session*);
     
         /// Return index of tuning
         int index() const;
 
         Session const* session() const;
-        void setSession(Session*);
-
-        /// Set tuning
-        void setTuning(int _index, omni::proj::Tuning*);
 
         /// Return selected flag
         bool isSelected() const;
 
+        /// Return current window state
+        WindowState windowState() const;
+
       public slots:
-        /// Sets ViewMode
-        void setViewMode(ViewMode _mode);
+        /// Sets Window State which determines which elements are visible
+        void setWindowState(WindowState _mode);
         
-        /// Selects succeeding view mode
-        void setNextViewMode();
+        /// Selects succeeding window state
+        void setNextWindowState();
 
         /**@brief Sets flag if Tuning Widget is active
            @detail A tuning widget should only be active when 
          **/
         void setSelected(bool);
         
-        /// Reorders widgets according to given view mode
+        /// Reorders widgets according to given window state
         void reorderWidgets();
+
+        /// Display content and widget for specific session mode
+        void sessionModeChange();
 
       signals:
         void selected();
@@ -126,12 +128,12 @@ namespace omni
       private:
         /// Setup (only called in constructor)
         void setup();
-
-        /// The associated tuning 
-        omni::proj::Tuning* tuning_ = nullptr;
-     
+ 
         /// The index of the tuning
         int index_ = -1;
+
+        // The associated session
+        omni::Session* session_ = nullptr; 
 
         /// Slider parameter widgets, grouped
         std::map<QString,std::vector<QWidget*>> sliderGroups_;
@@ -140,10 +142,10 @@ namespace omni
         TitleBar* titleBar_ = nullptr;
         
         /// GL preview widget
-        GLView2D* glView_ = nullptr;
+        TuningGLView* glView_ = nullptr;
       
-        /// View mode
-        ViewMode mode_ = ADJUSTMENT_SLIDERS;
+        /// Window State
+        WindowState windowState_ = ADJUSTMENT_SLIDERS;
 
         /// isSelected_ flag (should be true when widget is currently selected) 
         bool isSelected_ = true;

@@ -18,7 +18,7 @@ namespace omni
     public:
       GLView3D(QWidget* _parent = nullptr);
       ~GLView3D();
-
+      
     public slots:
       void changeZoom(int _value);
 

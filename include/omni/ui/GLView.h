@@ -27,7 +27,6 @@ namespace omni
       typedef std::set<GLView*> view_set_type;
 
       float aspect() const;
-
       Session const* session() const;
       void setSession(Session* _session);
 

@@ -9,10 +9,10 @@ namespace omni
   {
     Tuning* TuningList::add(bool _makeCurrent)
     {
-      tunings_.emplace_back(new Tuning());
-      auto* _tuning = tunings_.back().get();
+      container_type::emplace_back(new Tuning());
+      auto* _tuning = container_type::back().get();
       if (_makeCurrent)
-        setCurrentIndex(tunings_.size()-1);
+        setCurrentIndex(container_type::size()-1);
 
       auto* _setup = _tuning->setupProjector("PeripheralSetup");
 
@@ -26,11 +26,11 @@ namespace omni
 
     Tuning* TuningList::current()
     {
-      return validIndex(currentIdx_) ? tunings_[currentIdx_].get() : nullptr;
+      return validIndex(currentIdx_) ? container_type::at(currentIdx_).get() : nullptr;
     }
     Tuning const* TuningList::current() const
     {
-      return validIndex(currentIdx_) ? tunings_[currentIdx_].get() : nullptr;
+      return validIndex(currentIdx_) ? container_type::at(currentIdx_).get() : nullptr;
     }
 
     void TuningList::setCurrentIndex(int _currentIdx)
@@ -57,33 +57,25 @@ namespace omni
     void TuningList::remove(int _idx)
     {
       if (!validIndex(_idx)) return;
-      tunings_.erase(tunings_.begin() + _idx);
-    }
-
-    bool TuningList::empty() const
-    {
-      return tunings_.empty();
-    }
-
-    int TuningList::size() const
-    {
-      return tunings_.size();
+      container_type::erase(container_type::begin() + _idx);
     }
 
     void TuningList::clear()
     {
-      tunings_.clear();
+      container_type::clear();
       currentIdx_ = -1;
     }
 
     Tuning* TuningList::operator[](int _index)
     {
-      return validIndex(_index) ? tunings_[_index].get() : nullptr;
+      return validIndex(_index) ? 
+        container_type::at(_index).get() : nullptr;
     }
 
     Tuning const* TuningList::operator[](int _index) const
     {
-      return validIndex(_index) ? tunings_[_index].get() : nullptr;
+      return validIndex(_index) ? 
+        container_type::at(_index).get() : nullptr;
     }
 
 
@@ -107,9 +99,9 @@ namespace omni
 
     void TuningList::toStream(QDataStream& _stream) const
     {
-      _stream << size();
+      _stream << int(container_type::size());
       _stream << currentIndex();
-      for (auto& _tuning : tunings_)
+      for (auto& _tuning : *this)
         _stream << *_tuning;
     }
 
@@ -129,12 +121,12 @@ namespace omni
 
       return 
         OMNI_TEST_MEMBER_EQUAL(currentIdx_) &&
-        util::testPtrVectorEqual(_lhs.tunings_,_rhs.tunings_,_tuningsEqual);
+        util::testPtrVectorEqual(_lhs,_rhs,_tuningsEqual);
     }
 
     bool TuningList::validIndex(int _idx) const
     {
-      return (_idx >= 0) && (_idx < tunings_.size());
+      return (_idx >= 0) && (_idx < container_type::size());
     }
   }
 }

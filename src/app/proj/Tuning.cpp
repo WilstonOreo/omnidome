@@ -10,7 +10,7 @@
 #include <QMimeData>
 
 #include <omni/ui/proj/TitleBar.h>
-#include <omni/ui/GLView2D.h>
+#include <omni/ui/TuningGLView.h>
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
 
@@ -22,12 +22,12 @@ namespace omni
     {
       Tuning::Tuning(
         int _index,
-        omni::proj::Tuning* _tuning,
+        omni::Session* _session,
         QWidget* _parent) :
         ParameterWidget(_parent)
       {
         setup();
-        setTuning(_index,_tuning);
+        setTuning(_index,_session);
       }
 
       Tuning::Tuning(
@@ -39,38 +39,47 @@ namespace omni
 
       Tuning::~Tuning()
       {
-        tuning_ = nullptr;
       }
 
       omni::proj::Tuning* Tuning::tuning()
       {
-        return tuning_;
+        return session_ ? session_->tunings()[index_] : nullptr;
       }
 
       omni::proj::Tuning const* Tuning::tuning() const
       {
-        return tuning_;
+        return session_ ? session_->tunings()[index_] : nullptr;
       }
 
-      void Tuning::setTuning(int _index, omni::proj::Tuning* _tuning)
+      void Tuning::setTuning(int _index, omni::Session* _session)
       {
-        bool _newTuning = tuning_ != _tuning;
-        tuning_=_tuning;
+        bool _newTuning = (session_ != _session) || (index_ != _index);
         index_=_index;
-        
-        if (_newTuning) setViewMode(mode_);
+        session_ = _session;
+   
+        if (_newTuning) 
+        {
+          glView_->setSession(session_);
+          glView_->setTuningIndex(index_);
+          sessionModeChange();
+        }
       }
-        
+  
       int Tuning::index() const
       {
         return index_;
       }
-  
+        
+      Session const* Tuning::session() const
+      {
+        return session_;
+      }
+ 
       void Tuning::updateParameters()
       {
-        if(!tuning_) return;
+        if (!tuning()) return;
 
-        auto* _projSetup = tuning_->projectorSetup();
+        auto* _projSetup = tuning()->projectorSetup();
         
         if (!_projSetup) return;
  
@@ -108,8 +117,9 @@ namespace omni
           _p->setShift(getParamAsFloat("Shift"));
 
         }
-        tuning_->setupProjector();
+        tuning()->setupProjector();
         
+        glView_->update();
         emit projectorSetupChanged();
       }
 
@@ -124,7 +134,7 @@ namespace omni
         connect(titleBar_,SIGNAL(closeButtonClicked()),this,SLOT(prepareRemove()));
 
         /// Setup preview window
-        glView_ = new GLView2D(this);
+        glView_ = new TuningGLView(this);
         QSizePolicy _sizePolicy(QSizePolicy::Ignored,QSizePolicy::Expanding);
         glView_->setSizePolicy(_sizePolicy);
         glView_->installEventFilter(this);
@@ -197,13 +207,13 @@ namespace omni
           _deltaYaw,_roll};
         sliderGroups_["FOV"] = { _fov, _throwRatio };
         
-        /// Setup/update view mode
-        setViewMode(mode_);
+        /// Setup/update mode
+        sessionModeChange();
       }
 
       void Tuning::reorderWidgets()
       {
-        if (!titleBar_ || !tuning_) return;
+        if (!titleBar_ || !tuning()) return;
 
         const int _border = 2;
         int _height = _border;
@@ -221,22 +231,22 @@ namespace omni
         };
 
         /// Add preview widget 
-        if (mode_ != NO_DISPLAY)
+        if (windowState_ != NO_DISPLAY)
         {
             _widgets.push_back(glView_); 
         }
 
         /// Add adjustment sliders
-        if (mode_ == ADJUSTMENT_SLIDERS)
+        if (windowState_ == ADJUSTMENT_SLIDERS)
         {
-          for (auto& _slider : sliderGroups_.at(tuning_->projectorSetup()->getTypeId().str()))
+          for (auto& _slider : sliderGroups_.at(tuning()->projectorSetup()->getTypeId().str()))
           {
             _widgets.push_back(_slider);
           } 
         }
 
         /// Add FOV sliders
-        if (mode_ == FOV_SLIDERS)
+        if (windowState_ == FOV_SLIDERS)
         {
               for (auto& _slider : sliderGroups_.at("FOV"))
               {
@@ -262,21 +272,21 @@ namespace omni
         setMinimumSize(0,_height);
         resize(width(),_height);
       }
-        
-      Tuning::ViewMode Tuning::mode() const
+  
+      Tuning::WindowState Tuning::windowState() const
       {
-        return mode_;
+        return windowState_;
       }
- 
-      void Tuning::setViewMode(ViewMode _mode)
+
+      void Tuning::setWindowState(WindowState _windowState)
       {
-        mode_=_mode;
+        windowState_ = _windowState;
         reorderWidgets();
       }
 
-      void Tuning::setNextViewMode()
+      void Tuning::setNextWindowState()
       {
-        setViewMode(static_cast<ViewMode>((int(mode_) + 1) % int(NUM_MODES)));
+        setWindowState(static_cast<WindowState>((int(windowState_) + 1) % int(NUM_WINDOW_STATES)));
       }
 
       void Tuning::setSelected(bool _isSelected)
@@ -294,9 +304,9 @@ namespace omni
         { 
           QColor _color = isSelected_ ? titleBar_->color().name() : "#cccccc";
           _widget->setStyleSheet("selection-background-color  : "+_color.name());
-       
-          if (tuning_ && isSelected_)
-            tuning_->setColor(_color);
+ 
+          if (tuning() && isSelected_)
+            tuning()->setColor(_color);
         }
         update();
       }
@@ -304,6 +314,24 @@ namespace omni
       void Tuning::prepareRemove()
       {
         emit closed(index_);
+      }
+
+      void Tuning::sessionModeChange() 
+      {
+        if (!session()) return;
+
+        switch (session()->mode())
+        {
+          case Session::Mode::SCREENSETUP:
+          case Session::Mode::PROJECTIONSETUP:
+          case Session::Mode::WARP:
+          case Session::Mode::BLEND:
+          case Session::Mode::EXPORT:
+            break;
+          default: break;
+        }
+
+        reorderWidgets();
       }
 
       void Tuning::resizeEvent(QResizeEvent* event)
@@ -358,11 +386,8 @@ namespace omni
 
           mimeData->setText("Hallo"); // TODO add tuning index here
           drag->setMimeData(mimeData);
-
-          Qt::DropAction dropAction = drag->exec();
       }
 
-        
       bool Tuning::eventFilter(QObject* _obj, QEvent* _event)
       {
         if (_event->type() == QEvent::MouseMove && (_obj == glView_ || _obj == titleBar_)) 

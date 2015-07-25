@@ -29,6 +29,9 @@ namespace omni
 
       QMatrix4x4& matrix();
       QMatrix4x4 const& matrix() const;
+      
+      QMatrix4x4 projectionMatrix() const;
+      
       void setMatrix(QMatrix4x4 const&);
 
       QVector3D pos() const;

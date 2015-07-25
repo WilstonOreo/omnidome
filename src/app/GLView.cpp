@@ -31,18 +31,7 @@ namespace omni
     {
       return (float)width() / height();
     }
-
-    Session const* GLView::session() const
-    {
-      return !session_ ? nullptr : &session_->session();
-    }
-
-    void GLView::setSession(Session* _session)
-    {
-      session_.reset(new visual::Session(*_session));
-      initialized_ = initialize();
-    }
-  
+ 
     QPointF GLView::mousePosition() const
     {
       return mousePosition_;
@@ -86,7 +75,19 @@ namespace omni
     void GLView::paintGL()
     {
       if (!session_) return;
+    }
 
+    Session const* GLView::session() const
+    {
+      return !session_ ? nullptr : &session_->session();
+    }
+
+    void GLView::setSession(Session* _session)
+    {
+      if (!_session) return;
+
+      session_.reset(new visual::Session(*_session));
+      initialized_ = initialize();
     }
       
     void GLView::mousePressEvent(QMouseEvent* event)

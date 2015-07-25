@@ -34,13 +34,15 @@ namespace omni
     }
 
     void Projector::update()
-    {
-      proj::Frustum _f(proj_);
-      eye_ = _f.eye();
-      topLeft_ = eye_ + size_ * _f.topLeft();
-      topRight_ = eye_ + size_ * _f.topRight();
-      bottomLeft_ = eye_ + size_ * _f.bottomLeft();
-      bottomRight_ = eye_ + size_ * _f.bottomRight();
+    {   
+      qreal _a = proj_.fov().radians() *0.5;
+      qreal _height = tan(_a);
+      qreal _width = _height * proj_.aspectRatio();
+      eye_ = QVector3D(0,0,0);
+      topLeft_ = QVector3D(1.0,-_width,_height);
+      topRight_ = QVector3D(1.0,_width,_height);
+      bottomLeft_ = QVector3D(1.0,-_width,-_height);
+      bottomRight_ = QVector3D(1.0,_width,-_height);
     }
 
     void Projector::draw() const
@@ -52,27 +54,42 @@ namespace omni
         _.glLineWidth(1.0);
       });
 
-      this->visualLine(eye_,topLeft_);
-      this->visualLine(eye_,topRight_);
-      this->visualLine(eye_,bottomLeft_);
-      this->visualLine(eye_,bottomRight_);
-      this->visualLine(topLeft_,topRight_);
-      this->visualLine(topLeft_,bottomLeft_);
-      this->visualLine(topRight_,bottomRight_);
-      this->visualLine(bottomLeft_,bottomRight_);
+      glPushMatrix(); 
+      {
+        glLoadIdentity();
+        // Apply matrix to OpenGL
+        glMultMatrixf(proj_.matrix().data());
+        this->visualLine(eye_,topLeft_);
+        this->visualLine(eye_,topRight_);
+        this->visualLine(eye_,bottomLeft_);
+        this->visualLine(eye_,bottomRight_);
+        this->visualLine(topLeft_,topRight_);
+        this->visualLine(topLeft_,bottomLeft_);
+        this->visualLine(topRight_,bottomRight_);
+        this->visualLine(bottomLeft_,bottomRight_);
+      }
+      glPopMatrix();
+
     }
 
     void Projector::drawHalo() const
     {
-      glBegin(GL_TRIANGLE_FAN);
-      Interface::color(color_,0.15);
-      this->vertex3(eye_);
-      Interface::color(color_,0.0);
-      this->vertex3(topLeft_);
-      this->vertex3(topRight_);
-      this->vertex3(bottomRight_);
-      this->vertex3(bottomLeft_);
-      glEnd();
+      glPushMatrix(); 
+      {
+        glLoadIdentity();
+        // Apply matrix to OpenGL
+        glMultMatrixf(proj_.matrix().data());
+        glBegin(GL_TRIANGLE_FAN);
+        Interface::color(color_,0.15);
+        this->vertex3(eye_);
+        Interface::color(color_,0.0);
+        this->vertex3(topLeft_*3.0);
+        this->vertex3(topRight_*3.0);
+        this->vertex3(bottomRight_*3.0);
+        this->vertex3(bottomLeft_*3.0);
+        glEnd();
+      }
+      glPopMatrix();
     }
   }
 }

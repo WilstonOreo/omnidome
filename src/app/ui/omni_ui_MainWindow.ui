@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1023</width>
-    <height>752</height>
+    <width>1394</width>
+    <height>881</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -221,7 +221,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="btnPositioning">
+        <widget class="QToolButton" name="btnProjectionSetup">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -241,7 +241,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Positioning</string>
+          <string>Projection Setup</string>
          </property>
          <property name="autoRaise">
           <bool>true</bool>
@@ -564,10 +564,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>btnPositioning</sender>
+   <sender>btnProjectionSetup</sender>
    <signal>clicked()</signal>
    <receiver>omni::ui::MainWindow</receiver>
-   <slot>showPositioning()</slot>
+   <slot>showProjectionSetup()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>735</x>
@@ -684,7 +684,7 @@
   <slot>editAsNew()</slot>
   <slot>showScreenSetup()</slot>
   <slot>showCanvas()</slot>
-  <slot>showPositioning()</slot>
+  <slot>showProjectionSetup()</slot>
   <slot>showWarp()</slot>
   <slot>showBlend()</slot>
   <slot>showExport()</slot>

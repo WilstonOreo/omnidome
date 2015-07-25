@@ -1,15 +1,28 @@
 #include <omni/visual/Session.h>
 
+#include <QOpenGLShaderProgram>
+#include <QOpenGLShader>
+
+#include <omni/util.h>
+#include <omni/proj/Frustum.h>
+
 namespace omni
 {
   namespace visual
   {
+    std::unique_ptr<QOpenGLShaderProgram> Session::frustumShader_;
+
     Session::Session(omni::Session& _session) : 
       session_(_session)
     {
     }
+    
+    omni::Session& Session::session()
+    {
+      return session_;
+    }
       
-    omni::Session const& Session::session()
+    omni::Session const& Session::session() const
     {
       return session_;
     }
@@ -23,8 +36,6 @@ namespace omni
       auto* _input = session_.inputs().current();
       auto* _mapping = session_.mapping();
 
-      qDebug() << _input << " " << _mapping;
-
       if (_input) _input->bind(_mapping);
 
       _canvas->draw();
@@ -32,6 +43,31 @@ namespace omni
       if (_input) _input->release(_mapping);
     }
       
+    void Session::drawCanvasWithFrustumIntersections() const
+    {
+      auto _canvas = session_.canvas();
+      if (!frustumShader_ || !_canvas) return;
+
+      frustumShader_->bind();
+      for (auto& _tuning : session_.tunings())
+      {
+        proj::Frustum _f(_tuning->projector());
+
+        auto _c = _tuning->color();
+
+        frustumShader_->setUniformValue("eye",_f.eye());
+        frustumShader_->setUniformValue("look_at",_f.lookAt());
+        frustumShader_->setUniformValue("top_left",_f.topLeft());
+        frustumShader_->setUniformValue("top_right",_f.topRight());
+        frustumShader_->setUniformValue("bottom_left",_f.bottomLeft());
+        frustumShader_->setUniformValue("bottom_right",_f.bottomRight());
+        frustumShader_->setUniformValue("color",_c.redF(),_c.greenF(),_c.blueF());
+        _canvas->draw(); 
+      }
+
+      frustumShader_->release();
+    }
+
     void Session::drawProjectors() const
     {
       for (auto& _proj : projectors_)
@@ -61,6 +97,20 @@ namespace omni
         projectors_.emplace_back(session_.tunings()[i]->projector());
         projectors_.back().setColor(session_.tunings()[i]->color());
         projectors_.back().update();
+      }
+
+      if (!QOpenGLContext::currentContext()) return;
+
+      if (!frustumShader_)
+      {
+        qDebug() << "frustumShader_";
+        static QString _vertSrc = util::fileToStr(":/shaders/frustum.vert");
+        static QString _fragmentSrc = util::fileToStr(":/shaders/frustum.frag");
+        
+        frustumShader_.reset(new QOpenGLShaderProgram());
+        frustumShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
+        frustumShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
+        frustumShader_->link();
       }
     }
 

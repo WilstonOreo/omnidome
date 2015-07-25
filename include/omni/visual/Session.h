@@ -15,20 +15,21 @@ namespace omni
     public:
       Session(omni::Session&);
 
-      omni::Session const& session();
+      omni::Session const& session() const;
+      omni::Session& session();
 
       void drawCanvas() const;
+      void drawCanvasWithFrustumIntersections() const;
 
       void update();
-
       void free();
 
       void drawProjectors() const;
       void drawProjectorHalos() const;
 
     private:
-
       omni::Session& session_;
+      static std::unique_ptr<QOpenGLShaderProgram> frustumShader_;
 
       std::list<visual::Projector> projectors_;
     };
