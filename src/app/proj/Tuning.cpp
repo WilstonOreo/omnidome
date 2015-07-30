@@ -61,10 +61,28 @@ namespace omni
         {
           glView_->setSession(session_);
           glView_->setTuningIndex(index_);
+          titleBar_->setColor(tuning()->color());
+
+          // Also attach fullscreen
+          if (fullscreen_)
+          {
+            fullscreen_->setSession(session_);
+            fullscreen_->setTuningIndex(index_);
+          }
           sessionModeChange();
         }
       }
-  
+        
+      /// Enable or disable fullscreen display
+      void Tuning::fullscreenToggle(bool _enabled)
+      {
+        glView_->setDrawingEnabled(_enabled);
+        if (fullscreen_)
+        {
+          fullscreen_->setDrawingEnabled(_enabled);
+        }
+      }
+ 
       int Tuning::index() const
       {
         return index_;
@@ -83,13 +101,6 @@ namespace omni
         
         if (!_projSetup) return;
  
-        /// Lambda for retrieving the value from a slider
-        auto getParamAsFloat = [this](QString const& _str) -> double
-        {
-          auto* _widget = static_cast<slim::RangedFloat*>(this->parameterMap_.at(_str));
-          return _widget->value();
-        };
-
         /// Handle free projector setup
         if (_projSetup->getTypeId() == "FreeSetup")
         {
@@ -118,9 +129,32 @@ namespace omni
 
         }
         tuning()->setupProjector();
-        
-        glView_->update();
+
+        updateViews();
         emit projectorSetupChanged();
+      }
+
+        
+      void Tuning::attachScreen(Screen const& _screen)
+      {
+        fullscreen_.reset(new TuningGLView());
+
+        fullscreen_->hide();
+        fullscreen_->setSession(session_);
+        fullscreen_->setTuningIndex(index_);
+        fullscreen_->setFullscreen(_screen);
+      }
+
+      void Tuning::detachScreen()
+      {
+        fullscreen_.reset();
+      }
+
+      void Tuning::updateViews()
+      {
+        glView_->update();
+        if (fullscreen_) 
+          fullscreen_->update();
       }
 
       void Tuning::setup()
@@ -130,7 +164,6 @@ namespace omni
         /// Setup title bar
         titleBar_ = new TitleBar("Projector",this);
         titleBar_->installEventFilter(this);
-        connect(titleBar_,SIGNAL(valueChanged()),this,SLOT(updateColor()));
         connect(titleBar_,SIGNAL(closeButtonClicked()),this,SLOT(prepareRemove()));
 
         /// Setup preview window
@@ -354,7 +387,7 @@ namespace omni
         auto _rect = rect().adjusted(2,2,-2,-2);
         
         /// Paint board if active or color is selected
-        if (titleBar_->isMoving() || isSelected_)
+        if (isSelected_)
         {
           _p.setPen(QPen(titleBar_->color(),5));
         } else

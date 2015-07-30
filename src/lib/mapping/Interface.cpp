@@ -22,8 +22,8 @@ namespace omni
     {
       /// Make shader
       shader_.reset(new QOpenGLShaderProgram());
-      shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,util::fileToStr(vertexShaderFile()));
-      shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,util::fileToStr(fragmentShaderFile()));
+      shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,vertexShaderSourceCode());
+      shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,fragmentShaderSourceCode());
       shader_->link();
     }
 
@@ -49,14 +49,14 @@ namespace omni
     {
     }
  
-    QString Interface::vertexShaderFile() const
+    QString Interface::vertexShaderSourceCode() const
     {
-      return ":/shader/common.vert";
+      return util::fileToStr(":/shaders/mapping/common.vert");
     }
 
-    QString Interface::fragmentShaderFile() const
+    QString Interface::fragmentShaderSourceCode() const
     {
-      return QString(":/shader/") + getTypeId().str() + ".vert";
+      return util::fileToStr(QString(":/shaders/mapping/") + getTypeId().str() + ".frag");
     }
   }
 }

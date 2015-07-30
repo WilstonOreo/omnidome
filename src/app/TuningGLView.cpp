@@ -58,6 +58,22 @@ namespace omni
       viewOnly_ = _viewOnly;
       update();
     }
+      
+    bool TuningGLView::isDrawingEnabled() const
+    {
+      return drawingEnabled_;
+    }
+
+    void TuningGLView::setDrawingEnabled(bool _drawingEnabled) 
+    {
+      drawingEnabled_ = _drawingEnabled;
+      update();
+    }
+
+    bool TuningGLView::isFullscreen() const
+    {
+      return fullscreen_;
+    }
 
     float TuningGLView::border() const
     {
@@ -74,7 +90,16 @@ namespace omni
     void TuningGLView::sessionModeChange()
     {
     }
-
+ 
+    void TuningGLView::setFullscreen(Screen const& _screen)
+    {
+      setParent(nullptr);
+      setWindowFlags( Qt::CustomizeWindowHint );
+      setWindowFlags(Qt::FramelessWindowHint);
+      raise();
+      setGeometry(_screen.rect());
+      fullscreen_ = true;
+    }
 
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
     {
@@ -99,7 +124,9 @@ namespace omni
       
     bool TuningGLView::initialize()
     {
-      return true;
+      if (context())
+        frameBuffer_.reset(new QOpenGLFramebufferObject(512,512));
+      return context() != nullptr;
     }
       
     QRectF TuningGLView::viewRect() const
@@ -124,11 +151,34 @@ namespace omni
       }
       return QRectF(QPointF(_left,_top),QPointF(_right,_bottom));
     }
+      
+    void TuningGLView::drawCanvas()
+    {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMultMatrixf(tuning()->projector().projectionMatrix().constData());
+        glMatrixMode(GL_MODELVIEW);
+     
+        glLoadIdentity();
+
+        glDisable(GL_LIGHTING);
+        session_->drawCanvas();
+    }
 
     void TuningGLView::paintGL()
     {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       if (!tuning_) return;
+
+      if (!isDrawingEnabled())
+        if (frameBuffer_)
+        {
+          frameBuffer_->bind();
+          glViewport(0, 0, (GLint)frameBuffer_->width(), (GLint)frameBuffer_->height());
+          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+      
+      glDisable(GL_BLEND);
 
       switch (session()->mode()) 
       {
@@ -136,22 +186,64 @@ namespace omni
         //tuning_.drawScreenImage();
         break;
       case Session::Mode::PROJECTIONSETUP: 
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glMultMatrixf(tuning()->projector().projectionMatrix().constData());
-        glMatrixMode(GL_MODELVIEW);
-     
-        glPushMatrix();
-        glLoadIdentity();
-
-        glDisable(GL_LIGHTING);
-        session_->drawCanvas();
-        glPopMatrix();
+        drawCanvas();
         break;
       case Session::Mode::WARP:
       case Session::Mode::BLEND:
       case Session::Mode::EXPORT:
         break;
+      }
+      
+      if (!isDrawingEnabled())
+      {
+        if (frameBuffer_)
+        {
+          frameBuffer_->release();
+          makeCurrent();
+          
+          glViewport(0,0, width(), height());
+          glBindTexture(GL_TEXTURE_2D, frameBuffer_->texture());
+          
+          /// Setup orthogonal projection
+          glMatrixMode(GL_PROJECTION);
+        {
+    glLoadIdentity();
+    QMatrix4x4 _m;
+    _m.ortho(-0.5,0.5,-0.5,0.5,-1.0,1.0);
+    glMultMatrixf(_m.constData());
+  }
+      glDisable( GL_CULL_FACE );
+      glEnable(GL_TEXTURE_2D);
+      glMatrixMode(GL_MODELVIEW);
+ 
+
+      glLoadIdentity();
+      glActiveTexture(GL_TEXTURE0);
+
+          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBegin(GL_QUADS);
+    {
+      glTexCoord2f(0.0f,0.0f);
+      glVertex2f(-0.5f,-0.5f);
+      glTexCoord2f(1.0f,0.0f);
+      glVertex2f(0.5f,-0.5f);
+      glTexCoord2f(1.0f,1.0f);
+      glVertex2f(0.5f,0.5f);
+      glTexCoord2f(0.0f,1.0f);
+      glVertex2f(-0.5f,0.5f);
+    }
+    glEnd();
+          
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+      glEnable(GL_BLEND);
+        
+        }
       }
     }
   }

@@ -18,15 +18,15 @@
     <widget class="QComboBox" name="boxCanvasSelect"/>
    </item>
    <item>
-    <widget class="omni::ui::ParameterWidget" name="widget" native="true"/>
+    <widget class="omni::ui::CanvasParameters" name="widget" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>omni::ui::ParameterWidget</class>
+   <class>omni::ui::CanvasParameters</class>
    <extends>QWidget</extends>
-   <header>omni/ui/ParameterWidget.h</header>
+   <header location="global">omni/ui/CanvasParameters.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

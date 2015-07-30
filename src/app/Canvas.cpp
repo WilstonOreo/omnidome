@@ -3,9 +3,15 @@
 #include "ui_omni_ui_Canvas.h"
 
 #include <QVBoxLayout>
+#include <QVariant>
 
 #include <omni/Session.h>
 #include <omni/canvas/Interface.h>
+#include <omni/canvas/HalfDome.h>
+#include <omni/canvas/FullSphere.h>
+#include <omni/canvas/InflatableDome.h>
+#include <omni/canvas/Box.h>
+#include <omni/canvas/Planar.h>
 
 namespace omni
 {
@@ -16,76 +22,60 @@ namespace omni
       ui_(new Ui::Canvas)
     {
       ui_->setupUi(this);
- 
+
+      // Add canvas types from Factory
       for (auto& _idCanvasClass : omni::canvas::Factory::classes())
       {
         QString _id = _idCanvasClass.first.str();
-        ui_->boxCanvasSelect->addItem(QIcon(QString(":/canvas/")+ _id + QString(".png")),_id);
+        ui_->boxCanvasSelect->addItem(QIcon(QString(":/canvas/")+ _id + QString(".png")),_id,QVariant(_id));
       }
-      
+
+      // Configure layout
       QLayout* _layout = new QVBoxLayout;
+      _layout->setSpacing(2);
+      _layout->setContentsMargins(0,0,0,0);
+      ui_->widget->setLayout(_layout);
 
-      _layout->setSpacing(0);
-
-      ui_->widget->setLayout(new QVBoxLayout);
+      // Update parameter when canvas has changed
+      connect(ui_->widget,SIGNAL(parametersUpdated()),this,SIGNAL(canvasChanged()));
     }
 
     Canvas::~Canvas()
     {
     }
 
-    Session const* Canvas::session() const
+    void Canvas::sessionParameters()
     {
-      return session_;
+      if (!session()->canvas())
+      {
+        session()->setCanvas("HalfDome");
+      }
+
+      // Search combobox for available canvas types
+      int _index = 0;
+      for (int i = 0; i < ui_->boxCanvasSelect->count(); ++i)
+      {
+        QString _id = ui_->boxCanvasSelect->itemData(i).toString();
+        if (_id == session()->canvas()->getTypeId().str())
+        {
+          _index = i;
+        }
+      }
+
+      ui_->boxCanvasSelect->setCurrentIndex(_index);
+      ui_->widget->setCanvas(session()->canvas());
+      emit canvasChanged();
     }
 
-    void Canvas::setSession(Session* _session)
-    {
-      session_=_session;
-    }
-      
     void Canvas::canvasTypeSelected(QString const& _id)
     {
-      if (!session_) return;
-        
-      ui_->widget->clear();
-        
-      session_->setCanvas(_id); 
+      if (!session() || this->isLocked()) return;
 
-      if (!session_->canvas()) return;
-
-      if (_id == "HalfDome") 
-      {
-        ui_->widget->addOffsetWidget("Radius",0.0,0.1,10.0);
-      } else
-      if (_id == "Radome") 
-      {
-        ui_->widget->addOffsetWidget("Radius",0.0,0.1,10.0);
-        ui_->widget->addOffsetWidget("Z Offset",0.0,0.1,10.0);
-      } else
-      if (_id == "InflatableDome")
-      {
-        ui_->widget->addOffsetWidget("Radius",0.0,0.1,10.0);
-        ui_->widget->addOffsetWidget("Z Offset",0.0,0.1,10.0);
-      } else
-      if (_id == "Planar")
-      {
-        ui_->widget->addOffsetWidget("Height",1.0,0.1,10.0);
-        ui_->widget->addOffsetWidget("Width",1.0,0.1,10.0);
-        ui_->widget->addOffsetWidget("X",1.0,-10.0,10.0);
-        ui_->widget->addOffsetWidget("Y",1.0,-10.0,10.0);
-        ui_->widget->addOffsetWidget("Z",1.0,-10.0,10.0);
-        ui_->widget->addAngleWidget("Yaw",0.0,0.0,360.0);
-        ui_->widget->addAngleWidget("Pitch",0.0,0.0,360.0);
-        ui_->widget->addAngleWidget("Roll",0.0,0.0,360.0);
-      } else if (_id == "Box") 
-      {
-        ui_->widget->addOffsetWidget("Height",1.0,0.1,10.0);
-        ui_->widget->addOffsetWidget("Width",1.0,0.1,10.0);
-        ui_->widget->addOffsetWidget("Length",1.0,0.1,10.0);
-      }  
+      session()->setCanvas(_id);
+      if (session()->canvas())
+        ui_->widget->setCanvas(session()->canvas());
 
       emit canvasTypeChanged();
-    }    
+    }
   }
 }

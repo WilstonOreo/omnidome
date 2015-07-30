@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <QGroupBox>
+#include <omni/ui/SessionWidget.h>
 
 namespace omni
 {
@@ -15,25 +16,26 @@ namespace omni
       class Mapping;
     }
 
-    class Mapping : public QGroupBox
+    /**@brief Widget for selecting a mapping mode and the parameters
+     **/
+    class Mapping : 
+      public QGroupBox,
+      public SessionWidget
     {
       Q_OBJECT
     public:
       Mapping(QWidget* = nullptr);
       ~Mapping();
-
-      Session const* session() const;
-      void setSession(Session* _session);
-      
+ 
     signals:
       void mappingTypeChanged();
       void mappingChanged();
 
     public slots:
       void mappingTypeSelected(QString const&);
+      void sessionParameters();
 
     private:
-      Session* session_ = nullptr;
       std::unique_ptr<Ui::Mapping> ui_;
     };
   }

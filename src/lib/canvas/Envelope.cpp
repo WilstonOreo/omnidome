@@ -16,6 +16,24 @@ namespace omni
     {
       return true;
     }
+      
+    void Envelope::draw() const
+    {
+      // Cullface according to projection mode
+      switch (this->projectionMode())
+      {
+      case PROJECT_INSIDE: 
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+        break;
+      case PROJECT_OUTSIDE:
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        break;
+      case PROJECT_BOTH_SIDES:
+        glDisable(GL_CULL_FACE);
+      }
+    }
 
     Envelope::ProjectionMode Envelope::projectionMode() const
     {

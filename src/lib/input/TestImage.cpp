@@ -18,7 +18,10 @@ namespace omni
 
     void TestImage::bind(mapping::Interface* _mapping)
     {
-      if (!shader_) return;
+      if (!shader_) {
+        update();
+        return;
+      }
 
       shader_->bind();
       shader_->setUniformValue("ruler_pos",GLfloat(pos_.x()),GLfloat(pos_.y()));

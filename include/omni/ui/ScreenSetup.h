@@ -4,7 +4,7 @@
 #include <list>
 #include <QWidget>
 
-#include <omni/proj/Tuning.h>
+#include <omni/ui/proj/Tuning.h>
 #include <omni/proj/ScreenSetup.h>
 
 namespace omni
@@ -13,6 +13,9 @@ namespace omni
  
   namespace ui
   {
+    /**@brief A widget for setup fullscreen windows
+     * @details Holds fullscreen widgets
+     **/
     class ScreenSetup : public QWidget
     {
       Q_OBJECT
@@ -20,14 +23,16 @@ namespace omni
       ScreenSetup(QWidget* = nullptr);
       ~ScreenSetup();
 
-        
       Session const* session() const;
       void setSession(Session*);
 
       float zoom() const;
 
     public slots:
+      /// Update screen dimensions
       void updateScreens();
+
+      /// Set zoom factor
       void setZoom(float);
 
     protected:
@@ -41,6 +46,7 @@ namespace omni
     private:
       friend class Item;
 
+      /// A screen rectangle item with drawing functionality
       class Item
       {
       public:
@@ -49,11 +55,11 @@ namespace omni
         void paint(QPainter&);
 
         /// Attach projector to screen
-        void attachTuning(omni::proj::Tuning*);
+        void attachTuning(omni::ui::proj::Tuning*);
 
         /// Detach projector from item
         void detachTuning();
-        omni::proj::Tuning const* tuning() const;
+        omni::ui::proj::Tuning const* tuning() const;
   
         /// Returns flag whether
         bool mouseOver() const;
@@ -69,7 +75,7 @@ namespace omni
         bool drop_ = false;
         ScreenSetup& screenSetup_;
         Screen const& screen_;
-        omni::proj::Tuning* tuning_ = nullptr;
+        omni::ui::proj::Tuning* tuning_ = nullptr;
       };
 
       /// Returns transformed bounding rect which fits into window and keeps aspect ratio

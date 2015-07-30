@@ -14,11 +14,6 @@ namespace omni
       return subScreenCount() > 1;
     }
 
-    int Screen::x() const
-    {
-      return width() * index_;
-    }
-
     int Screen::width() const
     {
       return rect_.width() / subScreenCount();
@@ -44,7 +39,7 @@ namespace omni
       auto _s = _rect.size();
       qreal _aspectRatio = _s.width() / qreal(_s.height());
 
-      if (_aspectRatio < 1.0) return 1;
+      if (_aspectRatio < 1.5) return 1;
 
       // Detect triple head
       size_t _subscreenCount = 3;

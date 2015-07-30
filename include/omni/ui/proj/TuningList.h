@@ -20,17 +20,23 @@ namespace omni
       {
         Q_OBJECT
       public:
+        // Maximum number of tunings one can add
+        inline static constexpr int maxNumberTunings() { return 16; }
+
         TuningList(QWidget* = nullptr);
         ~TuningList();
 
+        /// The session
         Session const* session() const;
+        
+        /// Set new session and update subwidgets
         void setSession(Session*);
 
       public slots:
         /// Change current mode for all tuning widgets
         void sessionModeChange();
 
-        /// Add a new tuning and tuning widget
+        /// Add a new tuning and tuning widget, with automatically detected settings
         void addTuning();
 
         /// Remove tuning 
@@ -42,14 +48,26 @@ namespace omni
         /// Remove all mappings from session and all associated widgets
         void clear();
 
+        /// Updates/Repaints GL Views of all tunings widgets
+        void updateViews();
+
       protected:
         void resizeEvent(QResizeEvent*);
 
       signals:
+        /// Signal which is emitted when the current tuning has changed
         void currentIndexChanged(int);
+
+        /// Signal which is emitted when parameters of one tuning have changed
         void projectorSetupChanged();
 
       private:
+        /// Add widget from existing tuning
+        void addTuning(omni::proj::Tuning* _tuning);
+
+        /// Get most differing color for a new tuning
+        QColor getTuningColor();
+
         QWidget* contents_;
         QLayout* layout_;
 

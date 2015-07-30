@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <QGroupBox>
+#include <omni/ui/SessionWidget.h>
 
 namespace omni
 {
@@ -15,15 +16,14 @@ namespace omni
       class Canvas;
     }
 
-    class Canvas : public QGroupBox
+    class Canvas : 
+      public QGroupBox,
+      public SessionWidget
     {
       Q_OBJECT
     public:
       Canvas(QWidget* = nullptr);
       ~Canvas();
-
-      Session const* session() const;
-      void setSession(Session* _session);
 
     signals:
       void canvasTypeChanged();
@@ -32,8 +32,9 @@ namespace omni
     public slots:
       void canvasTypeSelected(QString const&);
 
+      void sessionParameters();
+
     private:
-      Session* session_ = nullptr;
       std::unique_ptr<Ui::Canvas> ui_;
     };
   }

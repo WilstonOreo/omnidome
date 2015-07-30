@@ -4,12 +4,30 @@ namespace omni
 {
   namespace canvas
   {
-    Dome::Dome()
+    Dome::Dome() : center_(0.0,0.0,0.0)
     {
       update();
     }
 
     Dome::~Dome()
+    {
+    }
+      
+    void Dome::draw() const
+    {
+      Envelope::draw();
+
+      glPushMatrix();
+      {
+        glLoadIdentity();
+
+        glTranslatef(center_.x(),center_.y(),center_.z());
+        this->sphere_.draw();
+      }
+      glPopMatrix();
+    }
+
+    void Dome::drawAux() const
     {
     }
 
@@ -39,17 +57,28 @@ namespace omni
       return bounds_;
     }
       
+    QVector3D Dome::center() const
+    {
+      return center_;
+    }
+
+    void Dome::setCenter(QVector3D const& _center)
+    {
+      center_=_center;
+    }
+
     void Dome::update()
     {
       auto _r = radius();
       QVector3D _vr(_r,_r,_r);
-      this->bounds_ = Box(-_vr,_vr); 
+      this->bounds_ = Box(-_vr + center_,_vr + center_); 
       sphere_.update();
     }
 
     void Dome::toStream(QDataStream& _stream) const
     {
       _stream << radius();
+      _stream << center();
     }
 
     void Dome::fromStream(QDataStream& _stream)
@@ -57,6 +86,9 @@ namespace omni
       qreal _radius;
       _stream >> _radius;
       setRadius(_radius);
+      QVector3D _center;
+      _stream >> _center;
+      setCenter(_center);
       update();
     }
   }

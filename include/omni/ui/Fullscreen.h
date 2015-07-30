@@ -4,13 +4,14 @@
 #include <map>
 #include <memory>
 #include <QWidget>
-#include <omni/proj/Screen.hpp>
-#include "ScreenIdentifier.h"
 
 namespace omni
 {
   namespace ui
   {
+    /**@brief Widget fills an entire screen
+       @detail for triple heads etc, it has several subwidgets
+     **/
     class Fullscreen : public QWidget
     {
       Q_OBJECT
@@ -34,7 +35,6 @@ namespace omni
 
     private:
       std::map<size_t,QWidget*> widgets_;
-      std::vector<std::unique_ptr<ScreenIdentifier>> identifiers_;
     };
   }
 }

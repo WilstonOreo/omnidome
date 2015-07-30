@@ -23,14 +23,10 @@ namespace omni
        *         * Close tuning widget for deleting a projector tuning
        **/
       class TitleBar :
-        public slim::Widget,
-        private slim::mixin::RangedValue<TitleBar,double>
+        public slim::Widget
       {
         Q_OBJECT
       public:
-        typedef slim::mixin::RangedValue<TitleBar,double> mixin_range_type;
-        using mixin_range_type::value;
-
         /// Construct with tuning widget as parent (is mandatory)
         TitleBar(Tuning*);
         
@@ -38,52 +34,33 @@ namespace omni
         TitleBar(QString const& _label, Tuning*);
         ~TitleBar();
 
-        /// Return gradient color
+        /// Return color
         QColor color() const;
-       
-        /// Returns movement flag
-        bool isMoving() const;
 
       public slots:
-        /// Set value (must between 0.0 and 1.0)
-        //
-        void setValue(double);
-      signals:
+        /// Set color from gradient pos (between 0.0 and 1.0)
+        void setColor(QColor const&);
         
-        void valueChanged();
+        /// Select color from color picker
+        void selectColor();
+
+      signals:
         void closeButtonClicked();
         void maximizeButtonClicked();
-        void displayButtonClicked(bool);
+        void colorChanged(QColor const&);
+
+        void freeSetupSelected();
+        void peripheralSetupSelected();
 
       protected:
         void paintEvent(QPaintEvent*);
-        void mouseMoveEvent(QMouseEvent*);
-        void mousePressEvent(QMouseEvent*);
-        void mouseReleaseEvent(QMouseEvent*);
-        void wheelEvent(QWheelEvent*);
 
       private:
         void setup();
 
         /// Set moving flag to value and handle visibility of buttons 
-        void setMoving(bool _moving);
         Tuning* tuningWidget();
-
-        /// Calculate position from value
-        double valueToPos() const;
-
-        /// Calculate position from value
-        double valueToPos(double) const;
-
-        /// Get value from x mouse position
-        double valueFromPos(double) const;
-        
-        /// Moving flag
-        bool moving_ = false;
-
-        /// Spectral gradient 
-        QLinearGradient gradient_;
-        
+         
         /// Button for resetting and projector setup selection
         QUniquePtr<QToolButton> menuButton_;
         
@@ -96,10 +73,13 @@ namespace omni
         /// Button for closing widget
         QUniquePtr<QToolButton> closeButton_;
 
+        /// Context menu widget
         QUniquePtr<QMenu> menu_;
 
         /// Parent tuning widget
         Tuning* tuningWidget_ = nullptr;
+
+        QColor color_;
       };
     };
   }

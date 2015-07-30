@@ -23,6 +23,16 @@ namespace omni
       update();
     }
       
+    bool Projector::isSelected() const
+    {
+      return selected_;
+    }
+    
+    void Projector::setSelected(bool _selected)
+    {
+      selected_ = _selected;
+    }
+ 
     QColor Projector::color() const
     {
       return color_; 
@@ -51,7 +61,7 @@ namespace omni
 
       with_current_context([this](QOpenGLFunctions& _)
       {
-        _.glLineWidth(1.0);
+        _.glLineWidth(selected_ ? 2.0 : 1.0);
       });
 
       glPushMatrix(); 
@@ -67,9 +77,25 @@ namespace omni
         this->visualLine(topLeft_,bottomLeft_);
         this->visualLine(topRight_,bottomRight_);
         this->visualLine(bottomLeft_,bottomRight_);
+
       }
       glPopMatrix();
+    }
 
+    void Projector::drawPositioning(QVector3D const& _center) const
+    {
+      Interface::color(color_); 
+      with_current_context([this](QOpenGLFunctions& _)
+      {
+        _.glLineWidth(selected_ ? 4.0 : 1.5);
+      });
+      auto _p = proj_.pos();
+      this->visualLine(_center,QVector3D(_p.x(),_center.y(),_center.z()));
+      this->visualLine(
+          QVector3D(_p.x(),_center.y(),_center.z()),
+          QVector3D(_p.x(),_p.y(),_center.z()));
+      this->visualLine(
+          QVector3D(_p.x(),_p.y(),_center.z()),_p);
     }
 
     void Projector::drawHalo() const
@@ -80,13 +106,15 @@ namespace omni
         // Apply matrix to OpenGL
         glMultMatrixf(proj_.matrix().data());
         glBegin(GL_TRIANGLE_FAN);
-        Interface::color(color_,0.15);
+        Interface::color(color_,selected_ ? 0.45 : 0.15);
         this->vertex3(eye_);
         Interface::color(color_,0.0);
-        this->vertex3(topLeft_*3.0);
-        this->vertex3(topRight_*3.0);
-        this->vertex3(bottomRight_*3.0);
-        this->vertex3(bottomLeft_*3.0);
+        float _scale = size_ * 2.0;
+        if (selected_) _scale *= 2.0;
+        this->vertex3(topLeft_*_scale);
+        this->vertex3(topRight_*_scale);
+        this->vertex3(bottomRight_*_scale);
+        this->vertex3(bottomLeft_*_scale);
         glEnd();
       }
       glPopMatrix();

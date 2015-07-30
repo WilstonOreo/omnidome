@@ -84,6 +84,21 @@ namespace omni
 
         /// Display content and widget for specific session mode
         void sessionModeChange();
+ 
+        /// Attaches a screen to this tuning
+        void attachScreen(Screen const& _screen);
+
+        /**@brief Detaches screen from this tuning
+           @detail Also triggered when QGuiApplication::screenAdded or 
+                   QGuiApplication::screenRemoved were fired
+         **/
+        void detachScreen();
+
+        /// Update GL View and Fullscreen view, if there is any
+        void updateViews();
+        
+        /// Enable or disable fullscreen display
+        void fullscreenToggle(bool);
 
       signals:
         void selected();
@@ -143,11 +158,14 @@ namespace omni
         
         /// GL preview widget
         TuningGLView* glView_ = nullptr;
-      
+ 
+        // Fullscreen GL widget
+        QUniquePtr<TuningGLView> fullscreen_;
+
         /// Window State
         WindowState windowState_ = ADJUSTMENT_SLIDERS;
 
-        /// isSelected_ flag (should be true when widget is currently selected) 
+        /// Is true when this widgets index and current tuning index are equal 
         bool isSelected_ = true;
       };
     }

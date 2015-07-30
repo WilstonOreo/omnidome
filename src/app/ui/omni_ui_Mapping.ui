@@ -18,7 +18,7 @@
     <widget class="QComboBox" name="boxMappingSelect"/>
    </item>
    <item>
-    <widget class="omni::ui::ParameterWidget" name="widget" native="true">
+    <widget class="omni::ui::MappingParameters" name="widget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -31,9 +31,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>omni::ui::ParameterWidget</class>
+   <class>omni::ui::MappingParameters</class>
    <extends>QWidget</extends>
-   <header>omni/ui/ParameterWidget.h</header>
+   <header location="global">omni/ui/MappingParameters.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

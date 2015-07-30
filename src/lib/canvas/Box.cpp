@@ -17,6 +17,7 @@ namespace omni
 
     void Box::draw() const
     {
+      Envelope::draw();
       visual::Box::draw(this->bounds_);
     }
 

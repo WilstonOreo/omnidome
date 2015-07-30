@@ -2,13 +2,16 @@
 #define OMNI_CANVAS_INFLATABLEDOME_H_
 
 #include <omni/canvas/Dome.h>
+#include <omni/canvas/FullSphere.h>
 
 namespace omni
 {
   namespace canvas
   {
+    /**@brief A fullsphere dome with z offset and squeeze factor
+     **/
     class InflatableDome : 
-      public Dome, 
+      public FullSphere, 
       Registrar<InflatableDome>
     {
     public: 
@@ -16,10 +19,15 @@ namespace omni
 
       InflatableDome();
       ~InflatableDome();
+      
+      float squeeze() const;
+      void setSqueeze(float _squeeze);
 
       void draw() const;
-      void drawAux() const;
       void update();
+
+    private:
+      float squeeze_ = 1.0;
     };
   }
 

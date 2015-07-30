@@ -5,9 +5,8 @@
 #include <omni/util.h>
 
 #include <omni/canvas/HalfDome.h>
-#include <omni/canvas/Radome.h>
+#include <omni/canvas/FullSphere.h>
 #include <omni/canvas/InflatableDome.h>
-#include <omni/canvas/TiltedDome.h>
 #include <omni/canvas/Box.h>
 #include <omni/canvas/Planar.h>
 #include <omni/input/Image.h>
@@ -32,9 +31,8 @@ namespace omni
     {
       using namespace canvas;
       Factory::reg<HalfDome>();
-      Factory::reg<Radome>();
+      Factory::reg<FullSphere>();
       Factory::reg<InflatableDome>();
-      Factory::reg<TiltedDome>();
       Factory::reg<HalfDome>();
       Factory::reg<canvas::Box>();
       Factory::reg<Planar>();
@@ -66,6 +64,11 @@ namespace omni
       SetupFactory::reg<PeripheralSetup>();
     }
     // END Register Projector Setups
+
+
+    // Set default settings
+    setCanvas("HalfDome");
+    setMapping("Planar");
   }
 
   Session::~Session()

@@ -57,11 +57,15 @@ namespace omni
       std::unique_ptr<QOpenGLShaderProgram> shader_;
 
     private:
-      /// Returns path to vertex shader file (is :/shader/common.vert by default)
-      virtual QString vertexShaderFile() const;
+      /**@brief Returns vertex shader source code 
+       * @detail Ss taken from file :/shaders/mapping/common.vert by default)
+      **/
+      virtual QString vertexShaderSourceCode() const;
 
-      /// Abstract method for returning path to fragment shader (is :/shader/$TYPEID by default) 
-      virtual QString fragmentShaderFile() const;
+      /**@brief Returns fragment shader source code 
+       * @detail Is taken from file :/shaders/mapping/$MAPPING_TYPEID by default) 
+      **/
+      virtual QString fragmentShaderSourceCode() const;
     };
 
     /// Abstract mapping factory

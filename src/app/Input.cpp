@@ -77,6 +77,8 @@ namespace omni
       {
         addItem(_input);
       }
+
+      emit inputChanged();
     }
 
     void Input::removeSelection() 
@@ -87,12 +89,15 @@ namespace omni
       session_->inputs().remove(_row);
       model_->removeRows(_row+1,1);
       changeSelection(model_->index(_row-1,0));
+      
+      emit inputChanged();
     }
 
     void Input::clear()
     {
       session_->inputs().clear();
       prepareModel();
+      emit inputChanged();
     }
       
     void Input::changeSelection(QModelIndex _index)
@@ -107,8 +112,8 @@ namespace omni
         return;
       }
  
-      qDebug() << _index.row();
       session_->inputs().setCurrentIndex(_index.row());
+      emit inputChanged();
     }
 
     void Input::prepareModel() 

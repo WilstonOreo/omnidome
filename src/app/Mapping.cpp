@@ -2,13 +2,9 @@
 
 #include "ui_omni_ui_Mapping.h"
 
-
 #include <QVBoxLayout>
-
 #include <omni/Session.h>
-#include <omni/canvas/Interface.h>
-
-
+#include <omni/mapping/Interface.h>
 
 namespace omni
 {
@@ -26,57 +22,49 @@ namespace omni
         ui_->boxMappingSelect->addItem(QIcon(QString(":/mapping/")+ _id + QString(".png")),_id);
       }
 
-      ui_->widget->setLayout(new QVBoxLayout);
-    
+      // Configure layout
+      QLayout* _layout = new QVBoxLayout;
+      _layout->setSpacing(2);
+      _layout->setContentsMargins(0,0,0,0);
+      ui_->widget->setLayout(_layout);
     }
 
     Mapping::~Mapping()
     {
     }
-
-    Session const* Mapping::session() const
-    {
-      return session_;
-    }
-
-    void Mapping::setSession(Session* _session)
-    {
-      session_=_session;
-    }
     
+    void Mapping::sessionParameters()
+    {
+      if (!session()->mapping())
+      {
+        session()->setMapping("Equirectangular");
+      }
+
+      // Search combobox for available mapping types
+      int _index = 0;
+      for (int i = 0; i < ui_->boxMappingSelect->count(); ++i)
+      {
+        QString _id = ui_->boxMappingSelect->itemData(i).toString();
+        if (_id == session()->mapping()->getTypeId().str())
+        {
+          _index = i;
+        }
+      }
+
+      ui_->boxMappingSelect->setCurrentIndex(_index);
+      ui_->widget->setMapping(session()->mapping());
+      emit mappingChanged();
+    }
+
     void Mapping::mappingTypeSelected(QString const& _id)
     {
-      if (!session_) return;
-        
-      ui_->widget->clear();
-        
-      session_->setMapping(_id); 
+      if (!session() || this->isLocked()) return;
 
-      if (!session_->mapping()) return;
-      
-      if (_id == "Fisheye")
-      {
-        ui_->widget->addWidget("Stretch",0.0,0.0,1.0);
-      } else if (_id == "Equirectangular") 
-      {
-        ui_->widget->addWidget("Strip Bottom",0.0,0.0,1.0);
-        ui_->widget->addWidget("Strip Top",0.0,0.0,1.0);
-      } else if (_id == "Planar") 
-      {
-        ui_->widget->addWidget("Stretch X",1.0,0.0,10.0);
-        ui_->widget->addWidget("Stretch Y",1.0,0.0,10.0);
-        ui_->widget->addWidget("Offset X",0.0,0.0,1.0);
-        ui_->widget->addWidget("Offset Y",0.0,0.0,1.0);
-        // setTileHorizontal + setTileVertical
-      } else if (_id == "Cylindrical")
-      {
-        ui_->widget->addWidget("Height",1.0,0.1,10.0);
-        ui_->widget->addWidget("Radius",0.5,0.1,1.0);
-      } else if (_id == "CubeMapSingle")
-      {
-      } else if (_id == "CubeMapSeparate")
-      {
-      }
+      session()->setMapping(_id);
+      if (session()->mapping())
+        ui_->widget->setMapping(session()->mapping());
+
+      emit mappingTypeChanged();
     }
   }
 }

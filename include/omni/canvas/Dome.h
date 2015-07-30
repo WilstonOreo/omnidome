@@ -9,7 +9,7 @@ namespace omni
 {
   namespace canvas
   {
-    /// A basic dome canvas width a radius
+    /// A basic dome canvas width a radius/diameter and offset
     class Dome : public Envelope 
     {
     public:
@@ -30,6 +30,15 @@ namespace omni
 
       /// Return internally cached bounding box
       Box bounds() const;
+      
+      /// Return center of sphere
+      QVector3D center() const;
+
+      /// Return set center of sphere
+      void setCenter(QVector3D const&);
+
+      virtual void draw() const;
+      virtual void drawAux() const;
 
       virtual void update();
 
@@ -41,6 +50,7 @@ namespace omni
       visual::Sphere sphere_;
       Box bounds_;
     private:
+      QVector3D center_;
     };
   }
 }

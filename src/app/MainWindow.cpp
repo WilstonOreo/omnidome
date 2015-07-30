@@ -30,16 +30,16 @@ MainWindow::MainWindow( QMainWindow *parent) :
   // Make and setup pages
   {
     QLayout* _layout = new QHBoxLayout();
-    screenSetup_.reset(new ScreenSetup());
+    screenSetup_.reset(new ScreenSetup(this));
     _layout->addWidget(screenSetup_.get());
 
-    projectionSetup_.reset(new GLView3D());
+    projectionSetup_.reset(new GLView3D(this));
     _layout->addWidget(projectionSetup_.get());
 
-    warp_.reset(new TuningGLView());
+    warp_.reset(new TuningGLView(this));
     _layout->addWidget(warp_.get());
 
-    blend_.reset(new TuningGLView());
+    blend_.reset(new TuningGLView(this));
     _layout->addWidget(blend_.get());
 
     export_.reset(new Export(session_.get()));
@@ -47,11 +47,22 @@ MainWindow::MainWindow( QMainWindow *parent) :
     ui_->pages->setLayout(_layout);
   }
   
-
   // Connect signals and slots
   {
     // Connect projector position change with view update
-    connect(ui_->tuningList,SIGNAL(projectorSetupChanged()),projectionSetup_.get(),SLOT(update()));
+    connect(ui_->tuningList,SIGNAL(projectorSetupChanged()),this,SLOT(updateAllViews()));
+    connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),this,SLOT(updateAllViews()));
+
+    // Connect canvas parameter change with view update
+    connect(ui_->grpCanvas,SIGNAL(canvasChanged()),this,SLOT(updateAllViews()));
+    connect(ui_->grpCanvas,SIGNAL(canvasTypeChanged()),this,SLOT(updateAllViews()));
+
+    // Update all views when input has changed
+    connect(ui_->grpInputs,SIGNAL(inputChanged()),this,SLOT(updateAllViews())); 
+
+    // Update all views when mapping mode has changed
+    connect(ui_->grpMapping,SIGNAL(mappingChanged()),this,SLOT(updateAllViews()));
+    connect(ui_->grpMapping,SIGNAL(mappingTypeChanged()),this,SLOT(updateAllViews()));
 
     // Connect tuning index of tuning list for warp and blend widget
     connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),warp_.get(),SLOT(setTuningIndex(int)));
@@ -62,7 +73,6 @@ MainWindow::MainWindow( QMainWindow *parent) :
   }
 
   newSession();
-
   raise();
   show();
 }
@@ -204,6 +214,14 @@ void MainWindow::showBlend()
 void MainWindow::showExport()
 {
   setMode(Session::Mode::EXPORT);
+}
+
+void MainWindow::updateAllViews()
+{
+  projectionSetup_->update();
+  warp_->update();
+  blend_->update();
+  ui_->tuningList->updateViews();
 }
 
 

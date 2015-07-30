@@ -54,14 +54,15 @@ namespace omni
         proj::Frustum _f(_tuning->projector());
 
         auto _c = _tuning->color();
-
+        frustumShader_->setUniformValue("color",_c.redF(),_c.greenF(),_c.blueF());
+        
+        // Setup frustum uniforms for intersection test
         frustumShader_->setUniformValue("eye",_f.eye());
         frustumShader_->setUniformValue("look_at",_f.lookAt());
         frustumShader_->setUniformValue("top_left",_f.topLeft());
         frustumShader_->setUniformValue("top_right",_f.topRight());
         frustumShader_->setUniformValue("bottom_left",_f.bottomLeft());
         frustumShader_->setUniformValue("bottom_right",_f.bottomRight());
-        frustumShader_->setUniformValue("color",_c.redF(),_c.greenF(),_c.blueF());
         _canvas->draw(); 
       }
 
@@ -71,13 +72,23 @@ namespace omni
     void Session::drawProjectors() const
     {
       for (auto& _proj : projectors_)
+      {
         _proj.draw();
+      }
+
+      if (session_.canvas())
+      {
+        for (auto& _proj : projectors_)
+          _proj.drawPositioning(session_.canvas()->center());
+      }
     }
       
     void Session::drawProjectorHalos() const
     {
       for (auto& _proj : projectors_)
+      {
         _proj.drawHalo();
+      }
     }
 
     void Session::update()
@@ -96,14 +107,15 @@ namespace omni
       {
         projectors_.emplace_back(session_.tunings()[i]->projector());
         projectors_.back().setColor(session_.tunings()[i]->color());
+        projectors_.back().setSelected(i == session_.tunings().currentIndex());
         projectors_.back().update();
       }
 
       if (!QOpenGLContext::currentContext()) return;
 
+      // Setup frustum/canvas intersection shader
       if (!frustumShader_)
       {
-        qDebug() << "frustumShader_";
         static QString _vertSrc = util::fileToStr(":/shaders/frustum.vert");
         static QString _fragmentSrc = util::fileToStr(":/shaders/frustum.frag");
         

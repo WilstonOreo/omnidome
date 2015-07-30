@@ -60,11 +60,10 @@ namespace omni
       for (auto& _screen : setup_->screens())
       {
         screenItems_.push_back(Item(*this,_screen));
-
         desktopRect_ |= _screen.rect();
       }
     }
-      
+ 
     float ScreenSetup::scalingFactor() const 
     {
       auto _windowRect = this->rect();
@@ -112,9 +111,9 @@ namespace omni
       QPainter _p(this);
       
       _p.setPen(QPen(QColor("#ffffff").darker(150),3));
-
       _p.drawRect(transformedRect());
 
+      /// Draw all items
       for (auto& _item : screenItems_)
       {
         _item.paint(_p);
@@ -165,7 +164,7 @@ namespace omni
 
       if (_screenItem) 
       {
-        _screenItem->attachTuning(static_cast<proj::Tuning*>(event->source())->tuning()); 
+        _screenItem->attachTuning(static_cast<proj::Tuning*>(event->source())); 
         event->acceptProposedAction();
       }
       
@@ -212,17 +211,13 @@ namespace omni
     void ScreenSetup::Item::paint(QPainter& _p)
     {
       // Draw rectangle with tuning color
-      QColor _color = tuning_ != nullptr ? tuning_->color() : "#cccccc";
-
-      qDebug() << tuning_ << " " << _color;
-      if (tuning_) 
-        qDebug() << tuning_->color();
+      QColor _color = tuning_ != nullptr ? tuning_->tuning()->color() : "#cccccc";
 
       if (mouseOver_)
       {
         _color = _color.lighter(120);
       }
-      
+
       _p.setBrush(_color);
       _p.setPen(QPen(_color.darker(200),1));
 
@@ -239,7 +234,7 @@ namespace omni
       _p.drawText(_rect,Qt::AlignHCenter | Qt::AlignVCenter,_resStr);
     }
 
-    void ScreenSetup::Item::attachTuning(omni::proj::Tuning* _tuning)
+    void ScreenSetup::Item::attachTuning(omni::ui::proj::Tuning* _tuning)
     {
       tuning_=_tuning;
       screenSetup_.update();

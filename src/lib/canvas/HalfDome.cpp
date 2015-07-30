@@ -19,17 +19,11 @@ namespace omni
       glPushMatrix();
       {
         glLoadIdentity();
-
-        glTranslatef(center_.x(),center_.y(),center_.y());
-
+        glTranslatef(center().x(),center().y(),center().z());
+        glMultMatrixf(angles_.matrix().constData());
         this->sphere_.draw();
       }
       glPopMatrix();
-
-    }
-
-    void HalfDome::drawAux() const
-    {
     }
  
     EulerAngles& HalfDome::angles()
@@ -42,35 +36,25 @@ namespace omni
       return angles_;
     }
       
-    QVector3D HalfDome::center() const
-    {
-      return center_;
-    }
-
-    void HalfDome::setCenter(QVector3D const& _center)
-    {
-      center_ = _center;
-    }
-
     void HalfDome::update()
     {
       auto _r = radius();
       QVector3D _vr(_r,_r,_r);
-      this->bounds_ = Box(-_vr + center_,_vr + center_); 
+      this->bounds_ = Box(-_vr + center(),_vr + center()); 
       sphere_.update();
     }
  
     void HalfDome::fromStream(QDataStream& _stream)
     {
       Dome::fromStream(_stream);
-      _stream >> angles_ >> center_;
+      _stream >> angles_;
       update();
     }
 
     void HalfDome::toStream(QDataStream& _stream) const
     {
       Dome::toStream(_stream);
-      _stream << angles_ << center_;
+      _stream << angles_;
     }
   }
 }

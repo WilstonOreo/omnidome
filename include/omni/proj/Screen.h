@@ -15,7 +15,7 @@ namespace omni
 
       /// Returns true if number of subscreens is larger than 1
       bool hasSubScreens() const;
-      
+
       /// Aspect ratio  
       qreal aspectRatio() const;
       
@@ -25,15 +25,13 @@ namespace omni
       /// Screen height
       int height() const;
 
-      /// Screen offset (number of subscreens is larger than 1)
-      int x() const;
-
       /// Calculate number of subscreens, for triple head detection
       int subScreenCount() const;
 
       /// Calculate number of subscreens, for triple head detection from a given rectangle
       static int subScreenCount(QRect const&);
 
+      /// Screen rectangle (absolute positioning)
       QRect rect() const;
 
     private:

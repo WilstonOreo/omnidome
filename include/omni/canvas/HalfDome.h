@@ -9,7 +9,7 @@ namespace omni
 {
   namespace canvas
   {
-    /// A generic half sphere dome
+    /// A rotatable half sphere dome
     class HalfDome : 
       public Dome, 
       public Registrar<HalfDome>
@@ -20,22 +20,17 @@ namespace omni
       ~HalfDome();
 
       void draw() const;
-      void drawAux() const;
 
       EulerAngles& angles();
       EulerAngles const& angles() const;
-
-      QVector3D center() const;
-      void setCenter(QVector3D const&);
 
       void update();
 
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
-    
+
     private:
       EulerAngles angles_;
-      QVector3D center_;
     };
   }
 }

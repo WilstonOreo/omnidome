@@ -16,8 +16,7 @@ namespace omni
     {
     public:
       typedef std::vector<std::unique_ptr<Tuning>> container_type;
-      
-      
+       
       using container_type::size;
       using container_type::empty;
       using container_type::begin;

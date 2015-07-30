@@ -17,6 +17,7 @@ namespace omni
       class Input;
     }
 
+    /// Input List widget
     class Input : public QGroupBox 
     {
       Q_OBJECT

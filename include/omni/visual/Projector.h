@@ -21,16 +21,22 @@ namespace omni
       qreal size() const;
       void setSize(qreal);
 
+      bool isSelected() const;
+      void setSelected(bool);
+
       QColor color() const;
       void setColor(QColor);
 
       void draw() const;
       void drawHalo() const;
 
+      void drawPositioning(QVector3D const& _center) const;
+
     private:
 
       proj::Projector const& proj_;
 
+      bool selected_ = false;
       float size_ = 2.0;
 
       QColor color_;

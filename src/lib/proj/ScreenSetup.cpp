@@ -10,7 +10,7 @@ namespace omni
     ScreenSetup::ScreenSetup()
     {
     }
-
+    
     ScreenSetup& ScreenSetup::current()
     {
       static ScreenSetup _setup;
@@ -29,13 +29,24 @@ namespace omni
         QRect _screenRect = _desktop->screenGeometry(i);
 
         // Exclude main screen
-        //if (_screenRect == _desktop->screenGeometry(this)) continue;
+        if (_screenRect == _desktop->screenGeometry()) continue;
 
         int _subScreens = Screen::subScreenCount(_screenRect);
+        _screenRect.setWidth(_screenRect.width() / _subScreens);
+
         for (int i = 0; i < _subScreens; ++i)
         {
           _setup.screens_.emplace_back(_screenRect,_index);
+          _screenRect.translate(_screenRect.width(),0);
         }
+      }
+
+      QRect _rect(0,0,320,240);
+
+      for (int i = 0; i < 3; ++i)
+      {
+        _rect.moveTo(400*i,0);
+        _setup.screens_.emplace_back(_rect);
       }
 
       return _setup;
@@ -45,13 +56,6 @@ namespace omni
     {
       static ScreenSetup _debug;
 
-      QRect _rect(0,0,1920,1080);
-
-      for (int i = 0; i < 3; ++i)
-      {
-        _rect.moveTo(1920*i,0);
-        _debug.screens_.emplace_back(_rect);
-      }
 
       return _debug;
 

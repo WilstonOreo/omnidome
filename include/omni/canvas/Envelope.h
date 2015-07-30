@@ -32,6 +32,8 @@ namespace omni
       /// Returns copy of cached bounding box
       Box bounds() const;
 
+      virtual void draw() const;
+
     protected:
 
       /// Protected bounding box member

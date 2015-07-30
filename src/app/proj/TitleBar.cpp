@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QHBoxLayout>
+#include <QColorDialog>
 
 namespace omni
 {
@@ -14,7 +15,6 @@ namespace omni
     {
       TitleBar::TitleBar(Tuning* _tuning) :
         slim::Widget(_tuning),
-        mixin_range_type(0,0,1,0.01,0.1),
         tuningWidget_(_tuning)
       {
         setup();
@@ -22,7 +22,6 @@ namespace omni
 
       TitleBar::TitleBar(QString const& _label, Tuning* _tuning) :
         slim::Widget(_label,_tuning),
-        mixin_range_type(0,0,1,0.01,0.1),
         tuningWidget_(_tuning)
       {
         setup();
@@ -32,37 +31,29 @@ namespace omni
       {
       }
 
-      void TitleBar::setValue(double _value)
+      void TitleBar::setColor(QColor const& _color)
       {
-        mixin_range_type::setValue(_value);
-        update();
-        emit valueChanged();
+        color_=_color;
+        emit colorChanged(_color);
+        update(); 
       }
 
+      void TitleBar::selectColor()
+      {
+        QColorDialog _colorDialog;
+        _colorDialog.setCurrentColor(color());
+        _colorDialog.setOptions(
+                /* do not use native dialog */
+                QColorDialog::DontUseNativeDialog);
+        
+        if (_colorDialog.exec())
+          setColor(_colorDialog.selectedColor());
+
+      }
 
       QColor TitleBar::color() const
       {
-        QImage _image(width(),1,QImage::Format_ARGB32);
-        QPainter _p(&_image);
-
-        /// Draw gradient on image
-        _p.setPen(Qt::NoPen);
-        _p.setBrush(gradient_);
-        _p.drawRect(QRect(0,0,width(),1));
-        _p.end();
-
-        double _pos = valueToPos();
-        if (_pos <  0.0) _pos = 0.0;
-        if (_pos >= width()-1) _pos = width()-1;
-
-        /// Get pixel 
-        return _image.pixel(_pos,0);
-      }
-
-
-      bool TitleBar::isMoving() const
-      {
-        return moving_;
+        return color_;
       }
 
       void TitleBar::paintEvent(QPaintEvent* event)
@@ -71,32 +62,8 @@ namespace omni
 
         auto _rect = rect().adjusted(1,1,-1,-1);
         _p.setPen(Qt::NoPen);
-
-        if (!moving_)
-        {
-          _p.setBrush(color());
-        }
-        else
-        {
-          _p.setBrush(gradient_);
-        }
-
+        _p.setBrush(color());
         _p.drawRect(_rect);
-
-        // Draw Handle when moving
-        if (moving_)
-        {
-          double _pos = valueToPos();
-
-          QRectF _progressRect = rect();
-
-          _progressRect.setRight(_pos);
-          _p.setPen(QPen(colorSet().dark(),4));
-          _p.drawLine(
-            QPointF(_pos,_progressRect.bottom()+2),
-            QPointF(_pos,_progressRect.top()- 2));
-        }
-
         QWidget::paintEvent(event);
       }
         
@@ -117,7 +84,6 @@ namespace omni
         };
  
         setupToolButton(menuButton_);
-        setupToolButton(displayButton_);
         
         menuButton_->setArrowType(Qt::DownArrow);
 
@@ -126,14 +92,20 @@ namespace omni
         /// Generate and add popup menu
         menuButton_->setMenu(menu_.get());
         menuButton_->setPopupMode(QToolButton::InstantPopup);
-        menu_->addAction("Reset color");
-        menu_->addAction("Reset adjustment");
+        auto* _changeColor = menu_->addAction("Change color...");
+        connect(_changeColor,SIGNAL(triggered()),this,SLOT(selectColor()));
+
         menu_->addSeparator();
         auto* _peripheral = menu_->addAction("Peripheral Setup");
         _peripheral->setCheckable(true);
         
         auto* _free = menu_->addAction("Free Setup");
         _free->setCheckable(true);
+        
+        setupToolButton(displayButton_);
+        displayButton_->setCheckable(true);
+        connect(displayButton_.get(),SIGNAL(clicked(bool)),tuningWidget(),SLOT(fullscreenToggle(bool)));
+
 
         setupToolButton(maximizeButton_);
         connect(maximizeButton_.get(),SIGNAL(clicked()),tuningWidget(),SLOT(setNextWindowState()));
@@ -151,80 +123,14 @@ namespace omni
         layout()->addWidget(closeButton_.get());
         layout()->setSpacing(0);
         layout()->setContentsMargins(0,0,0,0);
-
-        /// Spectral gradient for color selection
-        QLinearGradient _gradient(QPointF(0.0,0.0),QPointF(1.0,0.0));
-        _gradient.setCoordinateMode(QLinearGradient::ObjectBoundingMode);
-        _gradient.setColorAt(0.0/6.0,"#FF0000");
-        _gradient.setColorAt(1.0/6.0,"#FFFF00");
-        _gradient.setColorAt(2.0/6.0,"#00FF00");
-        _gradient.setColorAt(3.0/6.0,"#00FFFF");
-        _gradient.setColorAt(4.0/6.0,"#0000FF");
-        _gradient.setColorAt(5.0/6.0,"#FF00FF");
-        _gradient.setColorAt(6.0/6.0,"#FF0000");
-        gradient_ = _gradient;
-      }
         
-      void TitleBar::setMoving(bool _moving)
-      {
-        moving_ = _moving;
-        /// Display buttons only when not moving 
-        displayButton_->setVisible(!_moving);
-        maximizeButton_->setVisible(!_moving);
-        closeButton_->setVisible(!_moving);
-        menuButton_->setVisible(!_moving); 
+        if (tuningWidget_ && tuningWidget_->tuning())
+          setColor(tuningWidget_->tuning()->color());
       }
   
       Tuning* TitleBar::tuningWidget()
       {
         return tuningWidget_;
-      }
-
-      double TitleBar::valueToPos() const
-      {
-        return valueToPos(value());
-      }
-
-      double TitleBar::valueToPos(double _value) const
-      {
-        auto&& _rect = rect();
-        return _rect.left() + slim::mixin::Range<double>::ratio(_value)* double(_rect.width());
-      }
-
-      void TitleBar::mouseMoveEvent(QMouseEvent* e)
-      {
-        if (moving_)
-        {
-          setValue(valueFromPos(e->pos().x()));
-        }
-      }
-
-      void TitleBar::mousePressEvent(QMouseEvent* e)
-      {
-        setMoving(true);
-        setValue(valueFromPos(e->pos().x()));
-      }
-
-      void TitleBar::mouseReleaseEvent(QMouseEvent* e)
-      {
-        if (moving_)
-        {
-          setValue(valueFromPos(e->pos().x()));
-          update();
-        }
-        setMoving(false);
-      }
-
-      void TitleBar::wheelEvent(QWheelEvent* e)
-      {
-        if (hasFocus())
-          setValue(value() + e->delta()/15.0 / 8.0 * singleStep());
-      }
-
-      double TitleBar::valueFromPos(double _pos) const
-      {
-        auto&& _rect = rect();
-        return (_pos - _rect.left()) / _rect.width() * (maximum() - minimum()) + minimum();
       }
 
     }

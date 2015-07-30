@@ -19,9 +19,9 @@ namespace omni
       glPushMatrix();
 
       glLoadIdentity();
-      glMultMatrixf(angles_.matrix().constData());
       glTranslatef(center_.x(),center_.y(),center_.z());
-      
+      glMultMatrixf(angles_.matrix().constData());
+
       glBegin(GL_QUADS);
       float _h = width_ * 0.5;
       float _w = height_ * 0.5;

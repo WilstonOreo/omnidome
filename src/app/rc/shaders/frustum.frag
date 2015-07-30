@@ -11,9 +11,6 @@ uniform vec3 bottom_right;
 /// Color of frustum border
 uniform vec3 color;
 
-uniform float tex_alpha;
-uniform int no_borders;
-
 
 const float PI = 3.14159265358979323846264;
 

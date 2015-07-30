@@ -68,6 +68,9 @@ namespace omni
       /// Show Export Page (switches Session mode to Mode::EXPORT)
       void showExport();
 
+      /// Update all OpenGL views
+      void updateAllViews();
+
     protected:
       void closeEvent(QCloseEvent* _event);
       void showEvent(QShowEvent* _event);

@@ -28,9 +28,13 @@ namespace omni
       {
         // top side
         glNormal3f(0.0,1.0,0.0);
+        glTexCoord2f(0,0);
         glVertex3f(x , ys, z );
+        glTexCoord2f(1,0);
         glVertex3f(xs, ys, z );
+        glTexCoord2f(1,1);
         glVertex3f(xs, ys, zs);
+        glTexCoord2f(0,1);
         glVertex3f(x , ys, zs);
       }
       glEnd();
@@ -38,9 +42,13 @@ namespace omni
       {
         // bottom side
         glNormal3f(0.0,-1.0,0.0);
+        glTexCoord2f(0,0);
         glVertex3f(x , y, z );
+        glTexCoord2f(1,0);
         glVertex3f(xs, y, z );
+        glTexCoord2f(1,1);
         glVertex3f(xs, y, zs);
+        glTexCoord2f(0,1);
         glVertex3f(x , y, zs);
       }
       glEnd();
@@ -48,9 +56,13 @@ namespace omni
       {
         // east side
         glNormal3f(0.0,0.0,-1.0);
+        glTexCoord2f(0,0);
         glVertex3f(x , y , z);
+        glTexCoord2f(1,0);
         glVertex3f(xs, y , z);
+        glTexCoord2f(1,1);
         glVertex3f(xs, ys, z);
+        glTexCoord2f(0,1);
         glVertex3f(x , ys, z);
       }
       glEnd();
@@ -58,9 +70,13 @@ namespace omni
       // west side
       {
         glNormal3f(0.0,0.0,1.0);
+        glTexCoord2f(0,0);
         glVertex3f(x , y ,zs);
+        glTexCoord2f(1,0);
         glVertex3f(xs, y ,zs);
+        glTexCoord2f(1,1);
         glVertex3f(xs, ys,zs);
+        glTexCoord2f(0,1);
         glVertex3f(x , ys,zs);
       }
       glEnd();
@@ -68,9 +84,13 @@ namespace omni
       {
         // north side
         glNormal3f(-1.0,0.0,0.0);
+        glTexCoord2f(0,0);
         glVertex3f(x , y , z );
+        glTexCoord2f(1,0);
         glVertex3f(x , y , zs);
+        glTexCoord2f(1,1);
         glVertex3f(x , ys, zs);
+        glTexCoord2f(0,1);
         glVertex3f(x , ys, z );
       }
       glEnd();
@@ -78,9 +98,13 @@ namespace omni
       {
         // south side
         glNormal3f( 1.0,0.0,0.0);
+        glTexCoord2f(0,0);
         glVertex3f( xs, y , z );
+        glTexCoord2f(1,0);
         glVertex3f( xs, y , zs);
+        glTexCoord2f(1,1);
         glVertex3f( xs, ys, zs);
+        glTexCoord2f(0,1);
         glVertex3f( xs, ys, z );
       }
       glEnd();

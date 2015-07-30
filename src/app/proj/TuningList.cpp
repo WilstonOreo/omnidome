@@ -3,6 +3,7 @@
 #include <omni/Session.h>
 
 #include <QVBoxLayout>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -46,7 +47,9 @@ namespace omni
         session_=_session;
         clear();
 
-        ///@todo add tunings from session here
+        for (auto& _tuning : _session->tunings())
+          addTuning(_tuning.get());
+
         sessionModeChange();
       }
 
@@ -56,8 +59,19 @@ namespace omni
 
         if (!_tuning) return;
 
-        widgets_.emplace_back(new ui::proj::Tuning(session_->tunings().size()-1,session_,this));
+        _tuning->setColor(getTuningColor());
+        addTuning(_tuning);
+      }
         
+      void TuningList::addTuning(omni::proj::Tuning* _tuning)
+      {
+        if (widgets_.size() >= maxNumberTunings()) 
+        {
+          QMessageBox::information(this,"Information", QString("You have reached the maximum of %1 projectors.").arg(maxNumberTunings()));
+          return;
+        }
+
+        widgets_.emplace_back(new ui::proj::Tuning(session_->tunings().size()-1,session_,this));
         auto _widget = widgets_.back().get();
         contents_->layout()->addWidget(_widget); 
  
@@ -65,6 +79,32 @@ namespace omni
         _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
         _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(projectorSetupChanged()));
         _widget->sessionModeChange();
+      }
+
+      QColor TuningList::getTuningColor() 
+      {
+        // Generate standard colors, for tuning
+        std::vector<QColor> _colors;
+
+        int _hue = 0;
+        int _hueDiff = 120;
+        for (int i = 0; i < maxNumberTunings(); ++i)
+        {
+          int _saturation = float(maxNumberTunings()/2 - i/2) / maxNumberTunings() * 2.0 * 255.0; //int(i * 2.0 / maxNumberTunings()) * 255;
+          _colors.push_back(QColor::fromHsv(_hue,_saturation,255));
+
+          _hue += 120;
+          if (_hue >= 360) {
+            _hueDiff /= 2;
+            _hue += _hueDiff;
+            _hue %= 360;
+          }
+        }
+        int _numTunings = session_->tunings().size();
+
+        if (session_->tunings().size() > maxNumberTunings()) return QColor("#000000");
+
+        return _colors[_numTunings-1];
       }
 
       void TuningList::removeTuning(int _index)
@@ -94,7 +134,14 @@ namespace omni
         widgets_.clear();
         session_->tunings().clear();
       }
-  
+        
+      /// Updates/Repaints GL Views of all tunings widgets
+      void TuningList::updateViews()
+      {
+        for (auto& _widget : widgets_) 
+          _widget->updateViews();
+      }
+ 
       void TuningList::resizeEvent(QResizeEvent* event)
       {
         QScrollArea::resizeEvent(event);

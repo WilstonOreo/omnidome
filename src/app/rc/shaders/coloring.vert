@@ -1,7 +1,5 @@
 #version 120
 
-
-
 varying vec3 vVertexPosition;
 varying vec3 vVertexNormal;
 
