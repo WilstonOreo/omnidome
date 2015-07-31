@@ -38,6 +38,22 @@ namespace omni
       shader_.reset();
     }
 
+    QSize TestImage::size() const 
+    {
+      return QSize(1024,1024);
+    }
+
+    void TestImage::setRulerPos(QPointF const& _rulerPos) 
+    {
+      pos_ = _rulerPos;
+      update();
+    }
+
+    QPointF TestImage::rulerPos() const
+    {
+      return pos_;
+    }
+
     void TestImage::update()
     {
       if (!QOpenGLContext::currentContext()) return;

@@ -33,10 +33,16 @@ namespace omni
           QAction* _menuItem = new QAction(QIcon(QString(":/input/")+ _id + QString(".png")),_id,_menu);
           _menu->addAction(_menuItem);
         }
-        connect(_menu,SIGNAL(triggered(QAction*)),this,SLOT(addInput(QAction*)));
+        connect(_menu,SIGNAL(triggered(QAction*)),this,SLOT(addInput(QAction*))); 
       }
-      prepareModel();
 
+      // Update preview when input has changed
+      connect(this,SIGNAL(inputChanged()),ui_->preview,SLOT(update()));
+      
+      // Input can be changed in preview (e.g. ruler position), so update views as well 
+      connect(ui_->preview,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
+
+      prepareModel();
       ui_->widget->setLayout(new QVBoxLayout);
     }
 
@@ -52,6 +58,7 @@ namespace omni
     void Input::setSession(Session* _session)
     {
       session_=_session;
+      ui_->preview->setSession(_session);
       prepareModel();
       for (auto& _input : session_->inputs()) 
       {
@@ -147,7 +154,7 @@ namespace omni
         return true;
       }
 
-      return false;
+      return true;
     }
  
     void Input::addItem(input::Interface const* _input)

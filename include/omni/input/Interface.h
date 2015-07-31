@@ -21,7 +21,7 @@ namespace omni
       inline virtual void bind(mapping::Interface* _mapping = nullptr) = 0;
 
       /// Release input from OpenGL context
-      inline virtual void release(mapping::Interface* _mapping = nullptr) 
+      inline virtual void release(mapping::Interface* _mapping = nullptr)
       {
         if (_mapping) _mapping->release();
       };
@@ -36,15 +36,45 @@ namespace omni
       inline virtual void update() {}
 
       /**@brief Free stored OpenGL Content (like textures, shaders etc)
-       * @detail Is called before destructor, when there is still an active OpenGL context 
+       * @detail Is called before destructor, when there is still an active OpenGL context
        **/
       inline virtual void free() {}
 
       /// Returns an optional string with some basic information about the object
-      inline virtual QString infoText() const { return QString(); };
+      inline virtual QString infoText() const
+      {
+        return QString();
+      };
+
+      /// An input must return width and height information
+      inline virtual QSize size() const = 0;
+
+      /// Return width from size
+      inline int width() const
+      {
+        return size().width();
+      }
+
+      /// Return height from size
+      inline int height() const
+      {
+        return size().height();
+      }
+
+      /**@brief An Input may have an optional ruler position
+       * @detail Position is between (0.0,0.0) and (1.0,1.0)
+       **/
+      virtual inline QPointF rulerPos() const
+      {
+        return QPointF(-1.0,-1.0);
+      }
+
+      /// Set ruler position. 
+      virtual inline void setRulerPos(QPointF const&) {}
+
     };
 
-    /// Input Factory typedef 
+    /// Input Factory typedef
     typedef AbstractFactory<Interface> Factory;
 
     /// Template alias for our registrar (for auto registration)

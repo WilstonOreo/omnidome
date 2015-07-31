@@ -39,6 +39,7 @@ SET(omni_gui_cpp_files
     ./src/app/Mapping.cpp
     ./src/app/MappingParameters.cpp
     ./src/app/Input.cpp
+    ./src/app/InputPreview.cpp
     ./src/app/Blend.cpp
     ./src/app/BrushPreview.cpp
     ./src/app/ParameterWidget.cpp
@@ -62,7 +63,8 @@ SET(omni_headers
         include/omni/ui/CanvasParameters.h 
         include/omni/ui/Mapping.h 
         include/omni/ui/MappingParameters.h 
-        include/omni/ui/Input.h 
+        include/omni/ui/Input.h
+        include/omni/ui/InputPreview.h 
         include/omni/ui/Blend.h 
         include/omni/ui/Warp.h 
         include/omni/ui/BrushPreview.h 

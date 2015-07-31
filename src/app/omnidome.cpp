@@ -12,7 +12,7 @@ int main(int ac, char* av[])
 {
   QGLFormat f;
   f.setDoubleBuffer(false);
-  f.setVersion(3,0);
+  f.setVersion(3,3);
   QGLFormat::setDefaultFormat(f);
 
   /// Start gui

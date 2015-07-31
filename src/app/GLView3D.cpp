@@ -1,6 +1,7 @@
 #include <omni/ui/GLView3D.h>
 
 #include <QMouseEvent>
+#include <omni/visual/util.h>
 
 namespace omni
 {
@@ -51,23 +52,33 @@ namespace omni
 
     void GLView3D::paintGL()
     {
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       if (!session()) return;
 
+      visual::with_current_context([this](QOpenGLFunctions& _)
+      {
+        _.glViewport(0, 0, (GLint)width(), (GLint)height());
+      });
+      this->session_->update();
+
+      makeCurrent();
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+       visual::with_current_context([this](QOpenGLFunctions& _)
+      {
+        _.glViewport(0,0, width(), height());
+      });
+      
       camera_.setup(30.0,aspect());
-    
+     
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
-
-      this->session_->update();
+      
+  
       this->session_->drawProjectors();
 
       updateLight();
-      
-      
       this->session_->drawCanvas();
       this->session_->drawCanvasWithFrustumIntersections();
-      
       this->session_->drawProjectorHalos();
     }
 

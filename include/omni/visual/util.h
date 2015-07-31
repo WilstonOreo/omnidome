@@ -64,9 +64,40 @@ namespace omni
       {
         return _size.width() / qreal(_size.height());
       }
+    
+
+      template<typename FRAMEBUFFER, typename PROJECTION, typename MODELVIEW>
+      void draw_on_framebuffer(FRAMEBUFFER& _f, PROJECTION _p, MODELVIEW _m)
+      {
+        with_current_context([&](QOpenGLFunctions& _) { 
+          
+          glPushAttrib(GL_ALL_ATTRIB_BITS);
+          _f->bind();
+          _.glViewport(0,0, _f->width(), _f->height());
+          _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+          _.glEnable(GL_TEXTURE_2D);
+  
+          // Projection matrix setup
+          glMatrixMode(GL_PROJECTION);
+          glLoadIdentity();
+          _p(_); // Projection operation
+
+          // Model view matrix setup
+          glMatrixMode(GL_MODELVIEW);
+          glLoadIdentity();
+          _m(_);
+
+        _f->release();
+
+
+        glPopAttrib();
+          
+      });
     }
 
+    }
     using util::with_current_context;
+    using util::draw_on_framebuffer;
   }
 }
 

@@ -11,6 +11,7 @@
 #include <omni/canvas/Planar.h>
 #include <omni/input/Image.h>
 #include <omni/input/TestImage.h>
+#include <omni/input/EquirectangularTestImage.h>
 
 #include <omni/mapping/Equirectangular.h>
 #include <omni/mapping/CubeMap.h>
@@ -44,6 +45,7 @@ namespace omni
       using namespace input;
       Factory::reg<Image>();
       Factory::reg<TestImage>();
+      Factory::reg<EquirectangularTestImage>();
     }
     // END Register inputs
 

@@ -15,7 +15,7 @@ namespace omni
     }
 
     void HalfDome::draw() const
-    {
+    {   
       glPushMatrix();
       {
         glLoadIdentity();

@@ -4,6 +4,7 @@ uniform vec2 ruler_pos;
 
 const float PI = 3.14159265358979323846264;
 
+
 // Smooth HSV to RGB conversion 
 vec3 hsv2rgb_smooth( in float c )
 {
@@ -62,7 +63,7 @@ float ruler()
         phi = (pos.s - ruler_pos.x + 0.25)* 2.0 * PI;
   vec3 rd = vec3(sin(theta) * sin(phi), sin(theta) * cos(phi), cos(theta));
  
-  float mouse_theta = (0.5 - ruler_pos.y ) * PI;
+  float mouse_theta = (0.5 + ruler_pos.y ) * PI;
   float mouse_phi = (ruler_pos.x - 0.5)* 2.0 * PI;
   vec3 mousePoint = vec3(sin(mouse_theta) * sin(mouse_phi), sin(mouse_theta) * cos(mouse_phi), cos(mouse_theta));
   

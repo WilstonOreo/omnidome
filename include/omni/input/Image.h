@@ -50,7 +50,10 @@ namespace omni
    
       /// InfoText is basename of stored path
       QString infoText() const;
-     
+
+      /// Return image dimensions in pixels
+      QSize size() const;
+
       /// Serialize image path to stream
       void toStream(QDataStream&) const;
       

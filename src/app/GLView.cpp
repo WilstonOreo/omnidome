@@ -2,6 +2,7 @@
 
 #include <omni/Session.h>
 #include <omni/util.h>
+#include <omni/visual/util.h>
 
 #include <QMouseEvent>
 
@@ -45,20 +46,24 @@ namespace omni
     void GLView::initializeGL()
     { 
       initializeOpenGLFunctions();
-      glEnable(GL_DEPTH_TEST);
-      glDepthFunc(GL_LEQUAL);
-      glEnable(GL_BLEND);
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glEnable(GL_LINE_SMOOTH);
-      glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-      glEnable(GL_POINT_SMOOTH);
-      glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-      glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-      glPolygonMode(GL_FRONT,GL_FILL);
-      glPolygonMode(GL_BACK,GL_FILL);
-      glEnable(GL_NORMALIZE);
-      // fix outlines z-fighting with quads
-      glPolygonOffset(1, 1);
+
+      visual::with_current_context([this](QOpenGLFunctions& _) {
+        _.glEnable(GL_DEPTH_TEST);
+        _.glDepthFunc(GL_LEQUAL);
+        _.glEnable(GL_BLEND);
+        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        _.glEnable(GL_LINE_SMOOTH);
+        _.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        _.glEnable(GL_POINT_SMOOTH);
+        _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+        _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+        glPolygonMode(GL_FRONT,GL_FILL);
+        glPolygonMode(GL_BACK,GL_FILL);
+        _.glEnable(GL_NORMALIZE);
+        // fix outlines z-fighting with quads
+        _.glPolygonOffset(1, 1);
+      });
+
 
       initialized_ = initialize();
     }
@@ -67,8 +72,12 @@ namespace omni
     {
       _w = _w & ~1;
       _h = _h & ~1;
-      glViewport(0, 0, (GLint)_w, (GLint)_h);
-      glClearColor(0.0,0.0,0.0,1.0);
+      makeCurrent();
+      visual::with_current_context([&](QOpenGLFunctions& _) {
+        _.glViewport(0, 0, (GLint)_w, (GLint)_h);
+        _.glClearColor(0.0,0.0,0.0,1.0);
+      });
+
       update();
     }
 
@@ -89,7 +98,7 @@ namespace omni
       session_.reset(new visual::Session(*_session));
       initialized_ = initialize();
     }
-      
+ 
     void GLView::mousePressEvent(QMouseEvent* event)
     {
       QOpenGLWidget::mousePressEvent(event);

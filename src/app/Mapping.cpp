@@ -27,6 +27,9 @@ namespace omni
       _layout->setSpacing(2);
       _layout->setContentsMargins(0,0,0,0);
       ui_->widget->setLayout(_layout);
+      
+      // Update parameter when canvas has changed
+      connect(ui_->widget,SIGNAL(parametersUpdated()),this,SIGNAL(mappingChanged()));
     }
 
     Mapping::~Mapping()

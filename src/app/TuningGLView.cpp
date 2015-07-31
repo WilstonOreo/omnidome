@@ -12,7 +12,7 @@ namespace omni
       GLView(_parent)
     {
     }
-    
+
     TuningGLView::~TuningGLView()
     {
     }
@@ -216,7 +216,6 @@ namespace omni
       glEnable(GL_TEXTURE_2D);
       glMatrixMode(GL_MODELVIEW);
  
-
       glLoadIdentity();
       glActiveTexture(GL_TEXTURE0);
 

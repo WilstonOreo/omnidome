@@ -86,6 +86,11 @@ namespace omni
       QFileInfo fi(path_);
       return fi.baseName();
     }
+
+    QSize Image::size() const
+    {
+      return image_.size();
+    }
   
     void Image::toStream(QDataStream& _stream) const
     {
