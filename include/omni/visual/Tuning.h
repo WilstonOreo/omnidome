@@ -5,6 +5,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <omni/proj/Tuning.h>
+#include <omni/visual/WarpGrid.h>
 
 namespace omni
 {
@@ -21,16 +22,26 @@ namespace omni
 
       void updateBlendTexture();
       
+      /**@brief Draws warp grid with lines and handles
+         @param _rect Screen Rectangle of input
+       **/
       void drawWarpGrid() const;
 
+      /// Draws Blendmask with warp grid and brush stroke layer 
       void drawBlendMask() const;
 
-      /**@brief Calculates the view rectangle for orthographic 2D projection 
-       **/
-      QRectF viewRect(int _width, int _height, bool _keepAspectRatio) const;
+      /// Draw cursor for blend brush
+      void drawCursor(QPointF const& _pos);
 
-    private:
+    private: 
+      
+      /**@brief Calculates rectangle of this tuning  
+       **/
+      QRectF tuningRect() const;
+
       omni::proj::Tuning& tuning_;
+
+      std::unique_ptr<visual::WarpGrid> warpGrid_;
 
       static std::unique_ptr<QOpenGLShaderProgram> blendShader_;
       std::unique_ptr<QOpenGLTexture> blendTex_;

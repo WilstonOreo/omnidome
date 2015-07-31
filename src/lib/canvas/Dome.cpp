@@ -39,6 +39,7 @@ namespace omni
     void Dome::setRadius(qreal _radius)
     {
       sphere_.setRadius(_radius);
+      needsUpdate_ = true;
       update();
     }
 
@@ -69,6 +70,8 @@ namespace omni
 
     void Dome::update()
     {
+      if (!this->needsUpdate_) return;
+
       auto _r = radius();
       QVector3D _vr(_r,_r,_r);
       this->bounds_ = Box(-_vr + center_,_vr + center_); 

@@ -48,13 +48,15 @@ namespace omni
 
     void Image::update()
     {
-      if (!QOpenGLContext::currentContext()) return;
-
+      if (!QOpenGLContext::currentContext() || !needsUpdate_) return;
+      
       texture_.reset(new QOpenGLTexture(image_));
     
       texture_->setMinMagFilters(
           QOpenGLTexture::Linear,
           QOpenGLTexture::Linear);
+      
+      needsUpdate_ = false;
     }
 
     GLuint Image::textureId() const
@@ -66,6 +68,7 @@ namespace omni
     {
       image_ = QImage(_path).mirrored();
       path_=_path;
+      needsUpdate_ = true;
       update();
     }
 

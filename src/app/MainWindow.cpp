@@ -38,9 +38,13 @@ MainWindow::MainWindow( QMainWindow *parent) :
 
     warp_.reset(new TuningGLView(this));
     _layout->addWidget(warp_.get());
+    warp_->setBorder(0.5);
+    warp_->setKeepAspectRatio(true);
 
     blend_.reset(new TuningGLView(this));
     _layout->addWidget(blend_.get());
+    blend_->setBorder(0.5);
+    blend_->setKeepAspectRatio(true);
 
     export_.reset(new Export(session_.get()));
     _layout->addWidget(export_.get());

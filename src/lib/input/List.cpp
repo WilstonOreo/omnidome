@@ -46,6 +46,7 @@ namespace omni
     {
       if (!validIndex(_index) || _index == 0) return;
 
+      this->operator[](_index)->free();
       container_type::erase(this->begin() + _index);
     }
 
@@ -86,12 +87,12 @@ namespace omni
       
     Input const* List::current() const
     {
-      return container_type::at(currentIndex_).get();
+      return validIndex(currentIndex_) ? container_type::at(currentIndex_).get() : nullptr;
     }
     
     Input* List::current()
     {
-      return container_type::at(currentIndex_).get();
+      return validIndex(currentIndex_) ? container_type::at(currentIndex_).get() : nullptr;
     }
 
     int List::currentIndex() const

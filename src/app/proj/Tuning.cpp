@@ -61,6 +61,10 @@ namespace omni
         {
           glView_->setSession(session_);
           glView_->setTuningIndex(index_);
+          glView_->setBorder(0.0);
+          glView_->setKeepAspectRatio(false);
+          glView_->setViewOnly(true);
+          glView_->update();
           titleBar_->setColor(tuning()->color());
 
           // Also attach fullscreen

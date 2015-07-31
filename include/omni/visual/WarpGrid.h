@@ -4,6 +4,7 @@
 #include <omni/WarpGrid.h>
 #include <omni/visual/Interface.h>
 #include <omni/visual/Circle.h>
+#include <omni/visual/VBO.h>
 
 namespace omni
 {
@@ -13,23 +14,24 @@ namespace omni
     class WarpGrid : public Interface
     {
     public:
-      WarpGrid(omni::WarpGrid const* = nullptr);
+      WarpGrid(omni::WarpGrid const& _warpGrid);
       ~WarpGrid();
 
       /// Draw warp grid
       void draw() const;
       
+      /// Draw lines for warp grid
+      void drawLines();
+
+      /// Draw handles for warp grid
+      void drawHandles(QColor const& _color, QRectF const& _rect);
+
       /// Generate geometry
       void update();
 
-      omni::WarpGrid const* warpGrid() const;
-      
-      void setWarpGrid(omni::WarpGrid const*);
-
     private:
-      void visualPatch() const;
 
-      omni::WarpGrid const* warpGrid_ = nullptr;
+      omni::WarpGrid const& warpGrid_;
     };
   }
 }

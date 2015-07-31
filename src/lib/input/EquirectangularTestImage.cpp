@@ -79,6 +79,8 @@ namespace omni
         _changed = true;
       }
 
+      if (!_changed) return;
+
       id_ = 0;
       visual::draw_on_framebuffer(framebuffer_,
       [&](QOpenGLFunctions& _) // Projection Operation
@@ -89,21 +91,6 @@ namespace omni
       },
       [&](QOpenGLFunctions& _) // Model View Operation
       { 
-        int _t = _.glCheckFramebufferStatus( GL_DRAW_FRAMEBUFFER);
-#define OMNI_DEBUG_FBO(result)\
-        qDebug() << #result << ": " << (_.glCheckFramebufferStatus(framebuffer_->handle()) == result);
-
-        qDebug() << "FBO debug: " << _t << " " << framebuffer_->isValid();
-        OMNI_DEBUG_FBO(GL_FRAMEBUFFER_UNDEFINED);
-        OMNI_DEBUG_FBO(GL_FRAMEBUFFER_COMPLETE);
-        OMNI_DEBUG_FBO(GL_FRAMEBUFFER_UNSUPPORTED);
-        OMNI_DEBUG_FBO(GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT);
-        OMNI_DEBUG_FBO(GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE);
-        OMNI_DEBUG_FBO(GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER);
-        OMNI_DEBUG_FBO(GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT );
-        OMNI_DEBUG_FBO(GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER );
-        OMNI_DEBUG_FBO(GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS);
-
         shader_->bind();
         {
           shader_->setUniformValue("ruler_pos",rulerPos_ - QPointF(0.5,0.5));

@@ -116,6 +116,11 @@ ADD_EXECUTABLE(test_GL
   ${omni_src} )
 TARGET_LINK_LIBRARIES(test_GL ${QT5_LIBRARIES} ${omni_extra_libs} slim-widgetz omni )
 
+ADD_EXECUTABLE(test_WarpGL
+  ./src/test/WarpGL.cpp 
+  ${omni_src} )
+TARGET_LINK_LIBRARIES(test_WarpGL ${QT5_LIBRARIES} ${omni_extra_libs} slim-widgetz omni )
+
 ADD_EXECUTABLE(test_Serialization
   ./src/test/Serialization.cpp 
   ${omni_src} )

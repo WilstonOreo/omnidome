@@ -15,7 +15,7 @@ namespace omni
     }
 
     void HalfDome::draw() const
-    {   
+    {
       glPushMatrix();
       {
         glLoadIdentity();
@@ -35,15 +35,7 @@ namespace omni
     {
       return angles_;
     }
-      
-    void HalfDome::update()
-    {
-      auto _r = radius();
-      QVector3D _vr(_r,_r,_r);
-      this->bounds_ = Box(-_vr + center(),_vr + center()); 
-      sphere_.update();
-    }
- 
+  
     void HalfDome::fromStream(QDataStream& _stream)
     {
       Dome::fromStream(_stream);

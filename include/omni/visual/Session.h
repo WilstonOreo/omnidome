@@ -4,6 +4,7 @@
 #include <list>
 #include <omni/Session.h>
 #include <omni/visual/Projector.h>
+#include <omni/visual/WarpGrid.h>
 
 namespace omni
 {

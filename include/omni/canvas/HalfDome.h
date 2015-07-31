@@ -24,8 +24,6 @@ namespace omni
       EulerAngles& angles();
       EulerAngles const& angles() const;
 
-      void update();
-
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
 

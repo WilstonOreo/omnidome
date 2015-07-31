@@ -93,6 +93,8 @@ namespace omni
 
     void Session::update()
     {
+      if (!QOpenGLContext::currentContext()) return;
+
       auto* _canvas = session_.canvas();
       if (!_canvas) return;
 
@@ -110,8 +112,6 @@ namespace omni
         projectors_.back().setSelected(i == session_.tunings().currentIndex());
         projectors_.back().update();
       }
-
-      if (!QOpenGLContext::currentContext()) return;
 
       // Setup frustum/canvas intersection shader
       if (!frustumShader_)

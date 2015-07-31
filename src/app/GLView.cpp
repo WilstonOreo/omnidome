@@ -18,14 +18,6 @@ namespace omni
     
     GLView::~GLView()
     {
-      if (initialized() && QOpenGLContext::currentContext())
-      {
-        makeCurrent();
-        {
-          if (session_) session_->free();
-        }
-        doneCurrent();
-      }
     }
 
     float GLView::aspect() const

@@ -2,16 +2,18 @@
 
 #include <QOpenGLTexture>
 #include <omni/util.h>
+#include <omni/visual/util.h>
 
 namespace omni
 {
   namespace visual
   {
     std::unique_ptr<QOpenGLShaderProgram> Tuning::blendShader_;
-    
+
     Tuning::Tuning(omni::proj::Tuning& _tuning) :
       tuning_(_tuning)
     {
+      warpGrid_.reset(new visual::WarpGrid(tuning_.warpGrid()));
     }
 
     omni::proj::Tuning const& Tuning::tuning() const
@@ -21,16 +23,28 @@ namespace omni
 
     void Tuning::drawWarpGrid() const
     {
-      
+      if (!warpGrid_) return;
 
+      visual::with_current_context([this](QOpenGLFunctions& _)
+      {
+        _.glEnable(GL_TEXTURE_2D);
+        _.glDisable(GL_BLEND);
+        glColor4f(1.0,1.0,1.0,1.0);
+        warpGrid_->draw();
+
+        _.glDisable(GL_TEXTURE_2D);
+        warpGrid_->drawLines();
+        warpGrid_->drawHandles(tuning_.color(),tuningRect());
+      });
     }
 
     void Tuning::update()
     {
       if (!blendShader_)
       {
-        static QString _vertSrc = util::fileToStr(":/shaders/blend.vert");
-        static QString _fragmentSrc = util::fileToStr(":/shaders/blend.frag");
+        using omni::util::fileToStr;
+        static QString _vertSrc = fileToStr(":/shaders/blend.vert");
+        static QString _fragmentSrc = fileToStr(":/shaders/blend.frag");
         blendShader_.reset(new QOpenGLShaderProgram());
         blendShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
         blendShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
@@ -46,55 +60,78 @@ namespace omni
       }
     }
 
+    void Tuning::drawCursor(QPointF const& _pos)
+    {
+      auto _rect = tuningRect();
+
+      visual::with_current_context([&](QOpenGLFunctions& _)
+      {
+        _.glDisable(GL_LINE_SMOOTH);
+        glColor4f(1.0,1.0,1.0,1.0);
+        _.glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+        glBegin(GL_LINE_LOOP);
+
+        float _r = tuning_.blendMask().brush().size() * 0.25 / tuning_.width();
+        util::for_each_circle_point(24,_r,[&](size_t _i, const QPointF& _p)
+        {
+          glVertex2f(_p.x() + _pos.x(),_p.y() * (_rect.height()/_rect.width()) + _pos.y());
+        });
+        glEnd();
+        _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        _.glEnable(GL_LINE_SMOOTH);
+      });
+    }
+
     void Tuning::drawBlendMask() const
     {
       if (!blendShader_) return;
 
-      auto& _mask = tuning().blendMask();
-      glEnable(GL_BLEND);
-      glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-      glColor4f(1.0,1.0,1.0,1.0);
-
-      blendShader_->bind();
+      visual::with_current_context([&](QOpenGLFunctions& _)
       {
-        blendShader_->setUniformValue("top",_mask.topWidth());
-        blendShader_->setUniformValue("right",_mask.rightWidth());
-        blendShader_->setUniformValue("bottom",_mask.bottomWidth());
-        blendShader_->setUniformValue("left",_mask.leftWidth());
-        blendShader_->setUniformValue("gamma",_mask.gamma());
-        blendShader_->setUniformValue("mask",GLfloat(-1.0));
-        drawWarpGrid();
-      }
-      blendShader_->release();
+        auto& _mask = tuning().blendMask();
+        _.glEnable(GL_BLEND);
+        _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(1.0,1.0,1.0,1.0);
 
-      glDisable(GL_BLEND);
-      glColor4f(0.0,0.0,0.0,1.0);
+        blendShader_->bind();
+        {
+          blendShader_->setUniformValue("top",_mask.topWidth());
+          blendShader_->setUniformValue("right",_mask.rightWidth());
+          blendShader_->setUniformValue("bottom",_mask.bottomWidth());
+          blendShader_->setUniformValue("left",_mask.leftWidth());
+          blendShader_->setUniformValue("gamma",_mask.gamma());
+          blendShader_->setUniformValue("mask",GLfloat(-1.0));
+          warpGrid_->draw();
+        }
+        blendShader_->release();
 
-      glBegin(GL_QUADS);
-      float _b = 4.0;
-      glVertex2f(-0.5,-0.5 - _b);
-      glVertex2f(0.5-_b,-0.5);
-      glVertex2f(0.5-_b,0.5);
-      glVertex2f(-0.5,0.5 + _b);
+        _.glDisable(GL_BLEND);
+        glColor4f(0.0,0.0,0.0,1.0);
 
-      glVertex2f(-0.5 + _b,-0.5 - _b);
-      glVertex2f(0.5,-0.5);
-      glVertex2f(0.5,0.5);
-      glVertex2f(-0.5 + _b,0.5 + _b);
-
-      glVertex2f(-0.5 + _b,0.5 + _b);
-      glVertex2f(0.5 - _b,0.5 + _b);
-      glVertex2f(0.5 - _b,0.5);
-      glVertex2f(-0.5 + _b,0.5);
-
-      glVertex2f(-0.5 + _b,-0.5);
-      glVertex2f(0.5 - _b,-0.5);
-      glVertex2f(0.5 - _b,-0.5 - _b);
-      glVertex2f(-0.5 + _b,-0.5 - _b);
-
-      glEnd();
-
-      glEnable(GL_BLEND);
+        float _b = 4.0;
+        // Draw mask for borders
+        glBegin(GL_QUADS);
+        {
+          glVertex2f(-0.5,-0.5 - _b);
+          glVertex2f(0.5-_b,-0.5);
+          glVertex2f(0.5-_b,0.5);
+          glVertex2f(-0.5,0.5 + _b);
+          glVertex2f(-0.5 + _b,-0.5 - _b);
+          glVertex2f(0.5,-0.5);
+          glVertex2f(0.5,0.5);
+          glVertex2f(-0.5 + _b,0.5 + _b);
+          glVertex2f(-0.5 + _b,0.5 + _b);
+          glVertex2f(0.5 - _b,0.5 + _b);
+          glVertex2f(0.5 - _b,0.5);
+          glVertex2f(-0.5 + _b,0.5);
+          glVertex2f(-0.5 + _b,-0.5);
+          glVertex2f(0.5 - _b,-0.5);
+          glVertex2f(0.5 - _b,-0.5 - _b);
+          glVertex2f(-0.5 + _b,-0.5 - _b);
+        }
+        glEnd();
+          
+        _.glEnable(GL_BLEND);
       /*
           use_texture(*strokeBlendTex_,[&]()
         {
@@ -107,9 +144,26 @@ namespace omni
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
           drawScreenRect();
         });
-
       */
+      });
+
     }
 
+    QRectF Tuning::tuningRect() const
+    {
+      float _projAspect = float(tuning_.width()) / tuning_.height();
+      float _left = -0.5,_right = 0.5,_bottom = -0.5,_top = 0.5;
+      if (_projAspect > 1.0)
+      {
+        _top *= _projAspect;
+        _bottom *=  _projAspect;
+      }
+      else
+      {
+        _left /= _projAspect;
+        _right /= _projAspect;
+      }
+      return QRectF(QPointF(_left,_top),QPointF(_right,_bottom));
+    }
   }
 }

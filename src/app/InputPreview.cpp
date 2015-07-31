@@ -125,7 +125,6 @@ namespace omni
 
       auto _rect = viewRect();
 
-
       _input->update();
       makeCurrent();
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -145,21 +144,21 @@ namespace omni
       }
       _input->bind();
 
+      /// Draw rectangle
       glBegin(GL_QUADS);
       {
-        glTexCoord2f(0.0f,0.0f);
-        glVertex2f(-0.5f,-0.5f);
-        glTexCoord2f(1.0f,0.0f);
-        glVertex2f(0.5f,-0.5f);
-        glTexCoord2f(1.0f,1.0f);
-        glVertex2f(0.5f,0.5f);
         glTexCoord2f(0.0f,1.0f);
+        glVertex2f(-0.5f,-0.5f);
+        glTexCoord2f(1.0f,1.0f);
+        glVertex2f(0.5f,-0.5f);
+        glTexCoord2f(1.0f,0.0f);
+        glVertex2f(0.5f,0.5f);
+        glTexCoord2f(0.0f,0.0f);
         glVertex2f(-0.5f,0.5f);
       }
       glEnd();
 
       _input->release();
-      glPopAttrib();
     }
   }
 }

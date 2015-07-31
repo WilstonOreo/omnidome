@@ -90,11 +90,12 @@ namespace omni
 
     void Input::removeSelection() 
     { 
-      int _row = ui_->inputList->currentIndex().row()-1;
+      int _row = ui_->inputList->currentIndex().row();
       if (_row < 0 || _row >= session_->inputs().size()) return;
 
+      qDebug() << _row << "# input removed";
       session_->inputs().remove(_row);
-      model_->removeRows(_row+1,1);
+      model_->removeRows(_row,1);
       changeSelection(model_->index(_row-1,0));
       
       emit inputChanged();

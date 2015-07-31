@@ -64,6 +64,9 @@ namespace omni
       {
         return extent() * 0.5;
       }
+
+    protected:
+      bool needsUpdate_ = true;
     };
 
     /// Our canvas factory

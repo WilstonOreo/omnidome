@@ -73,8 +73,29 @@ namespace omni
       /// Draw Canvas from Projector's perspective
       void drawCanvas();
 
+      /// Draw warp grid with handles while keeping aspect ratio
+      void drawWarpGrid();
+
+      /// Draw blend mask with stroke buffer
+      void drawBlendMask();
+
+      /// Draw screen border (only if widget is not in view only mode)
+      void drawScreenBorder();
+
+      /// Update warp buffer which contains image of projector perspective
+      void updateWarpBuffer();
+
+      /// Get rectangle of orthogonal view frustum
       QRectF viewRect() const;
-      
+
+      /// Transform widget position to view position
+      QPointF screenPos(QPointF const& _pos) const;
+ 
+      /// Drawing function for drawing on orthogonal 2D surface within view rect
+      template<typename F> 
+      void drawOnSurface(F f);
+
+      /// Initialize OpenGL objects
       bool initialize();
 
       /// Tuning index
@@ -92,13 +113,28 @@ namespace omni
       /// Flag which tells if fullscreen is enabled
       bool fullscreen_ = false;
 
+      /// Flag which tells if mouse button is down
+      bool mouseDown_ = false;
+
+      /// Cursor position (is not mouse position when widget is view only)
+      QPointF cursorPosition_;
+
+      /// Show cursor flag (cursor is also shown when widget is view only) 
+      bool showCursor_ = false;
+
+      /// Left over distance value for blend blush
+      float leftOverDistance_ = 0.0;
+
       /// Relative border
       float border_ = 0.0; 
 
       std::unique_ptr<visual::Tuning> tuning_;
-
+      
       /// Used for drawing grayscale
       std::unique_ptr<QOpenGLFramebufferObject> frameBuffer_;
+      
+      /// Frame buffer which holds a texture with current view image
+      std::unique_ptr<QOpenGLFramebufferObject> warpGridBuffer_;
     
       /// Shader for displaying disabled output in grayscale
       std::unique_ptr<QOpenGLShaderProgram> grayscaleShader_;

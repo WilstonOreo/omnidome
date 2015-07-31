@@ -115,10 +115,6 @@ namespace omni
 
   Canvas* Session::setCanvas(Id const& _id)
   {
-    qDebug() << "Hallo";
-    for (auto& _canvas : canvas::Factory::classes())
-      qDebug() << _canvas.first;
-
     canvas_.reset(canvas::Factory::create(_id));
     return canvas();
   }
