@@ -29,6 +29,9 @@ namespace omni
       /// Returns true if widget is in fullscreen mode
       bool isFullscreen() const;
 
+      /// Returns true if cursor is visible
+      bool showCursor() const;
+
       /// Return relative border value
       float border() const;
     
@@ -39,8 +42,10 @@ namespace omni
       /// If disabled, screen rect will be stretched over whole widget
       void setKeepAspectRatio(bool);
 
-      /// If enable, this widget does not accept user inputs 
+      /// If true, this widget does NOT accept user inputs 
       void setViewOnly(bool);
+
+      void setShowCursor(bool);
 
       /**@brief Set flag which tells if projector view is actually drawn 
        * @detail Used for activate/deactivate fullscreen view
@@ -90,6 +95,9 @@ namespace omni
 
       /// Transform widget position to view position
       QPointF screenPos(QPointF const& _pos) const;
+
+      // Transform widget position to position in tuning image
+      QPointF pixelPos(QPointF const& _pos) const;
  
       /// Drawing function for drawing on orthogonal 2D surface within view rect
       template<typename F> 
@@ -120,7 +128,7 @@ namespace omni
       QPointF cursorPosition_;
 
       /// Show cursor flag (cursor is also shown when widget is view only) 
-      bool showCursor_ = false;
+      bool showCursor_ = true;
 
       /// Left over distance value for blend blush
       float leftOverDistance_ = 0.0;

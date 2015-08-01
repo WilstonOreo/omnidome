@@ -148,6 +148,16 @@ namespace omni
   {
     mode_=_mode;
   }
+    
+  Session::BlendMode Session::blendMode() const
+  {
+    return blendMode_;
+  }
+
+  void Session::setBlendMode(BlendMode _blendMode)
+  {
+    blendMode_ = _blendMode;
+  }
 
   bool operator==(Session const& _lhs,Session const& _rhs)
   {

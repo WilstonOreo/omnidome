@@ -25,6 +25,14 @@ namespace omni
       EXPORT, // Final export mode. Output is locked for faster display
       NUM_MODES
     };
+
+    /// Blend Mask display mode
+    enum class BlendMode
+    {
+      COLOR, // Displays blend mask with color of tuning
+      WHITE, // Displays white blend mask
+      INPUT // Displays blend mask with current input 
+    };
     
     /// Default constructor
     Session();
@@ -56,7 +64,7 @@ namespace omni
 
     /// Return pointer to canvas
     Canvas* canvas();
-
+ 
     /// Return pointer to canvas (const version)
     Canvas const* canvas() const;
 
@@ -72,6 +80,13 @@ namespace omni
     /// Set mode of this session
     void setMode(Mode);
 
+    /// Return mode of blend mask mode
+    BlendMode blendMode() const;
+
+    /// Set blend mask mode
+    void setBlendMode(BlendMode);
+
+
     /// Test for equality. ScreenSetup is ignored
     friend bool operator==(Session const&,Session const&);
 
@@ -84,7 +99,7 @@ namespace omni
     
     /// List with all inputs (e.g. images, videos etc) 
     InputList inputs_;
-
+    
     /// Owning pointer for canvas
     std::unique_ptr<Canvas> canvas_;
     
@@ -93,6 +108,8 @@ namespace omni
 
     /// Current session mode
     Mode mode_ = Mode::SCREENSETUP;
+
+    BlendMode blendMode_ = BlendMode::COLOR;
   };
 }
 

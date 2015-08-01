@@ -14,6 +14,8 @@ namespace omni
       GLView(_parent),
       cursorPosition_(0.0,0.0)
     {
+      setFocusPolicy(Qt::StrongFocus);
+      setViewOnly(false);
     }
 
     TuningGLView::~TuningGLView()
@@ -37,6 +39,8 @@ namespace omni
 
       if (!_tuning) return;
       tuning_.reset(new visual::Tuning(*_tuning));
+      tuning_->update();
+      update();
     }
 
     bool TuningGLView::keepAspectRatio() const
@@ -59,7 +63,20 @@ namespace omni
     void TuningGLView::setViewOnly(bool _viewOnly)
     {
       viewOnly_ = _viewOnly;
+      setMouseTracking(showCursor_ && !viewOnly_);
       update();
+    }
+
+    void TuningGLView::setShowCursor(bool _showCursor)
+    {
+      showCursor_ = _showCursor;
+      setMouseTracking(showCursor_ && !viewOnly_);
+      update();
+    }
+    
+    bool TuningGLView::showCursor() const
+    {
+      return showCursor_;
     }
 
     bool TuningGLView::isDrawingEnabled() const
@@ -106,7 +123,7 @@ namespace omni
 
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
     {
-      if (!session() || (viewOnly() && !showCursor_)) return;
+      if (!session() || !tuning_ || (viewOnly() && !showCursor_)) return;
 
       auto&& _rect = viewRect();
       float dx = float(event->x() - mousePosition().x()) / width() * _rect.width();
@@ -129,9 +146,11 @@ namespace omni
         }
         else if (_mode == Session::Mode::BLEND)
         {
-          leftOverDistance_ = tuning()->blendMask().drawLine(mousePosition_,event->pos(),leftOverDistance_);
+          leftOverDistance_ = tuning()->blendMask().drawLine(pixelPos(mousePosition_),pixelPos(event->pos()),leftOverDistance_);
+          tuning_->update();
         }
       }
+
       mousePosition_ = event->pos();
       /*if (!viewOnly())
       {
@@ -144,9 +163,9 @@ namespace omni
 
     void TuningGLView::mousePressEvent(QMouseEvent *event)
     {
+      makeCurrent();
       QOpenGLWidget::mousePressEvent(event);
-
-      if (!session() || viewOnly()) return;
+      if (!session() || !tuning_ || viewOnly()) return;
 
       this->mousePosition_ = event->pos();
       auto&& _newPos = screenPos(this->mousePosition_);
@@ -179,6 +198,11 @@ namespace omni
         {
           tuning()->blendMask().brush().setInvert(!_inv);
         }
+
+        auto& _blendMask = tuning()->blendMask();
+        _blendMask.stamp(pixelPos(event->pos()));
+        tuning_->update();
+
         leftOverDistance_ = 0.0;
       }
 
@@ -187,7 +211,7 @@ namespace omni
 
     void TuningGLView::mouseReleaseEvent(QMouseEvent *event)
     {
-      if (!session() || viewOnly()) return;
+      if (!session() || !tuning_ || viewOnly()) return;
 
       mouseDown_ = false;
       makeCurrent();
@@ -202,12 +226,26 @@ namespace omni
         {
           tuning()->blendMask().brush().setInvert(!_inv);
         }
+
+        auto& _blendMask = tuning()->blendMask();
+        _blendMask.stamp(pixelPos(event->pos()));
+        tuning_->update();
       }
+      this->mousePosition_ = event->pos();
       update();
     }
 
     void TuningGLView::wheelEvent(QWheelEvent* event)
     {
+      if (!session()) return;
+      auto _mode = session()->mode();
+
+      if (_mode == Session::Mode::BLEND)
+      {
+        auto& _blendMask = tuning()->blendMask();
+        _blendMask.brush().changeSize(event->delta() / 5.0);
+        update();
+      }
     }
 
     void TuningGLView::keyPressEvent(QKeyEvent* event)
@@ -252,6 +290,15 @@ namespace omni
       QRectF&& _rect = viewRect();
       QPointF _p = QPointF(_pos.x() / width() - 0.5,_pos.y() / height() - 0.5);
       return QPointF(_p.x() * _rect.width(),-_p.y() * _rect.height());
+    }
+
+    QPointF TuningGLView::pixelPos(QPointF const& _pos) const
+    {
+      if (!tuning()) return QPointF(0,0);
+      auto&& _s = screenPos(QPointF(_pos.x(),_pos.y()));
+      return QPointF(
+           float(_s.x()+0.5)*tuning()->width(),
+           float(_s.y()+0.5)*tuning()->height());
     }
 
     void TuningGLView::drawCanvas()
@@ -344,20 +391,52 @@ namespace omni
 
     void TuningGLView::drawBlendMask()
     {
-      updateWarpBuffer();
+      auto _blendMode = session()->blendMode();
+
+      if (_blendMode == Session::BlendMode::INPUT)
+      {
+        updateWarpBuffer();
+      }
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        auto& _blendMask = tuning()->blendMask();
-
-        _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
         _.glDisable(GL_LIGHTING);
         _.glEnable(GL_BLEND);
-        tuning_->drawBlendMask();
-
-        _.glBindTexture(GL_TEXTURE_2D, 0.0);
-
+   
+        switch (_blendMode) 
+        {
+        case Session::BlendMode::COLOR:
+        {
+          // Draw blend mask with color of tuning
+          _.glDisable(GL_TEXTURE_2D);
+          auto _color = tuning()->color();
+          glColor4f(_color.redF(),_color.greenF(),_color.blueF(),1.0);
+          tuning_->drawBlendMask();
+          break;
+        }
+        case Session::BlendMode::WHITE:
+        {
+          // Draw white blend mask 
+          _.glDisable(GL_TEXTURE_2D);
+          glColor4f(1.0,1.0,1.0,1.0);
+          tuning_->drawBlendMask();
+          break;
+        }
+        case Session::BlendMode::INPUT:
+        {
+          // Draw blend mask with input attached
+          _.glEnable(GL_TEXTURE_2D);
+          _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
+          tuning_->drawBlendMask();
+          _.glBindTexture(GL_TEXTURE_2D, 0.0);
+          break;
+        }
+        };
+ 
         drawScreenBorder();
+
+        if (showCursor_ && !viewOnly_)
+          tuning_->drawCursor(screenPos(mousePosition_));
       });
     }
       

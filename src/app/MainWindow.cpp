@@ -50,7 +50,7 @@ MainWindow::MainWindow( QMainWindow *parent) :
     _layout->addWidget(export_.get());
     ui_->pages->setLayout(_layout);
   }
-  
+
   // Connect signals and slots
   {
     // Connect projector position change with view update

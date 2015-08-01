@@ -23,9 +23,6 @@ namespace omni
     /// Clears stroke buffer
     void clear();
 
-    /// Updates the mask buffer 
-    void update();
-
     /**@brief Sets rect of blends
       *@detail Clamps rect to borders 0,0,1,1 if its overlapping
      **/
@@ -68,9 +65,9 @@ namespace omni
 
     /// Returns stroke buffer (read only)
     BlendBuffer const& strokeBuffer() const;
-    
-    /// Returns mask buffer (read only)
-    BlendBuffer const& maskBuffer() const;
+
+    /// Return void* pointer to strokebuffer data, used for OpenGL Texture
+    void* strokeBufferData() const;
 
     /// Test for equality, buffers are ignored
     friend bool operator==(BlendMask const&,BlendMask const&);
@@ -78,12 +75,14 @@ namespace omni
   private:
     /// Returns blend value for mask buffer at position x y
     float borderValue(float _x, float _y) const;
-    
+   
+    void autoResizeStrokeBuffer();
+
     proj::Tuning const& tuning_;
     QRectF rect_;
     float gamma_;
     BlendBrush brush_;
-    BlendBuffer strokeBuffer_, maskBuffer_;
+    BlendBuffer strokeBuffer_;
   };
 }
 

@@ -15,6 +15,12 @@ namespace omni
  
       /// Draw rectangle from given QRectF
       static void draw(QRectF const&);
+    
+      /// Draw rectangle from border coordinates, flipped on y axis version
+      static void drawFlipped(float _left = -0.5, float _right = 0.5, float _top = 0.5, float _bottom = -0.5);
+    
+      /// Draw rectangle from given QRectF, flipped on y axis version
+      static void drawFlipped(QRectF const&);
     };
   }
 }

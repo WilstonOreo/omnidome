@@ -2,6 +2,7 @@
 
 #include <QImage>
 #include <QColor>
+#include <QDebug>
 
 namespace omni
 {
@@ -68,7 +69,7 @@ namespace omni
   QImage BlendBuffer::toQImage() const
   {
     QImage _output(width(),height(),QImage::Format_RGB32);
-
+    qDebug() << width() << " x " << height(); 
     for (int y = 0; y < height(); ++y)
       for (int x = 0; x < width(); ++x)
       {
@@ -118,6 +119,11 @@ namespace omni
     width_ = _width;
     height_ = _height;
     data_.resize(width_*height_);
+  }
+
+  BlendBuffer::data_type const& BlendBuffer::data() const
+  {
+    return data_;
   }
 }
 

@@ -174,6 +174,7 @@ namespace omni
         glView_ = new TuningGLView(this);
         QSizePolicy _sizePolicy(QSizePolicy::Ignored,QSizePolicy::Expanding);
         glView_->setSizePolicy(_sizePolicy);
+        glView_->setKeepAspectRatio(true);
         glView_->installEventFilter(this);
 
         /// FOV view slider

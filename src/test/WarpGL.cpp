@@ -11,6 +11,7 @@
 #include <QDataStream>
 #include <QFile>
 #include <QApplication>
+#include <QRectF>
 
 int main(int ac, char* av[])
 {
@@ -26,10 +27,11 @@ int main(int ac, char* av[])
   auto* _projSetup = static_cast<proj::PeripheralSetup*>(_tuning->setupProjector("PeripheralSetup"));
 
   _tuning->setColor("#FF0000");
+  _tuning->blendMask().setRect(QRectF(0.2,0.2,0.6,0.6));
 
   _projSetup->setYaw(0);
   _projSetup->setPitch(30);
-  _projSetup->setDistanceCenter(9.0);
+  _projSetup->setDistanceCenter(4.0);
   _projSetup->setup(const_cast<proj::Projector&>(_tuning->projector()));
 
   auto* _canvas = _session.setCanvas("HalfDome");
@@ -39,6 +41,7 @@ int main(int ac, char* av[])
   qDebug() << _input->getTypeId();
 
   _session.setMode(Session::Mode::BLEND);
+  _session.setBlendMode(Session::BlendMode::WHITE);
 
   ui::TuningGLView _view;
   _view.show();

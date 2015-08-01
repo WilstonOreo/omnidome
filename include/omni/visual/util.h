@@ -101,8 +101,6 @@ namespace omni
   }
 }
 
-#define OMNI_VISUAL_DEBUG_FBO(result)\
-        qDebug() << #result << ": " << (_.glCheckFramebufferStatus(framebuffer_->handle()) == result);
 
 
 #endif /* OMNI_VISUAL_UTIL_H_ */

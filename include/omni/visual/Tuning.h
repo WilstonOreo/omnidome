@@ -4,6 +4,7 @@
 #include <QRectF>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+
 #include <omni/proj/Tuning.h>
 #include <omni/visual/WarpGrid.h>
 

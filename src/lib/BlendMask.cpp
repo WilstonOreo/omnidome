@@ -10,32 +10,17 @@ namespace omni
     rect_(0.1,0.1,0.8,0.9),
     gamma_(2.0)
   {
-    update();
+    autoResizeStrokeBuffer();
   }
 
   void BlendMask::clear()
   {
     strokeBuffer_.clear();
-    update();
-  }
-
-  void BlendMask::update()
-  {  
-    int w = tuning_.width();
-    int h = tuning_.height();
-    maskBuffer_.resize(w,h);
-
-    for (int y = 0; y < maskBuffer_.height(); ++y)
-      for (int x = 0; x < maskBuffer_.width(); ++x)
-      {
-        maskBuffer_(x,y) = 255.0 * qBound(borderValue(float(x) / w,float(y) / h),0.0f,1.0f);
-      }
   }
 
   void BlendMask::setRect(QRectF const& _rect, bool _update)
   {
     rect_ = _rect;
-    if (_update) update();
   }
 
   QRectF BlendMask::rect() const
@@ -86,11 +71,13 @@ namespace omni
 
   void BlendMask::stamp(const QPointF& _pos)
   {
+    autoResizeStrokeBuffer();
     brush_.stamp(_pos,strokeBuffer_);
   }
 
   float BlendMask::drawLine(QPointF const& _p0, QPointF const& _p1, float _leftOver)
   {
+    autoResizeStrokeBuffer();
     return brush_.drawLine(_p0,_p1,strokeBuffer_,_leftOver);
   }
     
@@ -99,33 +86,18 @@ namespace omni
     return strokeBuffer_;
   }
 
-  BlendBuffer const& BlendMask::maskBuffer() const
+  void* BlendMask::strokeBufferData() const
   {
-    return maskBuffer_;
-  }
-
-  float BlendMask::borderValue(float _x, float _y) const
-  {
-    float edgeValue = 1.0;
-    if (_x <= leftWidth())
-    {
-      edgeValue *= std::min(_x / leftWidth(), 1.0f);
-    }
-    else if (_x >= 1.0f - rightWidth())
-    {
-      edgeValue *= std::min((1.0f - _x) / rightWidth(), 1.0f);
-    }
-    if (_y <= topWidth())
-    {
-      edgeValue *= std::min(_y / topWidth(), 1.0f);
-    }
-    if (_y >= 1.0f - bottomWidth())
-    {
-      edgeValue *= std::min((1.0f - _y) / bottomWidth(), 1.0f);
-    }
-    return 1.0f - pow(qBound(edgeValue,0.0f,1.0f),gamma_);
+    return (void*)(strokeBuffer_.data().data());
   }
     
+  void BlendMask::autoResizeStrokeBuffer()
+  {
+    if (strokeBuffer_.width() != tuning_.width() || 
+        strokeBuffer_.height() != tuning_.height())
+      strokeBuffer_.resize(tuning_.width(),tuning_.height());
+  }
+ 
   bool operator==(BlendMask const& _lhs, BlendMask const& _rhs)
   {
     return 

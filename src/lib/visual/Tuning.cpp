@@ -1,8 +1,10 @@
 #include <omni/visual/Tuning.h>
 
 #include <QOpenGLTexture>
+#include <QOpenGLPixelTransferOptions>
 #include <omni/util.h>
 #include <omni/visual/util.h>
+#include <omni/visual/Rectangle.h>
 
 namespace omni
 {
@@ -40,6 +42,8 @@ namespace omni
 
     void Tuning::update()
     {
+      if (!QOpenGLContext::currentContext()) return;
+
       if (!blendShader_)
       {
         using omni::util::fileToStr;
@@ -48,17 +52,33 @@ namespace omni
         blendShader_.reset(new QOpenGLShaderProgram());
         blendShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
         blendShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
+        blendShader_->link();
       }
       updateBlendTexture();
     }
 
     void Tuning::updateBlendTexture()
     {
-      if (!blendTex_)
+      if (!QOpenGLContext::currentContext()) return;
+ 
+      bool _reset = !blendTex_;
+
+      if (!!blendTex_) 
       {
-        blendTex_.reset(new QOpenGLTexture(QOpenGLTexture::Target2D));
+        _reset = blendTex_->width() != tuning_.width() || blendTex_->height() != tuning_.height();
       }
+
+      if (_reset)
+      {
+        blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().strokeBuffer().toQImage()));
+      }
+ 
+      auto& _blendMask = tuning().blendMask(); 
+      glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
+      glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, tuning_.width(), tuning_.height(), GL_ALPHA, GL_UNSIGNED_BYTE, _blendMask.strokeBufferData());
+      glBindTexture(GL_TEXTURE_2D, 0);
     }
+
 
     void Tuning::drawCursor(QPointF const& _pos)
     {
@@ -71,7 +91,7 @@ namespace omni
         _.glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
         glBegin(GL_LINE_LOOP);
 
-        float _r = tuning_.blendMask().brush().size() * 0.25 / tuning_.width();
+        float _r = tuning_.blendMask().brush().size() * 0.5 / tuning_.width();
         util::for_each_circle_point(24,_r,[&](size_t _i, const QPointF& _p)
         {
           glVertex2f(_p.x() + _pos.x(),_p.y() * (_rect.height()/_rect.width()) + _pos.y());
@@ -87,12 +107,13 @@ namespace omni
       if (!blendShader_) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _)
-      {
+      { 
+        warpGrid_->draw();
+   
         auto& _mask = tuning().blendMask();
         _.glEnable(GL_BLEND);
         _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(1.0,1.0,1.0,1.0);
-
+ 
         blendShader_->bind();
         {
           blendShader_->setUniformValue("top",_mask.topWidth());
@@ -109,7 +130,7 @@ namespace omni
         glColor4f(0.0,0.0,0.0,1.0);
 
         float _b = 4.0;
-        // Draw mask for borders
+        // Draw masks for borders
         glBegin(GL_QUADS);
         {
           glVertex2f(-0.5,-0.5 - _b);
@@ -130,23 +151,23 @@ namespace omni
           glVertex2f(-0.5 + _b,-0.5 - _b);
         }
         glEnd();
-          
+
         _.glEnable(GL_BLEND);
-      /*
-          use_texture(*strokeBlendTex_,[&]()
+        _.glEnable(GL_TEXTURE_2D);
+        blendTex_->bind();
         {
           glColor4f(0.0,0.0,0.0,1.0);
-          glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+          _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
           glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
           glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
           glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-          drawScreenRect();
-        });
-      */
+        
+          Rectangle::drawFlipped();
+        }
+        blendTex_->release();
       });
-
     }
 
     QRectF Tuning::tuningRect() const

@@ -7,7 +7,7 @@
 
 namespace omni
 {
-  BlendBrush::BlendBrush()
+  BlendBrush::BlendBrush()  
   {
     generate();
   }
@@ -28,8 +28,13 @@ namespace omni
 
   void BlendBrush::setSize(float _size)
   {
-    size_= qBound(_size,2.0f,512.0f);
+    size_= qBound(2.0f,_size,512.0f);
     generate();
+  }
+  
+  void BlendBrush::changeSize(float _delta)
+  {
+    setSize(size_ + _delta);
   }
 
   float BlendBrush::feather() const
@@ -73,24 +78,23 @@ namespace omni
 
     for (int i = 0; i < _size; ++i)
     {
-      int _posx = int(i + _p.x() - r*0.5);
+      int _posx = int(i + _p.x() - r);
       if ((_posx < 0) || (_posx >= _buf.width())) continue;
       for (int j = 0; j < _size; ++j)
       {
-        int _posy = int(j + _p.y()-r*0.5);
-
+        int _posy = int(j + _p.y()-r);
         if ((_posy < 0) || (_posy >= _buf.height())) continue;
 
-        float _v = buffer_(i,j) / 255.0;
+        auto _v = buffer_(i,j);
         auto& _pix = _buf(_posx,_posy);
 
         if (invert())
         {
-          _pix *= _v;
+          _pix = _pix * _v / 256;
         }
         else
         {
-          _pix = 255.0 - 255.0 * _v + _buf(_posx,_posy) * _v;
+          _pix = 255 - (255 - _buf(_posx,_posy)) * _v / 256;
         }
       }
     }
@@ -158,7 +162,7 @@ namespace omni
         float _v = 256.0 * (_distance - _innerRadius) / (_r - _innerRadius);
 
         // Clamp and set pixel value
-        buffer_(x,y) = qBound(_v,0.0f,255.0f);
+        buffer_(x,y) = qBound(0.0f,_v,255.0f);
       }
   }
 

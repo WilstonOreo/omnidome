@@ -28,13 +28,13 @@ namespace omni
   }
 
   /// Return degrees
-  inline qreal Angle::degrees() const
+  qreal Angle::degrees() const
   {
     return angle_;
   }
 
   /// Returns radians
-  inline qreal Angle::radians() const
+  qreal Angle::radians() const
   {
     return angle_ / 180.0 * M_PI;
   }

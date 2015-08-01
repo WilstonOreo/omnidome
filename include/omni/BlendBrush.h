@@ -30,6 +30,11 @@ namespace omni
      **/
     void setSize(float _size);
 
+    /**@brief Increase/Decrease size of the brush with a certain delta value
+     * @detail Minimum size is 2 pixels, maximum size is 512 pixels
+     **/
+    void changeSize(float _delta);
+
     /// Return feather value
     float feather() const;
     
