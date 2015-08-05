@@ -1,7 +1,6 @@
 #include <omni/input/List.h>
 
 #include <omni/util.h>
-#include <omni/input/TestImage.h>
 
 namespace omni
 {
@@ -15,10 +14,6 @@ namespace omni
     void List::clear()
     {
       container_type::clear();
-
-      // At test image by default
-      add<TestImage>();
-      setCurrentIndex(0);
     }
 
     Input* List::add(Id const& _typeId)

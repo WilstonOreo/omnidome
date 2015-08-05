@@ -75,10 +75,14 @@ namespace omni
       void closeEvent(QCloseEvent* _event);
       void showEvent(QShowEvent* _event);
 
-    private:
+    private slots:
       /// Sets enabled state of toolbar buttons
       void buttonState();
 
+      /// Set current tuning index
+      void setTuningIndex(int);
+
+    private:
       /// Sets session mode
       void setMode(Session::Mode _mode);
       

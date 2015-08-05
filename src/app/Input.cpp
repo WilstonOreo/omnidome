@@ -75,17 +75,16 @@ namespace omni
     {
       if (!session_) return;
 
-      qDebug() << _action->text();
-
       auto* _input = session_->inputs().add(_action->text());
       if (!_input) return;
 
       if (showSettingsDialog(_input))
       {
         addItem(_input);
+        session_->inputs().setCurrentIndex(session_->inputs().size()-1);
+        emit inputChanged();
       }
 
-      emit inputChanged();
     }
 
     void Input::removeSelection() 
@@ -93,7 +92,6 @@ namespace omni
       int _row = ui_->inputList->currentIndex().row();
       if (_row < 0 || _row >= session_->inputs().size()) return;
 
-      qDebug() << _row << "# input removed";
       session_->inputs().remove(_row);
       model_->removeRows(_row,1);
       changeSelection(model_->index(_row-1,0));

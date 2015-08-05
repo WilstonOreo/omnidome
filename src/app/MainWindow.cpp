@@ -83,17 +83,18 @@ MainWindow::MainWindow( QMainWindow *parent) :
 
     // Update all views when input has changed
     connect(ui_->grpInputs,SIGNAL(inputChanged()),this,SLOT(updateAllViews())); 
+    connect(ui_->grpInputs,SIGNAL(inputChanged()),this,SLOT(buttonState())); 
 
     // Update all views when mapping mode has changed
     connect(ui_->grpMapping,SIGNAL(mappingChanged()),this,SLOT(updateAllViews()));
     connect(ui_->grpMapping,SIGNAL(mappingTypeChanged()),this,SLOT(updateAllViews()));
 
     // Connect tuning index of tuning list for warp and blend widget
-    connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),warp_.get(),SLOT(setTuningIndex(int)));
-    connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),blend_.get(),SLOT(setTuningIndex(int)));
+    connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),this,SLOT(setTuningIndex(int)));
 
     // Connect add tuning button with tuning list 
     connect(ui_->btnAddTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(addTuning())); 
+    connect(ui_->btnAddTuning,SIGNAL(clicked()),this,SLOT(buttonState())); 
   }
 
   newSession();
@@ -273,16 +274,48 @@ void MainWindow::buttonState()
   }
   if (modified_)
     _str += "*";
-
   setWindowTitle(_str);
 
   ui_->btnEditAsNew->setEnabled(!filename_.isEmpty());
   ui_->btnSave->setEnabled(modified_);
+
+  /// Show buttons only when there is a session
+  bool _hasSession = !!session_;
+  ui_->btnScreenSetup->setVisible(_hasSession);
+  ui_->btnProjectionSetup->setVisible(_hasSession);
+  ui_->btnWarp->setVisible(_hasSession);
+  ui_->btnBlend->setVisible(_hasSession);
+  ui_->btnExport->setVisible(_hasSession);
+
+  if (_hasSession)
+  {
+    bool _hasTunings = session_->tunings().size() > 0;
+    bool _hasInput = (session_->inputs().size() > 0) && (session_->inputs().currentIndex() >= 0);
+    ui_->btnWarp->setEnabled(_hasTunings && _hasInput);
+    ui_->btnBlend->setEnabled(_hasTunings && _hasInput);
+    ui_->btnExport->setEnabled(_hasTunings && _hasInput);
+  }
 }
-     
+
+/// Set current tuning index
+void MainWindow::setTuningIndex(int _index)
+{
+  ui_->tuningList->setTuningIndex(_index);
+  warp_->setTuningIndex(_index);
+  blend_->setTuningIndex(_index);
+}
+ 
 void MainWindow::setMode(Session::Mode _mode)
 {
   session_->setMode(_mode);
+
+  bool _hasTunings = session_->tunings().size() > 0;
+ 
+  // Select first tuning if there is no tuning selected yet
+  if (_hasTunings && session_->tunings().currentIndex() < 0)
+  {
+    setTuningIndex(0);
+  }
 
   screenSetup_->setVisible(_mode == Session::Mode::SCREENSETUP);
   projectionSetup_->setVisible(_mode == Session::Mode::PROJECTIONSETUP);
@@ -299,11 +332,16 @@ void MainWindow::setMode(Session::Mode _mode)
   ui_->grpBlend->setVisible(_mode == Session::Mode::BLEND);
   ui_->grpCanvas->setVisible(_mode == Session::Mode::PROJECTIONSETUP);
 
+  ui_->btnScreenSetup->setDown(_mode == Session::Mode::SCREENSETUP);
+  ui_->btnProjectionSetup->setDown(_mode == Session::Mode::PROJECTIONSETUP);
+  ui_->btnWarp->setDown(_mode == Session::Mode::WARP);
+  ui_->btnBlend->setDown(_mode == Session::Mode::BLEND);
+  ui_->btnExport->setDown(_mode == Session::Mode::EXPORT);
+
   switch (_mode)
   {
     case Session::Mode::SCREENSETUP:
     ui_->grpCanvas->hide();
-    ui_->grpInputs->show();
     ui_->grpMapping->hide();
     break;
 
@@ -315,22 +353,18 @@ void MainWindow::setMode(Session::Mode _mode)
 
     case Session::Mode::WARP:
     ui_->grpCanvas->hide();
-    ui_->grpInputs->show();
-    ui_->grpMapping->show();
+    ui_->grpInputs->hide();
+    ui_->grpMapping->hide();
     break;
 
     case Session::Mode::BLEND:
     ui_->grpCanvas->hide();
-    ui_->grpWarp->hide();
-    ui_->grpBlend->show();
     ui_->grpInputs->hide();
     ui_->grpMapping->hide();
     break;
 
     case Session::Mode::EXPORT:
     ui_->grpCanvas->hide();
-    ui_->grpWarp->hide();
-    ui_->grpBlend->hide();
     ui_->grpInputs->show();
     ui_->grpMapping->show();
     break;
@@ -339,6 +373,7 @@ void MainWindow::setMode(Session::Mode _mode)
   }
 
   ui_->tuningList->sessionModeChange();
+  buttonState();
 }
 
 QMessageBox::StandardButton MainWindow::saveChangesPrompt()

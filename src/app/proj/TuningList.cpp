@@ -55,7 +55,7 @@ namespace omni
 
       void TuningList::addTuning()
       {
-        auto* _tuning = session_->tunings().add();
+        auto* _tuning = session_->tunings().add(false);
 
         if (!_tuning) return;
 
@@ -79,6 +79,9 @@ namespace omni
         _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
         _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(projectorSetupChanged()));
         _widget->sessionModeChange();
+        
+        // Select this tuning index
+        setTuningIndex(widgets_.size()-1);
       }
 
       QColor TuningList::getTuningColor() 
@@ -156,12 +159,19 @@ namespace omni
         {
           if (_widget->isSelected()) 
           {
-            session_->tunings().setCurrentIndex(_index);
-            emit currentIndexChanged(_index);
+            setTuningIndex(_index);
             break;
           }
           ++_index;
         }
+      }
+        
+      void TuningList::setTuningIndex(int _index)
+      {
+        int _oldIndex = session_->tunings().currentIndex();
+        session_->tunings().setCurrentIndex(_index);
+        if (_index != _oldIndex)
+          emit currentIndexChanged(_index);
       }
     }
   }

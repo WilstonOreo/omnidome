@@ -45,6 +45,9 @@ namespace omni
         /// Set current tuning from currently selected widget 
         void setCurrentTuning();
 
+        /// Set current tuning index manually (currentIndexChanged signal is emitted)
+        void setTuningIndex(int); 
+
         /// Remove all mappings from session and all associated widgets
         void clear();
 
