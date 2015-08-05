@@ -18,11 +18,12 @@ namespace omni
       TestImage();
       ~TestImage();
 
-      void bind(mapping::Interface* _mapping);
-      void release(mapping::Interface* _mapping);
+      GLuint textureId() const;
       void free();
       void update();
       
+      inline bool acceptMapping() const { return false; }
+
       QPointF rulerPos() const;
       void setRulerPos(QPointF const&);
      

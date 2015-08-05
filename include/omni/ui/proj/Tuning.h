@@ -20,6 +20,7 @@ namespace omni
     namespace proj
     {
       class TitleBar;
+      class TuningLayout;
 
       /**@brief Widget for manipulating projector parameters
          @detail Also holds a preview OpenGL widget
@@ -79,9 +80,6 @@ namespace omni
          **/
         void setSelected(bool);
         
-        /// Reorders widgets according to given window state
-        void reorderWidgets();
-
         /// Display content and widget for specific session mode
         void sessionModeChange();
  
@@ -149,10 +147,7 @@ namespace omni
 
         // The associated session
         omni::Session* session_ = nullptr; 
-
-        /// Slider parameter widgets, grouped
-        std::map<QString,std::vector<QWidget*>> sliderGroups_;
-         
+ 
         /// Title bar widget
         TitleBar* titleBar_ = nullptr;
         
@@ -167,6 +162,9 @@ namespace omni
 
         /// Is true when this widgets index and current tuning index are equal 
         bool isSelected_ = true;
+
+        /// Layout
+        TuningLayout* layout_ = nullptr;
       };
     }
   }

@@ -23,6 +23,9 @@ namespace omni
 
       void updateBlendTexture();
       
+      /// Draw Test card image for screen setup
+      void drawTestCard(int _id) const;
+
       /**@brief Draws warp grid with lines and handles
          @param _rect Screen Rectangle of input
        **/
@@ -46,6 +49,8 @@ namespace omni
 
       static std::unique_ptr<QOpenGLShaderProgram> blendShader_;
       std::unique_ptr<QOpenGLTexture> blendTex_;
+
+      static std::unique_ptr<QOpenGLShaderProgram> testCardShader_;
     };
   }
 }

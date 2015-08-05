@@ -4,6 +4,7 @@
 #include <QOpenGLShader>
 
 #include <omni/util.h>
+#include <omni/visual/util.h>
 #include <omni/proj/Frustum.h>
 
 namespace omni
@@ -33,14 +34,23 @@ namespace omni
 
       if (!_canvas) return; 
 
-      auto* _input = session_.inputs().current();
-      auto* _mapping = session_.mapping();
+      with_current_context([&](QOpenGLFunctions& _)
+      {
+        auto* _input = session_.inputs().current();
+        auto* _mapping = session_.mapping();
 
-      if (_input) _input->bind(_mapping);
+        GLuint _texId = _input ? _input->textureId() : 0;
+      
+        _.glEnable(GL_TEXTURE_2D);
 
-      _canvas->draw();
+        _mapping->bind();
+        _.glBindTexture(GL_TEXTURE_2D, _texId);
+        _canvas->draw();
+        _.glBindTexture(GL_TEXTURE_2D, 0);
 
-      if (_input) _input->release(_mapping);
+        _mapping->release();
+
+      });
     }
       
     void Session::drawCanvasWithFrustumIntersections() const
@@ -116,8 +126,9 @@ namespace omni
       // Setup frustum/canvas intersection shader
       if (!frustumShader_)
       {
-        static QString _vertSrc = util::fileToStr(":/shaders/frustum.vert");
-        static QString _fragmentSrc = util::fileToStr(":/shaders/frustum.frag");
+        using omni::util::fileToStr;
+        static QString _vertSrc = fileToStr(":/shaders/frustum.vert");
+        static QString _fragmentSrc = fileToStr(":/shaders/frustum.frag");
         
         frustumShader_.reset(new QOpenGLShaderProgram());
         frustumShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);

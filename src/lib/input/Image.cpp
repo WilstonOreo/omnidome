@@ -20,27 +20,6 @@ namespace omni
     {
     }
 
-    void Image::bind(mapping::Interface* _mapping)
-    {
-      if (!texture_) return;
-
-      glEnable(GL_TEXTURE_2D);
-      texture_->bind();
-
-      if (_mapping) 
-      {
-        _mapping->bind();
-      }
-    }
-
-    void Image::release(mapping::Interface* _mapping)
-    {
-      if (!texture_) return;
-      
-      if (_mapping) _mapping->release();
-      texture_->release();
-    }
-
     void Image::free()
     {
       texture_.reset();

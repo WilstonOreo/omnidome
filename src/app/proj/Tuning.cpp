@@ -14,6 +14,8 @@
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
 
+#include <omni/ui/proj/TuningLayout.h>
+
 namespace omni
 {
   namespace ui
@@ -163,20 +165,24 @@ namespace omni
 
       void Tuning::setup()
       {
-        hide();
+        layout_ = new TuningLayout(this);
+        setLayout(layout_);
+
         setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
 
         /// Setup title bar
         titleBar_ = new TitleBar("Projector",this);
         titleBar_->installEventFilter(this);
         connect(titleBar_,SIGNAL(closeButtonClicked()),this,SLOT(prepareRemove()));
-
+        layout_->addWidget(titleBar_,TuningLayout::Role::TITLE);
+        
         /// Setup preview window
         glView_ = new TuningGLView(this);
         QSizePolicy _sizePolicy(QSizePolicy::Ignored,QSizePolicy::Expanding);
         glView_->setSizePolicy(_sizePolicy);
         glView_->setKeepAspectRatio(true);
         glView_->installEventFilter(this);
+        layout_->addWidget(glView_,TuningLayout::Role::PREVIEW);
 
         /// FOV view slider
         /// @todo Connect this with threshold slider
@@ -239,81 +245,12 @@ namespace omni
         _deltaYaw->setSingleStep(1.0);
         _deltaYaw->setPageStep(5.0);
         _deltaYaw->setPivot(0.0);
-        
-        /// Make slider groups 
-        sliderGroups_["FreeSetup"] = {_yaw,_roll,_pitch,_x,_y,_z};
-        sliderGroups_["PeripheralSetup"] = {_yaw,_distance,_shift,_towerHeight,_pitch,
-          _deltaYaw,_roll};
-        sliderGroups_["FOV"] = { _fov, _throwRatio };
-        
+ 
         /// Setup/update mode
         
-        show();
         sessionModeChange();
       }
 
-      void Tuning::reorderWidgets()
-      {
-        if (!titleBar_ || !tuning()) return;
-
-        const int _border = 2;
-        int _height = _border;
-
-        /// Hide all widgets
-        glView_->hide();
-        for (auto& _slider : this->parameters_)
-          _slider->hide();
-
-        /// Our widget list
-        std::vector<QWidget*> _widgets = 
-        {
-          titleBar_
-        };
-
-        /// Add preview widget 
-        if (windowState_ != NO_DISPLAY)
-        {
-            _widgets.push_back(glView_); 
-        }
-
-        /// Add adjustment sliders
-        if (windowState_ == ADJUSTMENT_SLIDERS)
-        {
-          for (auto& _slider : sliderGroups_.at(tuning()->projectorSetup()->getTypeId().str()))
-          {
-            _widgets.push_back(_slider);
-          } 
-        }
-
-        /// Add FOV sliders
-        if (windowState_ == FOV_SLIDERS)
-        {
-              for (auto& _slider : sliderGroups_.at("FOV"))
-              {
-                _widgets.push_back(_slider);
-              } 
-        }
-
-        /// Adjust geometry for each widget
-        for (auto& _widget : _widgets)
-        {
-          /// Widget height is constant except for preview
-          int _widgetHeight = _widget == glView_ ? width() / 
-              float(tuning()->width()) * tuning()->height() : 32 / devicePixelRatio();
-          _widget->setParent(this);
-          _widget->setGeometry(_border,_height,width()-_border*2,_widgetHeight);
-          _widget->show();
-          
-          /// Increase height
-          _height += _widgetHeight;
-        }
-        _height += _border;
-        
-        /// Set minimum size and resize 
-        setMinimumSize(0,_height);
-        resize(width(),_height);
-      }
-  
       Tuning::WindowState Tuning::windowState() const
       {
         return windowState_;
@@ -322,7 +259,6 @@ namespace omni
       void Tuning::setWindowState(WindowState _windowState)
       {
         windowState_ = _windowState;
-        reorderWidgets();
       }
 
       void Tuning::setNextWindowState()
@@ -371,8 +307,6 @@ namespace omni
             break;
           default: break;
         }
-
-        reorderWidgets();
       }
 
       void Tuning::resizeEvent(QResizeEvent* event)
@@ -383,7 +317,6 @@ namespace omni
    
       void Tuning::showEvent(QShowEvent*)
       {
-        reorderWidgets();
       }
 
       void Tuning::paintEvent(QPaintEvent* event)

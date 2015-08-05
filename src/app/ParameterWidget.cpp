@@ -42,8 +42,7 @@ namespace omni
 
     slim::RangedFloat* ParameterWidget::addWidget(QString const& _str,float _value,float _min,float _max)
     {
-      auto* _widget = new slim::RangedFloat(_str,_value,_min,_max);
-      _widget->hide();
+      auto* _widget = new slim::RangedFloat(_str,_value,_min,_max,this);
       if (layout())
         layout()->addWidget(_widget);
 
@@ -56,7 +55,6 @@ namespace omni
       connect(_widget,SIGNAL(valueChanged()),this,SLOT(updateParameters()));
       parameterMap_[_str] = _widget;
       parameters_.emplace_back(_widget);
-      _widget->show();
       return _widget;
     }
 

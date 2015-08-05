@@ -145,8 +145,6 @@ namespace omni
       void TuningList::resizeEvent(QResizeEvent* event)
       {
         QScrollArea::resizeEvent(event);
-        for (auto& _widget : widgets_) 
-          _widget->reorderWidgets();
       }
         
       void TuningList::setCurrentTuning()

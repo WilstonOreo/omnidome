@@ -15,24 +15,12 @@ namespace omni
     TestImage::~TestImage()
     {
     }
-
-    void TestImage::bind(mapping::Interface* _mapping)
-    {
-      if (!shader_) {
-        update();
-        return;
-      }
-
-      shader_->bind();
-      shader_->setUniformValue("ruler_pos",GLfloat(pos_.x()),GLfloat(pos_.y()));
-    }
-
-    void TestImage::release(mapping::Interface*)
-    {
-      if (!shader_) return;
-      shader_->release();
-    }
       
+    GLuint TestImage::textureId() const
+    {
+      return 0;
+    }
+
     void TestImage::free()
     {
       shader_.reset();

@@ -18,32 +18,11 @@ namespace omni
 
     EquirectangularTestImage::~EquirectangularTestImage()
     {
-    }
-
-    void EquirectangularTestImage::bind(mapping::Interface* _mapping)
+    }    
+    
+    GLuint EquirectangularTestImage::textureId() const
     {
-      if (!framebuffer_) return;
-
-      with_current_context([this](QOpenGLFunctions& _)
-      {
-        _.glEnable(GL_TEXTURE_2D);
-        _.glBindTexture(GL_TEXTURE_2D, framebuffer_->texture());
-      });
-
-      if (_mapping)
-      {
-        _mapping->bind();
-      }
-    }
-
-    void EquirectangularTestImage::release(mapping::Interface* _mapping)
-    {
-      if (_mapping) _mapping->release();
-
-      with_current_context([this](QOpenGLFunctions& _)
-      {
-        _.glBindTexture(GL_TEXTURE_2D, 0);
-      });
+      return framebuffer_->texture();
     }
 
     void EquirectangularTestImage::update()

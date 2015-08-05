@@ -17,20 +17,14 @@ namespace omni
       /// Virtual destructor
       virtual ~Interface();
 
-      /// Bind input to OpenGL context (to be implement)
-      inline virtual void bind(mapping::Interface* _mapping = nullptr) = 0;
-
-      /// Release input from OpenGL context
-      inline virtual void release(mapping::Interface* _mapping = nullptr)
-      {
-        if (_mapping) _mapping->release();
-      };
-
       /// Return supported map modes (if set is empty, all map modes are supported)
       inline virtual MappingModeSet mapModes() const
       {
         return  MappingModeSet({  });
       }
+      
+      /// An input must return an OpenGL texture ID 
+      virtual GLuint textureId() const = 0;
 
       /// Update interface
       inline virtual void update() {}
@@ -72,6 +66,9 @@ namespace omni
       /// Set ruler position. 
       virtual inline void setRulerPos(QPointF const&) {}
 
+      /// True, if this input accepts a mapping, false for test images
+      virtual inline bool acceptMapping() const { return true; }
+      
     };
 
     /// Input Factory typedef

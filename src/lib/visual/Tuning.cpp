@@ -11,6 +11,7 @@ namespace omni
   namespace visual
   {
     std::unique_ptr<QOpenGLShaderProgram> Tuning::blendShader_;
+    std::unique_ptr<QOpenGLShaderProgram> Tuning::testCardShader_;
 
     Tuning::Tuning(omni::proj::Tuning& _tuning) :
       tuning_(_tuning)
@@ -21,6 +22,27 @@ namespace omni
     omni::proj::Tuning const& Tuning::tuning() const
     {
       return tuning_;
+    }
+
+    void Tuning::drawTestCard(int _id) const
+    {
+      if (!testCardShader_) return;
+
+      visual::with_current_context([&](QOpenGLFunctions& _)
+      {
+        auto _color = tuning_.color();
+        GLfloat _red = _color.redF();
+        GLfloat _green = _color.greenF();
+        GLfloat _blue = _color.blueF();
+
+        testCardShader_->bind();
+        testCardShader_->setUniformValue("resolution",GLfloat(tuning_.width()),GLfloat(tuning_.height()));
+        testCardShader_->setUniformValue("test_color",_red,_green,_blue);
+        testCardShader_->setUniformValue("projector_id",_id);
+
+        Rectangle::draw();
+        testCardShader_->release();
+      });
     }
 
     void Tuning::drawWarpGrid() const
@@ -43,10 +65,22 @@ namespace omni
     void Tuning::update()
     {
       if (!QOpenGLContext::currentContext()) return;
+        
+      using omni::util::fileToStr;
+
+      if (!testCardShader_) 
+      {
+        static QString _vertSrc = fileToStr(":/shaders/testcard.vert");
+        static QString _fragmentSrc = fileToStr(":/shaders/testcard.frag");
+
+        testCardShader_.reset(new QOpenGLShaderProgram());
+        testCardShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
+        testCardShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
+        testCardShader_->link();
+      }
 
       if (!blendShader_)
       {
-        using omni::util::fileToStr;
         static QString _vertSrc = fileToStr(":/shaders/blend.vert");
         static QString _fragmentSrc = fileToStr(":/shaders/blend.frag");
         blendShader_.reset(new QOpenGLShaderProgram());
@@ -54,8 +88,10 @@ namespace omni
         blendShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
         blendShader_->link();
       }
+
       updateBlendTexture();
     }
+
 
     void Tuning::updateBlendTexture()
     {

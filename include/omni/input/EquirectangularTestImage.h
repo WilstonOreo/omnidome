@@ -19,8 +19,7 @@ namespace omni
       EquirectangularTestImage();
       ~EquirectangularTestImage();
 
-      void bind(mapping::Interface* _mapping);
-      void release(mapping::Interface* _mapping);
+      GLuint textureId() const;
       void free();
       void update();
       

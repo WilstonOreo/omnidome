@@ -308,7 +308,7 @@ namespace omni
       glDisable(GL_LIGHTING);
       session_->drawCanvas();
     }
-      
+
     /// Update warp buffer which contains image of projector perspective
     void TuningGLView::updateWarpBuffer()
     {
@@ -471,7 +471,10 @@ namespace omni
       switch (session()->mode())
       {
       case Session::Mode::SCREENSETUP:
-        //tuning_.drawScreenImage();
+        drawOnSurface([&](QOpenGLFunctions& _)
+        {
+          tuning_->drawTestCard(index_+1);
+        });
         break;
       case Session::Mode::PROJECTIONSETUP:
         drawCanvas();

@@ -24,12 +24,6 @@ namespace omni
       /// Destructor
       ~Image();
 
-      /// Bind image texture to OpenGL context, together with mapping shader
-      void bind(mapping::Interface* _mapping);
-
-      /// Release image texture from OpenGL context
-      void release(mapping::Interface* _mapping);
-
       /// Free image from OpenGL context
       void free();
 

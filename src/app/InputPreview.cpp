@@ -4,6 +4,7 @@
 #include <QResizeEvent>
 #include <QMatrix4x4>
 #include <omni/visual/util.h>
+#include <omni/visual/Rectangle.h>
 
 namespace omni
 {
@@ -130,7 +131,7 @@ namespace omni
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
       visual::viewport(this);
-      
+
       /// Setup orthogonal projection
       glMatrixMode(GL_PROJECTION);
       {
@@ -139,23 +140,14 @@ namespace omni
         _m.ortho(_rect.left(),_rect.right(),_rect.top(),_rect.bottom(),-1.0,1.0);
         glMultMatrixf(_m.constData());
       }
-      _input->bind();
 
-      /// Draw rectangle
-      glBegin(GL_QUADS);
+      visual::with_current_context([&](QOpenGLFunctions& _)
       {
-        glTexCoord2f(0.0f,1.0f);
-        glVertex2f(-0.5f,-0.5f);
-        glTexCoord2f(1.0f,1.0f);
-        glVertex2f(0.5f,-0.5f);
-        glTexCoord2f(1.0f,0.0f);
-        glVertex2f(0.5f,0.5f);
-        glTexCoord2f(0.0f,0.0f);
-        glVertex2f(-0.5f,0.5f);
-      }
-      glEnd();
-
-      _input->release();
+        _.glEnable(GL_TEXTURE_2D);
+        _.glBindTexture(GL_TEXTURE_2D, _input->textureId());
+        visual::Rectangle::draw();
+        _.glBindTexture(GL_TEXTURE_2D, 0);
+      });
     }
   }
 }
