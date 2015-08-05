@@ -76,13 +76,16 @@ namespace omni
     int _size = size();
     float r = size()*0.5;
 
+    int dx = _p.x() - r;
+    int dy = _p.y() - r;
+
     for (int i = 0; i < _size; ++i)
     {
-      int _posx = int(i + _p.x() - r);
+      int _posx = int(i + dx);
       if ((_posx < 0) || (_posx >= _buf.width())) continue;
       for (int j = 0; j < _size; ++j)
       {
-        int _posy = int(j + _p.y()-r);
+        int _posy = int(j + dy);
         if ((_posy < 0) || (_posy >= _buf.height())) continue;
 
         auto _v = buffer_(i,j);

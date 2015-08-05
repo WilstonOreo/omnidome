@@ -10,6 +10,7 @@ using namespace omni;
 
 int main(int ac, char* av[])
 {
+
   QGLFormat f;
   f.setDoubleBuffer(false);
   f.setVersion(3,3);
@@ -17,6 +18,7 @@ int main(int ac, char* av[])
 
   /// Start gui
   QApplication _a(ac, av);
+   
   QFile file(":/qss_icons/style.qss");
   file.open(QFile::ReadOnly);
   QString styleSheet = QLatin1String(file.readAll());

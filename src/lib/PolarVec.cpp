@@ -1,5 +1,7 @@
 #include <omni/PolarVec.h>
 
+#include <math.h>
+
 namespace omni
 {
   PolarVec::PolarVec()

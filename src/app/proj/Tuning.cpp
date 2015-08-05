@@ -163,6 +163,7 @@ namespace omni
 
       void Tuning::setup()
       {
+        hide();
         setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
 
         /// Setup title bar
@@ -246,6 +247,8 @@ namespace omni
         sliderGroups_["FOV"] = { _fov, _throwRatio };
         
         /// Setup/update mode
+        
+        show();
         sessionModeChange();
       }
 
@@ -260,7 +263,6 @@ namespace omni
         glView_->hide();
         for (auto& _slider : this->parameters_)
           _slider->hide();
-
 
         /// Our widget list
         std::vector<QWidget*> _widgets = 
@@ -296,7 +298,8 @@ namespace omni
         for (auto& _widget : _widgets)
         {
           /// Widget height is constant except for preview
-          int _widgetHeight = _widget == glView_ ? width() / 4.0 * 3.0 : 25;
+          int _widgetHeight = _widget == glView_ ? width() / 
+              float(tuning()->width()) * tuning()->height() : 32 / devicePixelRatio();
           _widget->setParent(this);
           _widget->setGeometry(_border,_height,width()-_border*2,_widgetHeight);
           _widget->show();

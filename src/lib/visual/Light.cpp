@@ -30,7 +30,7 @@ namespace omni
     }
 
     void Light::setup(GLuint _index)
-    {
+    {/*
       // light and material
       glEnable(GL_LIGHTING);
       glEnable(GL_COLOR_MATERIAL);
@@ -38,7 +38,7 @@ namespace omni
       glLightfv(_index, GL_POSITION, eye4().data());
       glLightModelfv(GL_LIGHT_MODEL_AMBIENT, colorParam(ambient()).data());
       glShadeModel(GL_SMOOTH);
-      glEnable(_index);
+      glEnable(_index);*/
     }
 
     QColor Light::ambient() const

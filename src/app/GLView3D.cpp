@@ -63,10 +63,7 @@ namespace omni
       makeCurrent();
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-       visual::with_current_context([this](QOpenGLFunctions& _)
-      {
-        _.glViewport(0,0, width(), height());
-      });
+      visual::viewport(this);
       
       camera_.setup(30.0,aspect());
      

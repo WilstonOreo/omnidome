@@ -65,8 +65,8 @@ namespace omni
       _w = _w & ~1;
       _h = _h & ~1;
       makeCurrent();
+      visual::viewport(this);
       visual::with_current_context([&](QOpenGLFunctions& _) {
-        _.glViewport(0, 0, (GLint)_w, (GLint)_h);
         _.glClearColor(0.0,0.0,0.0,1.0);
       });
 

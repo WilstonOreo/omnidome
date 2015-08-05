@@ -1,7 +1,7 @@
 #include <omni/WarpGrid.h>
 
-#include <omni/util.h>
 #include <QDataStream>
+#include <omni/util.h>
 
 namespace omni
 {

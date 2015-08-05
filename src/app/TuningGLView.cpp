@@ -52,7 +52,6 @@ namespace omni
     {
       keepAspectRatio_ = _keepAspectRatio;
       sizePolicy().setHeightForWidth(keepAspectRatio_);
-      update();
     }
 
     bool TuningGLView::viewOnly() const
@@ -156,7 +155,7 @@ namespace omni
       {
         //cursorPosition() = screenPos();
       }
-      tuning_.drawCursor();*/
+      */
 
       update();
     }
@@ -226,10 +225,6 @@ namespace omni
         {
           tuning()->blendMask().brush().setInvert(!_inv);
         }
-
-        auto& _blendMask = tuning()->blendMask();
-        _blendMask.stamp(pixelPos(event->pos()));
-        tuning_->update();
       }
       this->mousePosition_ = event->pos();
       update();
@@ -357,7 +352,7 @@ namespace omni
         makeCurrent();
         visual::with_current_context([&](QOpenGLFunctions& _)
         {
-          _.glViewport(0,0, width(), height());
+          visual::viewport(this);
           _.glClearColor(0.0,0.0,0.0,1.0);
           glMatrixMode(GL_PROJECTION);
           glLoadIdentity();
@@ -499,7 +494,7 @@ namespace omni
           frameBuffer_->release();
           makeCurrent();
 
-          glViewport(0,0, width(), height());
+          visual::viewport(this);
           glBindTexture(GL_TEXTURE_2D, frameBuffer_->texture());
 
           /// Setup orthogonal projection

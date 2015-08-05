@@ -4,7 +4,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 # project id
 PROJECT(Omnidome)
 
-include(../cmake-macros/base.cmake)
+include(cmake-files/base.cmake)
 
 import(
   add_submodule
@@ -15,7 +15,6 @@ import(
 )
 
 add_submodule(slim-widgetz)
-add_submodule(boostx-factory)
 
 FILE(GLOB_RECURSE omni_cpp_files ${CMAKE_SOURCE_DIR}/src/lib/*.cpp )
 
@@ -86,9 +85,15 @@ QT5_WRAP_CPP(omni_headers_moc ${omni_headers})
 QT5_ADD_RESOURCES(omni_resources_rcc ${omni_resources})
 QT5_GENERATE_UI(omni_forms_headers ${omni_forms})
 SET(omni_src ${omni_gui_cpp_files} ${omni_headers_moc} ${omni_forms_headers} ${omni_resources_rcc})
+  
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
+    FIND_LIBRARY(omni_extra_libs OpenGL )
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
 
-set(omni_extra_libs GL )
-
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  SET(omni_extra_libs GL )
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 
 ########### Tests #############

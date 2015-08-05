@@ -7,8 +7,10 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QCloseEvent>
+#include <QMenu>
 
 #include <omni/Session.h>
+#include <omni/proj/Template.h>
 #include <omni/ui/proj/Tuning.h>
 #include <omni/ui/proj/TuningList.h>
 #include <omni/ui/About.h>
@@ -49,6 +51,24 @@ MainWindow::MainWindow( QMainWindow *parent) :
     export_.reset(new Export(session_.get()));
     _layout->addWidget(export_.get());
     ui_->pages->setLayout(_layout);
+  }
+
+  // Setup add projector template menu
+  {
+    QMenu* _menu = new QMenu();
+
+    _menu->addAction("PeripheralSetup");
+    _menu->addAction("FreeSetup");
+    _menu->addSeparator();
+    
+    for (auto& _idTemplate : omni::proj::TemplateFactory::classes())
+    {
+      auto& _id = _idTemplate.first;
+      _menu->addAction(_id);
+    }
+
+
+    ui_->btnAddTuning->setMenu(_menu);
   }
 
   // Connect signals and slots

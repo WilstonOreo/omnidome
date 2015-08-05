@@ -1,5 +1,6 @@
 #include <omni/visual/WarpGrid.h>
 
+#include <array>
 #include <QPointF>
 #include <QRectF>
 #include <QColor>

@@ -1,10 +1,12 @@
 #ifndef OMNI_VISUAL_UTIL_H_
 #define OMNI_VISUAL_UTIL_H_
 
+#include <math.h>
 #include <QPointF>
 #include <QVector2D>
 #include <QVector3D>
 #include <QOpenGLFunctions>
+
 
 namespace omni
 {
@@ -95,9 +97,21 @@ namespace omni
       });
     }
 
+
+      template<typename WIDGET>
+      void viewport(WIDGET* _widget)
+      {
+        with_current_context([&_widget](QOpenGLFunctions& _)
+      {
+        int d = _widget->devicePixelRatio();
+        _.glViewport(0,0, _widget->width()*d, _widget->height()*d);
+      });
+      
+      }
     }
     using util::with_current_context;
     using util::draw_on_framebuffer;
+    using util::viewport;
   }
 }
 
