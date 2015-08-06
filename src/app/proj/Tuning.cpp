@@ -41,6 +41,8 @@ namespace omni
 
       Tuning::~Tuning()
       {
+        delete glView_;
+        delete titleBar_;
       }
 
       omni::proj::Tuning* Tuning::tuning()
@@ -61,12 +63,13 @@ namespace omni
    
         if (_newTuning) 
         {
+          glView_->hide();
           glView_->setSession(session_);
           glView_->setTuningIndex(index_);
           glView_->setBorder(0.0);
           glView_->setKeepAspectRatio(false);
           glView_->setViewOnly(true);
-          glView_->update();
+          glView_->show();
           titleBar_->setColor(tuning()->color());
 
           // Also attach fullscreen
@@ -246,9 +249,55 @@ namespace omni
         _deltaYaw->setPageStep(5.0);
         _deltaYaw->setPivot(0.0);
  
-        /// Setup/update mode
-        
+        widgetgroup_type _titleAndPreview({
+            { titleBar_, TuningLayout::Role::TITLE } , 
+            { glView_, TuningLayout::Role::PREVIEW }});
+
+        auto addParameters = [&](widgetgroup_type const& _group, std::vector<QWidget*> const& _widgets) -> widgetgroup_type
+        {
+          widgetgroup_type _result = _group;
+          for (auto& _widget : _widgets)
+            _result.emplace_back(_widget,TuningLayout::Role::PARAMETER);
+          return _result;
+        };
+
+        addGroup("Minimized",{ { titleBar_, TuningLayout::Role::TITLE } });
+
+        /// Make slider groups
+        addGroup("PreviewOnly",_titleAndPreview); 
+        addGroup("FOVSliders",addParameters(_titleAndPreview, { _fov, _throwRatio }));
+        addGroup("FreeSetup",addParameters( _titleAndPreview, {_yaw, _pitch, _roll, _x, _y, _z }));
+        addGroup("PeripheralSetup",
+          addParameters( _titleAndPreview,
+            { _yaw, _pitch, _distance, _towerHeight, _shift, _deltaYaw, _roll }));
+
+        /// Setup/update mode        
         sessionModeChange();
+      }
+        
+      /// Adds a new/changes a parameter group
+      void Tuning::addGroup(QString const& _groupName, widgetgroup_type const& _widgets)
+      {
+        if (_groupName != "")
+        {
+          groups_[_groupName] = _widgets;
+        }
+      }
+        
+      void Tuning::setGroup(QString const& _groupName)
+      {
+        /// Hide all widgets temporarily
+        setParametersVisible(false);
+
+        if (groups_.count(_groupName) == 0)
+        {
+          // Show title bar only if group with that name does not exist
+          layout_->setWidgets({{ titleBar_, TuningLayout::Role::TITLE }});
+   
+        } else
+        {
+          layout_->setWidgets(groups_[_groupName]);
+        }
       }
 
       Tuning::WindowState Tuning::windowState() const
@@ -259,11 +308,30 @@ namespace omni
       void Tuning::setWindowState(WindowState _windowState)
       {
         windowState_ = _windowState;
+        sessionModeChange();
       }
 
       void Tuning::setNextWindowState()
       {
-        setWindowState(static_cast<WindowState>((int(windowState_) + 1) % int(NUM_WINDOW_STATES)));
+        int _numStates = int(NUM_WINDOW_STATES);
+        if (session())
+        {
+          switch (session()->mode())
+          {
+          case Session::Mode::SCREENSETUP:
+            _numStates = 3;
+            break;
+          case Session::Mode::WARP:
+          case Session::Mode::BLEND:
+          case Session::Mode::EXPORT:
+            _numStates = 2;
+            break;
+          default:
+            _numStates = int(NUM_WINDOW_STATES);
+          }
+        }
+
+        setWindowState(static_cast<WindowState>((int(windowState_) + 1) % _numStates));
       }
 
       void Tuning::setSelected(bool _isSelected)
@@ -290,6 +358,7 @@ namespace omni
         
       void Tuning::prepareRemove()
       {
+        glView_->destroy();
         emit closed(index_);
       }
 
@@ -297,13 +366,32 @@ namespace omni
       {
         if (!session()) return;
 
+        if (windowState_ == NO_DISPLAY) 
+        {
+          setGroup("Minimized");
+          return;
+        }
+        if (windowState_ == DISPLAY_ONLY)
+        {
+          setGroup("PreviewOnly");
+          return;
+        }
+
         switch (session()->mode())
         {
           case Session::Mode::SCREENSETUP:
+            setGroup("FOVSliders");
+            break;
           case Session::Mode::PROJECTIONSETUP:
+            if (windowState_ == ADJUSTMENT_SLIDERS)
+              setGroup(tuning()->projectorSetup()->getTypeId().str());
+            if (windowState_ == FOV_SLIDERS)
+              setGroup("FOVSliders");
+            break;
           case Session::Mode::WARP:
           case Session::Mode::BLEND:
           case Session::Mode::EXPORT:
+            setGroup("PreviewOnly");
             break;
           default: break;
         }
@@ -321,7 +409,7 @@ namespace omni
 
       void Tuning::paintEvent(QPaintEvent* event)
       {
-        if (!titleBar_) return;
+        if (!titleBar_ || !isEnabled()) return;
 
         QPainter _p(this);
 

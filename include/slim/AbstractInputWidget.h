@@ -11,6 +11,7 @@ namespace slim
     Q_OBJECT
   public:
     AbstractInputWidget(QWidget* = nullptr);
+    virtual ~AbstractInputWidget() {}
 
   public slots:
     virtual void setEditorVisible(bool);

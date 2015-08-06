@@ -22,7 +22,7 @@ namespace omni
     public:
       explicit GLView(QWidget* _parent = nullptr);
       GLView(omni::Session*,QWidget* _parent = nullptr);
-      ~GLView();
+      virtual ~GLView();
 
       typedef std::set<GLView*> view_set_type;
 

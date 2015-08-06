@@ -83,8 +83,10 @@ namespace omni
         addItem(_input);
         session_->inputs().setCurrentIndex(session_->inputs().size()-1);
         emit inputChanged();
+      } else
+      {
+        session_->inputs().remove(session_->inputs().size()-1);
       }
-
     }
 
     void Input::removeSelection() 
@@ -95,7 +97,7 @@ namespace omni
       session_->inputs().remove(_row);
       model_->removeRows(_row,1);
       changeSelection(model_->index(_row-1,0));
-      
+
       emit inputChanged();
     }
 

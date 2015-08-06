@@ -7,6 +7,7 @@
 namespace omni
 {
   class Session;
+  class BlendMask;
   
   namespace ui
   {
@@ -24,8 +25,24 @@ namespace omni
 
       Session const* session() const;
       void setSession(Session* _session);
+    
+    public slots:
+      /// Update sliders from given blend mask
+      void updateBlendMask();
+
+      /// Set slider values to blend mask
+      void changeBlendMask();
+
       
+
+    signals:
+      void blendMaskChanged();
+
     private:
+      omni::BlendMask const* blendMask() const;
+      omni::BlendMask* blendMask();
+
+      bool locked_ = false;
       Session* session_ = nullptr;
       std::unique_ptr<Ui::Blend> ui_;
     };

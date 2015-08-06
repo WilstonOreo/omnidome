@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <QWidget>
+#include <omni/BlendBrush.h>
 
 namespace omni
 {  
@@ -13,14 +14,17 @@ namespace omni
       Q_OBJECT
     public:
       BrushPreview(QWidget* _parent = nullptr);
-      
+     
+      void update(float _feather, bool _invert);
+
     protected:
       void paintEvent(QPaintEvent* event);
+
+      void resizeEvent(QResizeEvent* event);
       
     private:
-      qreal feather_ = 1.0;
-      bool invert_ = false;
-      std::unique_ptr<QImage> image_;
+      BlendBrush brush_;
+      QImage image_;
 
     };
   }

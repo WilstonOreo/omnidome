@@ -27,7 +27,7 @@ namespace slim
      * @param _max   Maximal value
      **/
     RangedFloat(QString const& _label, double _value, double _min, double _max, QWidget* = nullptr);
-    ~RangedFloat();
+    virtual ~RangedFloat();
 
     using mixin_range_type::value;
     using mixin_range_type::defaultValue;

@@ -7,6 +7,7 @@
 namespace omni
 {
   class Session;
+  class WarpGrid;
   
   namespace ui
   {
@@ -24,8 +25,21 @@ namespace omni
 
       Session const* session() const;
       void setSession(Session* _session);
-      
+
+    public slots:
+      void resetWarpGrid();
+      void resizeWarpGrid(bool);
+      void resizeWarpGrid();
+      void updateWarpGrid();
+
+    signals:
+      void warpGridChanged();
+
     private:
+      omni::WarpGrid const* warpGrid() const;
+      omni::WarpGrid* warpGrid();
+
+      bool locked_ = false;
       Session* session_ = nullptr;
       std::unique_ptr<Ui::Warp> ui_;
     };

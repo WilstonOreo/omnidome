@@ -46,7 +46,7 @@ namespace omni
   {
     feather_=_feather;
     if (feather_ < 0.0) feather_ = 0.0;
-    if (feather_ > 1.0) feather_ = 1.0;
+    if (feather_ > 10.0) feather_ = 10.0;
     generate();
   }
 
@@ -66,7 +66,7 @@ namespace omni
     size_= qBound(_size,2.0f,512.0f);
     feather_=_feather;
     if (feather_ < 0.0) feather_ = 0.0;
-    if (feather_ > 1.0) feather_ = 1.0;
+    if (feather_ > 10.0) feather_ = 10.0;
     invert_=_invert;
     generate();
   }
@@ -106,7 +106,7 @@ namespace omni
   float BlendBrush::drawLine(const QPointF& _p0, const QPointF& _p1,
                              BlendBuffer& _buf, float _leftOver)
   {
-    float _spacing = size_ / 20.0;
+    float _spacing = size_ / 10.0;
     if (_spacing < 0.5) _spacing = 0.5;
 
     QVector2D _step(0.0,0.0);
@@ -144,11 +144,18 @@ namespace omni
 
     return _totalDistance;
   }
+    
+  BlendBuffer const& BlendBrush::buffer() const
+  {
+    return buffer_;
+  }
 
 
   void BlendBrush::generate()
   {
     auto _size = size();
+    if (_size <= 1) return;
+    
     buffer_.resize(_size,_size);
 
     float _r = _size*0.5;

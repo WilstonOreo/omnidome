@@ -39,10 +39,13 @@ namespace omni
 
     void List::remove(int _index)
     {
-      if (!validIndex(_index) || _index == 0) return;
+      if (!validIndex(_index)) return;
 
       this->operator[](_index)->free();
       container_type::erase(this->begin() + _index);
+    
+      if (container_type::empty())
+        setCurrentIndex(-1);
     }
 
     void List::fromStream(QDataStream& _stream) 

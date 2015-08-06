@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>322</width>
-    <height>499</height>
+    <width>469</width>
+    <height>1457</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="grpBrush">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -25,169 +25,41 @@
      <property name="title">
       <string>Brush</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
-      <item row="0" column="1">
-       <widget class="QFrame" name="horizontalFrame">
-        <layout class="QHBoxLayout" name="horizontalLayout_7">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="omni::ui::BrushPreview" name="brushPreview" native="true">
-           <property name="minimumSize">
-            <size>
-             <width>64</width>
-             <height>64</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>64</width>
-             <height>64</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="omni::ui::BrushPreview" name="brushPreview" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
+      <item>
+       <widget class="QCheckBox" name="chkInvert">
         <property name="text">
          <string>Invert</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lbSize">
-        <property name="toolTip">
-         <string>Brush size</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap>:/buttons/rc/buttons/brush_size.png</pixmap>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSlider" name="sliderBrushSize">
+      <item>
+       <widget class="slim::RangedFloat" name="sliderSize" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="minimumSize">
-         <size>
-          <width>32</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="minimum">
-         <number>10</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>50</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="lbFeather">
-        <property name="toolTip">
-         <string>Brush feather</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap>:/buttons/rc/buttons/FEATHER.png</pixmap>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QSlider" name="sliderFeather">
+      <item>
+       <widget class="slim::RangedFloat" name="sliderFeather" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="maximum">
-         <number>200</number>
-        </property>
-        <property name="value">
-         <number>100</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="chkBrushInvert">
-        <property name="text">
-         <string/>
         </property>
        </widget>
       </item>
@@ -197,7 +69,7 @@
    <item>
     <widget class="QGroupBox" name="grpEdgeMask">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -205,47 +77,27 @@
      <property name="title">
       <string>Edge Mask</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_5">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
-      <property name="verticalSpacing">
-       <number>3</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lbGamma">
-        <property name="toolTip">
-         <string>Gamma</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap>:/qss_icons/rc/buttons/GAMMA.svg</pixmap>
-        </property>
-       </widget>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="slim::RangedFloat" name="sliderGamma" native="true"/>
       </item>
-      <item row="0" column="1">
-       <widget class="QSlider" name="sliderGamma">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="minimum">
-         <number>-100</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
+      <item>
+       <widget class="slim::RangedFloat" name="sliderTop" native="true"/>
       </item>
-      <item row="1" column="1">
+      <item>
+       <widget class="slim::RangedFloat" name="sliderLeft" native="true"/>
+      </item>
+      <item>
+       <widget class="slim::RangedFloat" name="sliderRight" native="true"/>
+      </item>
+      <item>
+       <widget class="slim::RangedFloat" name="sliderBottom" native="true"/>
+      </item>
+      <item>
        <widget class="QComboBox" name="boxMaskColor">
+        <property name="currentText">
+         <string>Colored Mask</string>
+        </property>
         <item>
          <property name="text">
           <string>Colored Mask</string>
@@ -254,6 +106,11 @@
         <item>
          <property name="text">
           <string>White Mask</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Mask with Input</string>
          </property>
         </item>
        </widget>
@@ -281,6 +138,12 @@
    <class>omni::ui::BrushPreview</class>
    <extends>QWidget</extends>
    <header location="global">omni/ui/BrushPreview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>slim::RangedFloat</class>
+   <extends>QWidget</extends>
+   <header>slim/RangedFloat.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -37,7 +37,7 @@ namespace omni
     {
       if (_currentIdx < 0)
       {
-        currentIdx_ = -1;
+        currentIdx_ = 0;
         return;
       }
       if (_currentIdx >= size())
@@ -45,7 +45,6 @@ namespace omni
         currentIdx_ = size() - 1;
         return;
       }
-
       currentIdx_ = _currentIdx;
     }
 

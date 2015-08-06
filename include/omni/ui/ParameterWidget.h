@@ -21,7 +21,7 @@ namespace omni
       ParameterWidget(QWidget* _parent = nullptr);
         
       /// Default Constructor  
-      ~ParameterWidget();
+      virtual ~ParameterWidget();
 
       /// Adds a widget with a name, a value and min-max range
       slim::RangedFloat* addWidget(QString const&,float,float,float);
@@ -46,6 +46,8 @@ namespace omni
 
       /// Get parameter widget from parameter map with Id
       QWidget* getWidget(QString const&);
+
+      void setParametersVisible(bool);
 
     signals:
       void parametersUpdated();

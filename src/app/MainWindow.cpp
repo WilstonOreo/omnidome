@@ -88,9 +88,16 @@ MainWindow::MainWindow( QMainWindow *parent) :
     // Update all views when mapping mode has changed
     connect(ui_->grpMapping,SIGNAL(mappingChanged()),this,SLOT(updateAllViews()));
     connect(ui_->grpMapping,SIGNAL(mappingTypeChanged()),this,SLOT(updateAllViews()));
+    
+    // Update all views when warp grid has changed
+    connect(ui_->grpWarp,SIGNAL(warpGridChanged()),this,SLOT(updateAllViews()));
+    
+    // Update all views when warp grid has changed
+    connect(ui_->grpBlend,SIGNAL(blendMaskChanged()),this,SLOT(updateAllViews()));
 
     // Connect tuning index of tuning list for warp and blend widget
     connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),this,SLOT(setTuningIndex(int)));
+
 
     // Connect add tuning button with tuning list 
     connect(ui_->btnAddTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(addTuning())); 
@@ -115,6 +122,8 @@ void MainWindow::newSession()
   ui_->grpCanvas->setSession(session_.get());
   ui_->grpMapping->setSession(session_.get());
   ui_->grpInputs->setSession(session_.get());
+  ui_->grpWarp->setSession(session_.get());
+  ui_->grpBlend->setSession(session_.get());
   
   // Set session to pages
   projectionSetup_->setSession(session_.get());
@@ -303,6 +312,9 @@ void MainWindow::setTuningIndex(int _index)
   ui_->tuningList->setTuningIndex(_index);
   warp_->setTuningIndex(_index);
   blend_->setTuningIndex(_index);
+
+  ui_->grpWarp->updateWarpGrid();
+  ui_->grpBlend->updateBlendMask();
 }
  
 void MainWindow::setMode(Session::Mode _mode)

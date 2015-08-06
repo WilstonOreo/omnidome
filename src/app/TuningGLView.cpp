@@ -20,6 +20,7 @@ namespace omni
 
     TuningGLView::~TuningGLView()
     {
+      destroy();
     }
 
     omni::proj::Tuning* TuningGLView::tuning()
@@ -40,7 +41,6 @@ namespace omni
       if (!_tuning) return;
       tuning_.reset(new visual::Tuning(*_tuning));
       tuning_->update();
-      update();
     }
 
     bool TuningGLView::keepAspectRatio() const
@@ -63,14 +63,12 @@ namespace omni
     {
       viewOnly_ = _viewOnly;
       setMouseTracking(showCursor_ && !viewOnly_);
-      update();
     }
 
     void TuningGLView::setShowCursor(bool _showCursor)
     {
       showCursor_ = _showCursor;
       setMouseTracking(showCursor_ && !viewOnly_);
-      update();
     }
     
     bool TuningGLView::showCursor() const
@@ -86,7 +84,6 @@ namespace omni
     void TuningGLView::setDrawingEnabled(bool _drawingEnabled)
     {
       drawingEnabled_ = _drawingEnabled;
-      update();
     }
 
     bool TuningGLView::isFullscreen() const
@@ -246,12 +243,19 @@ namespace omni
     void TuningGLView::keyPressEvent(QKeyEvent* event)
     {
     }
+      
+    void TuningGLView::destroy()
+    {
+      aboutToBeDestroyed_ = true;
+    }
 
     bool TuningGLView::initialize()
     {
       if (context())
       {
         frameBuffer_.reset(new QOpenGLFramebufferObject(512,512));
+      
+        connect(context(),SIGNAL(aboutToBeDestroyed()),this,SLOT(destroy()));
       }
 
       return context() != nullptr;
@@ -450,8 +454,18 @@ namespace omni
         }
     }
 
+    void TuningGLView::drawTestCard()
+    {
+      drawOnSurface([&](QOpenGLFunctions& _)
+      {
+        tuning_->drawTestCard(index_+1);
+      });
+    }
+
     void TuningGLView::paintGL()
     {
+      if (!isVisible() || !context() || aboutToBeDestroyed_) return;
+
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       if (!tuning_ || !session_) return;
 
@@ -471,13 +485,13 @@ namespace omni
       switch (session()->mode())
       {
       case Session::Mode::SCREENSETUP:
-        drawOnSurface([&](QOpenGLFunctions& _)
-        {
-          tuning_->drawTestCard(index_+1);
-        });
+        drawTestCard();
         break;
       case Session::Mode::PROJECTIONSETUP:
-        drawCanvas();
+        if (session()->inputs().empty()) 
+          drawTestCard();
+        else
+          drawCanvas();
         break;
       case Session::Mode::WARP:
         drawWarpGrid();

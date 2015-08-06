@@ -27,6 +27,7 @@ namespace omni
     void Tuning::drawTestCard(int _id) const
     {
       if (!testCardShader_) return;
+      if (!QOpenGLContext::currentContext()) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _)
       {

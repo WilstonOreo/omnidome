@@ -39,6 +39,8 @@ namespace omni
       /// Set tuning index from session 
       void setTuningIndex(int);
 
+      void destroy();
+
       /// If disabled, screen rect will be stretched over whole widget
       void setKeepAspectRatio(bool);
 
@@ -74,7 +76,7 @@ namespace omni
     private:
       omni::proj::Tuning* tuning();
       omni::proj::Tuning const* tuning() const;
-    
+
       /// Draw Canvas from Projector's perspective
       void drawCanvas();
 
@@ -83,6 +85,9 @@ namespace omni
 
       /// Draw blend mask with stroke buffer
       void drawBlendMask();
+
+      /// Draw test card image
+      void drawTestCard();
 
       /// Draw screen border (only if widget is not in view only mode)
       void drawScreenBorder();
@@ -130,6 +135,9 @@ namespace omni
       /// Show cursor flag (cursor is also shown when widget is view only) 
       bool showCursor_ = true;
 
+      /// Flag which is set to true before this widget is destroyed
+      bool aboutToBeDestroyed_ = false;
+      
       /// Left over distance value for blend blush
       float leftOverDistance_ = 0.0;
 

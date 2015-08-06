@@ -30,6 +30,8 @@ RangedInt::~RangedInt()
 void RangedInt::setValue(int _value)
 {
   mixin_range_type::setValue(_value);
+  emit valueChanged();
+  update();
 }
 
 void RangedInt::setMinimum(int _min)

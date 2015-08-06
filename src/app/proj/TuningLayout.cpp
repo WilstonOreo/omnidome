@@ -16,9 +16,7 @@ namespace omni
 
       TuningLayout::~TuningLayout()
       {
-        QLayoutItem *l;
-        while ((l = takeAt(0)))
-          delete l;
+        clear();
       }
 
       void TuningLayout::addItem(QLayoutItem* _item)
@@ -70,36 +68,11 @@ namespace omni
         return nullptr;
       }
 
-      std::vector<TuningLayout::ItemWrapper> TuningLayout::getGroupItems() const
-      {
-        std::vector<TuningLayout::ItemWrapper> _items;
-
-        // All items when group is empty or does not exist
-        if (group_ == "" || groups_.count(group_) == 0)
-        {
-          return items_;
-        }
-        else
-        {
-          auto& _group = groups_.at(group_);
-
-          for (auto& _item : items_)
-          {
-            for (auto& _groupWidget : _group)
-            {
-              if (_item.widget() == _groupWidget)
-                _items.push_back(_item);
-            }
-          }
-        }
-
-        return _items;
-      }
-
       QSize TuningLayout::calculateSize(SizeType sizeType) const
       {
+        int _border = 2;
         int _width = 0;
-        int _height = 0;
+        int _height = _border;
 
         auto _parent = static_cast<Tuning*>(parent());
 
@@ -113,11 +86,13 @@ namespace omni
             break;
           case Role::PREVIEW:
             if (!tuning()) continue;
+            /// Increase height by aspect ratio
             _height += _parent->width() /
                        float(tuning()->width()) * tuning()->height();
             break;
           }
         }
+        _height += _border;
 
         return QSize(_width,_height);
       }
@@ -130,6 +105,26 @@ namespace omni
       omni::proj::Tuning const* TuningLayout::tuning() const
       {
         return static_cast<Tuning const*>(parent())->tuning();
+      }
+
+        
+      void TuningLayout::setWidgets(widgetgroup_type const& _widgets)
+      {
+        clear();
+        for (auto& _widgetRole : _widgets)
+        {
+          auto& _widget = _widgetRole.first;
+          auto& _role = _widgetRole.second;
+          addWidget(_widget,_role);
+        }
+        update();
+      }
+
+      void TuningLayout::clear() 
+      {
+        QLayoutItem *l;
+        while ((l = takeAt(0)))
+          delete l;
       }
 
       QSize TuningLayout::minimumSize() const
@@ -146,12 +141,11 @@ namespace omni
       {
         const int _border = 2;
         int _height = _border;
-        auto&& _items = getGroupItems();
-
+ 
         auto _parent = static_cast<Tuning*>(parent());
 
         /// Adjust geometry for each widget
-        for (auto& _item : _items)
+        for (auto& _item : items_)
         {
           auto _widget = _item.widget();
 
@@ -164,7 +158,6 @@ namespace omni
           /// Increase height
           _height += _widgetHeight;
         }
-        _height += _border;
       }
 
       void TuningLayout::add(QLayoutItem* _item, Role _role)

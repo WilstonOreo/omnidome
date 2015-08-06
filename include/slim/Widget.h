@@ -14,6 +14,7 @@ namespace slim
   public:
     Widget(QWidget* = nullptr);
     Widget(QString const& _label, QWidget* = nullptr);
+    virtual ~Widget() {}
 
     /// Return label text of widget
     QString label() const;

@@ -88,7 +88,13 @@ namespace omni
       if (!parameterMap_.count(_id)) return nullptr;
       return parameterMap_[_id];
     }
- 
+      
+    void ParameterWidget::setParametersVisible(bool _visible)
+    {
+      for (auto& _parameter : parameters_) 
+        _parameter->setVisible(_visible);
+    }
+
     slim::Rotation* ParameterWidget::addRotationWidget(QString const& _str)
     {
       auto* _widget = new slim::Rotation(0.0,0.0,0.0,this);

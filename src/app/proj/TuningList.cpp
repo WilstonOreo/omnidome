@@ -61,6 +61,9 @@ namespace omni
 
         _tuning->setColor(getTuningColor());
         addTuning(_tuning);
+  
+        // Select this tuning index
+        setTuningIndex(session_->tunings().size()-1);
       }
         
       void TuningList::addTuning(omni::proj::Tuning* _tuning)
@@ -71,7 +74,17 @@ namespace omni
           return;
         }
 
-        widgets_.emplace_back(new ui::proj::Tuning(session_->tunings().size()-1,session_,this));
+        int _index = 0; //session_->tunings().size();
+        for (auto& _sessionTuning : session_->tunings())
+        {
+          if (_sessionTuning.get() == _tuning) 
+          {
+            break;
+          }
+          ++_index;
+        }
+
+        widgets_.emplace_back(new ui::proj::Tuning(_index,session_,this));
         auto _widget = widgets_.back().get();
         contents_->layout()->addWidget(_widget); 
  
@@ -79,9 +92,6 @@ namespace omni
         _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
         _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(projectorSetupChanged()));
         _widget->sessionModeChange();
-        
-        // Select this tuning index
-        setTuningIndex(widgets_.size()-1);
       }
 
       QColor TuningList::getTuningColor() 
@@ -113,17 +123,19 @@ namespace omni
       void TuningList::removeTuning(int _index)
       {
         if (_index == -1) return;
-
-        auto* _widget = widgets_[_index].get();
-        contents_->layout()->removeWidget(_widget); 
-        widgets_.erase(widgets_.begin() + _index);
         session_->tunings().remove(_index);
 
-        // Reorder position indices
-        for (int i = 0; i < session_->tunings().size(); ++i)
+        for (auto& _widget : widgets_) 
         {
-          widgets_[i]->setTuning(i,session_);
+          contents_->layout()->removeWidget(_widget.get()); 
+          _widget->setParent(this);
         }
+        widgets_.clear();
+
+        for (auto& _tuning : session_->tunings())
+          addTuning(_tuning.get());
+            
+        setTuningIndex(std::max(_index-1,0));
       }
 
       void TuningList::sessionModeChange()

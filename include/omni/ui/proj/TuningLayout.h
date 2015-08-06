@@ -13,48 +13,64 @@ namespace omni
       class Tuning;
 
       /**@brief Tuning Layout 
+       * @detail Similar to VBoxLayout, except that widgets with a PREVIEW Role 
+       *         have a size with aspect ratio of associated tuning
        **/
       class TuningLayout: public QLayout
       {
         Q_OBJECT
       public:
+        /// Role of a widget defines resize behaviour
         enum class Role {
-          TITLE,
-          PREVIEW,
-          PARAMETER
+          TITLE, // Fixed size
+          PARAMETER, // Fixed size
+          PREVIEW // Size with aspect ratio of tuning
         };
+        
+        typedef std::vector<std::pair<QWidget*,Role>> widgetgroup_type;
 
         TuningLayout(Tuning* parent);
         ~TuningLayout();
 
+        /// Add item, with PARAMETER Role
         void addItem(QLayoutItem *item);
-        void addWidget(QWidget *widget);
-        void addWidget(QWidget *widget, Role = Role::PARAMETER);
 
+        /// Add widget with PARAMETER Role
+        void addWidget(QWidget *widget);
+
+        /// Add widget with Role 
+        void addWidget(QWidget *widget, Role);
+
+        /// Return number of widgets
         int count() const;
 
+        /// Get index of given widget
         int indexOf(QWidget* widget) const; 
         
+        /// Return item at index
         QLayoutItem* itemAt(int index) const;
+        
+        /// Remove widget at index
         QLayoutItem* takeAt(int index);
 
+        /// Set geometry of all widgets
         void setGeometry(const QRect &rect);
 
-        /// Sets the name of the active group in the layout
-        void setGroup(QString const& _groupName);
+        /// Clears layout and inserts the given widgets 
+        void setWidgets(widgetgroup_type const& _widgets);
 
-        /// Adds a new parameter group
-        void addGroup(QString const& _groupName, std::vector<QWidget*> const& _widgets);
-        void removeGroup(QString const& _groupName);
+        /// Clear layout
+        void clear();
 
+        /// Return minimum size
         QSize minimumSize() const;
+        
+        /// Return size hint, is equal to minimum size
         QSize sizeHint() const;
         
       private:
         omni::proj::Tuning* tuning();
         omni::proj::Tuning const* tuning() const;
-        QString group_;
-        std::map<QString,std::vector<QWidget*>> groups_;
 
         struct ItemWrapper 
         {
@@ -73,8 +89,7 @@ namespace omni
           }
         };
 
-        std::vector<ItemWrapper> getGroupItems() const;
-        
+        /// Add a layout item with Role
         void add(QLayoutItem* _item, Role _role);
 
         enum SizeType { MINIMUMSIZE, SIZEHINT };

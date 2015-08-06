@@ -48,6 +48,8 @@ namespace omni
         --_subscreenCount;
         if (_subscreenCount == 1) break;
       }
+      if (_subscreenCount <= 0) 
+        _subscreenCount = 1;
       return _subscreenCount;
     }
 

@@ -8,23 +8,32 @@
 using namespace omni::ui;
 
 BrushPreview::BrushPreview(QWidget* _parent) :
-  QWidget(_parent),
-  image_(new QImage(64,64,QImage::Format_RGB32))
-{}
+  QWidget(_parent)
+{
+  update(brush_.feather(),brush_.invert());
+}
+      
+void BrushPreview::update(float _feather, bool _invert)
+{
+  brush_.setBrush(std::min(width(),height()),_feather,_invert);
+  image_ = brush_.buffer().toQImage();
+
+  if (_invert)
+    image_.invertPixels();
+
+  QWidget::update();
+}
+      
+
+void BrushPreview::resizeEvent(QResizeEvent* event)
+{
+  update(brush_.feather(),brush_.invert());
+}
 
 void BrushPreview::paintEvent(QPaintEvent* event)
 {
-/*
   QPainter painter(this);
 
-  auto&& _buf = blend::Mask::generateBrush(64,feather_);
-  using namespace gex::raster;
-  for_each(_buf,strategy::for_each::Pixel(),[&](const uint8_t& _pix, size_t _x, size_t _y)
-  {
-    int _v = invert_ ? 255 -  _pix : _pix;
-    image_->setPixel(_x,_y,QColor(_v,_v,_v).rgb());
-  });
-  painter.drawImage(0, 0, *image_);
-  QWidget::paintEvent(event);*/
+  painter.drawImage(0, 0,  image_);
 }
 

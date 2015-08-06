@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>218</width>
-    <height>162</height>
+    <width>615</width>
+    <height>759</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,76 +15,69 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QPushButton" name="btnResizeWarp">
+    <widget class="QToolButton" name="btnResize">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Resize</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
      </property>
-     <property name="flat">
-      <bool>false</bool>
+     <property name="autoRaise">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="warpSizeFrame">
-     <layout class="QFormLayout" name="formLayout_3">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lbHorizontal">
-        <property name="text">
-         <string>Horizontal</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="boxHorizontal">
-        <property name="minimum">
-         <number>2</number>
-        </property>
-        <property name="maximum">
-         <number>12</number>
-        </property>
-        <property name="value">
-         <number>6</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lbVertical">
-        <property name="text">
-         <string>Vertical</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="boxVertical">
-        <property name="minimum">
-         <number>2</number>
-        </property>
-        <property name="maximum">
-         <number>12</number>
-        </property>
-        <property name="value">
-         <number>6</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    <widget class="slim::RangedInt" name="sliderHorz" native="true"/>
    </item>
    <item>
-    <widget class="QPushButton" name="btnReset">
+    <widget class="slim::RangedInt" name="sliderVert" native="true"/>
+   </item>
+   <item>
+    <widget class="QToolButton" name="btnReset">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Reset</string>
      </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>slim::RangedInt</class>
+   <extends>QWidget</extends>
+   <header location="global">slim/RangedInt.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

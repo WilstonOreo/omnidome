@@ -1,8 +1,9 @@
 #ifndef OMNI_UI_PROJ_TUNING_H
 #define OMNI_UI_PROJ_TUNING_H
 
-#include <omni/ui/ParameterWidget.h>
 #include <omni/proj/Tuning.h>
+#include <omni/ui/ParameterWidget.h>
+#include <omni/ui/proj/TuningLayout.h>
 
 namespace omni
 {
@@ -39,6 +40,8 @@ namespace omni
           NUM_WINDOW_STATES
         };
 
+        typedef TuningLayout::widgetgroup_type widgetgroup_type;
+
         /// Default constructor 
         Tuning(QWidget* _parent = nullptr);
         
@@ -46,7 +49,7 @@ namespace omni
         Tuning(int _index, omni::Session* _session, QWidget* _parent = nullptr);
         
         /// Destructor
-        ~Tuning();
+        virtual ~Tuning();
    
         /// Return tuning
         omni::proj::Tuning* tuning();
@@ -145,6 +148,11 @@ namespace omni
         /// The index of the tuning
         int index_ = -1;
 
+        /// Adds a new/changes a parameter group
+        void addGroup(QString const& _groupName, widgetgroup_type const& _widgets);
+
+        void setGroup(QString const& _groupName);
+
         // The associated session
         omni::Session* session_ = nullptr; 
  
@@ -165,6 +173,8 @@ namespace omni
 
         /// Layout
         TuningLayout* layout_ = nullptr;
+ 
+        std::map<QString,widgetgroup_type> groups_;
       };
     }
   }

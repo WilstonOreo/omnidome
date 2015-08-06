@@ -66,6 +66,8 @@ namespace omni
     float drawLine(const QPointF& _p0, const QPointF& _p1, 
         BlendBuffer& _buf, float _leftOver = 0.0);
 
+    BlendBuffer const& buffer() const;
+
     /// Test for equality, buffer is ignored
     friend bool operator==(BlendBrush const&,BlendBrush const&);
 
