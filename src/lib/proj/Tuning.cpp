@@ -31,6 +31,11 @@ namespace omni
     {
       return projector_.screen();
     }
+    
+    Projector& Tuning::projector()
+    {
+      return projector_;
+    }
 
     Projector const& Tuning::projector() const
     {

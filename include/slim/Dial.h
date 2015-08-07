@@ -53,6 +53,7 @@ namespace slim
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
     void mouseMoveEvent(QMouseEvent*);
+    void mouseDoubleClickEvent(QMouseEvent*);
 
     void valueChangedEvent();
     void rangeChangedEvent();

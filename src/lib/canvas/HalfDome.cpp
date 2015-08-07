@@ -19,13 +19,12 @@ namespace omni
       glPushMatrix();
       {
         glLoadIdentity();
-        glTranslatef(center().x(),center().y(),center().z());
-        glMultMatrixf(angles_.matrix().constData());
+        glMultMatrixf(matrix().constData());
         this->sphere_.draw();
       }
       glPopMatrix();
     }
- 
+
     EulerAngles& HalfDome::angles()
     {
       return angles_;
@@ -35,7 +34,7 @@ namespace omni
     {
       return angles_;
     }
-  
+
     void HalfDome::fromStream(QDataStream& _stream)
     {
       Dome::fromStream(_stream);
@@ -47,6 +46,13 @@ namespace omni
     {
       Dome::toStream(_stream);
       _stream << angles_;
+    }
+
+    QMatrix4x4 HalfDome::matrix() const
+    {
+      QMatrix4x4 _m;// = angles_.matrix();
+      _m.translate(center());
+      return _m * angles_.matrix();
     }
   }
 }

@@ -247,9 +247,6 @@ void RangedFloat::init()
   _editor->setButtonSymbols(QAbstractSpinBox::PlusMinus);
   mixin_range_type::apply(_editor);
   valueChangedEvent();
-
-  layout()->addWidget(valueLabel_);
-  layout()->addWidget(_editor);
   hideEditor();
 }
 

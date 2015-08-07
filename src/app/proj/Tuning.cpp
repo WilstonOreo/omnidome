@@ -63,13 +63,11 @@ namespace omni
    
         if (_newTuning) 
         {
-          glView_->hide();
           glView_->setSession(session_);
           glView_->setTuningIndex(index_);
           glView_->setBorder(0.0);
           glView_->setKeepAspectRatio(false);
           glView_->setViewOnly(true);
-          glView_->show();
           titleBar_->setColor(tuning()->color());
 
           // Also attach fullscreen
@@ -78,7 +76,36 @@ namespace omni
             fullscreen_->setSession(session_);
             fullscreen_->setTuningIndex(index_);
           }
+
+          setParamAsFloat("FOV",tuning()->projector().fov().degrees());
+          setParamAsFloat("Throw Ratio",tuning()->projector().throwRatio());
+
+          auto _projSetup = tuning()->projectorSetup();
+
+          if (_projSetup->getTypeId() == "FreeSetup")
+          {
+            auto* _p = static_cast<omni::proj::FreeSetup*>(_projSetup);
+            setParamAsFloat("Yaw",_p->yaw().degrees());
+            setParamAsFloat("Pitch",_p->pitch().degrees());
+            setParamAsFloat("Roll",_p->roll().degrees());
+            setParamAsFloat("X",_p->pos().x());
+            setParamAsFloat("Y",_p->pos().y());
+            setParamAsFloat("Z",_p->pos().z());
+          } else
+          if (_projSetup->getTypeId() == "PeripheralSetup")
+          {
+            auto* _p = static_cast<omni::proj::PeripheralSetup*>(_projSetup);
+            setParamAsFloat("Yaw",_p->yaw().degrees());
+            setParamAsFloat("Pitch",_p->pitch().degrees());
+            setParamAsFloat("Roll",_p->roll().degrees());
+            setParamAsFloat("Delta Yaw",_p->deltaYaw().degrees());
+            setParamAsFloat("Distance",_p->distanceCenter());
+            setParamAsFloat("Tower Height",_p->towerHeight());
+            setParamAsFloat("Shift",_p->shift());
+          }
+
           sessionModeChange();
+          updateParameters();
         }
       }
         
@@ -104,12 +131,12 @@ namespace omni
  
       void Tuning::updateParameters()
       {
-        if (!tuning()) return;
+        if (!tuning() || isLocked()) return;
 
         auto* _projSetup = tuning()->projectorSetup();
         
         if (!_projSetup) return;
- 
+
         /// Handle free projector setup
         if (_projSetup->getTypeId() == "FreeSetup")
         {
@@ -138,6 +165,29 @@ namespace omni
 
         }
         tuning()->setupProjector();
+
+        updateViews();
+        emit projectorSetupChanged();
+      }
+ 
+      void Tuning::setFov()
+      {
+        if (!tuning() || isLocked()) return;
+        
+        tuning()->projector().setFov(getParamAsFloat("FOV"));
+        setParamAsFloat("Throw Ratio",tuning()->projector().throwRatio()); 
+       
+        updateViews();
+        emit projectorSetupChanged();
+      }
+
+      /// Set Throw Ratio to projector from slider
+      void Tuning::setThrowRatio()
+      {
+        if (!tuning() || isLocked()) return;
+
+        tuning()->projector().setThrowRatio(getParamAsFloat("Throw Ratio"));
+        setParamAsFloat("FOV",tuning()->projector().fov().degrees()); 
 
         updateViews();
         emit projectorSetupChanged();
@@ -193,12 +243,14 @@ namespace omni
         _fov->setSingleStep(4.0);
         _fov->setPageStep(45.0);
         _fov->setSuffix("°");
+        connect(_fov,SIGNAL(valueChanged()),this,SLOT(setFov()));
 
         /// Throw ratio slider
         /// @todo Connect this with FOV slider
         auto* _throwRatio = addWidget("Throw Ratio",1.0,0.1,5.0);
         _throwRatio->setSingleStep(0.1);
         _throwRatio->setPageStep(0.3);
+        connect(_throwRatio,SIGNAL(valueChanged()),this,SLOT(setThrowRatio()));
 
         /// Yaw angle slider (all projector setups)
         auto&& _yaw = addAngleWidget("Yaw",0.0,0.0,360.0);

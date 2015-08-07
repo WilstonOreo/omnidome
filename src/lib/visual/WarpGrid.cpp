@@ -59,7 +59,7 @@ namespace omni
     void WarpGrid::drawHandles(QColor const& _color, QRectF const& _rect)
     {
       constexpr size_t _numVertices = 16;
-      const float _radius = 0.025;
+      const float _radius = 0.1 / sqrt(warpGrid_.horizontal() * warpGrid_.vertical());
       std::array<QPointF,_numVertices> _circlePoints;
       util::for_each_circle_point(_numVertices,_radius,[&](size_t i, const QPointF& _p)
       {

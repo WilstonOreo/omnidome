@@ -69,7 +69,6 @@ namespace omni
   QImage BlendBuffer::toQImage() const
   {
     QImage _output(width(),height(),QImage::Format_RGB32);
-    qDebug() << width() << " x " << height(); 
     for (int y = 0; y < height(); ++y)
       for (int x = 0; x < width(); ++x)
       {

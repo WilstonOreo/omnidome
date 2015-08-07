@@ -20,6 +20,7 @@ void AbstractInputWidget::init()
   valueLabel_->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
   valueLabel_->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Ignored);
   valueLabel_->setStyleSheet("background : transparent");
+  layout()->addWidget(valueLabel_);
 }
 
 void AbstractInputWidget::setEditorVisible(bool _visible)

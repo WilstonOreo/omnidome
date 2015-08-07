@@ -11,11 +11,6 @@ namespace omni
     Envelope::~Envelope()
     {
     }
-
-    bool Envelope::hasUVWMap() const
-    {
-      return true;
-    }
       
     void Envelope::draw() const
     {

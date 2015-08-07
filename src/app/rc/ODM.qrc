@@ -15,6 +15,7 @@
     <file>shaders/test_image.vert</file>
     <file>shaders/normals.frag</file>
     <file>shaders/normals.vert</file>
+    <file>shaders/mapping/Template.frag</file>
     <file>shaders/mapping/Planar.frag</file>
     <file>shaders/mapping/Equirectangular.frag</file>
     <file>shaders/mapping/Fisheye.frag</file>

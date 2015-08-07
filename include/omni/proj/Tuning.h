@@ -25,12 +25,14 @@ namespace omni
       /// Constructor with a color
       Tuning(QColor const&);
 
+      /// Set screen for this tuning
       void setScreen(Screen const* _screen);
       Screen const* screen() const;
 
+      Projector& projector();
       Projector const& projector() const;
 
-      /**@brief Make a new projector with a certain id and delete old one
+      /**@brief Make a new projector setup with a certain id and delete old one
        * @return Pointer to new projector setup
        **/
       ProjectorSetup* setupProjector(Id const& _setupId);

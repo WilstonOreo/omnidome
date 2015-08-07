@@ -32,7 +32,11 @@ namespace omni
       if (!shader_) initialize();
 
       if (shader_)
+      {
         shader_->bind();
+        shader_->setUniformValue("flip_horizontal",flipHorizontal_);
+        shader_->setUniformValue("flip_vertical",flipVertical_);
+      }
     }
 
     void Interface::release()
@@ -48,6 +52,26 @@ namespace omni
     void Interface::toStream(QDataStream&) const
     {
     }
+      
+    bool Interface::flipHorizontal() const
+    {
+      return flipHorizontal_;
+    }
+
+    void Interface::setFlipHorizontal(bool _flipHorizontal)
+    {
+      flipHorizontal_ = _flipHorizontal;
+    }
+
+    bool Interface::flipVertical() const
+    {
+      return flipVertical_;
+    }
+
+    void Interface::setFlipVertical(bool _flipVertical)
+    {
+      flipVertical_ = _flipVertical;
+    }
  
     QString Interface::vertexShaderSourceCode() const
     {
@@ -56,7 +80,9 @@ namespace omni
 
     QString Interface::fragmentShaderSourceCode() const
     {
-      return util::fileToStr(QString(":/shaders/mapping/") + getTypeId().str() + ".frag");
+      return 
+        util::fileToStr(":/shaders/mapping/Template.frag") + 
+        util::fileToStr(QString(":/shaders/mapping/") + getTypeId().str() + ".frag");
     }
   }
 }

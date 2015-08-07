@@ -180,6 +180,11 @@ void Dial::mouseMoveEvent(QMouseEvent* e)
     setValue(getValue(e->pos()));
   }
 }
+    
+void Dial::mouseDoubleClickEvent(QMouseEvent* event)
+{
+  setValue(minimum());
+}
 
 double Dial::getValue(QPoint const& _point)
 {

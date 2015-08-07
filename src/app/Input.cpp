@@ -23,6 +23,9 @@ namespace omni
     {
       ui_->setupUi(this);
 
+
+      ui_->preview->hide();
+
       // Make popup menu for adding inputs
       {
         QMenu* _menu = new QMenu();
@@ -82,6 +85,10 @@ namespace omni
       {
         addItem(_input);
         session_->inputs().setCurrentIndex(session_->inputs().size()-1);
+      
+        // Show preview only if there is an input
+        ui_->preview->show();
+
         emit inputChanged();
       } else
       {
@@ -116,11 +123,16 @@ namespace omni
 
       if (_row < 0 || _row >= session_->inputs().size())
       {
-        session_->inputs().setCurrentIndex(0);
+        session_->inputs().setCurrentIndex(-1);
+        ui_->preview->hide();
         return;
       }
  
       session_->inputs().setCurrentIndex(_index.row());
+
+      // Show preview only if there is an input
+      ui_->preview->setVisible(session_->inputs().current() != nullptr);
+
       emit inputChanged();
     }
 

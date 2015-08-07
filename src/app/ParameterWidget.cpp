@@ -75,13 +75,48 @@ namespace omni
       _offset->setPageStep(0.1);
       return _offset;
     }
- 
+    
+    QCheckBox* ParameterWidget::addCheckBox(QString const& _text, bool _checked)
+    {
+      auto* _checkbox = new QCheckBox(_text, this);
+      if (layout())
+        layout()->addWidget(_checkbox);
+      
+      _checkbox->setChecked(_checked);
+
+      /// Signal-slot connection for updating the data model 
+      connect(_checkbox,SIGNAL(clicked()),this,SLOT(updateParameters()));
+      parameterMap_[_text] = _checkbox;
+      parameters_.emplace_back(_checkbox);
+      return _checkbox;
+
+    }
+
     double ParameterWidget::getParamAsFloat(QString const& _str) const
     {
       auto* _widget = static_cast<slim::RangedFloat*>(this->parameterMap_.at(_str));
       if (!_widget) return 0.0;
       return _widget->value();
     }
+   
+    void ParameterWidget::setParamAsFloat(QString const& _str, double _value) 
+    {
+      auto* _widget = static_cast<slim::RangedFloat*>(this->parameterMap_.at(_str));
+      if (!_widget) return;
+
+      locked([&]() 
+      {
+        _widget->setValue(_value);
+      });
+    }
+
+    bool ParameterWidget::getParamAsBool(QString const& _str) const
+    {
+      auto* _widget = static_cast<QCheckBox*>(this->parameterMap_.at(_str));
+      if (!_widget) return false;
+      return _widget->isChecked();
+    }
+      
       
     QWidget* ParameterWidget::getWidget(QString const& _id)
     {

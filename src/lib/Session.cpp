@@ -10,7 +10,6 @@
 #include <omni/canvas/Box.h>
 #include <omni/canvas/Planar.h>
 #include <omni/input/Image.h>
-#include <omni/input/TestImage.h>
 #include <omni/input/EquirectangularTestImage.h>
 
 #include <omni/mapping/Equirectangular.h>
@@ -44,7 +43,6 @@ namespace omni
     {
       using namespace input;
       Factory::reg<Image>();
-      Factory::reg<TestImage>();
       Factory::reg<EquirectangularTestImage>();
     }
     // END Register inputs
@@ -157,6 +155,11 @@ namespace omni
   void Session::setBlendMode(BlendMode _blendMode)
   {
     blendMode_ = _blendMode;
+  }
+    
+  bool Session::hasOutput() const
+  {
+    return inputs().current() && canvas() && mapping(); 
   }
 
   bool operator==(Session const& _lhs,Session const& _rhs)

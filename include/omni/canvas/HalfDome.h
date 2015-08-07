@@ -27,6 +27,8 @@ namespace omni
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
 
+      QMatrix4x4 matrix() const;
+
     private:
       EulerAngles angles_;
     };

@@ -138,6 +138,11 @@ namespace omni
         _.glEnable(GL_LINE_SMOOTH);
       });
     }
+      
+    bool Tuning::initialized() const
+    {
+      return !!blendTex_ && !!blendShader_ && !!testCardShader_;
+    }
 
     void Tuning::drawBlendMask() const
     {

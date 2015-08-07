@@ -11,66 +11,6 @@ uniform vec3 bottom_right;
 /// Color of frustum border
 uniform vec3 color;
 
-
-const float PI = 3.14159265358979323846264;
-
-/// Convert degrees to radians
-float deg2rad(in float deg)
-{
-  return deg * PI / 180.0;
-}
-
-
-/// Convert degrees to radians
-float rad2deg(in float rad)
-{
-  return rad / PI * 180.0;
-}
-
-float sqr(in float a)
-{
-  return a*a;
-}
-
-/// Calculates the rotation matrix of a rotation around X axis with an angle in radians
-mat3 rotateAroundX( in float angle )
-{
-  float s = sin(angle);
-  float c = cos(angle);
-  return mat3(1.0,0.0,0.0,
-              0.0,  c, -s,
-              0.0,  s,  c);
-}
-
-/// Calculates the rotation matrix of a rotation around Y axis with an angle in radians
-mat3 rotateAroundY( in float angle )
-{
-  float s = sin(angle);
-  float c = cos(angle);
-  return mat3(  c,0.0,  s,
-              0.0,1.0,0.0,
-               -s,0.0,  c);
-}
-
-/// Calculates the rotation matrix of a rotation around Z axis with an angle in radians
-mat3 rotateAroundZ( in float angle )
-{
-  float s = sin(angle);
-  float c = cos(angle);
-  return mat3(  c, -s,0.0,
-                s,  c,0.0,
-              0.0,0.0,1.0);
-}
-
-/// Calculate rotation by given yaw and pitch angles (in degrees!)
-mat3 rotationMatrix(in float yaw, in float pitch, in float roll)
-{
-  return rotateAroundZ(deg2rad(yaw)) * 
-         rotateAroundY(deg2rad(-pitch)) * 
-         rotateAroundX(deg2rad(roll));
-}
-
-
 /// Tests if a point intersects frustum. Returns minimum distance from point to frustum
 /// If distance > 0, there is an intersection
 float frustum_intersection(in vec3 point)

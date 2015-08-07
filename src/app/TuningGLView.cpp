@@ -252,9 +252,7 @@ namespace omni
     bool TuningGLView::initialize()
     {
       if (context())
-      {
-        frameBuffer_.reset(new QOpenGLFramebufferObject(512,512));
-      
+      { 
         connect(context(),SIGNAL(aboutToBeDestroyed()),this,SLOT(destroy()));
       }
 
@@ -481,6 +479,9 @@ namespace omni
 
       session_->update();
 
+      if (!tuning_->initialized())
+        tuning_->update();
+
       glPushAttrib(GL_ALL_ATTRIB_BITS);
       switch (session()->mode())
       {
@@ -488,7 +489,7 @@ namespace omni
         drawTestCard();
         break;
       case Session::Mode::PROJECTIONSETUP:
-        if (session()->inputs().empty()) 
+        if (!session()->hasOutput())
           drawTestCard();
         else
           drawCanvas();

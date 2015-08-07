@@ -44,6 +44,7 @@ namespace slim
       T* _e = editorAs<T>();
       _e->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Ignored);
       _e->setStyleSheet("background : transparent");
+      layout()->addWidget(_e);
       return _e;
     }
 

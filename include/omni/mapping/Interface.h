@@ -50,11 +50,15 @@ namespace omni
       virtual void fromStream(QDataStream&);
       virtual void toStream(QDataStream&) const;
 
-      /// Returns stored id of stored input. nullptr is returned when input doesn't exist
-      input::Interface const* input(Id const& _id) const;
- 
+      bool flipHorizontal() const;
+      void setFlipHorizontal(bool);
+
+      bool flipVertical() const;
+      void setFlipVertical(bool);
+
     protected:
       std::unique_ptr<QOpenGLShaderProgram> shader_;
+
 
     private:
       /**@brief Returns vertex shader source code 
@@ -66,6 +70,9 @@ namespace omni
        * @detail Is taken from file :/shaders/mapping/$MAPPING_TYPEID by default) 
       **/
       virtual QString fragmentShaderSourceCode() const;
+
+      bool flipHorizontal_ = false;
+      bool flipVertical_ = false;
     };
 
     /// Abstract mapping factory

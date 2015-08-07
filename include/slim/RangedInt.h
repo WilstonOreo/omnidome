@@ -19,6 +19,11 @@ namespace slim
     RangedInt(QWidget* = nullptr);
     RangedInt(QString const& _label, int _value, int _min, int _max, QWidget* = nullptr);
     ~RangedInt();
+    
+    /// Return flag if default value is used
+    bool useDefaultValue() const;
+
+    bool drawTicks() const;
 
   public slots:
     void setValue(int);
@@ -26,6 +31,11 @@ namespace slim
     void setMaximum(int);
     void setRange(int,int);
     void setEditorVisible(bool);
+    
+    /// Use Default Value and show it
+    void setUseDefaultValue(bool);
+
+    void setDrawTicks(bool);
   signals:
     void valueChanged();
     void rangeChanged();
@@ -44,7 +54,12 @@ namespace slim
     void init();
     int valueFromPos(double) const;
     int valueToPos() const;
+    
+    /// Calculate position from value
+    double valueToPos(int) const;
 
+    bool drawTicks_ = true;
+    bool useDefaultValue_ = false;
     bool moving_;
   };
 }

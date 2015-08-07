@@ -69,7 +69,7 @@ namespace omni
     Canvas const* canvas() const;
 
     /// Return reference to current screen setup
-    ScreenSetup& screenSetup();
+    ScreenSetup& screenSetup(); 
 
     /// Return const reference to current screen setup 
     ScreenSetup const& screenSetup() const;
@@ -86,6 +86,8 @@ namespace omni
     /// Set blend mask mode
     void setBlendMode(BlendMode);
 
+    /// A session has an output when there is an input, a canvas and a mapping
+    bool hasOutput() const;
 
     /// Test for equality. ScreenSetup is ignored
     friend bool operator==(Session const&,Session const&);

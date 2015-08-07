@@ -46,9 +46,11 @@ namespace omni
   }
 
   /// Constructs angle from radians
-  Angle Angle::fromRad(qreal _angle)
+  Angle Angle::fromRad(qreal _rad)
   {
-    return Angle(Angle::fromDeg(_angle).radians());
+    Angle _angle;
+    _angle.setRadians(_rad);
+    return _angle;
   }
     
   Angle const& Angle::operator+=(Angle const& _angle)

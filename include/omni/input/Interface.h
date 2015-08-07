@@ -64,11 +64,7 @@ namespace omni
       }
 
       /// Set ruler position. 
-      virtual inline void setRulerPos(QPointF const&) {}
-
-      /// True, if this input accepts a mapping, false for test images
-      virtual inline bool acceptMapping() const { return true; }
-      
+      virtual inline void setRulerPos(QPointF const&) {} 
     };
 
     /// Input Factory typedef

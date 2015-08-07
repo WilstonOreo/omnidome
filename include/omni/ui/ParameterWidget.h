@@ -3,6 +3,7 @@
 
 #include <set>
 #include <QWidget>
+#include <QCheckBox>
 #include <slim/RangedFloat.h>
 #include <slim/Rotation.h>
 #include <omni/util.h>
@@ -35,6 +36,9 @@ namespace omni
       /// Adds an Rotation widget with three dials for X,Y and Z axis
       slim::Rotation* addRotationWidget(QString const&);
 
+      /// Adds a checkbox
+      QCheckBox* addCheckBox(QString const&, bool _checked = false);
+
     public slots:
       /// Removes all parameter widgets
       void clear();
@@ -43,6 +47,12 @@ namespace omni
       
       /// Utility method for retrieving the value from a slider with id
       double getParamAsFloat(QString const&) const;
+      
+      /// Set slider value from given value
+      void setParamAsFloat(QString const& _str, double _value);
+ 
+      /// Utility method for retrieving the value from checkbox with id
+      bool getParamAsBool(QString const&) const;
 
       /// Get parameter widget from parameter map with Id
       QWidget* getWidget(QString const&);

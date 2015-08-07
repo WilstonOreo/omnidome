@@ -37,8 +37,10 @@ namespace omni
       /// Draw cursor for blend brush
       void drawCursor(QPointF const& _pos);
 
+      bool initialized() const;
+
     private: 
-      
+
       /**@brief Calculates rectangle of this tuning  
        **/
       QRectF tuningRect() const;

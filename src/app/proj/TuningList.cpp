@@ -29,7 +29,7 @@ namespace omni
         contents_->setLayout(layout_);
         this->setWidget(contents_);
         contents_->show();
-  
+
         this->setWidgetResizable(true);
       }
 
@@ -61,14 +61,14 @@ namespace omni
 
         _tuning->setColor(getTuningColor());
         addTuning(_tuning);
-  
+
         // Select this tuning index
         setTuningIndex(session_->tunings().size()-1);
       }
-        
+
       void TuningList::addTuning(omni::proj::Tuning* _tuning)
       {
-        if (widgets_.size() >= maxNumberTunings()) 
+        if (widgets_.size() >= maxNumberTunings())
         {
           QMessageBox::information(this,"Information", QString("You have reached the maximum of %1 projectors.").arg(maxNumberTunings()));
           return;
@@ -77,7 +77,7 @@ namespace omni
         int _index = 0; //session_->tunings().size();
         for (auto& _sessionTuning : session_->tunings())
         {
-          if (_sessionTuning.get() == _tuning) 
+          if (_sessionTuning.get() == _tuning)
           {
             break;
           }
@@ -86,36 +86,64 @@ namespace omni
 
         widgets_.emplace_back(new ui::proj::Tuning(_index,session_,this));
         auto _widget = widgets_.back().get();
-        contents_->layout()->addWidget(_widget); 
- 
+        contents_->layout()->addWidget(_widget);
+
         _widget->connect(_widget,SIGNAL(selected()),this,SLOT(setCurrentTuning()));
         _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
         _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(projectorSetupChanged()));
         _widget->sessionModeChange();
       }
 
-      QColor TuningList::getTuningColor() 
+      QColor TuningList::getTuningColor()
       {
         // Generate standard colors, for tuning
-        std::vector<QColor> _colors;
+        static std::vector<QColor> _colors;
 
-        int _hue = 0;
-        int _hueDiff = 120;
-        for (int i = 0; i < maxNumberTunings(); ++i)
+        if (_colors.empty())
         {
-          int _saturation = float(maxNumberTunings()/2 - i/2) / maxNumberTunings() * 2.0 * 255.0; //int(i * 2.0 / maxNumberTunings()) * 255;
-          _colors.push_back(QColor::fromHsv(_hue,_saturation,255));
+          _colors.reserve(maxNumberTunings());
 
-          _hue += 120;
-          if (_hue >= 360) {
-            _hueDiff /= 2;
-            _hue += _hueDiff;
-            _hue %= 360;
+          int _hue = 0;
+          int _hueDiff = 120;
+          for (int i = 0; i < maxNumberTunings(); ++i)
+          {
+            int _saturation = float(maxNumberTunings()/2 - i/2) / maxNumberTunings() * 2.0 * 255.0; //int(i * 2.0 / maxNumberTunings()) * 255;
+            _colors.push_back(QColor::fromHsv(_hue,_saturation,255));
+
+            _hue += 120;
+            if (_hue >= 360)
+            {
+              _hueDiff /= 2;
+              _hue += _hueDiff;
+              _hue %= 360;
+            }
           }
         }
         int _numTunings = session_->tunings().size();
 
         if (session_->tunings().size() > maxNumberTunings()) return QColor("#000000");
+
+        /// Find first color in spectrum that is not already used
+        for (int j = 0; j < maxNumberTunings(); ++j)
+        {
+          bool _colorEqual = false;
+          auto _color = _colors[j];
+
+          for (int i = 0; i < _numTunings; ++i)
+          {
+            auto _tuningColor = session_->tunings()[i]->color();
+            qDebug() << _color << " " << _tuningColor;
+          
+            if (_color.red() == _tuningColor.red() && 
+                _color.green() == _tuningColor.green() && 
+                _color.blue() == _tuningColor.blue())
+            {
+              _colorEqual = true;
+              break;
+            }
+          }
+          if (!_colorEqual) return _color;
+        }
 
         return _colors[_numTunings-1];
       }
@@ -123,24 +151,32 @@ namespace omni
       void TuningList::removeTuning(int _index)
       {
         if (_index == -1) return;
+
+        auto& _widget = widgets_[_index]; 
+
+       // for (auto& _widget : widgets_)
+        {
+          contents_->layout()->removeWidget(_widget.get());
+          _widget->setParent(nullptr);
+          _widget.reset(); 
+        }
+        widgets_.erase(widgets_.begin() + _index);
         session_->tunings().remove(_index);
 
-        for (auto& _widget : widgets_) 
+        for (int i = 0; i < session_->tunings().size(); ++i)
         {
-          contents_->layout()->removeWidget(_widget.get()); 
-          _widget->setParent(this);
+          widgets_[i]->setTuning(i,session_);
         }
-        widgets_.clear();
 
-        for (auto& _tuning : session_->tunings())
-          addTuning(_tuning.get());
-            
+       // for (auto& _tuning : session_->tunings())
+        //  addTuning(_tuning.get());
+
         setTuningIndex(std::max(_index-1,0));
       }
 
       void TuningList::sessionModeChange()
       {
-        for (auto& _widget : widgets_) 
+        for (auto& _widget : widgets_)
           _widget->sessionModeChange();
       }
 
@@ -149,27 +185,27 @@ namespace omni
         widgets_.clear();
         session_->tunings().clear();
       }
-        
+
       /// Updates/Repaints GL Views of all tunings widgets
       void TuningList::updateViews()
       {
-        for (auto& _widget : widgets_) 
+        for (auto& _widget : widgets_)
           _widget->updateViews();
       }
- 
+
       void TuningList::resizeEvent(QResizeEvent* event)
       {
         QScrollArea::resizeEvent(event);
       }
-        
+
       void TuningList::setCurrentTuning()
       {
         if (!session_) return;
 
         int _index = 0;
-        for (auto& _widget : widgets_) 
+        for (auto& _widget : widgets_)
         {
-          if (_widget->isSelected()) 
+          if (_widget->isSelected())
           {
             setTuningIndex(_index);
             break;
@@ -177,7 +213,7 @@ namespace omni
           ++_index;
         }
       }
-        
+
       void TuningList::setTuningIndex(int _index)
       {
         int _oldIndex = session_->tunings().currentIndex();

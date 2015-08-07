@@ -20,15 +20,22 @@ namespace omni
       connect(ui_->btnReset,SIGNAL(clicked()),this,
               SLOT(resetWarpGrid()));
 
-      ui_->sliderHorz->hide();
-      ui_->sliderHorz->setRange(2,12);
-      ui_->sliderHorz->setLabel("Horizontal");
-      connect(ui_->sliderHorz,SIGNAL(valueChanged()),this,SLOT(resizeWarpGrid()));
+      auto setupSlider = [&](slim::RangedInt* _slider)
+      {
+        _slider->hide();
+        _slider->setRange(2,12);
+        _slider->setSingleStep(1);
+        _slider->setPageStep(12);
+        _slider->setDefaultValue(6);
+        _slider->setUseDefaultValue(true);
+        connect(_slider,SIGNAL(valueChanged()),this,SLOT(resizeWarpGrid()));
+      };
 
-      ui_->sliderVert->hide();
-      ui_->sliderVert->setRange(2,12);
+      setupSlider(ui_->sliderHorz);
+      ui_->sliderHorz->setLabel("Horizontal");
+
+      setupSlider(ui_->sliderVert);
       ui_->sliderVert->setLabel("Vertical");
-      connect(ui_->sliderVert,SIGNAL(valueChanged()),this,SLOT(resizeWarpGrid()));
     }
 
     Warp::~Warp()

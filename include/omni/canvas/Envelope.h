@@ -22,10 +22,7 @@ namespace omni
         PROJECT_OUTSIDE,
         PROJECT_BOTH_SIDES
       };
-      
-      /// An Envelope canvas always can have a normal map
-      bool hasUVWMap() const;
-
+     
       ProjectionMode projectionMode() const;
       void setProjectionMode(ProjectionMode);
 

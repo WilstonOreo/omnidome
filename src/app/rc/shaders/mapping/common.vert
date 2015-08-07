@@ -1,12 +1,12 @@
 #version 120
 
-varying vec3 vVertexPosition;
-varying vec3 vVertexNormal;
+varying vec3 uvw_vertex_position;
+varying vec3 uvw_normal;
 
 void main() {
 	gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-  vVertexPosition = (gl_Vertex * gl_ModelViewMatrix).xyz;
-  vVertexNormal = gl_Normal * gl_NormalMatrix;
+  uvw_vertex_position = gl_Vertex.xyz; //* gl_ModelViewMatrix;
+  uvw_normal = gl_Normal.xyz;// * gl_NormalMatrix;
 }
 

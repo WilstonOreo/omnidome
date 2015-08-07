@@ -1,5 +1,7 @@
 #include <omni/visual/Light.h>
 
+#include <omni/visual/util.h>
+
 namespace omni
 {
   namespace visual
@@ -30,15 +32,18 @@ namespace omni
     }
 
     void Light::setup(GLuint _index)
-    {/*
+    {
       // light and material
-      glEnable(GL_LIGHTING);
-      glEnable(GL_COLOR_MATERIAL);
-      glLightfv(_index, GL_DIFFUSE, colorParam(diffuse()).data());
-      glLightfv(_index, GL_POSITION, eye4().data());
-      glLightModelfv(GL_LIGHT_MODEL_AMBIENT, colorParam(ambient()).data());
-      glShadeModel(GL_SMOOTH);
-      glEnable(_index);*/
+      visual::with_current_context([&](QOpenGLFunctions& _)
+        {
+          _.glEnable(GL_LIGHTING);
+          _.glEnable(GL_COLOR_MATERIAL);
+          glLightfv(_index, GL_DIFFUSE, colorParam(diffuse()).data());
+          glLightfv(_index, GL_POSITION, eye4().data());
+          glLightModelfv(GL_LIGHT_MODEL_AMBIENT, colorParam(ambient()).data());
+          glShadeModel(GL_SMOOTH);
+          _.glEnable(_index);
+      });
     }
 
     QColor Light::ambient() const

@@ -135,6 +135,12 @@ namespace omni
         /// Set parameters from sliders to tuning
         void updateParameters();
         
+        /// Set FOV to projector from slider
+        void setFov();
+
+        /// Set Throw Ratio to projector from slider
+        void setThrowRatio();
+
         /// Update slider and border color
         void updateColor();
         

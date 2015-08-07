@@ -40,6 +40,12 @@ namespace omni
       
       /// Serialize to stream
       void toStream(QDataStream&) const;
+    
+      /// A box retrieves its uvw coordinates from the vertex position
+      inline virtual UVWSource uvwSource() const 
+      {
+        return UVWSource::POSITION;
+      }
     };
   }
 }

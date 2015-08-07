@@ -45,6 +45,9 @@ namespace omni
         _rotatable->setYaw(rotation_->z());
       };
 
+      mapping_->setFlipHorizontal(getParamAsBool("Flip horizontal"));
+      mapping_->setFlipVertical(getParamAsBool("Flip vertical"));
+
       if (mapping_->getTypeId() == "Equirectangular")
       {
         auto* _equirectangular = static_cast<mapping::Equirectangular*>(mapping_);
@@ -126,8 +129,10 @@ namespace omni
           _stretchX->setValue(_planar->stretch().x());
           _stretchY->setValue(_planar->stretch().y());
         }
+        
+        addCheckBox("Flip horizontal",mapping_->flipHorizontal());
+        addCheckBox("Flip vertical",mapping_->flipVertical());
       });
     }
-
   }
 }

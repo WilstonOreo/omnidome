@@ -2,6 +2,7 @@
 #define OMNI_CANVAS_INTERFACE_H_
 
 #include <set>
+#include <QMatrix4x4>
 #include <omni/SerializationInterface.h>
 #include <omni/mapping/Interface.h>
 #include <omni/visual/Interface.h>
@@ -11,6 +12,15 @@ namespace omni
 {
   namespace canvas
   {
+    /// Enum which determines how UVW coordinates are generated
+    enum class UVWSource
+    {
+      NONE,
+      NORMAL,
+      POSITION,
+      CUSTOM
+    };
+
     /**@brief Abstract interface for a canvas
      * @detail A canvas represents the surface on which the projection is performed.
      *         It might be a dome or a planar surface.
@@ -20,6 +30,7 @@ namespace omni
       public visual::Interface
     {
     public:
+
       /// Virtual destructor
       virtual ~Interface() {}
  
@@ -34,11 +45,11 @@ namespace omni
         return MappingModeSet();
       }
 
-      /**@brief Constant flag which determines if the canvas can have a UVW map (false by default)
+      /**@brief Enum value which determines how UVW coordinates are generated (NONE by default)
        **/
-      inline virtual bool hasUVWMap() const
+      inline virtual UVWSource uvwSource() const
       {
-        return false;
+        return UVWSource::NONE;
       }
 
       /// Abstract method for returning bounding box of canvas
@@ -63,6 +74,12 @@ namespace omni
       inline virtual qreal radius() const 
       {
         return extent() * 0.5;
+      }
+
+      /// Transformation matrix for canvas
+      inline virtual QMatrix4x4 matrix() const
+      {
+        return QMatrix4x4();
       }
 
     protected:

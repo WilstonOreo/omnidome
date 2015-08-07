@@ -71,10 +71,10 @@ namespace omni
       glLoadIdentity();
       
   
-      this->session_->drawProjectors();
 
       updateLight();
       this->session_->drawCanvas();
+      this->session_->drawProjectors();
       this->session_->drawCanvasWithFrustumIntersections();
       this->session_->drawProjectorHalos();
     }

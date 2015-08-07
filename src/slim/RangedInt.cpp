@@ -49,6 +49,29 @@ void RangedInt::setRange(int _min, int _max)
 {
   mixin_range_type::setRange(_min,_max);
 }
+
+bool RangedInt::useDefaultValue() const
+{
+  return useDefaultValue_;
+}
+
+void RangedInt::setUseDefaultValue(bool _defaultValue)
+{
+  useDefaultValue_=_defaultValue;
+  update();
+}
+
+bool RangedInt::drawTicks() const
+{
+  return drawTicks_;
+}
+
+void RangedInt::setDrawTicks(bool _ticks)
+{
+  drawTicks_=_ticks;
+  update();
+}
+
     
 void RangedInt::valueChangedEvent()
 {
@@ -76,6 +99,12 @@ int RangedInt::valueToPos() const
   return _rect.left() + ratio()* float(_rect.width());
 }
 
+double RangedInt::valueToPos(int _value) const
+{
+  auto&& _rect = rect();
+  return _rect.left() + mixin::Range<int>::ratio(_value)* double(_rect.width());
+}
+
 void RangedInt::paintEvent(QPaintEvent* _paintEvent)
 {
   QStylePainter _p(this);
@@ -84,9 +113,28 @@ void RangedInt::paintEvent(QPaintEvent* _paintEvent)
   _option.initFrom(this);
   
   double _pos = valueToPos();
+  if (useDefaultValue())
+    AbstractInputWidget::drawHandle(_p,valueToPos(defaultValue()),0.5);
+
 
   AbstractInputWidget::drawTrack(_p,_pos);
   AbstractInputWidget::drawHandle(_p,_pos);
+  
+  if (drawTicks())
+  {
+    mixin_range_type::for_each_step([&](int _step, double i, bool _isPage)
+    {
+      _p.setPen(QPen(i >= mixin_range_type::value() ?
+                     colorSet().shadow() :
+                     colorSet().windowText(),1));
+
+      double _pos = valueToPos(i);
+      double _sizeFactor = _isPage ? 0.3 : 0.15;
+      _p.drawLine(
+        QPointF(_pos,rect().bottom() - rect().height() * _sizeFactor),
+        QPointF(_pos,rect().bottom()));
+    });
+  }
   AbstractInputWidget::drawBorder(_p,hasFocus() || editor_->hasFocus());
 }
 

@@ -1,7 +1,6 @@
 
-uniform sampler2D texture; // Texture image
-
-void main()
+float mapping(in vec3 uvw, out vec2 texCoords) 
 {
-  gl_FragColor = texture2D(texture,gl_TexCoord[0].st);
+  texCoords = gl_TexCoord[0].st;
+  return 1.0;
 }
