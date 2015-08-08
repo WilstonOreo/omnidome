@@ -115,6 +115,7 @@ namespace omni
 
   void BlendBuffer::resize(int _width, int _height)
   {
+    if (_width*_height <= 0) return;
     width_ = _width;
     height_ = _height;
     data_.resize(width_*height_);

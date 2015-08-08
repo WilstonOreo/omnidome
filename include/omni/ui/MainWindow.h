@@ -71,6 +71,9 @@ namespace omni
       /// Update all OpenGL views
       void updateAllViews();
 
+      /// Sets modified flag to true
+      void modified();
+
     protected:
       void closeEvent(QCloseEvent* _event);
       void showEvent(QShowEvent* _event);
@@ -82,12 +85,16 @@ namespace omni
       /// Set current tuning index
       void setTuningIndex(int);
 
+
+      void addProjector(QAction* _action);
+
+
     private:
       /// Sets session mode
       void setMode(Session::Mode _mode);
       
       /// Makes a new session
-      void newSession();
+      void setupSession();
 
       /// Message Box for changing changes
       QMessageBox::StandardButton saveChangesPrompt();
@@ -101,6 +108,9 @@ namespace omni
       /// Modified flag
       bool modified_ = false;
  
+      /// Locked flag
+      bool locked_;
+
       /// UI containing designed widgets of this window
       std::unique_ptr<Ui::MainWindow> ui_;
 

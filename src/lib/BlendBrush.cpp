@@ -153,9 +153,7 @@ namespace omni
 
   void BlendBrush::generate()
   {
-    auto _size = size();
-    if (_size <= 1) return;
-    
+    int _size = std::max(int(size()+1),2); 
     buffer_.resize(_size,_size);
 
     float _r = _size*0.5;

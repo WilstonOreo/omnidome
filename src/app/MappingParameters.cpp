@@ -96,10 +96,8 @@ namespace omni
           // Set slider values for Equirectangular mapping
           auto* _equirectangular = static_cast<mapping::Equirectangular*>(mapping_);
           applyRotation(_equirectangular);
-          auto* _stripTop = addOffsetWidget("Strip Top",0.0,0.0,1.0);
-          auto* _stripBottom = addOffsetWidget("Strip Bottom",0.0,0.0,1.0);
-          _stripTop->setValue(_equirectangular->stripTop());
-          _stripBottom->setValue(_equirectangular->stripBottom());
+          auto* _stripTop = addOffsetWidget("Strip Top",_equirectangular->stripTop(),0.0,1.0);
+          auto* _stripBottom = addOffsetWidget("Strip Bottom",_equirectangular->stripBottom(),0.0,1.0);
 
         } else
         if (mapping_->getTypeId() == "Fisheye")

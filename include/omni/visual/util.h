@@ -66,8 +66,13 @@ namespace omni
       {
         return _size.width() / qreal(_size.height());
       }
-    
+   
+      template<typename PROJECTION, typename MODELVIEW>
+      void draw_on_framebuffer()
+      {
+      }
 
+      /// Draw into QOpenGLFramebufferObject
       template<typename FRAMEBUFFER, typename PROJECTION, typename MODELVIEW>
       void draw_on_framebuffer(FRAMEBUFFER& _f, PROJECTION _p, MODELVIEW _m)
       {
@@ -87,10 +92,9 @@ namespace omni
           // Model view matrix setup
           glMatrixMode(GL_MODELVIEW);
           glLoadIdentity();
-          _m(_);
+          _m(_); // ModelView operation
 
         _f->release();
-
 
         glPopAttrib();
           

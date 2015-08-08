@@ -28,10 +28,7 @@ namespace omni
       Session const* session() const;
       void setSession(Session* _session);
 
-
     public slots:
-      void inputSelected(QString const&);
-
       void addInput(QAction*);
 
       /// Removes all selected inputs

@@ -5,7 +5,6 @@
 
 #include <omni/util.h>
 #include <omni/visual/util.h>
-#include <omni/proj/Frustum.h>
 
 namespace omni
 {
@@ -64,40 +63,40 @@ namespace omni
     }
       
     void Session::drawCanvasWithFrustumIntersections() const
-    {
+    {      
       auto _canvas = session_.canvas();
       if (!frustumShader_ || !_canvas) return;
-
+      
         frustumShader_->bind();
         for (auto& _tuning : session_.tunings())
         {
-          proj::Projector _proj = _tuning->projector();
-
-          auto _m = _canvas->matrix().inverted() * _proj.matrix();
-          auto _rot = _canvas->matrix().inverted();
+          auto& _proj = _tuning->projector();
+          auto _invMatrix = _canvas->matrix().inverted();
+          auto _m = _invMatrix * _proj.matrix();
+          auto _rot = _invMatrix;
           _rot.setColumn(3,QVector4D(0,0,0,1));
  
           auto _c = _tuning->color();
           frustumShader_->setUniformValue("color",_c.redF(),_c.greenF(),_c.blueF());
 
+          /// Construct frustum 
           qreal _a = _proj.fov().radians() *0.5;
           qreal _height = tan(_a);
           qreal _width = _height * _proj.aspectRatio();
-
-          QVector3D eye_ = _m.column(3).toVector3D();
-          QVector3D topLeft_ = _m * QVector3D(1.0,-_width,_height) - eye_;
-          QVector3D topRight_ = _m * QVector3D(1.0,_width,_height) - eye_;
-          QVector3D bottomLeft_ = _m * QVector3D(1.0,-_width,-_height) - eye_;
-          QVector3D bottomRight_ = _m * QVector3D(1.0,_width,-_height) - eye_;
-          QVector3D lookAt_ = _m * QVector3D(1.0,0.0,0.0) - eye_;
+          QVector3D _eye = _m.column(3).toVector3D();
+          QVector3D _topLeft = _m * QVector3D(1.0,-_width,_height) - _eye;
+          QVector3D _topRight = _m * QVector3D(1.0,_width,_height) - _eye;
+          QVector3D _bottomLeft = _m * QVector3D(1.0,-_width,-_height) - _eye;
+          QVector3D _bottomRight = _m * QVector3D(1.0,_width,-_height) - _eye;
+          QVector3D _lookAt = _m * QVector3D(1.0,0.0,0.0) - _eye;
 
           // Setup frustum uniforms for intersection test
-          frustumShader_->setUniformValue("eye",eye_); // *_rot - _m.column(3).toVector3D());
-          frustumShader_->setUniformValue("look_at",lookAt_);
-          frustumShader_->setUniformValue("top_left",topLeft_);
-          frustumShader_->setUniformValue("top_right",topRight_);
-          frustumShader_->setUniformValue("bottom_left",bottomLeft_);
-          frustumShader_->setUniformValue("bottom_right",bottomRight_);
+          frustumShader_->setUniformValue("eye",_eye); 
+          frustumShader_->setUniformValue("look_at",_lookAt);
+          frustumShader_->setUniformValue("top_left",_topLeft);
+          frustumShader_->setUniformValue("top_right",_topRight);
+          frustumShader_->setUniformValue("bottom_left",_bottomLeft);
+          frustumShader_->setUniformValue("bottom_right",_bottomRight);
           frustumShader_->setUniformValue("matrix",_rot);
 
           glDisable(GL_DEPTH_TEST);
@@ -107,10 +106,18 @@ namespace omni
 
         frustumShader_->release();
     }
+      
+    bool Session::needsUpdate() const
+    {
+      return session_.tunings().size() != projectors_.size();
+    }
+
 
     void Session::drawProjectors() const
     {
-          glDisable(GL_DEPTH_TEST);
+      if (needsUpdate()) return;
+
+      glDisable(GL_DEPTH_TEST);
       for (auto& _proj : projectors_)
       {
         _proj.draw();
@@ -126,6 +133,8 @@ namespace omni
       
     void Session::drawProjectorHalos() const
     {
+      if (needsUpdate()) return;
+      
       for (auto& _proj : projectors_)
       {
         _proj.drawHalo();

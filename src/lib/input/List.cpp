@@ -72,7 +72,6 @@ namespace omni
     void List::toStream(QDataStream& _stream) const
     {
       using namespace omni::util;
-      
       _stream << currentIndex_;
 
       // serialize map of inputs
@@ -99,9 +98,12 @@ namespace omni
     }
 
     void List::setCurrentIndex(int _index)
-    {
-      if (!validIndex(_index)) return;
-      
+    { 
+      if (!validIndex(_index)) {
+        currentIndex_ = -1;
+        return;
+      }
+  
       currentIndex_ = _index;
     }
       

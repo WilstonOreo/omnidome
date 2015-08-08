@@ -1,6 +1,5 @@
 #include <omni/visual/Projector.h>
 
-#include <omni/proj/Frustum.h>
 #include <omni/visual/util.h>
 
 namespace omni

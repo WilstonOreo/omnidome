@@ -68,6 +68,12 @@ namespace omni
         /// Add widget from existing tuning
         void addTuning(omni::proj::Tuning* _tuning);
 
+
+        /**@brief Removes all widgets in the scroll area
+          *@detail Unlike clear() it does not remove tunings from session
+        **/
+        void removeWidgets();
+
         /// Get most differing color for a new tuning
         QColor getTuningColor();
 

@@ -60,20 +60,20 @@ namespace omni
 
     void Input::setSession(Session* _session)
     {
+      ui_->preview->hide();
       session_=_session;
       ui_->preview->setSession(_session);
+      
       prepareModel();
       for (auto& _input : session_->inputs()) 
       {
         addItem(_input.get());
       }
-    }
-      
-    void Input::inputSelected(QString const&)
-    {
+      ui_->preview->setVisible(session_->inputs().current() != nullptr);
 
+      emit inputChanged();
     }
- 
+       
     void Input::addInput(QAction* _action)
     {
       if (!session_) return;
@@ -98,7 +98,7 @@ namespace omni
 
     void Input::removeSelection() 
     { 
-      int _row = ui_->inputList->currentIndex().row();
+      int _row = ui_->inputList->currentIndex().row() - 1;
       if (_row < 0 || _row >= session_->inputs().size()) return;
 
       session_->inputs().remove(_row);
@@ -119,16 +119,18 @@ namespace omni
     {
       if (!session_) return;
 
-      int _row = _index.row();
+      int _row = _index.row() - 1;
+      qDebug() << _row;
 
       if (_row < 0 || _row >= session_->inputs().size())
       {
         session_->inputs().setCurrentIndex(-1);
         ui_->preview->hide();
+        emit inputChanged();
         return;
       }
  
-      session_->inputs().setCurrentIndex(_index.row());
+      session_->inputs().setCurrentIndex(_row);
 
       // Show preview only if there is an input
       ui_->preview->setVisible(session_->inputs().current() != nullptr);
@@ -144,8 +146,16 @@ namespace omni
       model_->setHeaderData(0,Qt::Horizontal,"Input Type");
       model_->setHeaderData(1,Qt::Horizontal,"Info");
       ui_->inputList->setModel(model_.get());
+
+      QList<QStandardItem*> _row;
+      QStandardItem* _item = new QStandardItem("(no input)");
+      _item->setEditable(false);
+      _row << _item;
+      model_->invisibleRootItem()->appendRow(_row);
+      ui_->inputList->resizeColumnToContents(0);
+      ui_->inputList->resizeColumnToContents(1);
     }
-      
+
     bool Input::showSettingsDialog(input::Interface* _input)
     {
       if (_input->getTypeId() == "Image") 

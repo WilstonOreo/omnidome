@@ -45,8 +45,7 @@ namespace omni
       void TuningList::setSession(Session* _session)
       {
         session_=_session;
-        clear();
-
+        removeWidgets();
         for (auto& _tuning : _session->tunings())
           addTuning(_tuning.get());
 
@@ -126,23 +125,21 @@ namespace omni
         /// Find first color in spectrum that is not already used
         for (int j = 0; j < maxNumberTunings(); ++j)
         {
-          bool _colorEqual = false;
           auto _color = _colors[j];
+          bool _colorsEqual = false;
 
           for (int i = 0; i < _numTunings; ++i)
           {
             auto _tuningColor = session_->tunings()[i]->color();
-            qDebug() << _color << " " << _tuningColor;
-          
-            if (_color.red() == _tuningColor.red() && 
+
+            /// Compare R,G,B channels for both colors, alpha can be ignored
+            _colorsEqual |= _color.red() == _tuningColor.red() && 
                 _color.green() == _tuningColor.green() && 
-                _color.blue() == _tuningColor.blue())
-            {
-              _colorEqual = true;
-              break;
-            }
+                _color.blue() == _tuningColor.blue();
           }
-          if (!_colorEqual) return _color;
+
+          /// Return the first color which is not equal to an existing
+          if (!_colorsEqual) return _color;
         }
 
         return _colors[_numTunings-1];
@@ -153,25 +150,22 @@ namespace omni
         if (_index == -1) return;
 
         auto& _widget = widgets_[_index]; 
-
-       // for (auto& _widget : widgets_)
-        {
-          contents_->layout()->removeWidget(_widget.get());
-          _widget->setParent(nullptr);
-          _widget.reset(); 
-        }
-        widgets_.erase(widgets_.begin() + _index);
+        contents_->layout()->removeWidget(_widget.get());
+        _widget->setParent(nullptr);
+        _widget.reset(); 
+       
+        widgets_.erase(widgets_.begin() + _index);        
         session_->tunings().remove(_index);
 
+        // Re assign tuning indices to remaining widgets
         for (int i = 0; i < session_->tunings().size(); ++i)
         {
           widgets_[i]->setTuning(i,session_);
         }
 
-       // for (auto& _tuning : session_->tunings())
-        //  addTuning(_tuning.get());
-
         setTuningIndex(std::max(_index-1,0));
+      
+        emit projectorSetupChanged();
       }
 
       void TuningList::sessionModeChange()
@@ -182,8 +176,18 @@ namespace omni
 
       void TuningList::clear()
       {
-        widgets_.clear();
+        removeWidgets();
         session_->tunings().clear();
+      }
+        
+      void TuningList::removeWidgets()
+      {
+        for (auto& _widget : widgets_)
+        {
+          contents_->layout()->removeWidget(_widget.get());
+          _widget->setParent(nullptr);
+        }
+        widgets_.clear();
       }
 
       /// Updates/Repaints GL Views of all tunings widgets
@@ -195,6 +199,9 @@ namespace omni
 
       void TuningList::resizeEvent(QResizeEvent* event)
       {
+        for (auto& _widget : widgets_)
+          _widget->layout()->update();
+
         QScrollArea::resizeEvent(event);
       }
 

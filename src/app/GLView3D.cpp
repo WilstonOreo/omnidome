@@ -18,10 +18,10 @@ namespace omni
 
     bool GLView3D::initialize()
     {
-      if (!session() || initialized()) return false;
+      if (!session() || initialized() || !context()) return false;
 
       using namespace visual;
-      float _radius = 5.0;
+      float _radius = session()->canvas() ? session()->canvas()->radius()*2.0 : 5.0;
 
       camera_ = Camera(
                   Tracker(QVector3D(0,0,0), PolarVec(-45.0,45.0,_radius * 10.0)));
@@ -42,7 +42,12 @@ namespace omni
       this->session_->update();
       return true;
     }
-    
+      
+    void GLView3D::setupCamera()
+    {
+      camera_.setup(30.0,aspect());
+    }
+ 
     void GLView3D::updateLight()
     {
       GLuint _index = GL_LIGHT0;
@@ -64,14 +69,13 @@ namespace omni
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
       visual::viewport(this);
-      
-      camera_.setup(30.0,aspect());
-     
+
+      setupCamera();
+  
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
-      
-  
 
+  
       updateLight();
       this->session_->drawCanvas();
       this->session_->drawProjectors();

@@ -161,6 +161,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>inputList</sender>
+   <signal>activated(QModelIndex)</signal>
+   <receiver>omni::ui::Input</receiver>
+   <slot>changeSelection(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>217</x>
+     <y>351</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>441</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>changeSelection(QModelIndex)</slot>

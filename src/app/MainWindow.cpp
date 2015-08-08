@@ -57,16 +57,18 @@ MainWindow::MainWindow( QMainWindow *parent) :
   {
     QMenu* _menu = new QMenu();
 
-    _menu->addAction("PeripheralSetup");
-    _menu->addAction("FreeSetup");
+    _menu->addAction("PeripheralSetup")->setData(QString("PeripheralSetup"));
+    _menu->addAction("FreeSetup")->setData(QString("FreeSetup"));
     _menu->addSeparator();
-    
+
     for (auto& _idTemplate : omni::proj::TemplateFactory::classes())
     {
       auto& _id = _idTemplate.first;
-      _menu->addAction(_id);
+      auto* _action = _menu->addAction(_id);
+      _action->setData(QString(_id));
     }
 
+    connect(_menu,SIGNAL(triggered(QAction*)),this,SLOT(addProjector(QAction*)));
 
     ui_->btnAddTuning->setMenu(_menu);
   }
@@ -74,37 +76,37 @@ MainWindow::MainWindow( QMainWindow *parent) :
   // Connect signals and slots
   {
     // Connect projector position change with view update
-    connect(ui_->tuningList,SIGNAL(projectorSetupChanged()),this,SLOT(updateAllViews()));
-    connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),this,SLOT(updateAllViews()));
+    connect(ui_->tuningList,SIGNAL(projectorSetupChanged()),this,SLOT(modified()));
+    connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),this,SLOT(modified()));
 
     // Connect canvas parameter change with view update
-    connect(ui_->grpCanvas,SIGNAL(canvasChanged()),this,SLOT(updateAllViews()));
-    connect(ui_->grpCanvas,SIGNAL(canvasTypeChanged()),this,SLOT(updateAllViews()));
+    connect(ui_->grpCanvas,SIGNAL(canvasChanged()),this,SLOT(modified()));
+    connect(ui_->grpCanvas,SIGNAL(canvasTypeChanged()),this,SLOT(modified()));
 
     // Update all views when input has changed
-    connect(ui_->grpInputs,SIGNAL(inputChanged()),this,SLOT(updateAllViews())); 
-    connect(ui_->grpInputs,SIGNAL(inputChanged()),this,SLOT(buttonState())); 
+    connect(ui_->grpInputs,SIGNAL(inputChanged()),this,SLOT(modified()));
 
     // Update all views when mapping mode has changed
-    connect(ui_->grpMapping,SIGNAL(mappingChanged()),this,SLOT(updateAllViews()));
-    connect(ui_->grpMapping,SIGNAL(mappingTypeChanged()),this,SLOT(updateAllViews()));
+    connect(ui_->grpMapping,SIGNAL(mappingChanged()),this,SLOT(modified()));
+    connect(ui_->grpMapping,SIGNAL(mappingTypeChanged()),this,SLOT(modified()));
+
     
     // Update all views when warp grid has changed
-    connect(ui_->grpWarp,SIGNAL(warpGridChanged()),this,SLOT(updateAllViews()));
-    
+    connect(ui_->grpWarp,SIGNAL(warpGridChanged()),this,SLOT(modified()));
+
     // Update all views when warp grid has changed
-    connect(ui_->grpBlend,SIGNAL(blendMaskChanged()),this,SLOT(updateAllViews()));
+    connect(ui_->grpBlend,SIGNAL(blendMaskChanged()),this,SLOT(modified()));
 
     // Connect tuning index of tuning list for warp and blend widget
     connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),this,SLOT(setTuningIndex(int)));
 
-
-    // Connect add tuning button with tuning list 
-    connect(ui_->btnAddTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(addTuning())); 
-    connect(ui_->btnAddTuning,SIGNAL(clicked()),this,SLOT(buttonState())); 
+    // Connect add tuning button with tuning list
+    connect(ui_->btnAddTuning,SIGNAL(clicked()),ui_->tuningList,SLOT(addTuning()));
+    connect(ui_->btnAddTuning,SIGNAL(clicked()),this,SLOT(buttonState()));
   }
 
-  newSession();
+  session_.reset(new Session());
+  setupSession();
   raise();
   show();
 }
@@ -112,26 +114,30 @@ MainWindow::MainWindow( QMainWindow *parent) :
 MainWindow::~MainWindow()
 {
 }
-      
-void MainWindow::newSession()
+
+void MainWindow::setupSession()
 {
-  session_.reset(new Session());
+  setMode(Session::Mode::SCREENSETUP);
 
-  // Attach session pointer
-  ui_->tuningList->setSession(session_.get());
-  ui_->grpCanvas->setSession(session_.get());
-  ui_->grpMapping->setSession(session_.get());
-  ui_->grpInputs->setSession(session_.get());
-  ui_->grpWarp->setSession(session_.get());
-  ui_->grpBlend->setSession(session_.get());
-  
-  // Set session to pages
-  projectionSetup_->setSession(session_.get());
+  locked_ = true;
+  {
+    ui_->tuningList->setSession(session_.get());
+    ui_->grpCanvas->setSession(session_.get());
+    ui_->grpMapping->setSession(session_.get());
+    ui_->grpInputs->setSession(session_.get());
+    ui_->grpWarp->setSession(session_.get());
+    ui_->grpBlend->setSession(session_.get());
 
-  blend_->setSession(session_.get());
-  warp_->setSession(session_.get());
+    // Set session to pages
+    projectionSetup_->setSession(session_.get());
+
+    blend_->setSession(session_.get());
+    warp_->setSession(session_.get());
+  }
+  locked_ = false;
 
   setMode(session_->mode());
+
 }
 
 void MainWindow::newProjection()
@@ -141,12 +147,10 @@ void MainWindow::newProjection()
     return;
   }
 
-/*  std::unique_ptr<NewCanvas> _dialog(new NewCanvas(session_.get()));
-  _dialog->raise();
-  if (!_dialog->exec()) return;
-
-  reset();
-  initialPositions();*/
+  session_.reset(new Session());
+  setupSession();
+  modified_ = false;
+  buttonState();
 }
 
 void MainWindow::saveProjection()
@@ -157,7 +161,7 @@ void MainWindow::saveProjection()
   }
   else
   {
-    //session_->save(filename_);
+    session_->save(filename_);
     modified_ = false;
     buttonState();
   }
@@ -166,10 +170,11 @@ void MainWindow::saveProjection()
 void MainWindow::saveProjectionAs()
 {
   QString _filename = QFileDialog::getSaveFileName(this, "Save omni Projection...", ".", "omni Projections (*.omni)");
+  qDebug() << _filename;
   if( !_filename.isEmpty() )
   {
     filename_ = _filename;
-    //session_->save(filename_);
+    session_->save(filename_);
     modified_ = false;
     buttonState();
   }
@@ -192,10 +197,11 @@ void MainWindow::openProjection()
 bool MainWindow::openProjection(const QString& _filename)
 {
   filename_ = _filename;
-//  session_->load(filename_);
+  session_.reset(new Session());
+  session_->load(filename_);
+  setupSession();
   modified_ = false;
   filename_ = _filename;
-  buttonState();
   return true;
 }
 
@@ -258,6 +264,15 @@ void MainWindow::updateAllViews()
   ui_->tuningList->updateViews();
 }
 
+/// Sets modified flag to true
+void MainWindow::modified()
+{
+  if (locked_) return;
+  modified_ = true;
+  updateAllViews();
+  buttonState();
+}
+
 
 void MainWindow::showEvent(QShowEvent *event)
 {
@@ -302,7 +317,7 @@ void MainWindow::buttonState()
     bool _hasInput = (session_->inputs().size() > 0) && (session_->inputs().currentIndex() >= 0);
     ui_->btnWarp->setEnabled(_hasTunings && _hasInput);
     ui_->btnBlend->setEnabled(_hasTunings && _hasInput);
-    ui_->btnExport->setEnabled(_hasTunings && _hasInput);
+    ui_->btnExport->setEnabled(_hasTunings);
   }
 }
 
@@ -316,13 +331,25 @@ void MainWindow::setTuningIndex(int _index)
   ui_->grpWarp->updateWarpGrid();
   ui_->grpBlend->updateBlendMask();
 }
- 
+      
+void MainWindow::addProjector(QAction* _action)
+{
+  auto _id = _action->data().toString();
+  if (_id == "FreeSetup")
+  {
+  } else if (_id == "PeripheralSetup")
+  {
+  } else if (_id == "RingArray")
+  {
+  }
+}
+
 void MainWindow::setMode(Session::Mode _mode)
 {
   session_->setMode(_mode);
 
   bool _hasTunings = session_->tunings().size() > 0;
- 
+
   // Select first tuning if there is no tuning selected yet
   if (_hasTunings && session_->tunings().currentIndex() < 0)
   {
@@ -338,8 +365,8 @@ void MainWindow::setMode(Session::Mode _mode)
   using omni::ui::proj::Tuning;
 
   ui_->btnAddTuning->setVisible(
-      _mode == Session::Mode::SCREENSETUP || 
-      _mode == Session::Mode::PROJECTIONSETUP);
+    _mode == Session::Mode::SCREENSETUP ||
+    _mode == Session::Mode::PROJECTIONSETUP);
   ui_->grpWarp->setVisible(_mode == Session::Mode::WARP);
   ui_->grpBlend->setVisible(_mode == Session::Mode::BLEND);
   ui_->grpCanvas->setVisible(_mode == Session::Mode::PROJECTIONSETUP);
@@ -352,36 +379,38 @@ void MainWindow::setMode(Session::Mode _mode)
 
   switch (_mode)
   {
-    case Session::Mode::SCREENSETUP:
+  case Session::Mode::SCREENSETUP:
     ui_->grpCanvas->hide();
     ui_->grpMapping->hide();
+    ui_->grpInputs->show();
     break;
 
-    case Session::Mode::PROJECTIONSETUP:
+  case Session::Mode::PROJECTIONSETUP:
     ui_->grpCanvas->show();
     ui_->grpInputs->show();
     ui_->grpMapping->show();
     break;
 
-    case Session::Mode::WARP:
+  case Session::Mode::WARP:
     ui_->grpCanvas->hide();
     ui_->grpInputs->hide();
     ui_->grpMapping->hide();
     break;
 
-    case Session::Mode::BLEND:
+  case Session::Mode::BLEND:
     ui_->grpCanvas->hide();
     ui_->grpInputs->hide();
     ui_->grpMapping->hide();
     break;
 
-    case Session::Mode::EXPORT:
+  case Session::Mode::EXPORT:
     ui_->grpCanvas->hide();
     ui_->grpInputs->show();
     ui_->grpMapping->show();
     break;
 
-  default: break;
+  default:
+    break;
   }
 
   ui_->tuningList->sessionModeChange();

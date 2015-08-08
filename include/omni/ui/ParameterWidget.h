@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <slim/RangedFloat.h>
+#include <slim/RangedInt.h>
 #include <slim/Rotation.h>
 #include <omni/util.h>
 
@@ -26,7 +27,10 @@ namespace omni
 
       /// Adds a widget with a name, a value and min-max range
       slim::RangedFloat* addWidget(QString const&,float,float,float);
-        
+      
+      /// Adds a integer widget with a name, a value and min-max range
+      slim::RangedInt* addIntegerWidget(QString const&,int,int,int);
+
       /// Adds an angle widget with a name, a value and min-max range
       slim::RangedFloat* addAngleWidget(QString const&,float,float,float);
         
@@ -50,7 +54,13 @@ namespace omni
       
       /// Set slider value from given value
       void setParamAsFloat(QString const& _str, double _value);
- 
+      
+      /// Utility method for retrieving the value from a slider with id
+      int getParamAsInt(QString const&) const;
+      
+      /// Set slider value from given value
+      void setParamAsInt(QString const& _str, int _value);
+
       /// Utility method for retrieving the value from checkbox with id
       bool getParamAsBool(QString const&) const;
 

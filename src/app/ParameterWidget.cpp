@@ -57,6 +57,29 @@ namespace omni
       parameters_.emplace_back(_widget);
       return _widget;
     }
+      
+    /// Adds a integer widget with a name, a value and min-max range
+    slim::RangedInt* ParameterWidget::addIntegerWidget(QString const& _str,int _value,int _min, int _max)
+    {
+      auto* _widget = new slim::RangedInt(_str,_value,_min,_max,this);
+      if (layout())
+        layout()->addWidget(_widget);
+
+      _widget->setRange(_min,_max);
+      _widget->setSingleStep(1);
+      _widget->setPageStep(2);
+      _widget->setDefaultValue(_value);
+      _widget->setUseDefaultValue(true);
+
+      /// Install event filter to pipe through focus event to parent widget
+      _widget->installEventFilter(this);
+
+      /// Signal-slot connection for updating the data model 
+      connect(_widget,SIGNAL(valueChanged()),this,SLOT(updateParameters()));
+      parameterMap_[_str] = _widget;
+      parameters_.emplace_back(_widget);
+      return _widget;
+    }
 
     slim::RangedFloat* ParameterWidget::addAngleWidget(QString const& _str,float _value,float _min,float _max)
     {
@@ -107,7 +130,25 @@ namespace omni
       locked([&]() 
       {
         _widget->setValue(_value);
-      });
+      });      
+    }
+
+    int ParameterWidget::getParamAsInt(QString const& _str) const
+    {
+      auto* _widget = static_cast<slim::RangedInt*>(this->parameterMap_.at(_str));
+      if (!_widget) return 0;
+      return _widget->value();
+    }
+    
+    void ParameterWidget::setParamAsInt(QString const& _str, int _value)
+    {
+      auto* _widget = static_cast<slim::RangedInt*>(this->parameterMap_.at(_str));
+      if (!_widget) return;
+
+      locked([&]() 
+      {
+        _widget->setValue(_value);
+      });      
     }
 
     bool ParameterWidget::getParamAsBool(QString const& _str) const

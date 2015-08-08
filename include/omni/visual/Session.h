@@ -28,6 +28,8 @@ namespace omni
       void drawProjectors() const;
       void drawProjectorHalos() const;
 
+      bool needsUpdate() const;
+
     private:
       omni::Session& session_;
       static std::unique_ptr<QOpenGLShaderProgram> frustumShader_;

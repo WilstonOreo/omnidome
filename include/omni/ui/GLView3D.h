@@ -23,16 +23,18 @@ namespace omni
       void changeZoom(int _value);
 
     protected:
-      void paintGL();
+      virtual void paintGL();
 
-      void wheelEvent(QWheelEvent* event);
-      void keyPressEvent(QKeyEvent* event);
-      void mouseMoveEvent(QMouseEvent *event);
+      virtual void wheelEvent(QWheelEvent* event);
+      virtual void keyPressEvent(QKeyEvent* event);
+      virtual void mouseMoveEvent(QMouseEvent *event);
+
+      void setupCamera();
+      void updateLight();
  
     private:
       bool initialize();
 
-      void updateLight();
 
       visual::Camera camera_;
       std::array<visual::Light,3> lights_;

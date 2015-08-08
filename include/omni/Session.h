@@ -5,6 +5,7 @@
 #include <omni/input/List.h>
 #include <omni/canvas/Interface.h>
 #include <omni/proj/ScreenSetup.h>
+#include <omni/RenderOptions.h>
 
 namespace omni
 {
@@ -88,6 +89,15 @@ namespace omni
 
     /// A session has an output when there is an input, a canvas and a mapping
     bool hasOutput() const;
+
+    /// Export calibration data of session to a file
+    void renderToFile(QString const& _filename, RenderOptions const& _opt);
+
+    /// Save session to file
+    void save(QString const& _filename) const;
+    
+    /// Load session to file
+    void load(QString const& _filename);
 
     /// Test for equality. ScreenSetup is ignored
     friend bool operator==(Session const&,Session const&);

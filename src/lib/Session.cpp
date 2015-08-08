@@ -20,6 +20,7 @@
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
 
+#include <omni/Renderer.h>
 
 namespace omni
 {
@@ -160,6 +161,29 @@ namespace omni
   bool Session::hasOutput() const
   {
     return inputs().current() && canvas() && mapping(); 
+  }
+    
+  /// Export calibration data of session to a file
+  void Session::renderToFile(QString const& _filename, RenderOptions const& _options)
+  {
+    Renderer _renderer(*this,_options);
+    _renderer.renderToFile(_filename);
+  }
+    
+  void Session::save(QString const& _filename) const
+  {
+    QFile _file(_filename);
+    _file.open(QIODevice::WriteOnly);
+    QDataStream _stream(&_file);
+    _stream << *this;
+  }
+    
+  void Session::load(QString const& _filename)
+  {
+    QFile _file(_filename);
+    _file.open(QIODevice::ReadOnly);
+    QDataStream _stream(&_file);
+    _stream >> *this;
   }
 
   bool operator==(Session const& _lhs,Session const& _rhs)
