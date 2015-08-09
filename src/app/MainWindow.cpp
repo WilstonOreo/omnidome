@@ -121,6 +121,8 @@ MainWindow::~MainWindow()
 {
 }
 
+
+
 void MainWindow::setupSession()
 {
   setMode(Session::Mode::SCREENSETUP);
@@ -290,7 +292,12 @@ void MainWindow::closeEvent(QCloseEvent * _event)
     _event->ignore();
     return;
   }
-//  ui_->listScreens->close();
+
+  qDebug() << "Destroy ScreenSetup";
+  // Delete screen setup manually, so all fullscreen widgets are free'd too
+  screenSetup_->hide();
+  screenSetup_->setParent(nullptr);
+  screenSetup_.reset();
 }
 
 void MainWindow::buttonState()
@@ -332,6 +339,10 @@ void MainWindow::setTuningIndex(int _index)
   ui_->tuningList->setTuningIndex(_index);
   warp_->setTuningIndex(_index);
   blend_->setTuningIndex(_index);
+
+  warp_->setChildViews( ui_->tuningList->getViews(_index) );
+  blend_->setChildViews( ui_->tuningList->getViews(_index) );
+
 
   ui_->grpWarp->updateWarpGrid();
   ui_->grpBlend->updateBlendMask();
@@ -413,7 +424,7 @@ void MainWindow::setMode(Session::Mode _mode)
   case Session::Mode::WARP:
     ui_->grpCanvas->hide();
     ui_->grpInputs->hide();
-    ui_->grpMapping->hide();
+    ui_->grpMapping->hide();  
     break;
 
   case Session::Mode::BLEND:

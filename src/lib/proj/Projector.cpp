@@ -1,5 +1,6 @@
 #include <omni/proj/Projector.h>
 
+#include <QGuiApplication>
 #include <omni/util.h>
 
 namespace omni
@@ -12,19 +13,19 @@ namespace omni
     {
     }
 
-    Projector::Projector(Screen const* _screen,
+    Projector::Projector(QScreen const* _screen,
                          Angle _fov) :
       screen_(_screen),
       fov_(_fov)
     {
     }
 
-    Screen const* Projector::screen() const
+    QScreen const* Projector::screen() const
     {
-      return screen_;
+      return screen_ ? screen_ : QGuiApplication::primaryScreen();
     }
 
-    void Projector::setScreen(Screen const* _screen)
+    void Projector::setScreen(QScreen const* _screen)
     {
       screen_=_screen;
     }
@@ -49,8 +50,7 @@ namespace omni
 
     qreal Projector::aspectRatio() const
     {
-      return 
-        screen_ ? qreal(screen_->width()) / screen_->height() : 1.333;
+      return qreal(screen()->size().width()) / screen()->size().height();
     }
 
     qreal Projector::throwRatio() const

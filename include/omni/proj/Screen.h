@@ -10,7 +10,7 @@ namespace omni
     /// Screen class 
     struct Screen
     {
-      /// Screen takes a QScreen and an index as input
+      /// Screen takes a QRect and an index as input
       Screen(QRect const&, int _index = 0);
 
       /// Returns true if number of subscreens is larger than 1

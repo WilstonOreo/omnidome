@@ -86,14 +86,35 @@ namespace omni
       drawingEnabled_ = _drawingEnabled;
     }
 
-    bool TuningGLView::isFullscreen() const
-    {
-      return fullscreen_;
-    }
-
     float TuningGLView::border() const
     {
       return border_;
+    }
+      
+    void TuningGLView::setChildViews(std::set<TuningGLView*> const& _childViews)
+    {
+      childViews_ = _childViews;
+    }
+
+    std::set<TuningGLView*> TuningGLView::childViews() const
+    {
+      return childViews_;
+    }
+
+    void TuningGLView::updateWithChildViews(bool _update) 
+    {
+      updateContext(_update);
+      for (auto& _childView : childViews_)
+      {
+        _childView->updateContext(_update);
+      }
+    }
+ 
+    void TuningGLView::updateContext(bool _update)
+    {
+      if (_update)
+        tuning_->update();
+      update();
     }
 
     void TuningGLView::setBorder(float _border)
@@ -105,14 +126,6 @@ namespace omni
     /// Show different content for different session modes
     void TuningGLView::sessionModeChange()
     {
-    }
-
-    void TuningGLView::setFullscreen(Screen const& _screen)
-    {
-      setWindowFlags( Qt::CustomizeWindowHint );
-      setWindowFlags(Qt::FramelessWindowHint);
-      fullscreen_ = true;
-      showFullScreen();
     }
 
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
@@ -137,20 +150,23 @@ namespace omni
           {
             _selected->pos() += QPointF(dx,-dy);
           }
+          updateWithChildViews(false);
         }
         else if (_mode == Session::Mode::BLEND)
         {
           leftOverDistance_ = tuning()->blendMask().drawLine(pixelPos(mousePosition_),pixelPos(event->pos()),leftOverDistance_);
-          tuning_->update();
         }
       }
 
       mousePosition_ = event->pos();
-      /*if (!viewOnly())
+      cursorPosition_ = screenPos(mousePosition_);
+
+      for (auto& _childView : childViews_)
       {
-        //cursorPosition() = screenPos();
+        _childView->cursorPosition_ = cursorPosition_;
+        if (_childView->showCursor())
+          _childView->update();
       }
-      */
 
       update();
     }
@@ -182,6 +198,7 @@ namespace omni
         // Select point if it is not selected already or
         // number of selected point is larger than 1
         _p->setSelected(!_p->selected() || (_selectedPoints.size() > 1));
+        updateWithChildViews(false);
       }
       else if (_mode == Session::Mode::BLEND)
       {
@@ -195,12 +212,17 @@ namespace omni
 
         auto& _blendMask = tuning()->blendMask();
         _blendMask.stamp(pixelPos(event->pos()));
-        tuning_->update();
+        updateWithChildViews();
 
         leftOverDistance_ = 0.0;
       }
-
-      update();
+      
+      for (auto& _childView : childViews_)
+      {
+        _childView->cursorPosition_ = cursorPosition_;
+        if (_childView->showCursor())
+          _childView->update();
+      }
     }
 
     void TuningGLView::mouseReleaseEvent(QMouseEvent *event)
@@ -222,7 +244,7 @@ namespace omni
         }
       }
       this->mousePosition_ = event->pos();
-      update();
+      updateWithChildViews();
     }
 
     void TuningGLView::wheelEvent(QWheelEvent* event)
@@ -234,7 +256,7 @@ namespace omni
       {
         auto& _blendMask = tuning()->blendMask();
         _blendMask.brush().changeSize(event->delta() / 5.0);
-        update();
+        updateWithChildViews(false);
       }
     }
 
@@ -378,7 +400,7 @@ namespace omni
         _.glEnable(GL_BLEND);
         tuning_->drawWarpGrid();
 
-        _.glBindTexture(GL_TEXTURE_2D, 0.0);
+        _.glBindTexture(GL_TEXTURE_2D, 0);
 
         drawScreenBorder();
       });
@@ -430,8 +452,8 @@ namespace omni
  
         drawScreenBorder();
 
-        if (showCursor_ && !viewOnly_)
-          tuning_->drawCursor(screenPos(mousePosition_));
+        if (showCursor_ || !viewOnly_)
+          tuning_->drawCursor(cursorPosition_);
       });
     }
       
@@ -466,11 +488,10 @@ namespace omni
 
       session_->update();
 
-      if (!tuning_->initialized())
+      if (!tuning_->initialized()) 
         tuning_->update();
 
-      drawTestCard();
-/*
+      makeCurrent();
       glPushAttrib(GL_ALL_ATTRIB_BITS);
       switch (session()->mode())
       {
@@ -492,7 +513,8 @@ namespace omni
       case Session::Mode::EXPORT:
         break;
       }
-      glPopAttrib();*/
+      glPopAttrib();
+      doneCurrent();
     }
   }
 }

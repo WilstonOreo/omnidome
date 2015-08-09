@@ -67,17 +67,9 @@ namespace omni
         {
           glView_->setSession(session_);
           glView_->setTuningIndex(index_);
-          glView_->setBorder(0.0);
-          glView_->setKeepAspectRatio(false);
-          glView_->setViewOnly(true);
+          fullscreen_->setSession(session_);
+          fullscreen_->setTuningIndex(index_);
           titleBar_->setColor(tuning()->color());
-
-          // Also attach fullscreen
-          if (fullscreen_)
-          {
-            fullscreen_->setSession(session_);
-            fullscreen_->setTuningIndex(index_);
-          }
 
           setParamAsFloat("FOV",tuning()->projector().fov().degrees());
           setParamAsFloat("Throw Ratio",tuning()->projector().throwRatio());
@@ -110,6 +102,27 @@ namespace omni
           updateParameters();
         }
       }
+
+      TuningGLView* Tuning::fullscreenWidget()
+      {
+        return fullscreen_.get();
+      }
+      
+      TuningGLView const* Tuning::fullscreenWidget() const
+      {
+        return fullscreen_.get();
+      }
+      
+      TuningGLView* Tuning::previewWidget()
+      {
+        return glView_;
+      }
+      
+      TuningGLView const* Tuning::previewWidget() const
+      {
+        return glView_;
+      }
+
 
       /// Enable or disable fullscreen display
       void Tuning::fullscreenToggle(bool _enabled)
@@ -196,13 +209,9 @@ namespace omni
       }
 
 
-      void Tuning::attachScreen(Screen const& _screen)
+      void Tuning::attachScreen(QScreen const* _screen)
       {
-        fullscreen_.reset(new TuningGLView());
-        fullscreen_->hide();
-        fullscreen_->setSession(session_);
-        fullscreen_->setTuningIndex(index_);
-        fullscreen_->setFullscreen(_screen);
+        tuning()->setScreen(_screen);
       }
 
       void Tuning::detachScreen()
@@ -235,8 +244,15 @@ namespace omni
         QSizePolicy _sizePolicy(QSizePolicy::Ignored,QSizePolicy::Expanding);
         glView_->setSizePolicy(_sizePolicy);
         glView_->setKeepAspectRatio(true);
+        glView_->setBorder(0.0);
+        glView_->setViewOnly(true);
         glView_->installEventFilter(this);
         layout_->addWidget(glView_,TuningLayout::Role::PREVIEW);
+
+        fullscreen_.reset(new TuningGLView());
+        fullscreen_->setViewOnly(true);
+        fullscreen_->setShowCursor(true);
+        fullscreen_->hide();
 
         /// FOV view slider
         /// @todo Connect this with threshold slider
@@ -460,6 +476,8 @@ namespace omni
         default:
           break;
         }
+
+        fullscreen_->update();
       }
 
       void Tuning::resizeEvent(QResizeEvent* event)

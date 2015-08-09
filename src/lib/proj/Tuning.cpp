@@ -22,12 +22,12 @@ namespace omni
     {
     }
 
-    void Tuning::setScreen(Screen const* _screen)
+    void Tuning::setScreen(QScreen const* _screen)
     {
       projector_.setScreen(_screen);
     }
 
-    Screen const* Tuning::screen() const
+    QScreen const* Tuning::screen() const
     {
       return projector_.screen();
     }
@@ -84,12 +84,16 @@ namespace omni
 
     int Tuning::width() const
     {
-      return !projector_.screen() ? ScreenSetup::standardScreen().width() : projector_.screen()->width();
+      return !projector_.screen() ? 
+        ScreenSetup::standardScreen().width() : 
+        projector_.screen()->size().width();
     }
 
     int Tuning::height() const
     {
-      return !projector_.screen() ? ScreenSetup::standardScreen().height() : projector_.screen()->width();
+      return !projector_.screen() ? 
+        ScreenSetup::standardScreen().height() : 
+        projector_.screen()->size().height();
     }
  
     bool operator==(Tuning const& _lhs, Tuning const& _rhs)

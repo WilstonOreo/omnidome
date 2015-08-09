@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <QMatrix4x4>
+#include <QScreen>
 #include <omni/Angle.h>
 #include "Screen.h"
 #include "Setup.h"
@@ -16,7 +17,7 @@ namespace omni
     public:
       Projector();
       Projector(
-          Screen const* _screen,
+          QScreen const* _screen,
           Angle _fov = 45.0);
 
       /**@brief Make a new projector setup with a certain id and delete old one
@@ -31,8 +32,8 @@ namespace omni
       Setup const* setup() const;
 
       qreal aspectRatio() const;
-      void setScreen(Screen const* _screen);
-      Screen const* screen() const;
+      void setScreen(QScreen const* _screen);
+      QScreen const* screen() const;
     
       qreal throwRatio() const;
       void setThrowRatio(qreal);
@@ -53,7 +54,7 @@ namespace omni
 
     private:
       QMatrix4x4 matrix_;
-      Screen const* screen_ = nullptr;
+      QScreen const* screen_ = nullptr;
       Angle fov_;
       std::unique_ptr<Setup> setup_;
     };

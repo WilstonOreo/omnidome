@@ -59,15 +59,10 @@ namespace omni
     {
       if (!session()) return;
 
-      visual::with_current_context([this](QOpenGLFunctions& _)
-      {
-        _.glViewport(0, 0, (GLint)width(), (GLint)height());
-      });
       this->session_->update();
 
       makeCurrent();
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
       visual::viewport(this);
 
       setupCamera();

@@ -9,6 +9,10 @@ using namespace omni;
 
 int main(int ac, char* av[])
 {
+  // This line is absolutely mandatory for being able to have multiple
+  // QOpenGLWidgets in different windows!!!
+  QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+
   /// Start gui
   QApplication _a(ac, av);
    

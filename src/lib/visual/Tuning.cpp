@@ -98,22 +98,23 @@ namespace omni
     {
       if (!QOpenGLContext::currentContext()) return;
  
-      bool _reset = !blendTex_;
-
-      if (!!blendTex_) 
+      visual::with_current_context([&](QOpenGLFunctions& _)
       {
-        _reset = blendTex_->width() != tuning_.width() || blendTex_->height() != tuning_.height();
-      }
-
-      if (_reset)
-      {
-        blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().strokeBuffer().toQImage()));
-      }
+        bool _reset = !blendTex_;
+        if (!!blendTex_) 
+        {
+          _reset = blendTex_->width() != tuning_.width() || blendTex_->height() != tuning_.height();
+        }
+        if (_reset)
+        {
+          blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().strokeBuffer().toQImage()));
+        }
  
-      auto& _blendMask = tuning().blendMask(); 
-      glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
-      glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, tuning_.width(), tuning_.height(), GL_ALPHA, GL_UNSIGNED_BYTE, _blendMask.strokeBufferData());
-      glBindTexture(GL_TEXTURE_2D, 0);
+        auto& _blendMask = tuning().blendMask(); 
+        _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
+        _.glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, tuning_.width(), tuning_.height(), GL_ALPHA, GL_UNSIGNED_BYTE, _blendMask.strokeBufferData());
+        _.glBindTexture(GL_TEXTURE_2D, 0);
+      });
     }
 
 

@@ -10,8 +10,8 @@ namespace omni
   {
     PeripheralSetup::PeripheralSetup() : 
       deltaYaw_(0.0),
-      distanceCenter_(5.0),
-      towerHeight_(2.0),
+      distanceCenter_(4.0),
+      towerHeight_(0.0),
       shift_(0.0)
     {
     }

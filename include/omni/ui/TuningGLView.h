@@ -26,14 +26,16 @@ namespace omni
       /// Flag for toggling drawing. Only black background is shown when false
       bool isDrawingEnabled() const;
 
-      /// Returns true if widget is in fullscreen mode
-      bool isFullscreen() const;
-
       /// Returns true if cursor is visible
       bool showCursor() const;
 
       /// Return relative border value
       float border() const;
+
+      void setChildViews(std::set<TuningGLView*> const&);
+      std::set<TuningGLView*> childViews() const;
+
+      void updateContext(bool);
     
     public slots:
       /// Set tuning index from session 
@@ -60,10 +62,7 @@ namespace omni
       /// Show different content for different session modes
       void sessionModeChange();
 
-      /**@brief Enable fullscreen mode with given rectangle, cannot be reverted!
-         @detail Only works if this view holds a valid tuning
-       **/
-      void setFullscreen(Screen const& _screen);
+      void updateWithChildViews(bool _updateContext = true);
 
     protected:
       void paintGL();
@@ -123,9 +122,6 @@ namespace omni
       /// Flag for toggling drawing. Only black background is shown when false
       bool drawingEnabled_ = true;
 
-      /// Flag which tells if fullscreen is enabled
-      bool fullscreen_ = false;
-
       /// Flag which tells if mouse button is down
       bool mouseDown_ = false;
 
@@ -144,7 +140,7 @@ namespace omni
       /// Relative border
       float border_ = 0.0; 
 
-      std::unique_ptr<visual::Tuning> tuning_;
+      std::shared_ptr<visual::Tuning> tuning_;
       
       /// Used for drawing grayscale
       std::unique_ptr<QOpenGLFramebufferObject> frameBuffer_;
@@ -154,6 +150,8 @@ namespace omni
     
       /// Shader for displaying disabled output in grayscale
       std::unique_ptr<QOpenGLShaderProgram> grayscaleShader_;
+
+      std::set<TuningGLView*> childViews_;
     };
   }
 }

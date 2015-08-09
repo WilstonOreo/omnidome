@@ -56,10 +56,16 @@ namespace omni
         
         /// Return tuning (const version)
         omni::proj::Tuning const* tuning() const;
-        
+
         /// Set tuning from session and index
         void setTuning(int _index, omni::Session*);
     
+        TuningGLView* fullscreenWidget();
+        TuningGLView const* fullscreenWidget() const;
+        
+        TuningGLView* previewWidget();
+        TuningGLView const* previewWidget() const;
+
         /// Return index of tuning
         int index() const;
 
@@ -87,7 +93,7 @@ namespace omni
         void sessionModeChange();
  
         /// Attaches a screen to this tuning
-        void attachScreen(Screen const& _screen);
+        void attachScreen(QScreen const* _screen);
 
         /**@brief Detaches screen from this tuning
            @detail Also triggered when QGuiApplication::screenAdded or 

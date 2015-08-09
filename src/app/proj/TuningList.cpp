@@ -52,6 +52,20 @@ namespace omni
         sessionModeChange();
       }
 
+
+      /// Return fullscreen and preview widget from index
+      std::set<TuningGLView*> TuningList::getViews(int _index) const
+      {
+        std::set<TuningGLView*> _views; 
+        if (_index < 0 || _index >= widgets_.size()) return _views;
+
+        auto* _widget = widgets_[_index].get();
+        _views.insert(_widget->fullscreenWidget());
+        _views.insert(_widget->previewWidget());
+
+        return _views;
+      }
+
       void TuningList::addTuning()
       {
         QString _setupId = "PeripheralSetup";
@@ -162,7 +176,7 @@ namespace omni
 
       void TuningList::removeTuning(int _index)
       {
-        if (_index == -1) return;
+        if (_index < 0 || _index >= widgets_.size()) return;
 
         auto& _widget = widgets_[_index]; 
         contents_->layout()->removeWidget(_widget.get());

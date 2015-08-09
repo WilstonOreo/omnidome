@@ -3,6 +3,7 @@
 
 #include <set>
 #include <QMainWindow>
+#include <QOpenGLContext>
 #include <QComboBox>
 #include <QModelIndex>
 #include <QMessageBox>
@@ -128,6 +129,8 @@ namespace omni
       
       /// Page for exporting projection
       QUniquePtr<Export> export_;
+    
+      QUniquePtr<QOpenGLContext> glContext_;
     };
   }
 }

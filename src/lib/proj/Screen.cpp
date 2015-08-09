@@ -36,6 +36,7 @@ namespace omni
       
     int Screen::subScreenCount(QRect const& _rect)
     {
+      return 3;/*
       auto _s = _rect.size();
       qreal _aspectRatio = _s.width() / qreal(_s.height());
 
@@ -50,7 +51,7 @@ namespace omni
       }
       if (_subscreenCount <= 0) 
         _subscreenCount = 1;
-      return _subscreenCount;
+      return _subscreenCount;*/
     }
 
     QRect Screen::rect() const

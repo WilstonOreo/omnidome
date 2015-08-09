@@ -2,6 +2,7 @@
 
 #include <omni/Session.h>
 #include <omni/ui/proj/Tuning.h>
+#include <omni/ui/TuningGLView.h>
 #include <omni/proj/ScreenSetup.h>
 
 #include <QGraphicsScene>
@@ -12,22 +13,29 @@
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QDropEvent>
+#include <QGuiApplication>
 
 namespace omni
 {
   namespace ui
   { 
     ScreenSetup::ScreenSetup(QWidget* _parent) :
-      QWidget(_parent),
-      dragWidget_(new ScreenSetupDragWidget)
+      QWidget(_parent)
     {
       setMouseTracking(true);
       setAcceptDrops(true);
+
+      connect(QGuiApplication::instance(),SIGNAL(screenAdded(QScreen*)),
+          this,SLOT(updateScreens()));
+      connect(QGuiApplication::instance(),SIGNAL(screenRemoved(QScreen*)),
+          this,SLOT(updateScreens()));
+
       updateScreens();
     }
 
     ScreenSetup::~ScreenSetup()
     {
+      screenItems_.clear();
     }
       
     Session const* ScreenSetup::session() const
@@ -41,6 +49,26 @@ namespace omni
       updateScreens();
     }
       
+    int ScreenSetup::subScreenCount(QScreen const* _screen)
+    {
+      return 3;/*
+      auto _s = _rect.size();
+      qreal _aspectRatio = _s.width() / qreal(_s.height());
+
+      if (_aspectRatio < 1.5) return 1;
+
+      // Detect triple head
+      size_t _subscreenCount = 3;
+      while (_rect.width() % _subscreenCount == 0)
+      {
+        --_subscreenCount;
+        if (_subscreenCount == 1) break;
+      }
+      if (_subscreenCount <= 0) 
+        _subscreenCount = 1;
+      return _subscreenCount;*/
+    }
+ 
     float ScreenSetup::zoom() const
     {
       return zoom_;
@@ -55,27 +83,30 @@ namespace omni
     void ScreenSetup::detachTuning(omni::ui::proj::Tuning* _tuning)
     {
       if (!_tuning) return;
+/*
+      for (auto& _screenItem : screenItems_)
+      {
+        auto& _item = _screenItem.second;
 
-      for (auto& _item : screenItems_)
-        if (_item.tuning() == _tuning)
+        if (_item->tuning() == _tuning)
         {
           qDebug() << _tuning->index();
-          _item.detachTuning();
+          _item->detachTuning();
         }
+      }*/
       update();
     }
  
     void ScreenSetup::updateScreens()
     {
       screenItems_.clear();
-      desktopRect_ = QRect(0,0,0,0);
 
-      setup_ = session_ ? &session_->screenSetup() : &omni::proj::ScreenSetup::current();
-
-      for (auto& _screen : setup_->screens())
+      auto _screens = QGuiApplication::screens();
+      for (auto& _screen : _screens)
       {
-        screenItems_.push_back(Item(*this,_screen));
-        desktopRect_ |= _screen.rect();
+        //if (_screen != QGuiApplication::primaryScreen()) continue; 
+        screenItems_[_screen].reset(new Item(*this,_screen));
+        desktopRect_ |= _screen->geometry();
       }
     }
  
@@ -131,33 +162,35 @@ namespace omni
       /// Draw all items
       for (auto& _item : screenItems_)
       {
-        _item.paint(_p);
+        _item.second->paint(_p);
       }
     }
       
     void ScreenSetup::mouseMoveEvent(QMouseEvent* _event)
     {
       bool _update = false;
-      
-      for (auto& _item : screenItems_)
+
+      for (auto& _screenItem : screenItems_)
       {
-        bool _pointInRect = _item.rect().contains(_event->pos());
-        _update |= _pointInRect != _item.mouseOver();
-        _item.setMouseOver(_pointInRect);
+        auto& _item = _screenItem.second;
+        int _oldHoverIndex = _item->hoverIndex();
+        _item->setHoverIndex(_event->pos());
+        qDebug() << _item->hoverIndex();
+        _update |= _oldHoverIndex != _item->hoverIndex();
       }
 
-      if (_update)
-        update();
+      update();
     }
       
     ScreenSetup::Item* ScreenSetup::getItemAtPos(QPoint const& _pos)
     {
       Item* _itemAtPos = nullptr;
-      for (auto& _item : screenItems_)
+      for (auto& _screenItem : screenItems_)
       {
-        if (_item.rect().contains(_pos)) 
+        auto& _item = _screenItem.second;
+        if (_item->rect().contains(_pos)) 
         {
-          _itemAtPos = &_item;
+          _itemAtPos = _item.get();
           break;
         }
       }
@@ -169,8 +202,8 @@ namespace omni
     {
       auto* _screenItem = getItemAtPos(event->pos());
       for (auto& _item : screenItems_)
-        _item.setDrop(false);
-  
+        _item.second->setDrop(false);
+ 
       if (event->mimeData()->hasFormat("text/plain"))
       {
         if (_screenItem) 
@@ -179,10 +212,7 @@ namespace omni
           if (!_tuningWidget->tuning()) return;
 
           auto _color = _tuningWidget->tuning()->color();
-          _screenItem->setDrop(true,_color);
-          dragWidget_->setColor(_color);
-          dragWidget_->setRect(_screenItem->rect());
-          dragWidget_->show();
+          _screenItem->setDrop(true,_color);           
         }
 
         event->acceptProposedAction();
@@ -193,23 +223,19 @@ namespace omni
     void ScreenSetup::dragMoveEvent(QDragMoveEvent* event)
     {
       auto* _screenItem = getItemAtPos(event->pos());
-      if (!_screenItem) 
-        dragWidget_->hide();
-      
+ 
       for (auto& _item : screenItems_)
-        _item.setDrop(false);
+        _item.second->setDrop(false);
   
       if (event->mimeData()->hasFormat("text/plain") && _screenItem)
       {
-        dragWidget_->setRect(_screenItem->rect());
         
         auto* _tuningWidget = static_cast<proj::Tuning*>(event->source());
         if (!_tuningWidget->tuning()) return;
        
         auto _color = _tuningWidget->tuning()->color();
+        _screenItem->setHoverIndex(event->pos());
         _screenItem->setDrop(true,_color);
-        dragWidget_->setColor(_color);
-        dragWidget_->show();
         event->acceptProposedAction();
       }
       update();
@@ -218,67 +244,64 @@ namespace omni
     void ScreenSetup::dropEvent(QDropEvent* event)
     { 
       for (auto& _item : screenItems_)
-        _item.setDrop(false);
+        _item.second->setDrop(false);
 
       auto* _screenItem = getItemAtPos(event->pos()); 
-      dragWidget_->hide();
+      //dragWidget_->hide();
 
       if (_screenItem) 
       {
         _screenItem->setDrop(false);
+        _screenItem->setHoverIndex(event->pos());
         auto* _tuningWidget = static_cast<proj::Tuning*>(event->source());
         if (!_tuningWidget->tuning()) return;
         
         _screenItem->attachTuning(_tuningWidget); 
         event->acceptProposedAction();
       }
+
+      for (auto& _screenItem : screenItems_)
+      {
+        auto& _item = _screenItem.second;
+        _item->endDrop();
+      }
     }
 
-
-    /// ScreenSetup::Item 
+    /// ScreenSetup::SubScreenItem 
     /////////////////////////////////////////
     
-    ScreenSetup::Item::Item(
-        ScreenSetup& _screenSetup,
-        Screen const& _screen) :
-      screenSetup_(_screenSetup),
-      screen_(_screen)
+
+    ScreenSetup::SubScreenItem::SubScreenItem() 
     {
-    
     }
 
-    bool ScreenSetup::Item::mouseOver() const
+    ScreenSetup::SubScreenItem::SubScreenItem(Item const* _parent, int _index) : 
+      parent_(_parent),
+      index_(_index)
     {
-      return mouseOver_;
     }
 
-    void ScreenSetup::Item::setMouseOver(bool _mouseOver) 
+    QRect ScreenSetup::SubScreenItem::rect() const
     {
-      mouseOver_=_mouseOver;
+      auto _r = parent_->rect(); // Parent rect
+      int _width = _r.width() / ScreenSetup::subScreenCount(parent_->screen());
+      return QRect(_r.x() + index_ * _width,_r.y(),_width,_r.height());
+    }
+        
+    QSize ScreenSetup::SubScreenItem::size() const
+    {
+      auto _screen = parent_->screen();
+      return QSize(
+          _screen->size().width() / ScreenSetup::subScreenCount(_screen),
+          _screen->size().height());
     }
 
-    bool ScreenSetup::Item::drop() const
-    {
-      return drop_;
-    }
-
-    void ScreenSetup::Item::setDrop(bool _drop, QColor const& _color) 
-    {
-      drop_=_drop;
-      dropColor_ = _color;
-    }
-
-    QRectF ScreenSetup::Item::rect() const
-    {
-      return screenSetup_.transformedRect(screen_.rect());
-    }
-
-    void ScreenSetup::Item::paint(QPainter& _p)
+    void ScreenSetup::SubScreenItem::paint(bool _hover, bool _drop, QColor _dropColor, QPainter& _p)
     {
       // Draw rectangle with tuning color
       QColor _color = tuning_ != nullptr ? tuning_->tuning()->color() : "#cccccc";
 
-      if (mouseOver_)
+      if (_hover)
       {
         _color = _color.lighter(120);
       }
@@ -290,12 +313,12 @@ namespace omni
       _p.drawRect(_rect); 
 
       /// Draw diagonal stripes for drop
-      if (drop())
+      if (_drop)
       {
         QPixmap _pixmap(32,32);
         _pixmap.fill(_color);
         QPainter _texP(&_pixmap);
-        _texP.setPen(QPen(dropColor_,2));
+        _texP.setPen(QPen(_dropColor,2));
         for (int i = -32; i <= 64; i+= 8)
         {
           _texP.drawLine(i+32,i-32,i-32,i+32);
@@ -311,37 +334,155 @@ namespace omni
       _p.setBrush(Qt::NoBrush);
       _p.setPen(QPen(_color.darker(500),1));
 
-
       // Resolution string
-      QString _resStr = QString("%1 x %2").arg(screen_.width()).arg(screen_.height());
+      QString _resStr = QString("%1 x %2").arg(size().width()).arg(size().height());
 
       _p.drawText(_rect,Qt::AlignHCenter | Qt::AlignVCenter,_resStr);
     }
-        
-    omni::ui::proj::Tuning* ScreenSetup::Item::tuning()
+            
+    omni::ui::proj::Tuning* ScreenSetup::SubScreenItem::tuning()
     {
       return tuning_;
     }
 
-    omni::ui::proj::Tuning const* ScreenSetup::Item::tuning() const
+    omni::ui::proj::Tuning const* ScreenSetup::SubScreenItem::tuning() const
     {
       return tuning_;
+    }
+
+    void ScreenSetup::SubScreenItem::setTuning(omni::ui::proj::Tuning* _tuning)
+    {
+      tuning_ = _tuning;
+    }
+
+
+    /// END SubScreenItem
+    /////////////////////////////////////////
+
+
+    /// ScreenSetup::Item 
+    /////////////////////////////////////////
+    
+    ScreenSetup::Item::Item(
+        ScreenSetup& _screenSetup,
+        QScreen const* _screen) :
+      screenSetup_(_screenSetup),
+      screen_(_screen),
+      fullscreen_(new FullScreen(_screen))
+    {
+      int _numScreens = ScreenSetup::subScreenCount(_screen);
+      for (int i = 0; i < _numScreens; ++i)
+      {
+        subScreens_.emplace_back(this,i);
+      }
+    }
+
+    ScreenSetup::Item::~Item()
+    {
+      delete fullscreen_;
+    }
+
+    QScreen const* ScreenSetup::Item::screen() const
+    {
+      return screen_;
+    }
+
+    int ScreenSetup::Item::hoverIndex() const
+    {
+      return hoverIndex_;
+    }
+
+    void ScreenSetup::Item::setHoverIndex(int _hoverIndex) 
+    {
+      hoverIndex_ = _hoverIndex;
+    }
+    
+    /// Set hover index from mouse position
+    void ScreenSetup::Item::setHoverIndex(QPoint const& _pos)
+    {
+      for (int i = 0; i < subScreens_.size(); ++i)
+      {
+        if (subScreens_[i].rect().contains(_pos)) 
+        {
+          hoverIndex_ = i;
+          return;
+        }
+      }
+
+      hoverIndex_ = -1;
+    }
+
+    bool ScreenSetup::Item::drop() const
+    {
+      return drop_;
+    }
+
+    void ScreenSetup::Item::setDrop(bool _drop, QColor const& _color) 
+    {
+      drop_=_drop;
+      dropColor_ = _color;
+      if (_drop)
+      {
+        fullscreen_->showDragWidget(hoverIndex_,_color);
+      } else
+      {
+        hoverIndex_ = -1;
+      }
+
+    }
+        
+    /// Hides fullscreen widget
+    void ScreenSetup::Item::endDrop()
+    {
+      fullscreen_->hideDragWidget();
+    }
+
+    QRect ScreenSetup::Item::rect() const
+    {
+      return screenSetup_.transformedRect(screen_->geometry()).toRect();
+    }
+
+    void ScreenSetup::Item::paint(QPainter& _p)
+    {
+      int i = 0;
+      for (auto& _subScreen : subScreens_)
+      {
+        bool _hover = i == hoverIndex_;
+        _subScreen.paint(
+            _hover,
+            drop_ && _hover,
+            dropColor_,
+            _p);
+        ++i;  
+      }
+
+      if (!subScreens_.empty())
+      {
+        auto _rect = rect();
+        // Resolution string
+        QString _resStr = QString("%1 x %2").arg(screen_->size().width()).arg(screen_->size().height());
+        _p.drawText(_rect,Qt::AlignHCenter,_resStr);
+      }
     }
 
     void ScreenSetup::Item::attachTuning(omni::ui::proj::Tuning* _tuning)
     {
-      tuning_=_tuning;
-      tuning_->attachScreen(screen_);
+      if (hoverIndex_ < 0 || hoverIndex_ >= subScreens_.size()) return;
+
+      _tuning->attachScreen(screen_);
+      fullscreen_->attach(hoverIndex_,_tuning->fullscreenWidget());
+
+      for (auto& _subScreen : subScreens_) 
+        if (_subScreen.tuning() == _tuning)
+          _subScreen.setTuning(nullptr);
+
+      subScreens_[hoverIndex_].setTuning(_tuning);
       screenSetup_.update();
     }
 
     void ScreenSetup::Item::detachTuning()
     {
-      if (tuning_) 
-      {
-        tuning_->detachScreen();
-      }
-      tuning_ = nullptr;
+      subScreens_[hoverIndex_].setTuning(nullptr);
       screenSetup_.update();
     }
   }

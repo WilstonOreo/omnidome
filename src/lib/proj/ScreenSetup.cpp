@@ -41,14 +41,6 @@ namespace omni
         }
       }
 
-      QRect _rect(0,0,320,240);
-
-      for (int i = 0; i < 3; ++i)
-      {
-        _rect.moveTo(400*i,0);
-        _setup.screens_.emplace_back(_rect);
-      }
-
       return _setup;
     }
 

@@ -32,6 +32,9 @@ namespace omni
         /// Set new session and update subwidgets
         void setSession(Session*);
 
+        /// Return fullscreen and preview widget from index
+        std::set<TuningGLView*> getViews(int _index) const;
+
       public slots:
         /// Change current mode for all tuning widgets
         void sessionModeChange();
