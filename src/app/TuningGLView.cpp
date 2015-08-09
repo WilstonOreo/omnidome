@@ -14,7 +14,6 @@ namespace omni
       GLView(_parent),
       cursorPosition_(0.0,0.0)
     {
-      setFocusPolicy(Qt::StrongFocus);
       setViewOnly(false);
     }
 
@@ -109,12 +108,10 @@ namespace omni
 
     void TuningGLView::setFullscreen(Screen const& _screen)
     {
-      setParent(nullptr);
       setWindowFlags( Qt::CustomizeWindowHint );
       setWindowFlags(Qt::FramelessWindowHint);
-      raise();
-      setGeometry(_screen.rect());
       fullscreen_ = true;
+      showFullScreen();
     }
 
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)

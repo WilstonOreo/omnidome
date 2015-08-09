@@ -14,7 +14,7 @@ namespace omni
       if (_makeCurrent)
         setCurrentIndex(container_type::size()-1);
 
-      auto* _setup = _tuning->setupProjector("PeripheralSetup");
+      _tuning->projector().setup("PeripheralSetup");
 
       return _tuning;
     }

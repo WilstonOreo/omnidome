@@ -152,8 +152,9 @@ namespace omni
         auto& _widget = widgets_[_index]; 
         contents_->layout()->removeWidget(_widget.get());
         _widget->setParent(nullptr);
+        emit tuningToBeRemoved(_widget.get());
         _widget.reset(); 
-       
+
         widgets_.erase(widgets_.begin() + _index);        
         session_->tunings().remove(_index);
 

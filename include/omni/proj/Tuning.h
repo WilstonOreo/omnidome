@@ -32,20 +32,6 @@ namespace omni
       Projector& projector();
       Projector const& projector() const;
 
-      /**@brief Make a new projector setup with a certain id and delete old one
-       * @return Pointer to new projector setup
-       **/
-      ProjectorSetup* setupProjector(Id const& _setupId);
-
-      /// Update projector matrix by current setup
-      void setupProjector();
-
-      /// Returns projector setup
-      ProjectorSetup* projectorSetup();
-
-      /// Returns projector setup
-      ProjectorSetup const* projectorSetup() const;
-
       /// Returns reference to warp grid
       WarpGrid& warpGrid();
 

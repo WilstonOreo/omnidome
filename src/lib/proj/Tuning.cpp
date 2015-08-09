@@ -42,29 +42,6 @@ namespace omni
       return projector_;
     }
 
-    ProjectorSetup* Tuning::setupProjector(Id const& _setupId)
-    {
-      projectorSetup_.reset(proj::SetupFactory::create(_setupId));
-      return projectorSetup_.get();
-    }
-
-    void Tuning::setupProjector() 
-    {
-      if (!projectorSetup_) return;
-
-      projectorSetup_->setup(projector_);
-    }
-
-    ProjectorSetup* Tuning::projectorSetup()
-    {
-      return projectorSetup_.get();
-    }
-
-    ProjectorSetup const* Tuning::projectorSetup() const
-    {
-      return projectorSetup_.get();
-    }
-
     WarpGrid& Tuning::warpGrid()
     {
       return warpGrid_;
@@ -134,13 +111,7 @@ QDataStream& operator>>(QDataStream& _stream, omni::proj::Tuning& _tuning)
   QColor _color;
   _stream >> _color;
   _tuning.setColor(_color);
-
-  deserializePtr(_stream,[&](omni::Id const& _id) -> 
-      omni::proj::Setup*
-  {
-    return _tuning.setupProjector(_id);
-  });
-  
+  _stream >> _tuning.projector();
   _stream >> _tuning.warpGrid();
   _stream >> _tuning.blendMask();
 
@@ -152,9 +123,7 @@ QDataStream& operator<<(QDataStream& _stream, omni::proj::Tuning const& _tuning)
   using namespace omni::util;
   
   _stream << _tuning.color();
-  
-  serializePtr(_stream,_tuning.projectorSetup());
-  
+  _stream << _tuning.projector();
   _stream << _tuning.warpGrid();
   _stream << _tuning.blendMask();
   return _stream;

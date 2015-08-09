@@ -29,6 +29,24 @@ namespace omni
       screen_=_screen;
     }
 
+    Setup* Projector::setup(Id const& _setupId)
+    {
+      setup_.reset(SetupFactory::create(_setupId));
+      return setup_.get();
+    }
+
+    Setup* Projector::setup() 
+    {
+      if (!setup_) return nullptr;
+      setup_->setup(*this);
+      return setup_.get();
+    }
+
+    Setup const* Projector::setup() const
+    {
+      return setup_.get();
+    }
+
     qreal Projector::aspectRatio() const
     {
       return 
@@ -94,5 +112,23 @@ namespace omni
   }
 }
 
-QDataStream& operator>>(QDataStream&, omni::proj::Projector&);
-QDataStream& operator<<(QDataStream&, omni::proj::Projector const&);
+QDataStream& operator>>(QDataStream& _stream, omni::proj::Projector& _proj)
+{
+  omni::util::deserializePtr(_stream,[&](omni::Id const& _id) -> 
+      omni::proj::Setup*
+  {
+    return _proj.setup(_id);
+  });
+
+  omni::Angle _fov(45.0);
+  _stream >> _fov;
+  _proj.setFov(_fov);
+  return _stream;
+}
+
+QDataStream& operator<<(QDataStream& _stream, omni::proj::Projector const& _proj)
+{
+  omni::util::serializePtr(_stream,_proj.setup());
+  _stream << _proj.fov();
+  return _stream;
+}

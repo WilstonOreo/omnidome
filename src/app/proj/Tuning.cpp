@@ -8,6 +8,8 @@
 #include <QPainter>
 #include <QDrag>
 #include <QMimeData>
+#include <QPixmap>
+
 
 #include <omni/ui/proj/TitleBar.h>
 #include <omni/ui/TuningGLView.h>
@@ -60,8 +62,8 @@ namespace omni
         bool _newTuning = (session_ != _session) || (index_ != _index);
         index_=_index;
         session_ = _session;
-   
-        if (_newTuning) 
+
+        if (_newTuning)
         {
           glView_->setSession(session_);
           glView_->setTuningIndex(index_);
@@ -80,7 +82,7 @@ namespace omni
           setParamAsFloat("FOV",tuning()->projector().fov().degrees());
           setParamAsFloat("Throw Ratio",tuning()->projector().throwRatio());
 
-          auto _projSetup = tuning()->projectorSetup();
+          auto _projSetup = tuning()->projector().setup();
 
           if (_projSetup->getTypeId() == "FreeSetup")
           {
@@ -91,8 +93,8 @@ namespace omni
             setParamAsFloat("X",_p->pos().x());
             setParamAsFloat("Y",_p->pos().y());
             setParamAsFloat("Z",_p->pos().z());
-          } else
-          if (_projSetup->getTypeId() == "PeripheralSetup")
+          }
+          else if (_projSetup->getTypeId() == "PeripheralSetup")
           {
             auto* _p = static_cast<omni::proj::PeripheralSetup*>(_projSetup);
             setParamAsFloat("Yaw",_p->yaw().degrees());
@@ -108,7 +110,7 @@ namespace omni
           updateParameters();
         }
       }
-        
+
       /// Enable or disable fullscreen display
       void Tuning::fullscreenToggle(bool _enabled)
       {
@@ -118,23 +120,23 @@ namespace omni
           fullscreen_->setDrawingEnabled(_enabled);
         }
       }
- 
+
       int Tuning::index() const
       {
         return index_;
       }
-        
+
       Session const* Tuning::session() const
       {
         return session_;
       }
- 
+
       void Tuning::updateParameters()
       {
         if (!tuning() || isLocked()) return;
 
-        auto* _projSetup = tuning()->projectorSetup();
-        
+        auto* _projSetup = tuning()->projector().setup();
+
         if (!_projSetup) return;
 
         /// Handle free projector setup
@@ -145,16 +147,16 @@ namespace omni
           _p->setPitch(getParamAsFloat("Pitch"));
           _p->setRoll(getParamAsFloat("Roll"));
           _p->setPos(
-              getParamAsFloat("X"),
-              getParamAsFloat("Y"),
-              getParamAsFloat("Z"));
-        } 
+            getParamAsFloat("X"),
+            getParamAsFloat("Y"),
+            getParamAsFloat("Z"));
+        }
 
-        /// Handle Peripheral projector setup 
+        /// Handle Peripheral projector setup
         if (_projSetup->getTypeId() == "PeripheralSetup")
         {
           auto* _p = static_cast<omni::proj::PeripheralSetup*>(_projSetup);
-         
+
           _p->setYaw(getParamAsFloat("Yaw"));
           _p->setPitch(getParamAsFloat("Pitch"));
           _p->setRoll(getParamAsFloat("Roll"));
@@ -164,19 +166,19 @@ namespace omni
           _p->setShift(getParamAsFloat("Shift"));
 
         }
-        tuning()->setupProjector();
+        tuning()->projector().setup();
 
         updateViews();
         emit projectorSetupChanged();
       }
- 
+
       void Tuning::setFov()
       {
         if (!tuning() || isLocked()) return;
-        
+
         tuning()->projector().setFov(getParamAsFloat("FOV"));
-        setParamAsFloat("Throw Ratio",tuning()->projector().throwRatio()); 
-       
+        setParamAsFloat("Throw Ratio",tuning()->projector().throwRatio());
+
         updateViews();
         emit projectorSetupChanged();
       }
@@ -187,17 +189,16 @@ namespace omni
         if (!tuning() || isLocked()) return;
 
         tuning()->projector().setThrowRatio(getParamAsFloat("Throw Ratio"));
-        setParamAsFloat("FOV",tuning()->projector().fov().degrees()); 
+        setParamAsFloat("FOV",tuning()->projector().fov().degrees());
 
         updateViews();
         emit projectorSetupChanged();
       }
 
-        
+
       void Tuning::attachScreen(Screen const& _screen)
       {
         fullscreen_.reset(new TuningGLView());
-
         fullscreen_->hide();
         fullscreen_->setSession(session_);
         fullscreen_->setTuningIndex(index_);
@@ -212,7 +213,7 @@ namespace omni
       void Tuning::updateViews()
       {
         glView_->update();
-        if (fullscreen_) 
+        if (fullscreen_)
           fullscreen_->update();
       }
 
@@ -228,13 +229,13 @@ namespace omni
         titleBar_->installEventFilter(this);
         connect(titleBar_,SIGNAL(closeButtonClicked()),this,SLOT(prepareRemove()));
         layout_->addWidget(titleBar_,TuningLayout::Role::TITLE);
-        
+
         /// Setup preview window
         glView_ = new TuningGLView(this);
         QSizePolicy _sizePolicy(QSizePolicy::Ignored,QSizePolicy::Expanding);
         glView_->setSizePolicy(_sizePolicy);
         glView_->setKeepAspectRatio(true);
-        glView_->installEventFilter(this);
+     //   glView_->installEventFilter(this);
         layout_->addWidget(glView_,TuningLayout::Role::PREVIEW);
 
         /// FOV view slider
@@ -269,17 +270,17 @@ namespace omni
         auto&& _shift = addOffsetWidget("Shift",0.0,-2.0,2.0);
         _shift->setPageStep(1.0);
         _shift->setPivot(0.0);
-        
+
         /// X offset slider (FreeSetup only)
         auto&& _x = addOffsetWidget("X",0.0,-10.0,10.0);
         _x->setPageStep(1.0);
         _x->setPivot(0.0);
-        
+
         /// Y offset slider (FreeSetup only)
         auto&& _y = addOffsetWidget("Y",0.0,-10.0,10.0);
         _y->setPageStep(1.0);
         _y->setPivot(0.0);
-        
+
         /// Z offset slider (FreeSetup only)
         auto&& _z = addOffsetWidget("Z",0.0,-10.0,10.0);
         _z->setPageStep(1.0);
@@ -300,10 +301,12 @@ namespace omni
         _deltaYaw->setSingleStep(1.0);
         _deltaYaw->setPageStep(5.0);
         _deltaYaw->setPivot(0.0);
- 
-        widgetgroup_type _titleAndPreview({
-            { titleBar_, TuningLayout::Role::TITLE } , 
-            { glView_, TuningLayout::Role::PREVIEW }});
+
+        widgetgroup_type _titleAndPreview(
+        {
+          { titleBar_, TuningLayout::Role::TITLE } ,
+          { glView_, TuningLayout::Role::PREVIEW }
+        });
 
         auto addParameters = [&](widgetgroup_type const& _group, std::vector<QWidget*> const& _widgets) -> widgetgroup_type
         {
@@ -313,20 +316,20 @@ namespace omni
           return _result;
         };
 
-        addGroup("Minimized",{ { titleBar_, TuningLayout::Role::TITLE } });
+        addGroup("Minimized", { { titleBar_, TuningLayout::Role::TITLE } });
 
         /// Make slider groups
-        addGroup("PreviewOnly",_titleAndPreview); 
+        addGroup("PreviewOnly",_titleAndPreview);
         addGroup("FOVSliders",addParameters(_titleAndPreview, { _fov, _throwRatio }));
         addGroup("FreeSetup",addParameters( _titleAndPreview, {_yaw, _pitch, _roll, _x, _y, _z }));
         addGroup("PeripheralSetup",
-          addParameters( _titleAndPreview,
-            { _yaw, _pitch, _distance, _towerHeight, _shift, _deltaYaw, _roll }));
+                 addParameters( _titleAndPreview,
+        { _yaw, _pitch, _distance, _towerHeight, _shift, _deltaYaw, _roll }));
 
-        /// Setup/update mode        
+        /// Setup/update mode
         sessionModeChange();
       }
-        
+
       /// Adds a new/changes a parameter group
       void Tuning::addGroup(QString const& _groupName, widgetgroup_type const& _widgets)
       {
@@ -335,7 +338,7 @@ namespace omni
           groups_[_groupName] = _widgets;
         }
       }
-        
+
       void Tuning::setGroup(QString const& _groupName)
       {
         /// Hide all widgets temporarily
@@ -345,8 +348,9 @@ namespace omni
         {
           // Show title bar only if group with that name does not exist
           layout_->setWidgets({{ titleBar_, TuningLayout::Role::TITLE }});
-   
-        } else
+
+        }
+        else
         {
           layout_->setWidgets(groups_[_groupName]);
         }
@@ -398,27 +402,27 @@ namespace omni
       {
         /// Widget color has the same color as tuning
         for (auto& _widget : this->parameters_)
-        { 
+        {
           QColor _color = isSelected_ ? titleBar_->color().name() : "#cccccc";
           _widget->setStyleSheet("selection-background-color  : "+_color.name());
- 
+
           if (tuning() && isSelected_)
             tuning()->setColor(_color);
         }
         update();
       }
-        
+
       void Tuning::prepareRemove()
       {
         glView_->destroy();
         emit closed(index_);
       }
 
-      void Tuning::sessionModeChange() 
+      void Tuning::sessionModeChange()
       {
         if (!session()) return;
 
-        if (windowState_ == NO_DISPLAY) 
+        if (windowState_ == NO_DISPLAY)
         {
           setGroup("Minimized");
           return;
@@ -431,21 +435,22 @@ namespace omni
 
         switch (session()->mode())
         {
-          case Session::Mode::SCREENSETUP:
+        case Session::Mode::SCREENSETUP:
+          setGroup("FOVSliders");
+          break;
+        case Session::Mode::PROJECTIONSETUP:
+          if (windowState_ == ADJUSTMENT_SLIDERS)
+            setGroup(tuning()->projector().setup()->getTypeId().str());
+          if (windowState_ == FOV_SLIDERS)
             setGroup("FOVSliders");
-            break;
-          case Session::Mode::PROJECTIONSETUP:
-            if (windowState_ == ADJUSTMENT_SLIDERS)
-              setGroup(tuning()->projectorSetup()->getTypeId().str());
-            if (windowState_ == FOV_SLIDERS)
-              setGroup("FOVSliders");
-            break;
-          case Session::Mode::WARP:
-          case Session::Mode::BLEND:
-          case Session::Mode::EXPORT:
-            setGroup("PreviewOnly");
-            break;
-          default: break;
+          break;
+        case Session::Mode::WARP:
+        case Session::Mode::BLEND:
+        case Session::Mode::EXPORT:
+          setGroup("PreviewOnly");
+          break;
+        default:
+          break;
         }
       }
 
@@ -454,7 +459,7 @@ namespace omni
         QWidget::resizeEvent(event);
         update();
       }
-   
+
       void Tuning::showEvent(QShowEvent*)
       {
       }
@@ -466,45 +471,63 @@ namespace omni
         QPainter _p(this);
 
         auto _rect = rect().adjusted(2,2,-2,-2);
-        
+
         /// Paint board if active or color is selected
         if (isSelected_)
         {
           _p.setPen(QPen(titleBar_->color(),5));
-        } else
+        }
+        else
         {
           _p.setPen(Qt::NoPen);
         }
-        
+
         _p.setBrush(titleBar_->color());
         _p.drawRect(_rect);
 
         QWidget::paintEvent(event);
       }
-        
+
       /// Mouse Move Event and handler for dragging to ScreenSetup widget
       void Tuning::mouseMoveEvent(QMouseEvent* event)
-      {   
+      {
         // Handle drag to ScreenWidget
-        if (event->button() == Qt::LeftButton) 
+        if (event->button() == Qt::LeftButton)
         {
           startDrag();
         }
       }
- 
+
       void Tuning::startDrag()
       {
         qDebug() << "startDrag ";
-          QDrag *drag = new QDrag(this);
-          QMimeData *mimeData = new QMimeData;
+        QDrag *drag = new QDrag(this);
+        QMimeData *mimeData = new QMimeData;
 
-          mimeData->setText("Hallo"); // TODO add tuning index here
-          drag->setMimeData(mimeData);
+        // Generate pixmap for projector 
+        QPixmap _pixmap(128,128);
+        {
+          _pixmap.fill(tuning()->color());
+          QPainter _p(&_pixmap);
+          QRect _rect(0,0,128,128);
+
+          QFont _font("Helvetica",32);
+          _p.setFont(_font);
+
+          _p.drawRect(_rect.adjusted(1,1,-2,-2));
+          _p.drawText(_rect,Qt::AlignCenter, QString("%1").arg(index_+1));
+          _p.end();
+        }
+        drag->setPixmap(_pixmap);
+
+        mimeData->setText(QString("%1").arg(index_));
+        drag->setMimeData(mimeData);
+        drag->exec();
       }
 
       bool Tuning::eventFilter(QObject* _obj, QEvent* _event)
       {
-        if (_event->type() == QEvent::MouseMove && (_obj == glView_ || _obj == titleBar_)) 
+        if (_event->type() == QEvent::MouseMove && (_obj == glView_ || _obj == titleBar_))
         {
           startDrag();
         }
@@ -514,21 +537,21 @@ namespace omni
         {
           setSelected(true);
           return true;
-        } else
-        if (_event->type() == QEvent::FocusOut)
+        }
+        else if (_event->type() == QEvent::FocusOut)
         {
           setSelected(false);
           return false;
         }
-          
+
         return false;
       }
-        
+
       bool Tuning::isSelected() const
       {
         return isSelected_;
       }
- 
+
       /// Focus event used by TuningList to set current tuning for session
       void Tuning::focusInEvent(QFocusEvent* event)
       {

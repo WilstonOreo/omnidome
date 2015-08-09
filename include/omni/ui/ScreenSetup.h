@@ -6,6 +6,7 @@
 
 #include <omni/ui/proj/Tuning.h>
 #include <omni/proj/ScreenSetup.h>
+#include <omni/ui/ScreenSetupDragWidget.h>
 
 namespace omni
 {
@@ -32,6 +33,8 @@ namespace omni
       /// Update screen dimensions
       void updateScreens();
 
+      void detachTuning(omni::ui::proj::Tuning*);
+
       /// Set zoom factor
       void setZoom(float);
 
@@ -41,6 +44,7 @@ namespace omni
       void mouseMoveEvent(QMouseEvent*);
       
       void dragEnterEvent(QDragEnterEvent*);
+      void dragMoveEvent(QDragMoveEvent*);
       void dropEvent(QDropEvent*);
 
     private:
@@ -53,26 +57,30 @@ namespace omni
         Item(ScreenSetup&,Screen const&);
 
         void paint(QPainter&);
+        
+        omni::ui::proj::Tuning* tuning();
+        omni::ui::proj::Tuning const* tuning() const;
 
         /// Attach projector to screen
         void attachTuning(omni::ui::proj::Tuning*);
 
         /// Detach projector from item
         void detachTuning();
-        omni::ui::proj::Tuning const* tuning() const;
-  
-        /// Returns flag whether
+          
+        /// Returns flag whether mouse is currently over this item
         bool mouseOver() const;
         void setMouseOver(bool);
 
+        /// Flag whether a drop is supposed to happen on this item 
         bool drop() const;
-        void setDrop(bool);
+        void setDrop(bool, QColor const& _color = QColor("#FFFFFF"));
 
         QRectF rect() const;
 
       private:
         bool mouseOver_ = false;
         bool drop_ = false;
+        QColor dropColor_;
         ScreenSetup& screenSetup_;
         Screen const& screen_;
         omni::ui::proj::Tuning* tuning_ = nullptr;
@@ -97,6 +105,7 @@ namespace omni
       QRectF desktopRect_;
       omni::proj::ScreenSetup* setup_;
       Session* session_ = nullptr;
+      QUniquePtr<ScreenSetupDragWidget> dragWidget_;
     };
 
   }

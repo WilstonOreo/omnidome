@@ -78,6 +78,10 @@ MainWindow::MainWindow( QMainWindow *parent) :
     // Connect projector position change with view update
     connect(ui_->tuningList,SIGNAL(projectorSetupChanged()),this,SLOT(modified()));
     connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),this,SLOT(modified()));
+    
+    // Detach tuning from screen setup when it was removed
+    connect(ui_->tuningList,SIGNAL(tuningToBeRemoved(omni::ui::proj::Tuning*)),
+        screenSetup_.get(),SLOT(detachTuning(omni::ui::proj::Tuning*)));
 
     // Connect canvas parameter change with view update
     connect(ui_->grpCanvas,SIGNAL(canvasChanged()),this,SLOT(modified()));

@@ -10,6 +10,7 @@
 #include <QPainter>
 #include <QMimeData>
 #include <QDragEnterEvent>
+#include <QDragMoveEvent>
 #include <QDropEvent>
 
 namespace omni
@@ -17,7 +18,8 @@ namespace omni
   namespace ui
   { 
     ScreenSetup::ScreenSetup(QWidget* _parent) :
-      QWidget(_parent)
+      QWidget(_parent),
+      dragWidget_(new ScreenSetupDragWidget)
     {
       setMouseTracking(true);
       setAcceptDrops(true);
@@ -49,7 +51,20 @@ namespace omni
       zoom_=_zoom;
       update();
     }
-    
+ 
+    void ScreenSetup::detachTuning(omni::ui::proj::Tuning* _tuning)
+    {
+      if (!_tuning) return;
+
+      for (auto& _item : screenItems_)
+        if (_item.tuning() == _tuning)
+        {
+          qDebug() << _tuning->index();
+          _item.detachTuning();
+        }
+      update();
+    }
+ 
     void ScreenSetup::updateScreens()
     {
       screenItems_.clear();
@@ -153,21 +168,70 @@ namespace omni
     void ScreenSetup::dragEnterEvent(QDragEnterEvent* event)
     {
       auto* _screenItem = getItemAtPos(event->pos());
+      for (auto& _item : screenItems_)
+        _item.setDrop(false);
+  
+      if (event->mimeData()->hasFormat("text/plain"))
+      {
+        if (_screenItem) 
+        {
+          auto* _tuningWidget = static_cast<proj::Tuning*>(event->source());
+          if (!_tuningWidget->tuning()) return;
+
+          auto _color = _tuningWidget->tuning()->color();
+          _screenItem->setDrop(true,_color);
+          dragWidget_->setColor(_color);
+          dragWidget_->setRect(_screenItem->rect());
+          dragWidget_->show();
+        }
+
+        event->acceptProposedAction();
+      }
+      update();
+    }
+
+    void ScreenSetup::dragMoveEvent(QDragMoveEvent* event)
+    {
+      auto* _screenItem = getItemAtPos(event->pos());
+      if (!_screenItem) 
+        dragWidget_->hide();
+      
+      for (auto& _item : screenItems_)
+        _item.setDrop(false);
   
       if (event->mimeData()->hasFormat("text/plain") && _screenItem)
+      {
+        dragWidget_->setRect(_screenItem->rect());
+        
+        auto* _tuningWidget = static_cast<proj::Tuning*>(event->source());
+        if (!_tuningWidget->tuning()) return;
+       
+        auto _color = _tuningWidget->tuning()->color();
+        _screenItem->setDrop(true,_color);
+        dragWidget_->setColor(_color);
+        dragWidget_->show();
         event->acceptProposedAction();
+      }
+      update();
     }
-      
+
     void ScreenSetup::dropEvent(QDropEvent* event)
     { 
-      auto* _screenItem = getItemAtPos(event->pos());
+      for (auto& _item : screenItems_)
+        _item.setDrop(false);
+
+      auto* _screenItem = getItemAtPos(event->pos()); 
+      dragWidget_->hide();
 
       if (_screenItem) 
       {
-        _screenItem->attachTuning(static_cast<proj::Tuning*>(event->source())); 
+        _screenItem->setDrop(false);
+        auto* _tuningWidget = static_cast<proj::Tuning*>(event->source());
+        if (!_tuningWidget->tuning()) return;
+        
+        _screenItem->attachTuning(_tuningWidget); 
         event->acceptProposedAction();
       }
-      
     }
 
 
@@ -198,9 +262,10 @@ namespace omni
       return drop_;
     }
 
-    void ScreenSetup::Item::setDrop(bool _drop) 
+    void ScreenSetup::Item::setDrop(bool _drop, QColor const& _color) 
     {
       drop_=_drop;
+      dropColor_ = _color;
     }
 
     QRectF ScreenSetup::Item::rect() const
@@ -224,24 +289,58 @@ namespace omni
       auto _rect = rect();
       _p.drawRect(_rect); 
 
+      /// Draw diagonal stripes for drop
+      if (drop())
+      {
+        QPixmap _pixmap(32,32);
+        _pixmap.fill(_color);
+        QPainter _texP(&_pixmap);
+        _texP.setPen(QPen(dropColor_,2));
+        for (int i = -32; i <= 64; i+= 8)
+        {
+          _texP.drawLine(i+32,i-32,i-32,i+32);
+        }
+        _texP.end();
+        QBrush _brush;
+        _brush.setTexture(_pixmap);
+        _p.setBrush(_brush);
+        _p.drawRect(_rect); 
+      }
+
       // Draw resolution text
       _p.setBrush(Qt::NoBrush);
       _p.setPen(QPen(_color.darker(500),1));
+
 
       // Resolution string
       QString _resStr = QString("%1 x %2").arg(screen_.width()).arg(screen_.height());
 
       _p.drawText(_rect,Qt::AlignHCenter | Qt::AlignVCenter,_resStr);
     }
+        
+    omni::ui::proj::Tuning* ScreenSetup::Item::tuning()
+    {
+      return tuning_;
+    }
+
+    omni::ui::proj::Tuning const* ScreenSetup::Item::tuning() const
+    {
+      return tuning_;
+    }
 
     void ScreenSetup::Item::attachTuning(omni::ui::proj::Tuning* _tuning)
     {
       tuning_=_tuning;
+      tuning_->attachScreen(screen_);
       screenSetup_.update();
     }
 
     void ScreenSetup::Item::detachTuning()
     {
+      if (tuning_) 
+      {
+        tuning_->detachScreen();
+      }
       tuning_ = nullptr;
       screenSetup_.update();
     }

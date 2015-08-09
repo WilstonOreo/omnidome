@@ -64,6 +64,9 @@ namespace omni
         /// Signal which is emitted when parameters of one tuning have changed
         void projectorSetupChanged();
 
+        /// Signal which is returned after a tuning is to be removed
+        void tuningToBeRemoved(omni::ui::proj::Tuning*);
+
       private:
         /// Add widget from existing tuning
         void addTuning(omni::proj::Tuning* _tuning);
