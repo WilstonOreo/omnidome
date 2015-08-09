@@ -14,6 +14,8 @@ namespace omni
     GLView::GLView(QWidget* _parent) :
       QOpenGLWidget(_parent)
     {
+      QSurfaceFormat _format(QSurfaceFormat::ResetNotification); 
+      setFormat(_format);
     }
     
     GLView::~GLView()
@@ -33,6 +35,12 @@ namespace omni
     bool GLView::initialized() const
     {
       return initialized_;
+    }
+
+    void GLView::hideEvent(QHideEvent * event)
+    {
+      qDebug() << "hidden";
+      doneCurrent();
     }
 
     void GLView::initializeGL()

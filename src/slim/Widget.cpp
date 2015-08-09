@@ -42,8 +42,8 @@ ColorSet const& Widget::colorSet() const
 void Widget::init()
 {
   setWindowFlags(Qt::FramelessWindowHint);
-  setMinimumSize(0,32 / devicePixelRatio());
-  setMaximumSize(16000,48);
+  setMinimumSize(0,24 / devicePixelRatio());
+  setMaximumSize(16000,24 / devicePixelRatio());
   setFocusPolicy(Qt::TabFocus);
   label_ = new QLabel("",this);
   label_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);

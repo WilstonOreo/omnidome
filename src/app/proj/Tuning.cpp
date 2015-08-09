@@ -235,7 +235,7 @@ namespace omni
         QSizePolicy _sizePolicy(QSizePolicy::Ignored,QSizePolicy::Expanding);
         glView_->setSizePolicy(_sizePolicy);
         glView_->setKeepAspectRatio(true);
-     //   glView_->installEventFilter(this);
+        glView_->installEventFilter(this);
         layout_->addWidget(glView_,TuningLayout::Role::PREVIEW);
 
         /// FOV view slider
@@ -343,6 +343,7 @@ namespace omni
       {
         /// Hide all widgets temporarily
         setParametersVisible(false);
+        glView_->setVisible(false);
 
         if (groups_.count(_groupName) == 0)
         {
@@ -432,8 +433,15 @@ namespace omni
           setGroup("PreviewOnly");
           return;
         }
+          
+        auto _mode = session()->mode();
 
-        switch (session()->mode())
+        // Show close button only in screen- and projection setup
+        titleBar_->setCloseButtonVisible(
+            _mode == Session::Mode::SCREENSETUP ||
+            _mode == Session::Mode::PROJECTIONSETUP);
+
+        switch (_mode)
         {
         case Session::Mode::SCREENSETUP:
           setGroup("FOVSliders");
@@ -500,7 +508,10 @@ namespace omni
 
       void Tuning::startDrag()
       {
-        qDebug() << "startDrag ";
+        if (!session()) return;
+
+        if (session()->mode() != Session::Mode::SCREENSETUP) return;
+
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
 

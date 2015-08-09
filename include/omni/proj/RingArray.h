@@ -1,7 +1,7 @@
 #ifndef OMNI_PROJ_RINGARRAY_H_
 #define OMNI_PROJ_RINGARRAY_H_
 
-#include <omni/proj/Template.h>
+#include <omni/proj/MultiSetup.h>
 #include <omni/Angle.h>
 
 namespace omni
@@ -9,8 +9,8 @@ namespace omni
   namespace proj
   {
     class RingArray : 
-      public Template,
-      private TemplateRegistrar<RingArray>
+      public MultiSetup,
+      private MultiSetupRegistrar<RingArray>
     {
     public:
       OMNI_TYPEID("RingArray");

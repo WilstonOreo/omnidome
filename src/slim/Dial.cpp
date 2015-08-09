@@ -52,7 +52,7 @@ void Dial::setShowTicks(bool _showTicks)
 
 void Dial::init()
 {
-  setMinimumSize(96 / devicePixelRatio(),96 / devicePixelRatio());
+  setMinimumSize(32 / devicePixelRatio(),96 / devicePixelRatio());
   setMaximumSize(16000,320 / devicePixelRatio());
   
   valueLabel_ = new QLabel(this);

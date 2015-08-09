@@ -56,6 +56,17 @@ namespace omni
         return color_;
       }
 
+      bool TitleBar::closeButtonVisible() const 
+      {
+        return closeButton_ ? closeButton_->isVisible() : false;
+      }
+
+      void TitleBar::setCloseButtonVisible(bool _visible)
+      {
+        if (!closeButton_) return;
+        closeButton_->setVisible(_visible);
+      }
+
       void TitleBar::paintEvent(QPaintEvent* event)
       {
         QPainter _p(this);
@@ -104,13 +115,16 @@ namespace omni
         
         setupToolButton(displayButton_);
         displayButton_->setCheckable(true);
+        displayButton_->setIcon(QIcon(":/qss_icons/undock.png"));
+
         connect(displayButton_.get(),SIGNAL(clicked(bool)),tuningWidget(),SLOT(fullscreenToggle(bool)));
 
-
         setupToolButton(maximizeButton_);
+        maximizeButton_->setIcon(QIcon(":/qss_icons/up_arrow.png"));
         connect(maximizeButton_.get(),SIGNAL(clicked()),tuningWidget(),SLOT(setNextWindowState()));
 
         setupToolButton(closeButton_);
+        closeButton_->setIcon(QIcon(":/qss_icons/close.png"));
         connect(closeButton_.get(),SIGNAL(clicked()),this,SIGNAL(closeButtonClicked()));
 
         ///////////////////// END Setup buttons

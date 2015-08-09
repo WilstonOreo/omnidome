@@ -38,6 +38,9 @@ namespace omni
 
         /// Add a new tuning and tuning widget, with automatically detected settings
         void addTuning();
+        
+        /// Add tuning with specific projector setup
+        void addTuning(QString const& _projSetupId);
 
         /// Remove tuning 
         void removeTuning(int _index);

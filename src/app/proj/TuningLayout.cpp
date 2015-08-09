@@ -82,7 +82,7 @@ namespace omni
           {
           case Role::PARAMETER:
           case Role::TITLE:
-            _height += 32 / _parent->devicePixelRatio();
+            _height += 24 / _parent->devicePixelRatio();
             break;
           case Role::PREVIEW:
             if (!tuning()) continue;
@@ -151,7 +151,7 @@ namespace omni
 
           /// Widget height is constant except for preview
           int _widgetHeight = _item.role_ == Role::PREVIEW ? _parent->width() /
-                              float(tuning()->width()) * tuning()->height() : 32 / _parent->devicePixelRatio();
+                              float(tuning()->width()) * tuning()->height() : 24 / _parent->devicePixelRatio();
           _widget->setGeometry(_border,_height,_parent->width()-_border*2,_widgetHeight);
           _widget->show();
 

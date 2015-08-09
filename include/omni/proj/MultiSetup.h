@@ -1,5 +1,5 @@
-#ifndef OMNI_UI_PROJ_TEMPLATE_H_
-#define OMNI_UI_PROJ_TEMPLATE_H_
+#ifndef OMNI_UI_PROJ_MULTISETUP_H_
+#define OMNI_UI_PROJ_MULTISETUP_H_
 
 #include <omni/TypeIdInterface.h>
 #include <omni/Session.h>
@@ -13,10 +13,10 @@ namespace omni
     /**@brief Projector setup template interface  
      * @detail Adds one or several projectors/tunings in a certain placement to a session
      **/
-    class Template : public TypeIdInterface
+    class MultiSetup : public TypeIdInterface
     {
     public: 
-      virtual ~Template() {}
+      virtual ~MultiSetup() {}
 
       /// Add tunings to session
       inline void add(Session* _session)
@@ -37,13 +37,13 @@ namespace omni
     };
 
     /// Typedef for our factory
-    typedef AbstractFactory<Template> TemplateFactory;
+    typedef AbstractFactory<MultiSetup> MultiSetupFactory;
 
-    /// Template alias for our registrar (for auto registration)
+    /// MultiSetup alias for our registrar (for auto registration)
     template<typename T>
-    using TemplateRegistrar = typename TemplateFactory::registrar_type<T>; 
+    using MultiSetupRegistrar = typename MultiSetupFactory::registrar_type<T>; 
   }
 }
 
-#endif /* OMNI_UI_PROJ_TEMPLATE_H_ */
+#endif /* OMNI_UI_PROJ_MULTISETUP_H_ */
 

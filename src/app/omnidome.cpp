@@ -3,19 +3,12 @@
 
 #include <QApplication>
 #include <QFile>
-#include <QtOpenGL/QGLFormat>
 
 using namespace std;
 using namespace omni;
 
 int main(int ac, char* av[])
 {
-
-  QGLFormat f;
-  f.setDoubleBuffer(false);
-  f.setVersion(3,3);
-  QGLFormat::setDefaultFormat(f);
-
   /// Start gui
   QApplication _a(ac, av);
    

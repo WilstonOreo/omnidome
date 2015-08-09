@@ -54,11 +54,26 @@ namespace omni
 
       void TuningList::addTuning()
       {
+        QString _setupId = "PeripheralSetup";
+        if (!session_->tunings().empty())
+        {
+          // Set setup id from last tuning
+          auto* _setup = session_->tunings()[session_->tunings().size()-1]->projector().setup();
+          if (_setup)
+            _setupId = _setup->getTypeId();
+        }
+        addTuning(_setupId);
+      }
+        
+      /// Add tuning with specific projector setup
+      void TuningList::addTuning(QString const& _projSetupId)
+      {
         auto* _tuning = session_->tunings().add(false);
 
         if (!_tuning) return;
 
         _tuning->setColor(getTuningColor());
+        _tuning->projector().setup(_projSetupId);
         addTuning(_tuning);
 
         // Select this tuning index

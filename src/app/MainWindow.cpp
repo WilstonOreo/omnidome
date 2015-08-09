@@ -10,7 +10,7 @@
 #include <QMenu>
 
 #include <omni/Session.h>
-#include <omni/proj/Template.h>
+#include <omni/proj/MultiSetup.h>
 #include <omni/ui/proj/Tuning.h>
 #include <omni/ui/proj/TuningList.h>
 #include <omni/ui/About.h>
@@ -19,6 +19,8 @@
 #include <omni/ui/GLView3D.h>
 #include <omni/ui/TuningGLView.h>
 #include <omni/ui/Export.h>
+#include <omni/ui/proj/MultiSetupDialog.h>
+
 
 using namespace omni::ui;
 
@@ -61,9 +63,9 @@ MainWindow::MainWindow( QMainWindow *parent) :
     _menu->addAction("FreeSetup")->setData(QString("FreeSetup"));
     _menu->addSeparator();
 
-    for (auto& _idTemplate : omni::proj::TemplateFactory::classes())
+    for (auto& _idMultiSetup : omni::proj::MultiSetupFactory::classes())
     {
-      auto& _id = _idTemplate.first;
+      auto& _id = _idMultiSetup.first;
       auto* _action = _menu->addAction(_id);
       _action->setData(QString(_id));
     }
@@ -174,7 +176,6 @@ void MainWindow::saveProjection()
 void MainWindow::saveProjectionAs()
 {
   QString _filename = QFileDialog::getSaveFileName(this, "Save omni Projection...", ".", "omni Projections (*.omni)");
-  qDebug() << _filename;
   if( !_filename.isEmpty() )
   {
     filename_ = _filename;
@@ -339,12 +340,26 @@ void MainWindow::setTuningIndex(int _index)
 void MainWindow::addProjector(QAction* _action)
 {
   auto _id = _action->data().toString();
-  if (_id == "FreeSetup")
+  
+  /// Check for single projector setups
+  for (auto& _idSetup : omni::proj::SetupFactory::classes())
   {
-  } else if (_id == "PeripheralSetup")
+    if (_idSetup.first.str() == _id)
+    {
+      ui_->tuningList->addTuning(_id);
+      return;
+    }
+  }  
+
+  /// Check for multi projector setups 
+  for (auto& _idMultiSetup : omni::proj::MultiSetupFactory::classes())
   {
-  } else if (_id == "RingArray")
-  {
+    if (_idMultiSetup.first.str() == _id)
+    {
+      proj::MultiSetupDialog _dialog(_id,session_.get());
+      _dialog.exec();
+      return;
+    }
   }
 }
 

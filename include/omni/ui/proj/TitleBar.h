@@ -37,12 +37,18 @@ namespace omni
         /// Return color
         QColor color() const;
 
+        /// Returns true if close button is visible
+        bool closeButtonVisible() const;
+
       public slots:
         /// Set color from gradient pos (between 0.0 and 1.0)
         void setColor(QColor const&);
         
         /// Select color from color picker
         void selectColor();
+
+        /// Toggle visibility of close button
+        void setCloseButtonVisible(bool);
 
       signals:
         void closeButtonClicked();
