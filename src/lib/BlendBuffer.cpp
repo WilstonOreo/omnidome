@@ -79,6 +79,19 @@ namespace omni
     return _output;
   }
     
+  BlendBuffer BlendBuffer::cropRect(QRect const& _rect) const
+  {
+    BlendBuffer _buffer(_rect.width(),_rect.height());
+
+    for (int y = 0; y < _rect.height(); ++y)
+      for (int x = 0; x < _rect.width(); ++x)
+      {
+        _buffer(x,y) = pixel(x + _rect.x(),y + _rect.y());
+      }
+
+    return _buffer;
+  }
+    
   /// Return width of the buffer
   int BlendBuffer::width() const
   {

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <vector>
+#include <QRect>
 
 class QImage;
 
@@ -44,6 +45,8 @@ namespace omni
 
     /// Return pixel on position (x,y)
     pixel_type& pixel(int _x, int _y);
+
+    BlendBuffer cropRect(QRect const&) const;
 
     /// Return pixel on position (x,y) (const version)
     pixel_type const& pixel(int _x, int _y) const;

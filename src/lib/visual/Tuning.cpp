@@ -92,7 +92,13 @@ namespace omni
 
       updateBlendTexture();
     }
-
+      
+    void Tuning::setBlendTextureUpdateRect(QRect const& _rect)
+    {
+      int _radius = tuning_.blendMask().brush().size() / 2 + 1;
+      blendTextureUpdateRect_ = _rect.normalized().adjusted(-_radius,-_radius,_radius,_radius)
+        & QRect(0,0,tuning_.width(),tuning_.height());
+    }
 
     void Tuning::updateBlendTexture()
     {
@@ -107,13 +113,35 @@ namespace omni
         }
         if (_reset)
         {
+          blendTextureUpdateRect_ = QRect(0,0,tuning_.width(),tuning_.height());
           blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().strokeBuffer().toQImage()));
         }
  
         auto& _blendMask = tuning().blendMask(); 
-        _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
-        _.glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, tuning_.width(), tuning_.height(), GL_ALPHA, GL_UNSIGNED_BYTE, _blendMask.strokeBufferData());
-        _.glBindTexture(GL_TEXTURE_2D, 0);
+        auto _ptr = _blendMask.strokeBufferData();
+        
+        auto _fullRect = QRect(0,0,tuning_.width(),tuning_.height());
+        auto& _r = blendTextureUpdateRect_;
+        
+        /// Optimization for uploading only a portion of the blend buffer to texture
+        if (_r != _fullRect)
+        {
+          auto _data = _blendMask.strokeBuffer().cropRect(_r);
+          _ptr = (void*)(_data.data().data()); 
+          _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());          
+          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+          glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+          glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+          glPixelStorei(GL_UNPACK_SKIP_ROWS, 0); 
+          _.glTexSubImage2D(GL_TEXTURE_2D, 0, _r.x(),_r.y(), _r.width(), _r.height(), GL_ALPHA, GL_UNSIGNED_BYTE, _ptr);
+          _.glBindTexture(GL_TEXTURE_2D, 0);
+          blendTextureUpdateRect_ = _fullRect;
+        } else
+        {
+          _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
+          _.glTexSubImage2D(GL_TEXTURE_2D, 0, _r.x(),_r.y(), _r.width(), _r.height(), GL_ALPHA, GL_UNSIGNED_BYTE, _ptr);
+          _.glBindTexture(GL_TEXTURE_2D, 0);
+        }
       });
     }
 

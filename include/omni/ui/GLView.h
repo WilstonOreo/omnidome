@@ -38,7 +38,6 @@ namespace omni
       void initializeGL();
       virtual void resizeGL(int _w, int _h);
       virtual void paintGL();
-      virtual void hideEvent(QHideEvent* event);
 
       virtual void mousePressEvent(QMouseEvent*);
       

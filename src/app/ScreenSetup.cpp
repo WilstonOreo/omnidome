@@ -51,7 +51,7 @@ namespace omni
       
     int ScreenSetup::subScreenCount(QScreen const* _screen)
     {
-      return 3;/*
+      auto _rect = _screen->geometry();
       auto _s = _rect.size();
       qreal _aspectRatio = _s.width() / qreal(_s.height());
 
@@ -66,7 +66,7 @@ namespace omni
       }
       if (_subscreenCount <= 0) 
         _subscreenCount = 1;
-      return _subscreenCount;*/
+      return _subscreenCount;
     }
  
     float ScreenSetup::zoom() const

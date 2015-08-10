@@ -22,6 +22,7 @@ namespace omni
       void update();
 
       void updateBlendTexture();
+      void setBlendTextureUpdateRect(QRect const&);
       
       /// Draw Test card image for screen setup
       void drawTestCard(int _id) const;
@@ -53,6 +54,7 @@ namespace omni
       std::unique_ptr<QOpenGLTexture> blendTex_;
 
       static std::unique_ptr<QOpenGLShaderProgram> testCardShader_;
+      QRect blendTextureUpdateRect_;
     };
   }
 }

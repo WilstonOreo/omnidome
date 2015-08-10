@@ -38,7 +38,7 @@ include(src/plugins/gstreamer/gstreamer.cmake)
 
 ################################
 
-setup_qt(5 5)
+setup_qt(5 4)
 QT5_WRAP_CPP(omni_headers_moc ${omni_headers})
 QT5_WRAP_CPP(slim_widgetz_headers_moc ${slim_widgetz_header_files})
 QT5_ADD_RESOURCES(omni_resources_rcc ${omni_resources})

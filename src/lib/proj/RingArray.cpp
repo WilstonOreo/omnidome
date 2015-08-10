@@ -1,5 +1,7 @@
 #include <omni/proj/RingArray.h>
 
+#include <omni/proj/PeripheralSetup.h>
+
 namespace omni
 {
   namespace proj
@@ -22,11 +24,19 @@ namespace omni
       for (int i = 0; i < numberOfProjectors(); ++i)
       {
         Projector _proj;
-        _proj.setFov(fov_);/*
-        auto* _setup = _projectors.setup("PeripheralSetup");
+        _proj.setFov(fov_);
 
+        auto* _setup = _proj.setup("PeripheralSetup");
+        if (!_setup) continue;
 
-        _projectors.setup*/
+        auto _peripheral = static_cast<PeripheralSetup*>(_setup);
+ 
+        _peripheral->setPitch(pitch_);
+        _peripheral->setYaw(Angle(i * 360.0 / numberOfProjectors() + yaw_.degrees()));
+        _peripheral->setDistanceCenter(distanceCenter_);
+        _peripheral->setTowerHeight(towerHeight_);
+        _proj.setup();
+        _projectors.push_back(std::move(_proj));
       }
 
       return _projectors;

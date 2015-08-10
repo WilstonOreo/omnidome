@@ -519,6 +519,9 @@
             <property name="text">
              <string>Add</string>
             </property>
+            <property name="popupMode">
+             <enum>QToolButton::MenuButtonPopup</enum>
+            </property>
             <property name="autoRaise">
              <bool>true</bool>
             </property>

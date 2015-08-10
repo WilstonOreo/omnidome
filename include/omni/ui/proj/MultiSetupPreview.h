@@ -17,10 +17,13 @@ namespace omni
         MultiSetupPreview(QWidget* _parent);
         ~MultiSetupPreview();
 
-        omni::proj::MultiSetup* getMultiSetup();
-        omni::proj::MultiSetup const* getMultiSetup() const;
+        omni::proj::MultiSetup* multiSetup();
+        omni::proj::MultiSetup const* multiSetup() const;
         void setMultiSetup(omni::proj::MultiSetup* _template);
 
+      public slots:
+
+        void updateProjectors();
 
       protected:
         void paintGL();
@@ -28,7 +31,10 @@ namespace omni
       private:
         visual::Camera camera_;
         std::array<visual::Light,3> lights_;
-        omni::proj::MultiSetup* template_ = nullptr;
+        omni::proj::MultiSetup* multiSetup_ = nullptr;
+
+        std::vector<omni::proj::Projector> projectors_; 
+        std::list<visual::Projector> projectorViz_;
       };
     }
   }

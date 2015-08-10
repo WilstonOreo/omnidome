@@ -22,6 +22,8 @@ namespace omni
       void drawCanvas() const;
       void drawCanvasWithFrustumIntersections() const;
 
+      void drawFrustumIntersection(proj::Projector const& _proj, QColor const& _color) const;
+
       void update();
       void free();
 

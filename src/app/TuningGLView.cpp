@@ -109,7 +109,21 @@ namespace omni
         _childView->updateContext(_update);
       }
     }
- 
+      
+    void TuningGLView::updateWithChildViews(QRect const& _rect)
+    {
+      tuning_->setBlendTextureUpdateRect(_rect);
+      tuning_->update();
+      for (auto& _childView : childViews_)
+      {
+        if (_childView->tuning() == tuning())
+        {
+          _childView->updateWithChildViews(_rect);
+        }
+      }
+      update();
+    }
+
     void TuningGLView::updateContext(bool _update)
     {
       if (_update)
@@ -154,21 +168,26 @@ namespace omni
         }
         else if (_mode == Session::Mode::BLEND)
         {
-          leftOverDistance_ = tuning()->blendMask().drawLine(pixelPos(mousePosition_),pixelPos(event->pos()),leftOverDistance_);
+          auto _from = pixelPos(mousePosition_).toPoint();
+          auto _to = pixelPos(event->pos()).toPoint();
+          leftOverDistance_ = tuning()->blendMask().drawLine(_from,_to,leftOverDistance_); 
+          updateWithChildViews(QRect(_from,_to));
         }
       }
 
       mousePosition_ = event->pos();
       cursorPosition_ = screenPos(mousePosition_);
 
-      for (auto& _childView : childViews_)
+      if (!mouseDown_)
       {
-        _childView->cursorPosition_ = cursorPosition_;
-        if (_childView->showCursor())
-          _childView->update();
-      }
-
-      update();
+        for (auto& _childView : childViews_)
+        {
+          _childView->cursorPosition_ = cursorPosition_;
+          if (_childView->showCursor())
+            _childView->update();
+        }
+        update();
+      } 
     }
 
     void TuningGLView::mousePressEvent(QMouseEvent *event)

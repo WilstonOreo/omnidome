@@ -19,6 +19,8 @@ namespace omni
         ui_->preview->setSession(_session);
         ui_->preview->setMultiSetup(template_.get());
         ui_->parameters->setMultiSetup(template_.get());
+
+        connect(ui_->parameters,SIGNAL(parametersUpdated()),ui_->preview,SLOT(updateProjectors()));
       }
 
       MultiSetupDialog::~MultiSetupDialog()

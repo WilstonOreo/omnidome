@@ -9,6 +9,7 @@ namespace omni
     Projector::Projector(const proj::Projector& _proj) :
       proj_(_proj)
     {
+      update();
     }
 
     qreal Projector::size() const
@@ -67,7 +68,7 @@ namespace omni
       {
         glLoadIdentity();
         // Apply matrix to OpenGL
-        glMultMatrixf(proj_.matrix().data());
+        glMultMatrixf(proj_.matrix().constData());
         this->visualLine(eye_,topLeft_);
         this->visualLine(eye_,topRight_);
         this->visualLine(eye_,bottomLeft_);

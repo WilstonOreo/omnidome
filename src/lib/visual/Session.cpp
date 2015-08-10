@@ -12,26 +12,26 @@ namespace omni
   {
     std::unique_ptr<QOpenGLShaderProgram> Session::frustumShader_;
 
-    Session::Session(omni::Session& _session) : 
+    Session::Session(omni::Session& _session) :
       session_(_session)
     {
     }
-    
+
     omni::Session& Session::session()
     {
       return session_;
     }
-      
+
     omni::Session const& Session::session() const
     {
       return session_;
     }
-      
+
     void Session::drawCanvas() const
     {
       auto _canvas = session_.canvas();
 
-      if (!_canvas) return; 
+      if (!_canvas) return;
 
       with_current_context([&](QOpenGLFunctions& _)
       {
@@ -50,7 +50,8 @@ namespace omni
           _.glBindTexture(GL_TEXTURE_2D, 0);
 
           _mapping->release();
-        } else
+        }
+        else
         {
           // Render canvas with lighting when there is no input
           glColor4f(1.0,1.0,1.0,1.0);
@@ -61,52 +62,54 @@ namespace omni
         }
       });
     }
-      
+
     void Session::drawCanvasWithFrustumIntersections() const
-    {      
+    {
+      for (auto& _tuning : session_.tunings())
+      {
+        drawFrustumIntersection(_tuning->projector(),_tuning->color());
+      }
+    }
+
+    void Session::drawFrustumIntersection(proj::Projector const& _proj, QColor const& _color) const
+    {
       auto _canvas = session_.canvas();
       if (!frustumShader_ || !_canvas) return;
-      
-        frustumShader_->bind();
-        for (auto& _tuning : session_.tunings())
-        {
-          auto& _proj = _tuning->projector();
-          auto _invMatrix = _canvas->matrix().inverted();
-          auto _m = _invMatrix * _proj.matrix();
-          auto _rot = _invMatrix;
-          _rot.setColumn(3,QVector4D(0,0,0,1));
- 
-          auto _c = _tuning->color();
-          frustumShader_->setUniformValue("color",_c.redF(),_c.greenF(),_c.blueF());
+      frustumShader_->bind();
+      auto _invMatrix = _canvas->matrix().inverted();
+      auto _m = _invMatrix * _proj.matrix();
+      auto _rot = _invMatrix;
+      _rot.setColumn(3,QVector4D(0,0,0,1));
 
-          /// Construct frustum 
-          qreal _a = _proj.fov().radians() *0.5;
-          qreal _height = tan(_a);
-          qreal _width = _height * _proj.aspectRatio();
-          QVector3D _eye = _m.column(3).toVector3D();
-          QVector3D _topLeft = _m * QVector3D(1.0,-_width,_height) - _eye;
-          QVector3D _topRight = _m * QVector3D(1.0,_width,_height) - _eye;
-          QVector3D _bottomLeft = _m * QVector3D(1.0,-_width,-_height) - _eye;
-          QVector3D _bottomRight = _m * QVector3D(1.0,_width,-_height) - _eye;
-          QVector3D _lookAt = _m * QVector3D(1.0,0.0,0.0) - _eye;
+      frustumShader_->setUniformValue("color",_color.redF(),_color.greenF(),_color.blueF());
 
-          // Setup frustum uniforms for intersection test
-          frustumShader_->setUniformValue("eye",_eye); 
-          frustumShader_->setUniformValue("look_at",_lookAt);
-          frustumShader_->setUniformValue("top_left",_topLeft);
-          frustumShader_->setUniformValue("top_right",_topRight);
-          frustumShader_->setUniformValue("bottom_left",_bottomLeft);
-          frustumShader_->setUniformValue("bottom_right",_bottomRight);
-          frustumShader_->setUniformValue("matrix",_rot);
+      /// Construct frustum
+      qreal _a = _proj.fov().radians() *0.5;
+      qreal _height = tan(_a);
+      qreal _width = _height * _proj.aspectRatio();
+      QVector3D _eye = _m.column(3).toVector3D();
+      QVector3D _topLeft = _m * QVector3D(1.0,-_width,_height) - _eye;
+      QVector3D _topRight = _m * QVector3D(1.0,_width,_height) - _eye;
+      QVector3D _bottomLeft = _m * QVector3D(1.0,-_width,-_height) - _eye;
+      QVector3D _bottomRight = _m * QVector3D(1.0,_width,-_height) - _eye;
+      QVector3D _lookAt = _m * QVector3D(1.0,0.0,0.0) - _eye;
 
-          glDisable(GL_DEPTH_TEST);
-          _canvas->draw(); 
-          glEnable(GL_DEPTH_TEST);
-        }
+      // Setup frustum uniforms for intersection test
+      frustumShader_->setUniformValue("eye",_eye);
+      frustumShader_->setUniformValue("look_at",_lookAt);
+      frustumShader_->setUniformValue("top_left",_topLeft);
+      frustumShader_->setUniformValue("top_right",_topRight);
+      frustumShader_->setUniformValue("bottom_left",_bottomLeft);
+      frustumShader_->setUniformValue("bottom_right",_bottomRight);
+      frustumShader_->setUniformValue("matrix",_rot);
 
-        frustumShader_->release();
+      glDisable(GL_DEPTH_TEST);
+      _canvas->draw();
+      glEnable(GL_DEPTH_TEST);
+
+      frustumShader_->release();
     }
-      
+
     bool Session::needsUpdate() const
     {
       return session_.tunings().size() != projectors_.size();
@@ -130,11 +133,11 @@ namespace omni
       }
       glEnable(GL_DEPTH_TEST);
     }
-      
+
     void Session::drawProjectorHalos() const
     {
       if (needsUpdate()) return;
-      
+
       for (auto& _proj : projectors_)
       {
         _proj.drawHalo();
@@ -169,7 +172,7 @@ namespace omni
         using omni::util::fileToStr;
         static QString _vertSrc = fileToStr(":/shaders/frustum.vert");
         static QString _fragmentSrc = fileToStr(":/shaders/frustum.frag");
-        
+
         frustumShader_.reset(new QOpenGLShaderProgram());
         frustumShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
         frustumShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);

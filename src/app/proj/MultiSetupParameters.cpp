@@ -1,5 +1,6 @@
 #include <omni/ui/proj/MultiSetupParameters.h>
 
+#include <QVBoxLayout>
 #include <omni/proj/RingArray.h>
 
 namespace omni
@@ -11,36 +12,44 @@ namespace omni
       MultiSetupParameters::MultiSetupParameters(QWidget* _parent) : 
         ParameterWidget(_parent)
       {
+        setLayout(new QVBoxLayout);
       }
 
       MultiSetupParameters::~MultiSetupParameters() 
       {
       }
 
-      omni::proj::MultiSetup* MultiSetupParameters::getMultiSetup() 
+      omni::proj::MultiSetup* MultiSetupParameters::multiSetup() 
       {
-        return template_;
+        return multiSetup_;
       }
       
-      omni::proj::MultiSetup const* MultiSetupParameters::getMultiSetup() const 
+      omni::proj::MultiSetup const* MultiSetupParameters::multiSetup() const 
       {
-        return template_;
+        return multiSetup_;
       }
     
       void MultiSetupParameters::setMultiSetup(omni::proj::MultiSetup* _template)
       {
-        template_ = _template;
+        multiSetup_ = _template;
         setup();
       }
 
       void MultiSetupParameters::updateParameters()
       {
-        if (!template_ || isLocked()) return;
+        if (!multiSetup_ || isLocked()) return;
 
           
-        if (template_->getTypeId() == "RingArray")
+        if (multiSetup_->getTypeId() == "RingArray")
         {
+          auto* _ringArray = static_cast<omni::proj::RingArray*>(multiSetup_);
 
+          _ringArray->setNumberOfProjectors(getParamAsInt("Projectors"));
+          _ringArray->setDistanceCenter(getParamAsFloat("Distance To Center"));
+          _ringArray->setTowerHeight(getParamAsFloat("Tower Height"));
+          _ringArray->setPitch(getParamAsFloat("Pitch"));
+          _ringArray->setYaw(getParamAsFloat("Yaw"));
+          _ringArray->setFov(getParamAsFloat("FOV"));
         }
       
         emit parametersUpdated();
@@ -49,13 +58,13 @@ namespace omni
       void MultiSetupParameters::setup()
       {
         clear();
-        if (!template_) return;
+        if (!multiSetup_) return;
 
         this->locked([&]() 
         {
-          if (template_->getTypeId() == "RingArray")
+          if (multiSetup_->getTypeId() == "RingArray")
           { 
-            auto* _ringArray = static_cast<omni::proj::RingArray*>(template_);
+            auto* _ringArray = static_cast<omni::proj::RingArray*>(multiSetup_);
 
             addIntegerWidget("Projectors",_ringArray->numberOfProjectors(),2,10);
             addOffsetWidget("Distance To Center",_ringArray->distanceCenter(),0.1,10.0);

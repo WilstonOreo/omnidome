@@ -17,8 +17,8 @@ namespace omni
         MultiSetupParameters(QWidget* _parent);
         ~MultiSetupParameters();
 
-        omni::proj::MultiSetup* getMultiSetup();
-        omni::proj::MultiSetup const* getMultiSetup() const;
+        omni::proj::MultiSetup* multiSetup();
+        omni::proj::MultiSetup const* multiSetup() const;
         void setMultiSetup(omni::proj::MultiSetup* _template);
         
         /// Set parameters from sliders to template
@@ -28,7 +28,7 @@ namespace omni
         /// Clear and setup all parameter widgets
         void setup();
 
-        omni::proj::MultiSetup* template_ = nullptr;
+        omni::proj::MultiSetup* multiSetup_ = nullptr;
       };
     }
   }

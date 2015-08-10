@@ -64,6 +64,9 @@ namespace omni
 
       void updateWithChildViews(bool _updateContext = true);
 
+      void updateWithChildViews(QRect const&);
+
+
     protected:
       void paintGL();
       void mouseMoveEvent(QMouseEvent *event);
