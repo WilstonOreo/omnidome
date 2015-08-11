@@ -88,6 +88,7 @@ MainWindow::MainWindow( QMainWindow *parent) :
     // Connect canvas parameter change with view update
     connect(ui_->grpCanvas,SIGNAL(canvasChanged()),this,SLOT(modified()));
     connect(ui_->grpCanvas,SIGNAL(canvasTypeChanged()),this,SLOT(modified()));
+    connect(ui_->grpCanvas,SIGNAL(displayInputToggled(bool)),projectionSetup_.get(),SLOT(setDisplayInput(bool)));
 
     // Update all views when input has changed
     connect(ui_->grpInputs,SIGNAL(inputChanged()),this,SLOT(modified()));

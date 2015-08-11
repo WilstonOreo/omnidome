@@ -28,6 +28,7 @@ namespace omni
     signals:
       void canvasTypeChanged();
       void canvasChanged();
+      void displayInputToggled(bool);
 
     public slots:
       void canvasTypeSelected(QString const&);

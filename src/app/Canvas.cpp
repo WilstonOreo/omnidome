@@ -38,6 +38,9 @@ namespace omni
 
       // Update parameter when canvas has changed
       connect(ui_->widget,SIGNAL(parametersUpdated()),this,SIGNAL(canvasChanged()));
+      
+      // Forward display input checkbox toggle to canvas widget
+      connect(ui_->chkDisplayInput,SIGNAL(clicked(bool)),this,SIGNAL(displayInputToggled(bool)));
     }
 
     Canvas::~Canvas()

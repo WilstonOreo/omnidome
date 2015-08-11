@@ -66,13 +66,10 @@ namespace omni
       visual::viewport(this);
 
       setupCamera();
-  
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
-
-  
       updateLight();
-      this->session_->drawCanvas();
+      this->session_->drawCanvas(Mapping::MAPPED_INPUT,displayInput_);
       this->session_->drawProjectors();
       this->session_->drawCanvasWithFrustumIntersections();
       this->session_->drawProjectorHalos();
@@ -116,6 +113,17 @@ namespace omni
       }
 
       this->mousePosition_ = event->pos();
+    }
+      
+    bool GLView3D::displayInput() const
+    {
+      return displayInput_;
+    }
+
+    void GLView3D::setDisplayInput(bool _displayInput)
+    {
+      displayInput_ = _displayInput;
+      update();
     }
 
     void GLView3D::changeZoom(int _value)

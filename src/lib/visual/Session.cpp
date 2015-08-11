@@ -27,7 +27,7 @@ namespace omni
       return session_;
     }
 
-    void Session::drawCanvas(Mapping::OutputMode _mode) const
+    void Session::drawCanvas(Mapping::OutputMode _mode, bool _displayInput) const
     {
       auto _canvas = session_.canvas();
 
@@ -38,7 +38,7 @@ namespace omni
         auto* _input = session_.inputs().current();
         auto* _mapping = session_.mapping();
 
-        if (session_.hasOutput())
+        if (session_.hasOutput() && _displayInput)
         {
           GLuint _texId = _input ? _input->textureId() : 0;
           _.glEnable(GL_TEXTURE_2D);

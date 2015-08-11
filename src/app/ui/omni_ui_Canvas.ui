@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>399</width>
+    <height>382</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,19 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QComboBox" name="boxCanvasSelect"/>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkDisplayInput">
+     <property name="toolTip">
+      <string>Show input on 3D preview</string>
+     </property>
+     <property name="text">
+      <string>Display input</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="omni::ui::CanvasParameters" name="widget" native="true"/>
@@ -50,6 +63,7 @@
   </connection>
  </connections>
  <slots>
+  <signal>displayInputToggled(bool)</signal>
   <slot>canvasTypeSelected(QString)</slot>
  </slots>
 </ui>

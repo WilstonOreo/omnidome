@@ -18,9 +18,12 @@ namespace omni
     public:
       GLView3D(QWidget* _parent = nullptr);
       ~GLView3D();
-      
+       
+      bool displayInput() const;
+
     public slots:
-      void changeZoom(int _value);
+      void setDisplayInput(bool);
+      void changeZoom(int _value); 
 
     protected:
       virtual void paintGL();
@@ -35,9 +38,9 @@ namespace omni
     private:
       bool initialize();
 
-
       visual::Camera camera_;
       std::array<visual::Light,3> lights_;
+      bool displayInput_ = true;
     };
   }
 }
