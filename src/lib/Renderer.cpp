@@ -163,6 +163,31 @@ namespace omni
       getUpper8bit(_buffer,_upper8bit);
       QImage _lower8bit(_w,_h,QImage::Format_ARGB32);
       getLower8bit(_buffer,_lower8bit);
+     
+      double _diff = 0.0;
+      for (int y = 0; y < _h; ++y)
+        for (int x = 0; x < _w; ++x)
+        {
+          auto _pixel = _buffer(x,y);
+          auto _upper = QColor(_upper8bit.pixel(x,y));
+          auto _lower = QColor(_lower8bit.pixel(x,y));
+         // qDebug() << "(" << _pixel.r << "," << _pixel.g << "," << _pixel.b << "), " 
+          //  << _upper << " " << _lower;
+
+          auto combine = [&](float org, float lower, float upper)
+          {
+            float _combined = upper + lower / 256.0;
+            _diff += (org - _combined);
+           // qDebug() << org << " == " << _combined << ", diff: " << (org - _combined); 
+          };
+
+          combine(_pixel.r,_lower.redF(),_upper.redF());
+          combine(_pixel.g,_lower.greenF(),_upper.greenF());
+          combine(_pixel.b,_lower.blueF(),_upper.blueF());
+        }
+      qDebug() << _diff / float(_h * _w * 3);
+
+      
       QImage _blendMask(_w,_h,QImage::Format_ARGB32);
       getAlphaMask(_buffer,_blendMask);
 
@@ -256,7 +281,6 @@ namespace omni
   }
 
 
-
   template<typename OPERATION>
   void Renderer::bufferToImage(RenderBuffer const& _buffer, QImage& _image, OPERATION _f)
   {
@@ -270,9 +294,9 @@ namespace omni
       for (int x = 0; x < _image.width()*4; x += 4)
       {
         RGBAFloat _pixel = _f(_buffer.data()[_pos+x/4]);
-        _line[x  ] = qBound(0,int(_pixel.r * 255),255);
+        _line[x+2] = qBound(0,int(_pixel.r * 255),255);
         _line[x+1] = qBound(0,int(_pixel.g * 255),255);
-        _line[x+2] = qBound(0,int(_pixel.b * 255),255);
+        _line[x+0] = qBound(0,int(_pixel.b * 255),255);
         _line[x+3] = qBound(0,int(_pixel.a * 255),255);
       }
       _pos += _image.width();
@@ -281,21 +305,59 @@ namespace omni
 
   void Renderer::getUpper8bit(RenderBuffer const& _buffer, QImage& _image)
   {
-    bufferToImage(_buffer,_image,[&](RGBAFloat const& _pixel)
+    _image = QImage(_buffer.width(),_buffer.height(),QImage::Format_ARGB32);
+
+    int _pos = 0;
+
+        auto convUpper = [](float _v)
+        {
+          int i = _v*(1 << 8);
+          if (i < 0) return 0;
+          if (i > 255) return 255;
+          return i;
+        };
+
+    for (int y = 0; y < _image.height(); ++y)
     {
-      return RGBAFloat(_pixel.r,_pixel.g,_pixel.b,1.0);
-    });
+      uchar* _line = _image.scanLine(y);
+      for (int x = 0; x < _image.width()*4; x += 4)
+      {
+        RGBAFloat _pixel = _buffer.data()[_pos+x/4];
+        _line[x+2] = qBound(0,convUpper(_pixel.r),255);
+        _line[x+1] = qBound(0,convUpper(_pixel.g),255);
+        _line[x+0] = qBound(0,convUpper(_pixel.b),255);
+        _line[x+3] = 255; 
+      }
+      _pos += _image.width();
+    }
   }
 
   void Renderer::getLower8bit(RenderBuffer const& _buffer, QImage& _image)
   {
-    bufferToImage(_buffer,_image,[&](RGBAFloat const& _pixel)
+    _image = QImage(_buffer.width(),_buffer.height(),QImage::Format_ARGB32);
+
+    int _pos = 0;
+
+    for (int y = 0; y < _image.height(); ++y)
     {
-      return RGBAFloat(
-               (int(_pixel.r * 65536.0) & 255) / 255.0,
-               (int(_pixel.g * 65536.0) & 255) / 255.0,
-               (int(_pixel.b * 65536.0) & 255) / 255.0);
-    });
+      uchar* _line = _image.scanLine(y);
+      for (int x = 0; x < _image.width()*4; x += 4)
+      {
+        RGBAFloat _pixel = _buffer.data()[_pos+x/4];
+
+        auto convLower = [](float _v)
+        {
+          int i = _v*(1 << 16);
+          return i & 255;
+        };
+
+        _line[x+2] = qBound(0,convLower(_pixel.r),255);
+        _line[x+1] = qBound(0,convLower(_pixel.g),255);
+        _line[x+0] = qBound(0,convLower(_pixel.b),255);
+        _line[x+3] = 255;//;qBound(0,,255);
+      }
+      _pos += _image.width();
+    }
   }
 
   void Renderer::getAlphaMask(RenderBuffer const& _buffer, QImage& _image)

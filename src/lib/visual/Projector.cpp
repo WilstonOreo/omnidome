@@ -89,13 +89,26 @@ namespace omni
       {
         _.glLineWidth(selected_ ? 4.0 : 1.5);
       });
+
       auto _p = proj_.pos();
-      this->visualLine(_center,QVector3D(_p.x(),_center.y(),_center.z()));
-      this->visualLine(
-          QVector3D(_p.x(),_center.y(),_center.z()),
-          QVector3D(_p.x(),_p.y(),_center.z()));
-      this->visualLine(
-          QVector3D(_p.x(),_p.y(),_center.z()),_p);
+      auto _setupId = proj_.setup() ? proj_.setup()->getTypeId().str() : "PeripheralSetup";
+
+      if (_setupId == "PeripheralSetup")
+      {
+        // Draw line from center to projector ground position
+        this->visualLine(_center,QVector3D(_p.x(),_p.y(),_center.z()));
+        this->visualLine(
+            QVector3D(_p.x(),_p.y(),_center.z()),_p);
+      } else
+      {
+        // Draw manhattan line from center to projector ground position
+        this->visualLine(_center,QVector3D(_p.x(),_center.y(),_center.z()));
+        this->visualLine(
+            QVector3D(_p.x(),_center.y(),_center.z()),
+            QVector3D(_p.x(),_p.y(),_center.z()));
+        this->visualLine(
+            QVector3D(_p.x(),_p.y(),_center.z()),_p);
+      }
     }
 
     void Projector::drawHalo() const

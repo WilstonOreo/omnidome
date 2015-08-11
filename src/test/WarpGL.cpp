@@ -31,8 +31,9 @@ int main(int ac, char* av[])
   _tuning->blendMask().setRect(QRectF(0.2,0.2,0.6,0.6));
 
   _projSetup->setYaw(0);
-  _projSetup->setPitch(30);
-  _projSetup->setDistanceCenter(4.0);
+  _projSetup->setPitch(-90.0);
+  _projSetup->setDistanceCenter(0.0);
+  _projSetup->setTowerHeight(8.0);
   _tuning->projector().setup();
 
   auto* _canvas = _session.setCanvas("HalfDome");
@@ -53,6 +54,7 @@ int main(int ac, char* av[])
   _view.setTuningIndex(0);
 
   RenderOptions _options;
+  _options.setMappingOutputMode(Mapping::UVW);
   Renderer _renderer(_session,_options);
 
   QImage _image;

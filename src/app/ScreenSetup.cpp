@@ -136,7 +136,17 @@ namespace omni
     void ScreenSetup::paintEvent(QPaintEvent*)
     {
       QPainter _p(this);
-      
+      _p.setPen(QPen(QColor("#ffffff").darker(150),3));
+
+      if (screenItems_.empty())
+      {
+        QFont _font("Helvetica",30 / devicePixelRatio());
+        _p.setFont(_font);
+        _p.setBrush(QBrush("#cccccc"));
+        _p.drawText(rect(),Qt::AlignCenter,"No screen connected.");
+        return;
+      }
+  
       _p.setPen(QPen(QColor("#ffffff").darker(150),3));
       _p.drawRect(transformedRect());
 
