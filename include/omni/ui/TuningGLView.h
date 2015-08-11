@@ -95,6 +95,9 @@ namespace omni
       /// Draw screen border (only if widget is not in view only mode)
       void drawScreenBorder();
 
+      /// Draw export view
+      void drawExportView();
+
       /// Update warp buffer which contains image of projector perspective
       void updateWarpBuffer();
 

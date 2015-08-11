@@ -106,6 +106,8 @@ namespace omni
         auto _result = proj::MultiSetupDialog::open(_multiSetup.get(),session_);
         auto&& _projectors = _multiSetup->projectors();
 
+        int _numTunings = session_->tunings().size();
+
         switch (_result)
         {
         case MultiSetupDialog::Result::REPLACE:
@@ -118,6 +120,7 @@ namespace omni
             _tuning->setColor(getTuningColor());
             _tuning->projector() = std::move(_projector);
             addTuning(_tuning);
+            setTuningIndex(_numTunings);
           }
 
         case MultiSetupDialog::Result::CANCELLED:
