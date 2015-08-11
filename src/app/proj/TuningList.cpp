@@ -1,6 +1,8 @@
 #include <omni/ui/proj/TuningList.h>
 
 #include <omni/Session.h>
+#include <omni/proj/MultiSetup.h>
+#include <omni/ui/proj/MultiSetupDialog.h>
 
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -92,6 +94,37 @@ namespace omni
 
         // Select this tuning index
         setTuningIndex(session_->tunings().size()-1);
+      }
+        
+      /// Opens multi setup dialog and appends/replaces new projections when dialogs was accepted
+      void TuningList::addMultiSetup(QString const& _multiSetupId)
+      {
+        std::unique_ptr<omni::proj::MultiSetup> _multiSetup ;
+        _multiSetup.reset(omni::proj::MultiSetupFactory::create(_multiSetupId));
+        if (!_multiSetup) return;
+
+        auto _result = proj::MultiSetupDialog::open(_multiSetup.get(),session_);
+        auto&& _projectors = _multiSetup->projectors();
+
+        switch (_result)
+        {
+        case MultiSetupDialog::Result::REPLACE:
+          this->clear();
+        case MultiSetupDialog::Result::APPEND:
+          for (auto& _projector : _projectors)
+          {
+            auto* _tuning = session_->tunings().add();
+            if (!_tuning) return;
+            _tuning->setColor(getTuningColor());
+            _tuning->projector() = std::move(_projector);
+            addTuning(_tuning);
+          }
+
+        case MultiSetupDialog::Result::CANCELLED:
+        default:
+          return;
+        };
+         
       }
 
       void TuningList::addTuning(omni::proj::Tuning* _tuning)

@@ -19,22 +19,28 @@ namespace omni
       {
         Q_OBJECT
       public:
-        MultiSetupDialog(QString const& _templateName, Session* _session);
+        enum class Result
+        {
+          CANCELLED,
+          APPEND,
+          REPLACE
+        };
+
+        MultiSetupDialog(omni::proj::MultiSetup* _multiSetup, Session* _session);
         ~MultiSetupDialog();
+
+        static Result open(omni::proj::MultiSetup* _multiSetup, Session* _session);
 
       public slots:
         void replace();
         void append();
-
-      signals:
-
-        void appendClicked();
-        void replaceClicked();
+        void cancel();
 
       private:
         Session* session_ = nullptr;
-        std::unique_ptr<omni::proj::MultiSetup> template_;
+        omni::proj::MultiSetup* multiSetup_ = nullptr;
         std::unique_ptr<Ui::MultiSetupDialog> ui_;
+        Result result_ = Result::CANCELLED;
       };
     }
   }

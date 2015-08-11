@@ -8,38 +8,58 @@ namespace omni
   {
     namespace proj
     {
-      MultiSetupDialog::MultiSetupDialog(QString const& _templateName, Session* _session) :
+      MultiSetupDialog::MultiSetupDialog(omni::proj::MultiSetup* _multiSetup, Session* _session) :
         QDialog(nullptr),
         session_(_session),
+        multiSetup_(_multiSetup),
         ui_(new Ui::MultiSetupDialog)
       {
         ui_->setupUi(this);
-        template_.reset(omni::proj::MultiSetupFactory::create(_templateName));
-      
+        
+        ui_->btnReplace->setVisible(!session_->tunings().empty());
+
+
+        this->setWindowTitle("Multi Projector Setup");
         ui_->preview->setSession(_session);
-        ui_->preview->setMultiSetup(template_.get());
-        ui_->parameters->setMultiSetup(template_.get());
+        ui_->preview->setMultiSetup(multiSetup_);
+        ui_->parameters->setMultiSetup(multiSetup_);
+
+        ui_->groupSetup->setTitle(multiSetup_->getTypeId().str());
 
         connect(ui_->parameters,SIGNAL(parametersUpdated()),ui_->preview,SLOT(updateProjectors()));
+
+        connect(ui_->btnCancel,SIGNAL(clicked()),this,SLOT(cancel()));
+        connect(ui_->btnAppend,SIGNAL(clicked()),this,SLOT(append()));
+        connect(ui_->btnReplace,SIGNAL(clicked()),this,SLOT(replace())); 
       }
 
       MultiSetupDialog::~MultiSetupDialog()
       {
       }
+        
+      MultiSetupDialog::Result MultiSetupDialog::open(omni::proj::MultiSetup* _multiSetup, Session* _session)
+      {
+        MultiSetupDialog _dialog(_multiSetup,_session);
+        _dialog.exec();
+        return _dialog.result_;
+      }
 
       void MultiSetupDialog::replace()
       {
-        if (!template_) return;
-
-        session_->tunings().clear();
-        
-        close();
-        emit replaceClicked();
+        result_ = multiSetup_ ? Result::REPLACE : Result::CANCELLED;
+        accept();
       }
 
       void MultiSetupDialog::append()
       {
-        if (!template_) return;
+        result_ = multiSetup_ ? Result::APPEND : Result::CANCELLED;
+        accept();
+      }
+
+      void MultiSetupDialog::cancel() 
+      {
+        result_ = Result::CANCELLED;
+        reject();
       }
     }
   }

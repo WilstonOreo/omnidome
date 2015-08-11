@@ -45,6 +45,9 @@ namespace omni
         /// Add tuning with specific projector setup
         void addTuning(QString const& _projSetupId);
 
+        /// Opens multi setup dialog and appends/replaces new projections when dialogs was accepted
+        void addMultiSetup(QString const& _multiSetupId);
+
         /// Remove tuning 
         void removeTuning(int _index);
         
@@ -54,7 +57,7 @@ namespace omni
         /// Set current tuning index manually (currentIndexChanged signal is emitted)
         void setTuningIndex(int); 
 
-        /// Remove all mappings from session and all associated widgets
+        /// Remove all tunings from session and all associated widgets
         void clear();
 
         /// Updates/Repaints GL Views of all tunings widgets

@@ -367,8 +367,7 @@ void MainWindow::addProjector(QAction* _action)
   {
     if (_idMultiSetup.first.str() == _id)
     {
-      proj::MultiSetupDialog _dialog(_id,session_.get());
-      _dialog.exec();
+      ui_->tuningList->addMultiSetup(_id);  
       return;
     }
   }
