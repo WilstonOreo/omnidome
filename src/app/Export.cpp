@@ -25,6 +25,7 @@ namespace omni
       ui_(new Ui::Export)
     {
       ui_->setupUi(this);
+      connect(ui_->btnExport,SIGNAL(clicked()),this,SLOT(exportToFile()));
       setSession(_session);
     }
 
@@ -58,6 +59,32 @@ namespace omni
     {
       RenderOptions _renderOptions;
 
+      if (ui_->rbSepNone->isChecked())
+      {
+        _renderOptions.setSeparationMode(SeparationMode::NONE);
+      } else
+      if (ui_->rbSepScreens->isChecked())
+      {
+        _renderOptions.setSeparationMode(SeparationMode::SCREENS);
+      } else
+      if (ui_->rbSepProj->isChecked())
+      {
+        _renderOptions.
+ setSeparationMode(SeparationMode::PROJECTORS);
+      }
+
+      if (ui_->rbUVWMap->isChecked())
+      {
+        _renderOptions.setMappingOutputMode(Mapping::OutputMode::UVW);
+      } else
+      if (ui_->rbTextureCoordinates->isChecked())
+      {
+        _renderOptions.setMappingOutputMode(Mapping::OutputMode::TEXCOORDS);
+      } else
+      if (ui_->rbMappedInput->isChecked())
+      {
+        _renderOptions.setMappingOutputMode(Mapping::OutputMode::MAPPED_INPUT);
+      }
       return _renderOptions;
     }
   }

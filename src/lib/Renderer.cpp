@@ -2,9 +2,11 @@
 
 #include <QPainter>
 
+#include <omni/util.h>
 #include <omni/visual/util.h>
 #include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
+#include <omni/proj/ScreenSetup.h>
 
 namespace omni
 {
@@ -29,29 +31,121 @@ namespace omni
   {
     options_ = _options;
   }
-    
+
+  std::map<QScreen const*,QImage> Renderer::stitchScreens(std::vector<const proj::Tuning*> const& _tunings) const
+  {
+    // Get all tunings for each screen
+    std::map<QScreen const*,std::vector<proj::Tuning const*>> _screenToTunings;
+    for (auto& _tuning : _tunings)
+    {
+      auto* _screen = _tuning->screen();
+      if (_screenToTunings.count(_screen) == 0)
+      {
+        _screenToTunings[_screen] = std::vector<proj::Tuning const*>({_tuning});
+      }
+      else
+      {
+        _screenToTunings[_screen].push_back(_tuning);
+      }
+    }
+
+    /// Render screen images from tunings
+    std::map<QScreen const*,QImage> _result;
+    for (auto& _screenTunings : _screenToTunings)
+    {
+      auto* _screen = _screenTunings.first;
+      auto& _tunings = _screenTunings.second;
+
+      auto _screenRect = _screen->geometry();
+      QImage _image(_screenRect.width(),_screenRect.height(),QImage::Format_RGB32); // Overall screen image
+      
+      QPainter _p(&_image);
+      for (auto& _tuning : _tunings)
+      {
+        auto _rect = proj::ScreenSetup::subScreenRect(_screen,_tuning->subScreenIndex());
+        QImage _tuningImage;
+        render(_tuning,_tuningImage);
+        _p.drawImage(_rect.x(),0,_tuningImage);
+      }
+      _p.end();
+      _result[_screen] = _image;
+    }
+    return _result;
+  }
+
   void Renderer::renderToFile(QString const& _filename)
   {
-    std::vector<QImage> _tuningImages;
+    std::vector<proj::Tuning const*> _tunings;
+
+    QString _rawName = util::removeFileExt(_filename);
+
+    qDebug() << session_.tunings().size();
+
+    // Get all tunings
     for (auto& _tuning : session_.tunings())
     {
-      QImage _image;
-      render(_tuning.get(),_image);
-      _tuningImages.push_back(_image);
+      qDebug() << _rawName << " " << _tuning.get();
+      if (_tuning->screen() != proj::ScreenSetup::standardScreen() &&
+          options_.excludeUnassignedProjectors())
+        continue;
+      _tunings.push_back(_tuning.get());
     }
 
     switch(options_.separationMode())
     {
-      case SeparationMode::NONE:
-      break;
-      case SeparationMode::SCREENS:
-      break;
-      case SeparationMode::PROJECTORS:
-      break;
+      /// Merge all together
+    case SeparationMode::NONE:
+    {
+      auto _desktopRect = proj::ScreenSetup::desktopRect();
+      auto&& _screens = stitchScreens(_tunings);
+      QImage _stitchedImage(_desktopRect.width(),_desktopRect.height(),QImage::Format_RGB32);
+
+      QPainter _p(&_stitchedImage);
+      for (auto& _screenImage : _screens) 
+      {
+        auto* _screen = _screenImage.first;
+        auto& _image = _screenImage.second;
+        _p.drawImage(_screen->geometry().topLeft(),_image);
+      }
+      _stitchedImage.save(_filename);
+    }
+    break;
+
+      /// A file for each screen
+    case SeparationMode::SCREENS:
+    {
+      auto&& _screens = stitchScreens(_tunings);
+    
+      for (auto& _screenImage : _screens)
+      {
+        auto* _screen = _screenImage.first;
+        auto& _image = _screenImage.second;  
+        auto&& _screenRect = _screen->geometry();
+        QString _screenDesc(QString("_%1_%2_%3x%4.png").
+            arg(_screenRect.left()).
+            arg(_screenRect.top()).
+            arg(_screenRect.width()).
+            arg(_screenRect.height()));
+        _image.save(_rawName + _screenDesc); 
+      }
+    }
+    break;
+    case SeparationMode::PROJECTORS:
+    {
+      int _tuningIndex = 0;
+      
+      for (auto& _tuning : _tunings)
+      {
+        QImage _image;
+        render(_tuning,_image);
+        _image.save(_rawName + QString("_%1.png").arg(_tuningIndex+1));
+      }
+    }
+    break;
     };
   }
 
-  void Renderer::render(proj::Tuning const* _tuning, RenderBuffer& _buffer)
+  void Renderer::render(proj::Tuning const* _tuning, RenderBuffer& _buffer) const
   {
     int _w = _tuning->width();
     int _h = _tuning->height();
@@ -70,14 +164,14 @@ namespace omni
     // Model view operation
     [&](QOpenGLFunctions& _)
     {
-      // Draw canvas with 
+      // Draw canvas with
       _sessionViz.update();
       _sessionViz.drawCanvas(options_.mappingOutputMode());
     }
-    );
- 
+                  );
+
     GLuint _projTex = 0;
-    
+
     // 2nd step: Update render buffer as floating point texture
     visual::with_current_context([&](QOpenGLFunctions& _)
     {
@@ -87,9 +181,9 @@ namespace omni
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 
-        _projBuffer.width(), _projBuffer.height(), 0, 
-        GL_RGBA, GL_FLOAT, _projBuffer.ptr()); 
+      _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
+                     _projBuffer.width(), _projBuffer.height(), 0,
+                     GL_RGBA, GL_FLOAT, _projBuffer.ptr());
       _.glBindTexture(GL_TEXTURE_2D, 0);
     });
 
@@ -127,7 +221,7 @@ namespace omni
     },
     // Model view operation
     [&](QOpenGLFunctions& _)
-    {    
+    {
       _.glDisable(GL_TEXTURE_2D);
       glColor4f(1.0,1.0,1.0,1.0);
       _tuningViz.drawBlendMask();
@@ -142,14 +236,16 @@ namespace omni
     }
   }
 
-  void Renderer::render(proj::Tuning const* _tuning, QImage& _image)
+  void Renderer::render(proj::Tuning const* _tuning, QImage& _image, int _height) const
   {
     int _w = _tuning->width();
     int _h = _tuning->height();
-    
+
+    int _overallHeight = _height == 0 ? _h : _height;
+
     RenderBuffer _buffer;
     render(_tuning,_buffer);
-    _image = QImage(_w,_h*3,QImage::Format_RGB32);
+    _image = QImage(_w,_overallHeight*3,QImage::Format_RGB32);
 
     if (options_.mappingOutputMode() == Mapping::MAPPED_INPUT)
     {
@@ -157,44 +253,20 @@ namespace omni
       {
         return _pixel;
       });
-    } else
+    }
+    else
     {
       QImage _upper8bit(_w,_h,QImage::Format_ARGB32);
       getUpper8bit(_buffer,_upper8bit);
       QImage _lower8bit(_w,_h,QImage::Format_ARGB32);
       getLower8bit(_buffer,_lower8bit);
-     
-      double _diff = 0.0;
-      for (int y = 0; y < _h; ++y)
-        for (int x = 0; x < _w; ++x)
-        {
-          auto _pixel = _buffer(x,y);
-          auto _upper = QColor(_upper8bit.pixel(x,y));
-          auto _lower = QColor(_lower8bit.pixel(x,y));
-         // qDebug() << "(" << _pixel.r << "," << _pixel.g << "," << _pixel.b << "), " 
-          //  << _upper << " " << _lower;
-
-          auto combine = [&](float org, float lower, float upper)
-          {
-            float _combined = upper + lower / 256.0;
-            _diff += (org - _combined);
-           // qDebug() << org << " == " << _combined << ", diff: " << (org - _combined); 
-          };
-
-          combine(_pixel.r,_lower.redF(),_upper.redF());
-          combine(_pixel.g,_lower.greenF(),_upper.greenF());
-          combine(_pixel.b,_lower.blueF(),_upper.blueF());
-        }
-      qDebug() << _diff / float(_h * _w * 3);
-
-      
       QImage _blendMask(_w,_h,QImage::Format_ARGB32);
       getAlphaMask(_buffer,_blendMask);
 
       QPainter _p(&_image);
       _p.drawImage(QPoint(0,0),_upper8bit);
-      _p.drawImage(QPoint(0,_h),_lower8bit);
-      _p.drawImage(QPoint(0,2*_h),_blendMask);
+      _p.drawImage(QPoint(0,_overallHeight),_lower8bit);
+      _p.drawImage(QPoint(0,2*_overallHeight),_blendMask);
       _p.end();
     }
 
@@ -303,19 +375,17 @@ namespace omni
     }
   }
 
-  void Renderer::getUpper8bit(RenderBuffer const& _buffer, QImage& _image)
+  void Renderer::getUpper8bit(RenderBuffer const& _buffer, QImage& _image) const
   {
     _image = QImage(_buffer.width(),_buffer.height(),QImage::Format_ARGB32);
 
     int _pos = 0;
 
-        auto convUpper = [](float _v)
-        {
-          int i = _v*(1 << 8);
-          if (i < 0) return 0;
-          if (i > 255) return 255;
-          return i;
-        };
+    auto convUpper = [](float _v)
+    {
+      int i = _v*(1 << 8);
+      return qBound(0,i,255);
+    };
 
     for (int y = 0; y < _image.height(); ++y)
     {
@@ -323,20 +393,25 @@ namespace omni
       for (int x = 0; x < _image.width()*4; x += 4)
       {
         RGBAFloat _pixel = _buffer.data()[_pos+x/4];
-        _line[x+2] = qBound(0,convUpper(_pixel.r),255);
-        _line[x+1] = qBound(0,convUpper(_pixel.g),255);
-        _line[x+0] = qBound(0,convUpper(_pixel.b),255);
-        _line[x+3] = 255; 
+        _line[x+2] = convUpper(_pixel.r);
+        _line[x+1] = convUpper(_pixel.g);
+        _line[x+0] = convUpper(_pixel.b);
+        _line[x+3] = 255;
       }
       _pos += _image.width();
     }
   }
 
-  void Renderer::getLower8bit(RenderBuffer const& _buffer, QImage& _image)
+  void Renderer::getLower8bit(RenderBuffer const& _buffer, QImage& _image) const
   {
     _image = QImage(_buffer.width(),_buffer.height(),QImage::Format_ARGB32);
 
     int _pos = 0;
+    auto convLower = [](float _v)
+    {
+      int i = _v*(1 << 16);
+      return i & 255;
+    };
 
     for (int y = 0; y < _image.height(); ++y)
     {
@@ -345,22 +420,16 @@ namespace omni
       {
         RGBAFloat _pixel = _buffer.data()[_pos+x/4];
 
-        auto convLower = [](float _v)
-        {
-          int i = _v*(1 << 16);
-          return i & 255;
-        };
-
-        _line[x+2] = qBound(0,convLower(_pixel.r),255);
-        _line[x+1] = qBound(0,convLower(_pixel.g),255);
-        _line[x+0] = qBound(0,convLower(_pixel.b),255);
+        _line[x+2] = convLower(_pixel.r);
+        _line[x+1] = convLower(_pixel.g);
+        _line[x+0] = convLower(_pixel.b);
         _line[x+3] = 255;//;qBound(0,,255);
       }
       _pos += _image.width();
     }
   }
 
-  void Renderer::getAlphaMask(RenderBuffer const& _buffer, QImage& _image)
+  void Renderer::getAlphaMask(RenderBuffer const& _buffer, QImage& _image) const
   {
     bufferToImage(_buffer,_image,[&](RGBAFloat const& _pixel)
     {

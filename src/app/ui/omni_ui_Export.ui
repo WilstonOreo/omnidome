@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1094</width>
-    <height>472</height>
+    <width>1289</width>
+    <height>863</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,12 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QFrame" name="settingsFrame_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
@@ -29,8 +35,26 @@
       <enum>QFrame::Sunken</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_10">
+      <property name="leftMargin">
+       <number>4</number>
+      </property>
+      <property name="topMargin">
+       <number>4</number>
+      </property>
+      <property name="rightMargin">
+       <number>4</number>
+      </property>
+      <property name="bottomMargin">
+       <number>4</number>
+      </property>
       <item>
        <widget class="QLineEdit" name="editExportFilename">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="readOnly">
          <bool>true</bool>
         </property>
@@ -38,6 +62,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnClear">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Clear</string>
         </property>
@@ -45,9 +75,14 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnExport">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton { background-color: red}
-</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>EXPORT</string>
@@ -73,6 +108,39 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QFrame" name="frame">
+        <layout class="QVBoxLayout" name="verticalLayout_10">
+         <item>
+          <widget class="QRadioButton" name="rbSepNone">
+           <property name="text">
+            <string>No Separation (merge all together)</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rbSepScreens">
+           <property name="text">
+            <string>Separate Screens</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rbSepProj">
+           <property name="text">
+            <string>Separate Projectors</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="imageTypeLabel">
         <property name="text">
@@ -84,9 +152,9 @@
        <widget class="QFrame" name="imageTypeFrame">
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
-          <widget class="QRadioButton" name="rbNormalMap">
+          <widget class="QRadioButton" name="rbUVWMap">
            <property name="text">
-            <string>Normal Map</string>
+            <string>UVW Map</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -101,68 +169,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="cbMappingType"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="generateShaderLabel">
-        <property name="text">
-         <string>Generate shader</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QFrame" name="frameShaderGeneration">
-        <layout class="QVBoxLayout" name="verticalLayout_14">
-         <item>
-          <widget class="QCheckBox" name="chkPlainGLSL">
+          <widget class="QRadioButton" name="rbMappedInput">
            <property name="text">
-            <string>Plain GLSL (usable in Quartz)</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="chkISF">
-           <property name="text">
-            <string>ISF shader format (e.g. for VDMX)</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QFrame" name="frame">
-        <layout class="QVBoxLayout" name="verticalLayout_10">
-         <item>
-          <widget class="QRadioButton" name="rbSepScreens">
-           <property name="text">
-            <string>Separate Screens</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="rbSepProj">
-           <property name="text">
-            <string>Separate Projectors</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="rbSepNone">
-           <property name="text">
-            <string>No Separation</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
+            <string>Mapped Input</string>
            </property>
           </widget>
          </item>

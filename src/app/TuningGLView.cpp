@@ -185,6 +185,12 @@ namespace omni
           auto _from = pixelPos(mousePosition_).toPoint();
           auto _to = pixelPos(event->pos()).toPoint();
           leftOverDistance_ = tuning()->blendMask().drawLine(_from,_to,leftOverDistance_); 
+          mousePosition_ = event->pos();
+          cursorPosition_ = screenPos(mousePosition_);
+          for (auto& _childView : childViews_)
+          {
+            _childView->cursorPosition_ = cursorPosition_;
+          }
           updateWithChildViews(QRect(_from,_to));
         }
       }

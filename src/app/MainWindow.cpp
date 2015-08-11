@@ -142,6 +142,7 @@ void MainWindow::setupSession()
 
     blend_->setSession(session_.get());
     warp_->setSession(session_.get());
+    export_->setSession(session_.get());
   }
   locked_ = false;
 

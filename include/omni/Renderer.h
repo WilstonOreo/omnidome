@@ -1,6 +1,8 @@
 #ifndef OMNI_RENDERER_H_
 #define OMNI_RENDERER_H_
 
+#include <map>
+#include <QScreen>
 #include <QImage>
 #include <omni/RenderOptions.h>
 #include <omni/RenderBuffer.h>
@@ -24,15 +26,18 @@ namespace omni
 
     void renderToFile(QString const& _filename);
 
-    void render(proj::Tuning const* _tuning, RenderBuffer& _buffer);
-    void render(proj::Tuning const* _tuning, QImage& _image);
+    void render(proj::Tuning const* _tuning, RenderBuffer& _buffer) const;
+    void render(proj::Tuning const* _tuning, QImage& _image, int _height = 0) const;
 
   private:
-    void getUpper8bit(RenderBuffer const& _buffer, QImage& _image);
-    void getLower8bit(RenderBuffer const& _buffer, QImage& _image);
-    void getAlphaMask(RenderBuffer const& _buffer, QImage& _image);
+    void getUpper8bit(RenderBuffer const& _buffer, QImage& _image) const;
+    void getLower8bit(RenderBuffer const& _buffer, QImage& _image) const;
+    void getAlphaMask(RenderBuffer const& _buffer, QImage& _image) const;
 
     void bufferToRGBImage(RenderBuffer const& _buffer, QImage& _image);
+
+    std::map<QScreen const*,QImage> 
+      stitchScreens(std::vector<const proj::Tuning*> const&) const;
 
     template<typename PROJECTION, typename MODELVIEW>
     static void renderToBuffer(RenderBuffer& _buffer, PROJECTION _proj, MODELVIEW _mv);
