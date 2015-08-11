@@ -25,6 +25,7 @@ FILE(GLOB_RECURSE omni_app_cpp_files
   ${CMAKE_SOURCE_DIR}/src/slim/*.cpp 
   ${CMAKE_SOURCE_DIR}/src/app/*.cpp 
   )
+list(REMOVE_ITEM omni_app_cpp_files "${CMAKE_SOURCE_DIR}/src/app/omnidome.cpp")
 
 FILE(GLOB_RECURSE omni_headers ${CMAKE_SOURCE_DIR}/include/omni/ui/*.h ${CMAKE_SOURCE_DIR}/include/slim/*.h )
 FILE(GLOB_RECURSE omni_forms ${CMAKE_SOURCE_DIR}/src/app/ui/*.ui )
@@ -67,28 +68,28 @@ ADD_EXECUTABLE(test_Projector
   ./src/test/Projector.cpp 
   ${omni_src} )
 
-TARGET_LINK_LIBRARIES(test_Projector ${QT_LIBRARIES} ${omni_extra_libs} omni )
+TARGET_LINK_LIBRARIES(test_Projector ${Qt5_LIBRARIES} ${omni_extra_libs} omni )
 
 
 ADD_EXECUTABLE(test_ScreenSetup
   ./src/test/ScreenSetup.cpp 
   ${omni_src} )
-TARGET_LINK_LIBRARIES(test_ScreenSetup ${QT5_LIBRARIES} ${omni_extra_libs} omni )
+TARGET_LINK_LIBRARIES(test_ScreenSetup ${Qt5_LIBRARIES} ${omni_extra_libs} omni )
 
 ADD_EXECUTABLE(test_GL
   ./src/test/GL.cpp 
   ${omni_src} )
-TARGET_LINK_LIBRARIES(test_GL ${QT5_LIBRARIES} ${omni_extra_libs} omni )
+TARGET_LINK_LIBRARIES(test_GL ${Qt5_LIBRARIES} ${omni_extra_libs} omni )
 
 ADD_EXECUTABLE(test_WarpGL
   ./src/test/WarpGL.cpp 
   ${omni_src} )
-TARGET_LINK_LIBRARIES(test_WarpGL ${QT5_LIBRARIES} ${omni_extra_libs} omni )
+TARGET_LINK_LIBRARIES(test_WarpGL ${Qt5_LIBRARIES}  ${omni_extra_libs} omni  )
 
 ADD_EXECUTABLE(test_Serialization
   ./src/test/Serialization.cpp 
   ${omni_src} )
-TARGET_LINK_LIBRARIES(test_Serialization ${QT5_LIBRARIES} ${omni_extra_libs} slim-widgetz omni )
+TARGET_LINK_LIBRARIES(test_Serialization ${Qt5_LIBRARIES} ${omni_extra_libs}  omni )
 
 
 # Main Application

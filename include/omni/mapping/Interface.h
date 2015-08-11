@@ -31,6 +31,13 @@ namespace omni
         CUBEMAP // Cube mapping 
       };
 
+      enum OutputMode
+      {
+        MAPPED_INPUT, // Draws actual input texture on mapping
+        TEXCOORDS, // Draw texture coordinates of mapping
+        UVW // Draws uvw coordinates of mapping
+      };
+
       Interface();
 
       virtual ~Interface();
@@ -42,7 +49,7 @@ namespace omni
       void initialize();
 
       /// Bind shaders and set uniforms
-      virtual void bind();
+      virtual void bind(OutputMode = MAPPED_INPUT);
 
       /// Release shader
       void release();

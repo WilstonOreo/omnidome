@@ -1,7 +1,8 @@
 #ifndef OMNI_PROJ_SCREENSETUP_H_
 #define OMNI_PROJ_SCREENSETUP_H_
 
-#include "Screen.h"
+#include <vector>
+#include <QScreen>
 
 namespace omni
 {
@@ -11,21 +12,17 @@ namespace omni
     class ScreenSetup
     {
     public:
-      typedef std::vector<Screen> screenlist_type;
-
       ScreenSetup();
 
-      static ScreenSetup& current();
-      static ScreenSetup& debug();
+      static QScreen const* standardScreen();
+      static int subScreenCount(QScreen const*);
+      static QRect subScreenRect(QScreen const*, int _subScreenIndex);
+      static int subScreenWidth(QScreen const*);
 
-      static Screen standardScreen();
-
-      screenlist_type const& screens() const;
+      static QRect desktopRect(bool _excludeStandardScreen = false);
+      static std::vector<QScreen const*> screens(bool _excludeStandardScreen = false);
 
       bool operator==(const ScreenSetup&) const;
-    
-    private:
-      screenlist_type screens_;
     };
   }
 

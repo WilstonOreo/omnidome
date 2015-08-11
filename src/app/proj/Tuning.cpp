@@ -209,9 +209,9 @@ namespace omni
       }
 
 
-      void Tuning::attachScreen(QScreen const* _screen)
+      void Tuning::attachScreen(QScreen const* _screen, int _subScreenIndex)
       {
-        tuning()->setScreen(_screen);
+        tuning()->setScreen(_screen,_subScreenIndex);
       }
 
       void Tuning::detachScreen()

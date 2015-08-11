@@ -1,5 +1,7 @@
 #include <omni/Renderer.h>
 
+#include <QPainter>
+
 #include <omni/visual/util.h>
 #include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
@@ -30,6 +32,23 @@ namespace omni
     
   void Renderer::renderToFile(QString const& _filename)
   {
+    std::vector<QImage> _tuningImages;
+    for (auto& _tuning : session_.tunings())
+    {
+      QImage _image;
+      render(_tuning.get(),_image);
+      _tuningImages.push_back(_image);
+    }
+
+    switch(options_.separationMode())
+    {
+      case SeparationMode::NONE:
+      break;
+      case SeparationMode::SCREENS:
+      break;
+      case SeparationMode::PROJECTORS:
+      break;
+    };
   }
 
   void Renderer::render(proj::Tuning const* _tuning, RenderBuffer& _buffer)
@@ -51,15 +70,15 @@ namespace omni
     // Model view operation
     [&](QOpenGLFunctions& _)
     {
+      // Draw canvas with 
       _sessionViz.update();
-      _sessionViz.drawCanvas();
+      _sessionViz.drawCanvas(options_.mappingOutputMode());
     }
     );
-
-    
+ 
     GLuint _projTex = 0;
     
-    // 2nd step: Update render buffer as texture
+    // 2nd step: Update render buffer as floating point texture
     visual::with_current_context([&](QOpenGLFunctions& _)
     {
       _.glGenTextures(1, &_projTex);
@@ -68,7 +87,7 @@ namespace omni
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 
+      _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 
         _projBuffer.width(), _projBuffer.height(), 0, 
         GL_RGBA, GL_FLOAT, _projBuffer.ptr()); 
       _.glBindTexture(GL_TEXTURE_2D, 0);
@@ -78,7 +97,6 @@ namespace omni
     RenderBuffer _warpBuffer(_w,_h);
 
     visual::Tuning _tuningViz(*const_cast<proj::Tuning*>(_tuning));
-
     _tuningViz.update();
 
     renderToBuffer(_warpBuffer,
@@ -92,9 +110,9 @@ namespace omni
     // Model view operation
     [&](QOpenGLFunctions& _)
     {
-      glBindTexture(GL_TEXTURE_2D, _projTex);
-      _tuningViz.drawWarpGrid();
-      glBindTexture(GL_TEXTURE_2D, 0);
+      _.glBindTexture(GL_TEXTURE_2D, _projTex);
+      _tuningViz.drawWarpPatch();
+      _.glBindTexture(GL_TEXTURE_2D, 0);
     });
 
     // 4th Step: Render blend mask
@@ -126,9 +144,36 @@ namespace omni
 
   void Renderer::render(proj::Tuning const* _tuning, QImage& _image)
   {
+    int _w = _tuning->width();
+    int _h = _tuning->height();
+    
+    RenderBuffer _buffer;
+    render(_tuning,_buffer);
+    _image = QImage(_w,_h*3,QImage::Format_RGB32);
+
+    if (options_.mappingOutputMode() == Mapping::MAPPED_INPUT)
+    {
+      bufferToImage(_buffer,_image,[&](RGBAFloat const& _pixel)
+      {
+        return _pixel;
+      });
+    } else
+    {
+      QImage _upper8bit(_w,_h,QImage::Format_ARGB32);
+      getUpper8bit(_buffer,_upper8bit);
+      QImage _lower8bit(_w,_h,QImage::Format_ARGB32);
+      getLower8bit(_buffer,_lower8bit);
+      QImage _blendMask(_w,_h,QImage::Format_ARGB32);
+      getAlphaMask(_buffer,_blendMask);
+
+      QPainter _p(&_image);
+      _p.drawImage(QPoint(0,0),_upper8bit);
+      _p.drawImage(QPoint(0,_h),_lower8bit);
+      _p.drawImage(QPoint(0,2*_h),_blendMask);
+      _p.end();
+    }
 
   }
-
 
   template<typename PROJECTION, typename MODELVIEW>
   void Renderer::renderToBuffer(RenderBuffer& _buffer, PROJECTION _proj, MODELVIEW _mv)
@@ -148,7 +193,7 @@ namespace omni
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       //NULL means reserve texture memory, but texels are undefined
-      _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _w, _h, 0, GL_RGBA, GL_FLOAT, NULL);
+      _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _w, _h, 0, GL_RGBA, GL_FLOAT, NULL);
 
       //-------------------------
       _.glGenFramebuffers(1, &fb);
@@ -171,6 +216,7 @@ namespace omni
       {
       case GL_FRAMEBUFFER_COMPLETE_EXT:
         qDebug() <<"good";
+        break;
       default:
         qDebug() << "bad";
       }
@@ -214,7 +260,7 @@ namespace omni
   template<typename OPERATION>
   void Renderer::bufferToImage(RenderBuffer const& _buffer, QImage& _image, OPERATION _f)
   {
-    _image = QImage(_buffer.width(),_buffer.height(),QImage::Format_RGB32);
+    _image = QImage(_buffer.width(),_buffer.height(),QImage::Format_ARGB32);
 
     int _pos = 0;
 
@@ -223,7 +269,7 @@ namespace omni
       uchar* _line = _image.scanLine(y);
       for (int x = 0; x < _image.width()*4; x += 4)
       {
-        RGBAFloat _pixel = _f(_buffer.data()[_pos+x]);
+        RGBAFloat _pixel = _f(_buffer.data()[_pos+x/4]);
         _line[x  ] = qBound(0,int(_pixel.r * 255),255);
         _line[x+1] = qBound(0,int(_pixel.g * 255),255);
         _line[x+2] = qBound(0,int(_pixel.b * 255),255);
@@ -237,7 +283,7 @@ namespace omni
   {
     bufferToImage(_buffer,_image,[&](RGBAFloat const& _pixel)
     {
-      return _pixel;
+      return RGBAFloat(_pixel.r,_pixel.g,_pixel.b,1.0);
     });
   }
 
@@ -246,9 +292,9 @@ namespace omni
     bufferToImage(_buffer,_image,[&](RGBAFloat const& _pixel)
     {
       return RGBAFloat(
-               int(_pixel.r * 256) & 255,
-               int(_pixel.g * 256) & 255,
-               int(_pixel.b * 256) & 255);
+               (int(_pixel.r * 65536.0) & 255) / 255.0,
+               (int(_pixel.g * 65536.0) & 255) / 255.0,
+               (int(_pixel.b * 65536.0) & 255) / 255.0);
     });
   }
 

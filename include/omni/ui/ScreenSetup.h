@@ -28,7 +28,6 @@ namespace omni
       Session const* session() const;
       void setSession(Session*);
 
-      static int subScreenCount(QScreen const*);
       float zoom() const;
 
     public slots:

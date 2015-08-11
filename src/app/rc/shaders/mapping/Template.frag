@@ -92,7 +92,8 @@ void main()
   vec3 uvw = get_uvw();
   if (output_mode == 2)
   {
-    gl_FragColor = vec4(uvw.xyz,1.0);
+   // gl_FragColor = vec4(mod(256.0*0.5*(uvw.xyz + vec3(1.0)),1.0),1.0);
+    gl_FragColor = vec4(0.5*(uvw.xyz + vec3(1.0)),1.0);
     return;
   }
 

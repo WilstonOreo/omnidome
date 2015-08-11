@@ -1,6 +1,7 @@
 #include <omni/ui/FullScreen.h>
 
 #include <omni/ui/ScreenSetup.h>
+#include <omni/proj/ScreenSetup.h>
 
 namespace omni
 {
@@ -69,13 +70,12 @@ namespace omni
  
     void FullScreen::setGeometry(QWidget* _widget, int _subIndex) const
     {
-      int _subScreenCount = ScreenSetup::subScreenCount(screen_);
+      int _subScreenCount = omni::proj::ScreenSetup::subScreenCount(screen_);
  
       if (_subIndex <  0) _subIndex = 0;
       if (_subIndex >= _subScreenCount) _subIndex = _subScreenCount - 1;
 
-      int _w = screen_->size().width() / _subScreenCount;
-      _widget->setGeometry(_w*_subIndex,0,_w,screen_->size().height());
+      _widget->setGeometry(omni::proj::ScreenSetup::subScreenRect(screen_,_subIndex));
     }
  
     void FullScreen::showDragWidget(int _subIndex, QColor const& _color)

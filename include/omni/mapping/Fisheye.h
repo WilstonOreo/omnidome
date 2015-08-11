@@ -19,7 +19,7 @@ namespace omni
 
       MappingMode mode() const;
 
-      void bind();
+      void bind(OutputMode = MAPPED_INPUT);
 
       qreal stretch() const;
       void setStretch(qreal _stretch);

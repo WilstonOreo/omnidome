@@ -93,7 +93,7 @@ namespace omni
         void sessionModeChange();
  
         /// Attaches a screen to this tuning
-        void attachScreen(QScreen const* _screen);
+        void attachScreen(QScreen const* _screen, int _subScreenIndex);
 
         /**@brief Detaches screen from this tuning
            @detail Also triggered when QGuiApplication::screenAdded or 

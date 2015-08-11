@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <QWidget>
+#include <omni/RenderOptions.h>
 
 namespace omni
 {
@@ -26,7 +27,12 @@ namespace omni
       Session const* session() const;
       void setSession(Session* _session);
       
+    public slots:
+      void exportToFile();
+
     private:
+      omni::RenderOptions getRenderOptions();
+
       Session* session_ = nullptr;
       std::unique_ptr<Ui::Export> ui_;
     };

@@ -63,9 +63,10 @@ namespace omni
       void sessionModeChange();
 
       void updateWithChildViews(bool _updateContext = true);
-
       void updateWithChildViews(QRect const&);
 
+    private slots:
+      void free();
 
     protected:
       void paintGL();

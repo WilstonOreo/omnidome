@@ -16,7 +16,7 @@ namespace omni
       virtual ~Rotatable();
 
       /// Bind shader and set uniforms yaw_angle, pitch_angle and roll_angle
-      virtual void bind();
+      virtual void bind(OutputMode = MAPPED_INPUT);
 
       /// Return yaw angle (rotates around Z axis)
       Angle yaw() const;

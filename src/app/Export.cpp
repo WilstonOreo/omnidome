@@ -1,6 +1,9 @@
 #include <omni/ui/Export.h>
 
+#include <QFileDialog>
+#include <QMessageBox>
 #include <omni/Session.h>
+#include <omni/util.h>
 
 #include "ui_omni_ui_Export.h"
 
@@ -13,6 +16,8 @@ namespace omni
       ui_(new Ui::Export)
     {
       ui_->setupUi(this);
+      
+      connect(ui_->btnExport,SIGNAL(clicked()),this,SLOT(exportToFile()));
     }
     
     Export::Export(Session* _session, QWidget* _parent) :
@@ -35,6 +40,25 @@ namespace omni
     void Export::setSession(Session* _session)
     {
       session_=_session;
+    }
+
+    void Export::exportToFile()
+    {
+      RenderOptions _options = getRenderOptions();
+
+      QString _filename = QFileDialog::getSaveFileName(this, "Save Calibration Image...", ".", "Calibration Images (*.png)");
+      if( _filename.isEmpty() ) return;
+
+      session_->renderToFile(_filename,_options);
+      ui_->editExportFilename->setText(_filename);
+      QMessageBox::information(this,"Session exported.",QString("Session has been exported to '%1'").arg(_filename));
+    }
+
+    omni::RenderOptions Export::getRenderOptions()
+    {
+      RenderOptions _renderOptions;
+
+      return _renderOptions;
     }
   }
 }

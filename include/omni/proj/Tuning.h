@@ -26,8 +26,9 @@ namespace omni
       Tuning(QColor const&);
 
       /// Set screen for this tuning
-      void setScreen(QScreen const* _screen);
+      void setScreen(QScreen const* _screen, int _subScreenIndex);
       QScreen const* screen() const;
+      int subScreenIndex() const;
 
       Projector& projector();
       Projector const& projector() const;

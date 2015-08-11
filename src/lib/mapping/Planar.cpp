@@ -24,9 +24,9 @@ namespace omni
       return PLANAR;
     }
 
-    void Planar::bind()
+    void Planar::bind(OutputMode _outputMode)
     {
-      Interface::bind();
+      Interface::bind(_outputMode);
       this->shader_->setUniformValue("offset",offset_);
       this->shader_->setUniformValue("stretch",stretch_);
       this->shader_->setUniformValue("tile_horizontal",GLint(tileHorizontal_));

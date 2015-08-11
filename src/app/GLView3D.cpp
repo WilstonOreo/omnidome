@@ -21,10 +21,10 @@ namespace omni
       if (!session() || initialized() || !context()) return false;
 
       using namespace visual;
-      float _radius = session()->canvas() ? session()->canvas()->radius()*2.0 : 5.0;
+      float _radius = session()->canvas() ? session()->canvas()->radius() : 5.0;
 
       camera_ = Camera(
-                  Tracker(QVector3D(0,0,0), PolarVec(-45.0,45.0,_radius * 10.0)));
+                  Tracker(QVector3D(0,0,0), PolarVec(-45.0,45.0,_radius * 5.0)));
 
       lights_[0] = Light(
                      Tracker(QVector3D(0.0,0.0,0.0),

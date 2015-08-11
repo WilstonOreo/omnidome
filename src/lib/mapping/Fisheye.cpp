@@ -20,9 +20,9 @@ namespace omni
       return FISHEYE;
     }
 
-    void Fisheye::bind()
+    void Fisheye::bind(OutputMode _outputMode)
     {
-      Rotatable::bind();
+      Rotatable::bind(_outputMode);
       this->shader_->setUniformValue("stretch",GLfloat(stretch_));
     }
 

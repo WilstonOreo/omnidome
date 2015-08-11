@@ -33,6 +33,9 @@ namespace omni
       QPointF mousePosition() const;
 
       bool initialized() const;
+    
+    private slots:
+      inline virtual void free() {}
 
     protected:
       void initializeGL();
@@ -40,7 +43,7 @@ namespace omni
       virtual void paintGL();
 
       virtual void mousePressEvent(QMouseEvent*);
-      
+
       QPointF mousePosition_;
       std::unique_ptr<visual::Session> session_;
 

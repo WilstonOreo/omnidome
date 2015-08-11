@@ -32,13 +32,19 @@ namespace omni
        **/
       void drawWarpGrid() const;
 
+      /// Draw warp grip without lines and handles
+      void drawWarpPatch() const;
+
       /// Draws Blendmask with warp grid and brush stroke layer 
       void drawBlendMask() const;
+
 
       /// Draw cursor for blend brush
       void drawCursor(QPointF const& _pos);
 
       bool initialized() const;
+
+      void free();
 
     private: 
 

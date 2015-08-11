@@ -49,25 +49,6 @@ namespace omni
       updateScreens();
     }
       
-    int ScreenSetup::subScreenCount(QScreen const* _screen)
-    {
-      auto _rect = _screen->geometry();
-      auto _s = _rect.size();
-      qreal _aspectRatio = _s.width() / qreal(_s.height());
-
-      if (_aspectRatio < 1.5) return 1;
-
-      // Detect triple head
-      size_t _subscreenCount = 3;
-      while (_rect.width() % _subscreenCount == 0)
-      {
-        --_subscreenCount;
-        if (_subscreenCount == 1) break;
-      }
-      if (_subscreenCount <= 0) 
-        _subscreenCount = 1;
-      return _subscreenCount;
-    }
  
     float ScreenSetup::zoom() const
     {
@@ -100,13 +81,13 @@ namespace omni
     void ScreenSetup::updateScreens()
     {
       screenItems_.clear();
+      desktopRect_ = omni::proj::ScreenSetup::desktopRect();
 
-      auto _screens = QGuiApplication::screens();
+      auto _screens = omni::proj::ScreenSetup::screens();
       for (auto& _screen : _screens)
       {
         //if (_screen != QGuiApplication::primaryScreen()) continue; 
         screenItems_[_screen].reset(new Item(*this,_screen));
-        desktopRect_ |= _screen->geometry();
       }
     }
  
@@ -255,7 +236,7 @@ namespace omni
         _screenItem->setHoverIndex(event->pos());
         auto* _tuningWidget = static_cast<proj::Tuning*>(event->source());
         if (!_tuningWidget->tuning()) return;
-        
+   
         _screenItem->attachTuning(_tuningWidget); 
         event->acceptProposedAction();
       }
@@ -284,7 +265,7 @@ namespace omni
     QRect ScreenSetup::SubScreenItem::rect() const
     {
       auto _r = parent_->rect(); // Parent rect
-      int _width = _r.width() / ScreenSetup::subScreenCount(parent_->screen());
+      int _width = _r.width() / omni::proj::ScreenSetup::subScreenCount(parent_->screen());
       return QRect(_r.x() + index_ * _width,_r.y(),_width,_r.height());
     }
         
@@ -292,7 +273,7 @@ namespace omni
     {
       auto _screen = parent_->screen();
       return QSize(
-          _screen->size().width() / ScreenSetup::subScreenCount(_screen),
+          omni::proj::ScreenSetup::subScreenWidth(_screen),
           _screen->size().height());
     }
 
@@ -370,7 +351,7 @@ namespace omni
       screen_(_screen),
       fullscreen_(new FullScreen(_screen))
     {
-      int _numScreens = ScreenSetup::subScreenCount(_screen);
+      int _numScreens = omni::proj::ScreenSetup::subScreenCount(_screen);
       for (int i = 0; i < _numScreens; ++i)
       {
         subScreens_.emplace_back(this,i);
@@ -456,7 +437,7 @@ namespace omni
         ++i;  
       }
 
-      if (!subScreens_.empty())
+      if (subScreens_.size() > 1)
       {
         auto _rect = rect();
         // Resolution string
@@ -469,7 +450,7 @@ namespace omni
     {
       if (hoverIndex_ < 0 || hoverIndex_ >= subScreens_.size()) return;
 
-      _tuning->attachScreen(screen_);
+      _tuning->attachScreen(screen_,hoverIndex_);
       fullscreen_->attach(hoverIndex_,_tuning->fullscreenWidget());
 
       for (auto& _subScreen : subScreens_) 

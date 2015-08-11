@@ -1,27 +1,35 @@
 #ifndef OMNI_RENDEROPTIONS_H_
 #define OMNI_RENDEROPTIONS_H_
 
+#include <omni/mapping/Interface.h>
+
 namespace omni
 {
-  enum class RenderMode
+  /// Mode how calibrations are stitched together
+  enum class SeparationMode
   {
-    TEXCOORD,
-    UVW,
-    INPUT
+    NONE,
+    SCREENS,
+    PROJECTORS
   };
 
-  enum class StitchMode
-  {
-  };
-  
+  /// Class for defining render options for calibration data
   class RenderOptions 
   {
   public:
-    void setRenderMode(RenderMode);
-    RenderMode renderMode();
+    Mapping::OutputMode mappingOutputMode() const;
+    void setMappingOutputMode(Mapping::OutputMode);
+
+    SeparationMode separationMode() const;
+    void setSeparationMode(SeparationMode);
+
+    bool excludeUnassignedProjectors() const;
+    void setExcludeUnassignedProjectors(bool); 
 
   private:
-    RenderMode renderMode_ = RenderMode::TEXCOORD;
+    Mapping::OutputMode mappingOutputMode_ = Mapping::TEXCOORDS;
+    SeparationMode separationMode_ = SeparationMode::SCREENS;
+    bool excludeUnassignedProjectors_ = false;
   };
 }
 

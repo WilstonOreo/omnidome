@@ -56,7 +56,6 @@ namespace omni
         if (!session()) return;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
         visual::viewport(this);
 
         this->setupCamera();
@@ -69,7 +68,7 @@ namespace omni
         visual::with_current_context([&](QOpenGLFunctions& _)
         {
           auto* _canvas = session()->canvas();
-          
+    
           _.glEnable(GL_LIGHTING);
           _.glEnable(GL_DEPTH_TEST);
           if (_canvas)
@@ -95,7 +94,6 @@ namespace omni
             _projector.drawHalo();
         });
       }
-
     }
   }
 }

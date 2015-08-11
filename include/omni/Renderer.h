@@ -23,12 +23,9 @@ namespace omni
     void setOptions(RenderOptions const&);
 
     void renderToFile(QString const& _filename);
-    
-    
+
     void render(proj::Tuning const* _tuning, RenderBuffer& _buffer);
     void render(proj::Tuning const* _tuning, QImage& _image);
-
-
 
   private:
     void getUpper8bit(RenderBuffer const& _buffer, QImage& _image);

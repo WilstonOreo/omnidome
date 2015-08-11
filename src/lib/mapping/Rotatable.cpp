@@ -18,9 +18,9 @@ namespace omni
     {
     }
 
-    void Rotatable::bind()
+    void Rotatable::bind(OutputMode _mode)
     {
-      Interface::bind();
+      Interface::bind(_mode);
       this->shader_->setUniformValue("yaw_angle",GLfloat(yaw().degrees()));
       this->shader_->setUniformValue("pitch_angle",GLfloat(pitch().degrees()));
       this->shader_->setUniformValue("roll_angle",GLfloat(roll().degrees()));

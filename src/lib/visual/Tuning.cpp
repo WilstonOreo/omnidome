@@ -62,6 +62,17 @@ namespace omni
         warpGrid_->drawHandles(tuning_.color(),tuningRect());
       });
     }
+    
+    void Tuning::drawWarpPatch() const
+    {
+      visual::with_current_context([this](QOpenGLFunctions& _)
+      {
+        _.glEnable(GL_TEXTURE_2D);
+        _.glDisable(GL_BLEND);
+        glColor4f(1.0,1.0,1.0,1.0);
+        warpGrid_->draw();
+      });
+    }
 
     void Tuning::update()
     {
@@ -129,10 +140,10 @@ namespace omni
           auto _data = _blendMask.strokeBuffer().cropRect(_r);
           _ptr = (void*)(_data.data().data()); 
           _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());          
-          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-          glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-          glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-          glPixelStorei(GL_UNPACK_SKIP_ROWS, 0); 
+          _.glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+          _.glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+          _.glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+          _.glPixelStorei(GL_UNPACK_SKIP_ROWS, 0); 
           _.glTexSubImage2D(GL_TEXTURE_2D, 0, _r.x(),_r.y(), _r.width(), _r.height(), GL_ALPHA, GL_UNSIGNED_BYTE, _ptr);
           _.glBindTexture(GL_TEXTURE_2D, 0);
           blendTextureUpdateRect_ = _fullRect;
@@ -144,7 +155,6 @@ namespace omni
         }
       });
     }
-
 
     void Tuning::drawCursor(QPointF const& _pos)
     {
@@ -239,6 +249,18 @@ namespace omni
         }
         blendTex_->release();
       });
+    }
+      
+    void Tuning::free()
+    {
+      if (!!blendTex_)
+      {
+        blendTex_->destroy();
+        blendTex_.reset();
+      }
+      
+      blendShader_.reset();
+      testCardShader_.reset();
     }
 
     QRectF Tuning::tuningRect() const

@@ -20,7 +20,21 @@ namespace omni
 
     TuningGLView::~TuningGLView()
     {
+      if (initialized() && context())
+        free();
+    }
+      
+    void TuningGLView::free()
+    {
+      makeCurrent();
+      tuning_->free();
+      tuning_.reset();
+      session_->free();
+      session_.reset();
+      frameBuffer_.reset();
+      warpGridBuffer_.reset();
       destroy();
+      doneCurrent();
     }
 
     omni::proj::Tuning* TuningGLView::tuning()
@@ -291,8 +305,10 @@ namespace omni
     bool TuningGLView::initialize()
     {
       if (context())
-      { 
-        connect(context(),SIGNAL(aboutToBeDestroyed()),this,SLOT(destroy()));
+      {
+        qDebug() << "connect(context(),SIGNAL(aboutToBeDestroyed()),this,SLOT(free()));";
+        connect(context(),SIGNAL(aboutToBeDestroyed()),this,SLOT(free()));
+        //connect(context(),SIGNAL(aboutToBeDestroyed()),this,SLOT(destroy()));
       }
 
       return context() != nullptr;
@@ -512,6 +528,13 @@ namespace omni
 
       makeCurrent();
       glPushAttrib(GL_ALL_ATTRIB_BITS);
+      visual::viewport(this);
+      visual::with_current_context([&](QOpenGLFunctions& _)
+      {
+        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        _.glClearColor(0.0,0.0,0.0,1.0);
+      });
+
       switch (session()->mode())
       {
       case Session::Mode::SCREENSETUP:

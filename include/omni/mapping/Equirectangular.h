@@ -20,7 +20,7 @@ namespace omni
       
       MappingMode mode() const;
 
-      void bind();
+      void bind(OutputMode = MAPPED_INPUT);
 
       /// Value between 0.0 and 1.0 for top strip position
       qreal stripTop() const;

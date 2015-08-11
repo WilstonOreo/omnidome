@@ -7,6 +7,7 @@
 #include <omni/mapping/Equirectangular.h>
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
+#include <omni/Renderer.h>
 
 #include <QDataStream>
 #include <QFile>
@@ -20,11 +21,11 @@ int main(int ac, char* av[])
   QApplication _a(ac, av);
 
   Session _session;
-  _session.inputs().add<input::Image>(":/spherical.jpg");
+  _session.inputs().add<input::Image>("/home/wilston/Dropbox/peacock_test.jpg");
   _session.inputs().setCurrentIndex(0);
 
   auto* _tuning = _session.tunings().add();
-  auto* _projSetup = static_cast<proj::PeripheralSetup*>(_tuning->setupProjector("PeripheralSetup"));
+  auto* _projSetup = static_cast<proj::PeripheralSetup*>(_tuning->projector().setup("PeripheralSetup"));
 
   _tuning->setColor("#FF0000");
   _tuning->blendMask().setRect(QRectF(0.2,0.2,0.6,0.6));
@@ -32,7 +33,7 @@ int main(int ac, char* av[])
   _projSetup->setYaw(0);
   _projSetup->setPitch(30);
   _projSetup->setDistanceCenter(4.0);
-  _projSetup->setup(const_cast<proj::Projector&>(_tuning->projector()));
+  _tuning->projector().setup();
 
   auto* _canvas = _session.setCanvas("HalfDome");
   _canvas->update();
@@ -40,7 +41,9 @@ int main(int ac, char* av[])
   auto* _input = _session.inputs().current();
   qDebug() << _input->getTypeId();
 
-  _session.setMode(Session::Mode::BLEND);
+  _input->update();
+
+  _session.setMode(Session::Mode::WARP);
   _session.setBlendMode(Session::BlendMode::WHITE);
 
   ui::TuningGLView _view;
@@ -48,6 +51,13 @@ int main(int ac, char* av[])
   _view.setSession(&_session);
   _view.setKeepAspectRatio(true);
   _view.setTuningIndex(0);
+
+  RenderOptions _options;
+  Renderer _renderer(_session,_options);
+
+  QImage _image;
+  _renderer.render(_tuning,_image);
+  _image.save("renderer.png");
 
   return _a.exec();
 }

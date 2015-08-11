@@ -10,61 +10,60 @@ namespace omni
     ScreenSetup::ScreenSetup()
     {
     }
-    
-    ScreenSetup& ScreenSetup::current()
+  
+    QScreen const* ScreenSetup::standardScreen()
     {
-      static ScreenSetup _setup;
-      if (QApplication::startingUp()) 
+      return QGuiApplication::primaryScreen();
+    }
+ 
+    int ScreenSetup::subScreenCount(QScreen const* _screen)
+    {
+      auto _rect = _screen->geometry();
+      auto _s = _rect.size();
+      qreal _aspectRatio = _s.width() / qreal(_s.height());
+
+      if (_aspectRatio < 1.5) return 1;
+
+      // Detect triple head
+      size_t _subscreenCount = 3;
+      while (_rect.width() % _subscreenCount == 0)
       {
-        _setup.screens_.emplace_back(standardScreen());
-        return _setup;
+        --_subscreenCount;
+        if (_subscreenCount == 1) break;
       }
-
-      QDesktopWidget* _desktop = QApplication::desktop();
-      int _numberScreens = _desktop->screenCount();
-
-      int _index = 0;
-      for (int i = 0; i < _numberScreens; ++i)
-      {
-        QRect _screenRect = _desktop->screenGeometry(i);
-
-        // Exclude main screen
-        if (_screenRect == _desktop->screenGeometry()) continue;
-
-        int _subScreens = Screen::subScreenCount(_screenRect);
-        _screenRect.setWidth(_screenRect.width() / _subScreens);
-
-        for (int i = 0; i < _subScreens; ++i)
-        {
-          _setup.screens_.emplace_back(_screenRect,_index);
-          _screenRect.translate(_screenRect.width(),0);
-        }
-      }
-
-      return _setup;
+      if (_subscreenCount <= 0) 
+        _subscreenCount = 1;
+      return _subscreenCount;
     }
 
-    ScreenSetup& ScreenSetup::debug()
+    int ScreenSetup::subScreenWidth(QScreen const* _screen)
     {
-      static ScreenSetup _debug;
-
-
-      return _debug;
-
+      return _screen->size().width() / ScreenSetup::subScreenCount(_screen);
+    }
+ 
+    QRect ScreenSetup::subScreenRect(QScreen const* _screen, int _subScreenIndex)
+    {
+      int _w = ScreenSetup::subScreenWidth(_screen);
+      return QRect(_w*_subScreenIndex,0,_w,_screen->size().height());
     }
       
-    Screen ScreenSetup::standardScreen()
+    QRect ScreenSetup::desktopRect(bool _excludeStandardScreen)
     {
-      // Return a default screen with 1024x768 resolution if there is no QApplication instance 
-      if (QCoreApplication::startingUp()) return Screen(QRect(0,0,1024,768));
-      QDesktopWidget* _desktop = QApplication::desktop(); 
-      QRect _screenRect = _desktop->screenGeometry(0);
-      return Screen(_screenRect,0);
+      QRect _desktopRect;
+      auto _screens = ScreenSetup::screens(_excludeStandardScreen);
+      for (auto& _screen : _screens)
+        _desktopRect |= _screen->geometry();
+      return _desktopRect;
     }
 
-    ScreenSetup::screenlist_type const& ScreenSetup::screens() const
+    std::vector<QScreen const*> ScreenSetup::screens(bool _excludeStandardScreen)
     {
-      return screens_;
+      std::vector<QScreen const*> _screens;
+      auto _allScreens = QGuiApplication::screens();
+      for (auto& _screen : _allScreens)
+        if (!_excludeStandardScreen || (_screen != standardScreen()))
+          _screens.push_back(_screen);
+      return _screens;
     }
 
     bool ScreenSetup::operator==(const ScreenSetup& _rhs) const

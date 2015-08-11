@@ -42,6 +42,19 @@ namespace omni
       return _f.readAll();
     }
 
+    template<typename STRING>
+    STRING removeFileExt(STRING const& _filename)
+    {
+      int _lastIndex = _filename.lastIndexOf(".");
+      if (_lastIndex == -1) return _filename;
+
+      QString _rawName;
+      for (int i = 0; i < _lastIndex; ++i)
+        _rawName.push_back(_filename[i]);
+      return _rawName;
+    }
+
+
     /// Test if two instances (which inherit from SerializationInterface) have equal data
     template<typename T>
     bool testPtrEqual(T const* _a, T const* _b)

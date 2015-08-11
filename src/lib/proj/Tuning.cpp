@@ -22,14 +22,19 @@ namespace omni
     {
     }
 
-    void Tuning::setScreen(QScreen const* _screen)
+    void Tuning::setScreen(QScreen const* _screen, int _subScreenIndex)
     {
-      projector_.setScreen(_screen);
+      projector_.setScreen(_screen,_subScreenIndex);
     }
 
     QScreen const* Tuning::screen() const
     {
       return projector_.screen();
+    }
+
+    int Tuning::subScreenIndex() const
+    {
+      return projector_.subScreenIndex();
     }
     
     Projector& Tuning::projector()
@@ -85,14 +90,14 @@ namespace omni
     int Tuning::width() const
     {
       return !projector_.screen() ? 
-        ScreenSetup::standardScreen().width() : 
-        projector_.screen()->size().width();
+        ScreenSetup::standardScreen()->size().width() : 
+        ScreenSetup::subScreenWidth(projector_.screen());
     }
 
     int Tuning::height() const
     {
       return !projector_.screen() ? 
-        ScreenSetup::standardScreen().height() : 
+        ScreenSetup::standardScreen()->size().height() : 
         projector_.screen()->size().height();
     }
  

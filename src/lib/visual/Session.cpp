@@ -27,7 +27,7 @@ namespace omni
       return session_;
     }
 
-    void Session::drawCanvas() const
+    void Session::drawCanvas(Mapping::OutputMode _mode) const
     {
       auto _canvas = session_.canvas();
 
@@ -43,7 +43,7 @@ namespace omni
           GLuint _texId = _input ? _input->textureId() : 0;
           _.glEnable(GL_TEXTURE_2D);
 
-          _mapping->bind();
+          _mapping->bind(_mode);
           _.glBindTexture(GL_TEXTURE_2D, _texId);
           _canvas->draw();
 
