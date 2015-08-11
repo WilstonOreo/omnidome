@@ -57,8 +57,8 @@ namespace omni
       auto& _tunings = _screenTunings.second;
 
       auto _screenRect = _screen->geometry();
-      QImage _image(_screenRect.width(),_screenRect.height(),QImage::Format_RGB32); // Overall screen image
-      
+      QImage _image(_screenRect.width(),_screenRect.height()*3,QImage::Format_RGB32); // Overall screen image
+
       QPainter _p(&_image);
       for (auto& _tuning : _tunings)
       {
@@ -98,7 +98,7 @@ namespace omni
     {
       auto _desktopRect = proj::ScreenSetup::desktopRect();
       auto&& _screens = stitchScreens(_tunings);
-      QImage _stitchedImage(_desktopRect.width(),_desktopRect.height(),QImage::Format_RGB32);
+      QImage _stitchedImage(_desktopRect.width(),_desktopRect.height()*3,QImage::Format_RGB32);
 
       QPainter _p(&_stitchedImage);
       for (auto& _screenImage : _screens) 

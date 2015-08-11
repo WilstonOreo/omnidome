@@ -18,6 +18,7 @@ namespace omni
  
     int ScreenSetup::subScreenCount(QScreen const* _screen)
     {
+      return 1;
       auto _rect = _screen->geometry();
       auto _s = _rect.size();
       qreal _aspectRatio = _s.width() / qreal(_s.height());

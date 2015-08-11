@@ -19,8 +19,8 @@ namespace omni
       static QRect subScreenRect(QScreen const*, int _subScreenIndex);
       static int subScreenWidth(QScreen const*);
 
-      static QRect desktopRect(bool _excludeStandardScreen = true);
-      static std::vector<QScreen const*> screens(bool _excludeStandardScreen = true);
+      static QRect desktopRect(bool _excludeStandardScreen = false);
+      static std::vector<QScreen const*> screens(bool _excludeStandardScreen = false);
 
       bool operator==(const ScreenSetup&) const;
     };

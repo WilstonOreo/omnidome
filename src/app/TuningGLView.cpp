@@ -16,6 +16,7 @@ namespace omni
     {
       setViewOnly(false);
       setFocusPolicy(Qt::StrongFocus);
+      setMouseTracking(showCursor_ && !viewOnly_);
     }
 
     TuningGLView::~TuningGLView()
@@ -551,7 +552,7 @@ namespace omni
 
       session_->update();
 
-      if (!tuning_->initialized()) 
+   // FIXME MAC OS X Hack   if (!tuning_->initialized()) 
         tuning_->update();
 
       makeCurrent();
