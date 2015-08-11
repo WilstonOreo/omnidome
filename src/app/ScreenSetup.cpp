@@ -61,23 +61,6 @@ namespace omni
       update();
     }
  
-    void ScreenSetup::detachTuning(omni::ui::proj::Tuning* _tuning)
-    {
-      if (!_tuning) return;
-/*
-      for (auto& _screenItem : screenItems_)
-      {
-        auto& _item = _screenItem.second;
-
-        if (_item->tuning() == _tuning)
-        {
-          qDebug() << _tuning->index();
-          _item->detachTuning();
-        }
-      }*/
-      update();
-    }
- 
     void ScreenSetup::updateScreens()
     {
       screenItems_.clear();
@@ -166,13 +149,25 @@ namespace omni
         auto& _item = _screenItem.second;
         int _oldHoverIndex = _item->hoverIndex();
         _item->setHoverIndex(_event->pos());
-        qDebug() << _item->hoverIndex();
+        
+        // Update only when hover index has changed
         _update |= _oldHoverIndex != _item->hoverIndex();
       }
 
       update();
     }
       
+    void ScreenSetup::mouseDoubleClickEvent(QMouseEvent* _event)
+    {
+      auto _screenItem = getItemAtPos(_event->pos());
+      if (_screenItem) 
+      {
+        _screenItem->setHoverIndex(_event->pos());
+        _screenItem->detachCurrentTuning();
+        update();
+      }
+    }
+ 
     ScreenSetup::Item* ScreenSetup::getItemAtPos(QPoint const& _pos)
     {
       Item* _itemAtPos = nullptr;
@@ -370,6 +365,7 @@ namespace omni
 
     ScreenSetup::Item::~Item()
     {
+      detachTunings();
       delete fullscreen_;
     }
 
@@ -419,9 +415,8 @@ namespace omni
       {
         hoverIndex_ = -1;
       }
-
     }
-        
+ 
     /// Hides fullscreen widget
     void ScreenSetup::Item::endDrop()
     {
@@ -471,9 +466,28 @@ namespace omni
       screenSetup_.update();
     }
 
-    void ScreenSetup::Item::detachTuning()
+    void ScreenSetup::Item::detachCurrentTuning()
     {
-      subScreens_[hoverIndex_].setTuning(nullptr);
+      auto _subScreen = subScreens_[hoverIndex_];
+      if (!_subScreen.tuning()) return;
+
+      fullscreen_->detach(hoverIndex_);
+      _subScreen.tuning()->detachScreen();
+      _subScreen.setTuning(nullptr);
+      screenSetup_.update();
+    }
+
+    void ScreenSetup::Item::detachTunings()
+    {
+      int i = 0;
+      for (auto& _subScreen : subScreens_)
+      {
+        if (!_subScreen.tuning()) continue;
+        fullscreen_->detach(i);
+        _subScreen.tuning()->detachScreen();
+        _subScreen.setTuning(nullptr);
+        ++i;
+      }
       screenSetup_.update();
     }
   }

@@ -212,11 +212,15 @@ namespace omni
       void Tuning::attachScreen(QScreen const* _screen, int _subScreenIndex)
       {
         tuning()->setScreen(_screen,_subScreenIndex);
+        emit projectorSetupChanged();
+        layout()->update();
       }
 
       void Tuning::detachScreen()
       {
-        fullscreen_.reset();
+        tuning()->setScreen(nullptr,0);
+        emit projectorSetupChanged();
+        layout()->update();
       }
 
       void Tuning::updateViews()

@@ -34,8 +34,6 @@ namespace omni
       /// Update screen dimensions
       void updateScreens();
 
-      void detachTuning(omni::ui::proj::Tuning*);
-
       /// Set zoom factor
       void setZoom(float);
 
@@ -43,7 +41,9 @@ namespace omni
       void paintEvent(QPaintEvent*);
 
       void mouseMoveEvent(QMouseEvent*);
-      
+
+      /// Detach tuning on double click on screen event
+      void mouseDoubleClickEvent(QMouseEvent*); 
       void dragEnterEvent(QDragEnterEvent*);
       void dragMoveEvent(QDragMoveEvent*);
       void dropEvent(QDropEvent*);
@@ -91,10 +91,15 @@ namespace omni
         void attachTuning(omni::ui::proj::Tuning*);
 
         /// Detach projector from item on current hover index
-        void detachTuning();
+        void detachCurrentTuning();
+        
+        /// Detach all tunings/projectors
+        void detachTunings();
 
         /// Returns flag whether mouse is currently over this item
         int hoverIndex() const;
+
+        /// Set index of current hovered subscreen
         void setHoverIndex(int);
 
         /// Set hover index from mouse position
@@ -102,6 +107,8 @@ namespace omni
 
         /// Flag whether a drop is supposed to happen on this item 
         bool drop() const;
+
+        /// Drop and color of drop
         void setDrop(bool, QColor const& _color = QColor("#FFFFFF"));
 
         /// Hides fullscreen widget if no tunings are attached
