@@ -552,7 +552,7 @@ namespace omni
 
       session_->update();
 
-   // FIXME MAC OS X Hack   if (!tuning_->initialized()) 
+      if (!tuning_->initialized()) 
         tuning_->update();
 
       makeCurrent();

@@ -27,7 +27,7 @@ namespace omni
       return session_;
     }
 
-    void Session::drawCanvas(Mapping::OutputMode _mode, bool _displayInput) const
+    void Session::drawCanvas(mapping::OutputMode _mode, bool _displayInput) const
     {
       auto _canvas = session_.canvas();
 

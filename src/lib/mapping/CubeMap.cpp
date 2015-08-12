@@ -14,9 +14,9 @@ namespace omni
     {
     }
       
-    MappingMode CubeMap::mode() const
+    Mode CubeMap::mode() const
     {
-      return CUBEMAP;
+      return Mode::CUBEMAP;
     }
   }
 }

@@ -36,16 +36,16 @@ namespace omni
         shader_->bind();
         shader_->setUniformValue("flip_horizontal",flipHorizontal_);
         shader_->setUniformValue("flip_vertical",flipVertical_);
-      
+
         switch (_outputMode)
         {
-        case MAPPED_INPUT:
+          case OutputMode::MAPPED_INPUT:
           shader_->setUniformValue("output_mode",0);
           break;
-        case TEXCOORDS:
+          case OutputMode::TEXCOORDS:
           shader_->setUniformValue("output_mode",1);
           break;
-        case UVW:
+          case OutputMode::UVW:
           shader_->setUniformValue("output_mode",2);
           break;
         };

@@ -83,6 +83,8 @@ namespace omni
           _.glViewport(0,0, _f->width(), _f->height());
           _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
           _.glEnable(GL_TEXTURE_2D);
+          _.glEnable(GL_DEPTH_TEST);
+          _.glDepthFunc(GL_LEQUAL);
   
           // Projection matrix setup
           glMatrixMode(GL_PROJECTION);

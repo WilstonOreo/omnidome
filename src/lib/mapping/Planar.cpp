@@ -19,9 +19,9 @@ namespace omni
     {
     }
       
-    MappingMode Planar::mode() const
+    Mode Planar::mode() const
     {
-      return PLANAR;
+      return Mode::PLANAR;
     }
 
     void Planar::bind(OutputMode _outputMode)

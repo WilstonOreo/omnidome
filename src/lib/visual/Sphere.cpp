@@ -97,7 +97,7 @@ namespace omni
         glEnableClientState(GL_NORMAL_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);
 
-        glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex),(void*)Vertex::texCoordOffset());
+        glTexCoordPointer(3, GL_FLOAT, sizeof(Vertex),(void*)Vertex::texCoordOffset());
         glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)Vertex::normalOffset());
         glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)Vertex::posOffset());
 
@@ -175,8 +175,8 @@ namespace omni
         QVector3D _bottomPoint(_cos * _bottomRadius,_sin * _bottomRadius,_bottom);
         QVector3D _normalTop(_topPoint.normalized());
         QVector3D _normalBottom(_bottomPoint.normalized());
-        vertices_.emplace_back(_topPoint,_normalTop,QVector2D(float(i)/slices_,1.0 - acos(_normalTop.z()) / M_PI));
-        vertices_.emplace_back(_bottomPoint,_normalBottom,QVector2D(float(i)/slices_,1.0 - acos(_normalBottom.z()) / M_PI));
+        vertices_.emplace_back(_topPoint,_normalTop,_normalTop);//QVector2D(float(i)/slices_,1.0 - acos(_normalTop.z()) / M_PI));
+        vertices_.emplace_back(_bottomPoint,_normalBottom,_normalBottom);//QVector2D(float(i)/slices_,1.0 - acos(_normalBottom.z()) / M_PI));
 
         /// Top triangle
         indices_.push_back(_startIndex + 2 * i);

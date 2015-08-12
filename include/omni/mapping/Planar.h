@@ -19,7 +19,7 @@ namespace omni
 
       ~Planar();
 
-      MappingMode mode() const;
+      Mode mode() const;
       void bind(OutputMode);
 
       QVector2D& offset();

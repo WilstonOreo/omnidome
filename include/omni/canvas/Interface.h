@@ -12,15 +12,6 @@ namespace omni
 {
   namespace canvas
   {
-    /// Enum which determines how UVW coordinates are generated
-    enum class UVWSource
-    {
-      NONE,
-      NORMAL,
-      POSITION,
-      CUSTOM
-    };
-
     /**@brief Abstract interface for a canvas
      * @detail A canvas represents the surface on which the projection is performed.
      *         It might be a dome or a planar surface.
@@ -43,13 +34,6 @@ namespace omni
       inline virtual MappingModeSet supportedMapModes() const 
       {
         return MappingModeSet();
-      }
-
-      /**@brief Enum value which determines how UVW coordinates are generated (NONE by default)
-       **/
-      inline virtual UVWSource uvwSource() const
-      {
-        return UVWSource::NONE;
       }
 
       /// Abstract method for returning bounding box of canvas

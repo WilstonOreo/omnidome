@@ -2,12 +2,12 @@
 
 namespace omni
 {
-  Mapping::OutputMode RenderOptions::mappingOutputMode() const
+  mapping::OutputMode RenderOptions::mappingOutputMode() const
   {
     return mappingOutputMode_;
   }
 
-  void RenderOptions::setMappingOutputMode(Mapping::OutputMode _outputMode)
+  void RenderOptions::setMappingOutputMode(mapping::OutputMode _outputMode)
   {
     mappingOutputMode_ = _outputMode;
   }

@@ -9,12 +9,6 @@ uniform float yaw_angle; // Any value allowed
 uniform float pitch_angle; // Any value allowed
 uniform float roll_angle; // Any value allowed
 
-/// Source from where to get the UVW coordinates
-/// 0: Use vertex texture coordinates
-/// 1: Get uvw coordinates from uvw_vertex_position
-/// 2: Get uvw coordinates from uvw_normal
-uniform int uvw_source; 
-
 uniform bool flip_vertical;
 uniform bool flip_horizontal;
 
@@ -69,27 +63,13 @@ mat3 rotationMatrix(in float yaw, in float pitch, in float roll)
          rotateAroundX(deg2rad(roll));
 }
 
-vec3 get_uvw()
-{
-  vec3 normal = vec3(0.0,0.0,0.0);
-  if (uvw_source == 0) 
-  {
-    normal = normalize(uvw_normal);
-  } else
-  if (uvw_source == 1)
-  {
-    normal = normalize(uvw_vertex_position);
-  }
-
-  return normal * rotationMatrix(yaw_angle,pitch_angle,roll_angle);
-}
-
 float mapping(in vec3 uvw, out vec2 texCoords);
 
 
 void main()
 {
-  vec3 uvw = get_uvw();
+  vec3 uvw = gl_TexCoord[0].xyz * rotationMatrix(yaw_angle,pitch_angle,roll_angle);
+
   if (output_mode == 2)
   {
    // gl_FragColor = vec4(mod(256.0*0.5*(uvw.xyz + vec3(1.0)),1.0),1.0);

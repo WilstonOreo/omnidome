@@ -7,6 +7,7 @@ namespace omni
     FullSphere::FullSphere() 
     {
       sphere_.setBottom(-1.0);
+      setRadius(5.0);
       update();
     }
 

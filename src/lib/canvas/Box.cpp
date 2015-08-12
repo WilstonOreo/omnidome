@@ -6,7 +6,8 @@ namespace omni
 {
   namespace canvas
   {
-    Box::Box()  
+    Box::Box() : 
+      vizBox_(bounds_)
     {
       setSize(QVector3D(10,10,10));
     }
@@ -17,12 +18,12 @@ namespace omni
 
     void Box::draw() const
     {
-      Envelope::draw();
-      visual::Box::draw(this->bounds_);
+      vizBox_.draw(); 
     }
 
     void Box::update() 
     {
+      vizBox_.update();
     }
 
     QVector3D Box::size() const

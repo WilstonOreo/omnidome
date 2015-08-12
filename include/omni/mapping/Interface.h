@@ -17,27 +17,28 @@ namespace omni
 
   namespace mapping
   {
+    enum class Mode   
+    {
+      PLANAR, // Planar mapping 
+      FISHEYE, // Fish eye mapping, e.g. for half domes
+      EQUIRECTANGULAR, // Equirectangular mappings, e.g. for inflatable domes or fullsphere domes
+      CUBEMAP // Cube mapping 
+    };
+
+    enum class OutputMode
+    {
+      MAPPED_INPUT, // Draws actual input texture on mapping
+      TEXCOORDS, // Draw texture coordinates of mapping
+      UVW // Draws uvw coordinates of mapping
+    };
+
+
     /**@brief Mapping interface with one or several inputs and shader 
      * @detail Holds inputs and shader
      */
     class Interface : public SerializationInterface
     {
     public:
-      enum Mode 
-      {
-        PLANAR, // Planar mapping 
-        FISHEYE, // Fish eye mapping, e.g. for half domes
-        EQUIRECTANGULAR, // Equirectangular mappings, e.g. for inflatable domes or fullsphere domes
-        CUBEMAP // Cube mapping 
-      };
-
-      enum OutputMode
-      {
-        MAPPED_INPUT, // Draws actual input texture on mapping
-        TEXCOORDS, // Draw texture coordinates of mapping
-        UVW // Draws uvw coordinates of mapping
-      };
-
       Interface();
 
       virtual ~Interface();
@@ -49,7 +50,7 @@ namespace omni
       void initialize();
 
       /// Bind shaders and set uniforms
-      virtual void bind(OutputMode = MAPPED_INPUT);
+      virtual void bind(OutputMode = OutputMode::MAPPED_INPUT);
 
       /// Release shader
       void release();
@@ -95,7 +96,7 @@ namespace omni
   template<typename T>
   using MappingRegistrar = mapping::Registrar<T>;
 
-  typedef mapping::Interface::Mode MappingMode;
+  typedef mapping::Mode MappingMode;
   typedef std::set<MappingMode> MappingModeSet;
 }
 

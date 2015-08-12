@@ -75,15 +75,15 @@ namespace omni
 
       if (ui_->rbUVWMap->isChecked())
       {
-        _renderOptions.setMappingOutputMode(Mapping::OutputMode::UVW);
+        _renderOptions.setMappingOutputMode(mapping::OutputMode::UVW);
       } else
       if (ui_->rbTextureCoordinates->isChecked())
       {
-        _renderOptions.setMappingOutputMode(Mapping::OutputMode::TEXCOORDS);
+        _renderOptions.setMappingOutputMode(mapping::OutputMode::TEXCOORDS);
       } else
       if (ui_->rbMappedInput->isChecked())
       {
-        _renderOptions.setMappingOutputMode(Mapping::OutputMode::MAPPED_INPUT);
+        _renderOptions.setMappingOutputMode(mapping::OutputMode::MAPPED_INPUT);
       }
       return _renderOptions;
     }

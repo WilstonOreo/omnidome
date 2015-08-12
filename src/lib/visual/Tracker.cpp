@@ -1,5 +1,7 @@
 #include <omni/visual/Tracker.h>
 
+#include <algorithm>
+
 namespace omni
 {
   namespace visual
@@ -55,7 +57,7 @@ namespace omni
 
     void Tracker::setDistance(float _t)
     {
-      direction_ = _t * direction_.normalized() - center_;
+      direction_ = _t * direction_.normalized();
     }
 
     PolarVec& Tracker::direction()
@@ -67,5 +69,17 @@ namespace omni
     {
       return direction_;
     } 
+      
+    void Tracker::limitDistance(float _minDist, float _maxDist)
+    {
+      float _r = direction_.radius();
+      if (_minDist > _maxDist)
+        std::swap(_minDist,_maxDist);
+
+      if (_r < _minDist) 
+        direction_.setRadius(_minDist);
+      if (_r > _maxDist) 
+        direction_.setRadius(_maxDist);
+    }
   }
 }

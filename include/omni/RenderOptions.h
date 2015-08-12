@@ -17,8 +17,8 @@ namespace omni
   class RenderOptions 
   {
   public:
-    Mapping::OutputMode mappingOutputMode() const;
-    void setMappingOutputMode(Mapping::OutputMode);
+    mapping::OutputMode mappingOutputMode() const;
+    void setMappingOutputMode(mapping::OutputMode);
 
     SeparationMode separationMode() const;
     void setSeparationMode(SeparationMode);
@@ -27,7 +27,7 @@ namespace omni
     void setExcludeUnassignedProjectors(bool); 
 
   private:
-    Mapping::OutputMode mappingOutputMode_ = Mapping::TEXCOORDS;
+    mapping::OutputMode mappingOutputMode_ = mapping::OutputMode::TEXCOORDS;
     SeparationMode separationMode_ = SeparationMode::SCREENS;
     bool excludeUnassignedProjectors_ = false;
   };

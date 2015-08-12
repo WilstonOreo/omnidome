@@ -279,6 +279,10 @@ void MainWindow::modified()
   if (locked_) return;
   modified_ = true;
   updateAllViews();
+
+  if (session_->mode() != Session::Mode::WARP &&
+      session_->mode() != Session::Mode::BLEND)
+    ui_->grpMapping->setVisible(session_->inputs().current() != nullptr);
   buttonState();
 }
 
@@ -419,7 +423,7 @@ void MainWindow::setMode(Session::Mode _mode)
   case Session::Mode::PROJECTIONSETUP:
     ui_->grpCanvas->show();
     ui_->grpInputs->show();
-    ui_->grpMapping->show();
+    ui_->grpMapping->setVisible(session_->inputs().current());
     break;
 
   case Session::Mode::WARP:
@@ -437,7 +441,7 @@ void MainWindow::setMode(Session::Mode _mode)
   case Session::Mode::EXPORT:
     ui_->grpCanvas->hide();
     ui_->grpInputs->show();
-    ui_->grpMapping->show();
+    ui_->grpMapping->setVisible(session_->inputs().current());
     break;
 
   default:

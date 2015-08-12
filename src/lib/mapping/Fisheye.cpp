@@ -15,9 +15,9 @@ namespace omni
     {
     }
 
-    MappingMode Fisheye::mode() const
+    Mode Fisheye::mode() const
     {
-      return FISHEYE;
+      return Mode::FISHEYE;
     }
 
     void Fisheye::bind(OutputMode _outputMode)

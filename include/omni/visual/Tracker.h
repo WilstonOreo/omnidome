@@ -31,6 +31,9 @@ namespace omni
       PolarVec& direction();
       PolarVec const& direction() const;
 
+      /// Keep distance in limits
+      void limitDistance(float _minDist, float _maxDist);
+
     private:
       /// target position
       QVector3D center_;

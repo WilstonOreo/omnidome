@@ -16,9 +16,9 @@ namespace omni
     {
     }
 
-    MappingMode Equirectangular::mode() const
+    Mode Equirectangular::mode() const
     {
-      return EQUIRECTANGULAR;
+      return Mode::EQUIRECTANGULAR;
     }
 
     void Equirectangular::bind(OutputMode _outputMode)     

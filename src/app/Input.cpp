@@ -98,6 +98,8 @@ namespace omni
 
     void Input::removeSelection() 
     { 
+      if (session_->inputs().empty()) return;
+
       int _row = ui_->inputList->currentIndex().row() - 1;
       if (_row < 0 || _row >= session_->inputs().size()) return;
 

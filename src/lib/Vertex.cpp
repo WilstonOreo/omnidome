@@ -9,7 +9,7 @@ namespace omni
   Vertex::Vertex(
     const QVector3D& _pos,
     const QVector3D& _normal,
-    const QVector2D& _texCoord) :
+    const QVector3D& _texCoord) :
     texCoord_(_texCoord),
     normal_(_normal),
     pos_(_pos) 
@@ -46,17 +46,17 @@ namespace omni
     return normal_;
   }
 
-  void Vertex::setTexCoord(QVector2D const& _texCoord)
+  void Vertex::setTexCoord(QVector3D const& _texCoord)
   {
     texCoord_=_texCoord;
   }
 
-  QVector2D& Vertex::texCoord()
+  QVector3D& Vertex::texCoord()
   {
     return texCoord_;
   }
 
-  QVector2D const& Vertex::texCoord() const
+  QVector3D const& Vertex::texCoord() const
   {
     return texCoord_;
   }

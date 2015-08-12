@@ -53,7 +53,6 @@ namespace omni
       visual::with_current_context([this](QOpenGLFunctions& _)
       {
         _.glEnable(GL_TEXTURE_2D);
-        _.glDisable(GL_BLEND);
         glColor4f(1.0,1.0,1.0,1.0);
         warpGrid_->draw();
 

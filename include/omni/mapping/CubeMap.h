@@ -17,7 +17,7 @@ namespace omni
       CubeMap();
       ~CubeMap();
 
-      MappingMode mode() const;
+      Mode mode() const;
     };
   }
 }

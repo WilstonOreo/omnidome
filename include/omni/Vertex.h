@@ -16,7 +16,7 @@ namespace omni
     Vertex(
         const QVector3D& _pos,
         const QVector3D& _normal,
-        const QVector2D& _texCoord = QVector2D()); 
+        const QVector3D& _texCoord = QVector3D()); 
 
     /// Set new position
     void setPos(QVector3D const& _pos);
@@ -37,13 +37,14 @@ namespace omni
     QVector3D const& normal() const;
    
     /// Set new texture coordinates 
-    void setTexCoord(QVector2D const& _texCoord);
+    void setTexCoord(QVector3D const& _texCoord);
     
+ 
     /// Return reference to texture coordinates
-    QVector2D& texCoord();
+    QVector3D& texCoord();
 
     /// Return const reference to texture coordinates
-    QVector2D const& texCoord() const;
+    QVector3D const& texCoord() const;
     
     inline static constexpr size_t texCoordOffset()
     {
@@ -52,16 +53,16 @@ namespace omni
     
     inline static constexpr size_t normalOffset()
     {
-      return sizeof(QVector2D);
+      return sizeof(QVector3D);
     }
 
     inline static constexpr size_t posOffset()
     {
-      return sizeof(QVector2D) + sizeof(QVector3D);
+      return sizeof(QVector3D) + sizeof(QVector3D);
     }
  
   private:
-    QVector2D texCoord_;
+    QVector3D texCoord_;
     QVector3D normal_;
     QVector3D pos_;
   };

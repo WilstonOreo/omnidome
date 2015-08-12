@@ -69,7 +69,7 @@ namespace omni
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
       updateLight();
-      this->session_->drawCanvas(Mapping::MAPPED_INPUT,displayInput_);
+      this->session_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,displayInput_);
       this->session_->drawProjectors();
       this->session_->drawCanvasWithFrustumIntersections();
       this->session_->drawProjectorHalos();
@@ -78,8 +78,16 @@ namespace omni
     void GLView3D::wheelEvent(QWheelEvent* event)
     {
       if (!session()) return;
+
+      float _r = event->delta()/100.0;
+      camera_.track( 0, 0, _r );
       
-      camera_.track( 0, 0, (double)event->delta()/100.0 );
+      if (session()->canvas())
+      {
+        auto _r = session()->canvas()->radius();
+        camera_.limitDistance(_r*0.1,_r*10.0);
+      }
+
       update();
     }
 
@@ -93,8 +101,8 @@ namespace omni
       {
         if( event->modifiers() & Qt::ShiftModifier )
         {
-          camera_.strafe((event->pos().x() - mousePosition().x())/2.0);
-          camera_.lift((event->pos().y() - mousePosition().y())/2.0);
+          camera_.strafe((event->pos().x() - mousePosition().x())/20.0);
+          camera_.lift((event->pos().y() - mousePosition().y())/20.0);
         }
         else
         {

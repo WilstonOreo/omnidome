@@ -44,12 +44,7 @@ namespace omni
 
       virtual void toStream(QDataStream&) const;
       virtual void fromStream(QDataStream&);
-      
-      inline virtual UVWSource uvwSource() const 
-      {
-        return UVWSource::NORMAL;
-      }
-
+ 
     protected:
 
       visual::Sphere sphere_;

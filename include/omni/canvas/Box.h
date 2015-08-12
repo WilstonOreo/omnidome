@@ -2,6 +2,7 @@
 #define OMNI_CANVAS_BOX_H_
 
 #include <omni/canvas/Envelope.h>
+#include <omni/visual/Box.h>
 
 namespace omni
 {
@@ -41,11 +42,8 @@ namespace omni
       /// Serialize to stream
       void toStream(QDataStream&) const;
     
-      /// A box retrieves its uvw coordinates from the vertex position
-      inline virtual UVWSource uvwSource() const 
-      {
-        return UVWSource::POSITION;
-      }
+    private:
+      visual::Box vizBox_;
     };
   }
 }

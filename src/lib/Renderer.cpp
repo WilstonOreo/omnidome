@@ -247,7 +247,7 @@ namespace omni
     render(_tuning,_buffer);
     _image = QImage(_w,_overallHeight*3,QImage::Format_RGB32);
 
-    if (options_.mappingOutputMode() == Mapping::MAPPED_INPUT)
+    if (options_.mappingOutputMode() == mapping::OutputMode::MAPPED_INPUT)
     {
       bufferToImage(_buffer,_image,[&](RGBAFloat const& _pixel)
       {

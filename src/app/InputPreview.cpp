@@ -13,6 +13,7 @@ namespace omni
     InputPreview::InputPreview(QWidget* _parent) :
       GLView(_parent)
     {
+      setMinimumSize(128 / devicePixelRatio(),128 / devicePixelRatio());
     }
 
     InputPreview::~InputPreview()
