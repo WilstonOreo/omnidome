@@ -54,7 +54,7 @@ int main(int ac, char* av[])
   _view.setTuningIndex(0);
 
   RenderOptions _options;
-  _options.setMappingOutputMode(Mapping::UVW);
+  _options.setMappingOutputMode(mapping::OutputMode::UVW);
   Renderer _renderer(_session,_options);
 
   QImage _image;

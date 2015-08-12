@@ -35,7 +35,7 @@ namespace omni
     Mapping::~Mapping()
     {
     }
-    
+
     void Mapping::sessionParameters()
     {
       if (!session()->mapping())

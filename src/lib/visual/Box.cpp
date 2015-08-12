@@ -28,14 +28,15 @@ namespace omni
       vertices_.reserve(24);
       indices_.clear();
       indices_.reserve(36);
-      
+
       enum Side { 
         POS_X,
         POS_Y,
         POS_Z,
         NEG_X,
         NEG_Y,
-        NEG_Z };
+        NEG_Z 
+      };
 
       auto getNormal = [](Side _side)
       {
@@ -58,6 +59,14 @@ namespace omni
       auto add = [&](QVector3D _pos, QVector3D _normal)
       {
         auto _center = (_max + _min) * 0.5;
+/*
+        QVector3D _invSize(
+            1.0 / (_max.x() - _min.x()),
+            1.0 / (_max.y() - _min.y()),
+            1.0 / (_max.z() - _min.z()));
+
+        auto _uvw = ((_pos - _center) * _invSize) * 2.0;
+        vertices_.emplace_back(_pos,_normal,_uvw); */
         vertices_.emplace_back(_pos,_normal,(_pos - _center).normalized());
       };
 

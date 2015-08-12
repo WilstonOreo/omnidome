@@ -99,13 +99,12 @@ namespace omni
       auto _desktopRect = proj::ScreenSetup::desktopRect();
       auto&& _screens = stitchScreens(_tunings);
       QImage _stitchedImage(_desktopRect.width(),_desktopRect.height()*3,QImage::Format_RGB32);
-
       QPainter _p(&_stitchedImage);
       for (auto& _screenImage : _screens) 
       {
         auto* _screen = _screenImage.first;
         auto& _image = _screenImage.second;
-        _p.drawImage(_screen->geometry().topLeft(),_image);
+        _p.drawImage(_screen->geometry().topLeft()-_desktopRect.topLeft(),_image);
       }
       _stitchedImage.save(_filename);
     }

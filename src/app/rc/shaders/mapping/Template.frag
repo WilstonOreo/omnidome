@@ -70,9 +70,8 @@ void main()
 {
   vec3 uvw = gl_TexCoord[0].xyz * rotationMatrix(yaw_angle,pitch_angle,roll_angle);
 
-  if (output_mode == 2)
+  if (output_mode == 2) // Output UVW map only
   {
-   // gl_FragColor = vec4(mod(256.0*0.5*(uvw.xyz + vec3(1.0)),1.0),1.0);
     gl_FragColor = vec4(0.5*(normalize(uvw.xyz) + vec3(1.0)),1.0);
     return;
   }
@@ -85,7 +84,7 @@ void main()
     if (output_mode == 0)
     {
       gl_FragColor = texture2D(texture, texCoords);
-    } else if (output_mode == 1)
+    } else if (output_mode == 1) // Output texture coordinates
     {
       gl_FragColor = vec4(texCoords.xy,0.0,1.0);
     }
