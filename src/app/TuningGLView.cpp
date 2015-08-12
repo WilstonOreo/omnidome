@@ -586,7 +586,6 @@ namespace omni
         break;
       }
       glPopAttrib();
-      doneCurrent();
     }
   }
 }

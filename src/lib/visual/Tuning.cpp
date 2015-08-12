@@ -188,13 +188,17 @@ namespace omni
       if (!blendShader_) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _)
-      { 
+      {
         warpGrid_->draw();
    
         auto& _mask = tuning().blendMask();
+        glBlendColor(1.0,1.0,1.0,1.0);
+        _.glEnable(GL_DEPTH_TEST);
+        _.glDepthFunc(GL_LEQUAL);
         _.glEnable(GL_BLEND);
-        _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  
+        glColor4f(0.0,0.0,0.0,1.0);
         blendShader_->bind();
         {
           blendShader_->setUniformValue("top",_mask.topWidth());
@@ -235,10 +239,10 @@ namespace omni
 
         _.glEnable(GL_BLEND);
         _.glEnable(GL_TEXTURE_2D);
+     //   _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
         blendTex_->bind();
         {
           glColor4f(0.0,0.0,0.0,1.0);
-          _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
           glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
           glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
           glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);

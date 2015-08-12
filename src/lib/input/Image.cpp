@@ -27,8 +27,9 @@ namespace omni
 
     void Image::update()
     {
-      if (!QOpenGLContext::currentContext() || !needsUpdate_) return;
-      
+      if (!QOpenGLContext::currentContext() || !needsUpdate_ || image_.width() == 0) return;
+     
+
       texture_.reset(new QOpenGLTexture(image_));
     
       texture_->setMinMagFilters(

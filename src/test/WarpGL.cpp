@@ -21,7 +21,7 @@ int main(int ac, char* av[])
   QApplication _a(ac, av);
 
   Session _session;
-  _session.inputs().add<input::Image>("/home/wilston/Dropbox/peacock_test.jpg");
+  _session.inputs().add<input::Image>("/Users/wilstonoreo/Dropbox/Balaton1920x1080.jpg");
   _session.inputs().setCurrentIndex(0);
 
   auto* _tuning = _session.tunings().add();
@@ -44,8 +44,8 @@ int main(int ac, char* av[])
 
   _input->update();
 
-  _session.setMode(Session::Mode::WARP);
-  _session.setBlendMode(Session::BlendMode::WHITE);
+  _session.setMode(Session::Mode::BLEND);
+  _session.setBlendMode(Session::BlendMode::INPUT);
 
   ui::TuningGLView _view;
   _view.show();

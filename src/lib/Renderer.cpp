@@ -324,7 +324,7 @@ namespace omni
       _.glBindFramebuffer(GL_FRAMEBUFFER_EXT, fb);
       {
         _.glClearColor(0.0, 0.0, 0.0, 1.0);
-        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         //-------------------------
         glViewport(0, 0, _w, _h);
         glMatrixMode(GL_PROJECTION);
@@ -336,11 +336,11 @@ namespace omni
         glEnable(GL_DEPTH_TEST);
         _mv(_); // Model view operation
 
-
         //-------------------------
         _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _buffer.ptr());
       }
       _.glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+        
 
       //Delete resources
       _.glDeleteTextures(1, &_colorTex);
