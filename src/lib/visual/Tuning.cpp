@@ -238,7 +238,7 @@ namespace omni
 
         _.glEnable(GL_BLEND);
         _.glEnable(GL_TEXTURE_2D);
-     //   _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
         blendTex_->bind();
         {
           glColor4f(0.0,0.0,0.0,1.0);

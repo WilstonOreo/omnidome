@@ -83,9 +83,9 @@ namespace omni
       float _factor = 1.0f;
 
       if (_rectAspect > _windowAspect) {                
-        _factor = _windowRect.width() / _desktopRect.width();
+        _factor = float(_windowRect.width()) / _desktopRect.width();
       } else {
-        _factor = _windowRect.height() / _desktopRect.height();
+        _factor = float(_windowRect.height()) / _desktopRect.height();
       }
 
       return _factor * zoom();
@@ -96,11 +96,12 @@ namespace omni
       auto _windowRect = this->rect();
       auto _zoom = scalingFactor();
 
+
       QRect _desktopRect = omni::proj::ScreenSetup::desktopRect();
 
       return QRectF(
-          0.5*(_windowRect.width() - _zoom * (_desktopRect.width() - _desktopRect.x())),
-          0.5*(_windowRect.height() - _zoom * (_desktopRect.height() - _desktopRect.y())),
+          0.5*(_windowRect.width() - _zoom * (_desktopRect.width())),
+          0.5*(_windowRect.height() - _zoom * (_desktopRect.height())),
           _zoom * _desktopRect.width(),
           _zoom * _desktopRect.height());
     }
@@ -428,7 +429,8 @@ namespace omni
 
     QRect ScreenSetup::Item::rect() const
     {
-      return screenSetup_.transformedRect(screen_->geometry()).toRect();
+      auto _desktopRect = omni::proj::ScreenSetup::desktopRect();
+      return screenSetup_.transformedRect(screen_->geometry().translated(-_desktopRect.topLeft())).toRect();
     }
 
     void ScreenSetup::Item::paint(QPainter& _p)
@@ -442,7 +444,7 @@ namespace omni
             drop_ && _hover,
             dropColor_,
             _p);
-        ++i;  
+        ++i; 
       }
 
       if (subScreens_.size() > 1)
@@ -471,7 +473,8 @@ namespace omni
 
     void ScreenSetup::Item::detachCurrentTuning()
     {
-      auto _subScreen = subScreens_[hoverIndex_];
+      auto& _subScreen = subScreens_[hoverIndex_];
+      qDebug() << hoverIndex_;
       if (!_subScreen.tuning()) return;
 
       fullscreen_->detach(hoverIndex_);
@@ -485,10 +488,12 @@ namespace omni
       int i = 0;
       for (auto& _subScreen : subScreens_)
       {
-        if (!_subScreen.tuning()) continue;
-        fullscreen_->detach(i);
-        _subScreen.tuning()->detachScreen();
-        _subScreen.setTuning(nullptr);
+        if (_subScreen.tuning())
+        {
+          fullscreen_->detach(i);
+          _subScreen.tuning()->detachScreen();
+          _subScreen.setTuning(nullptr);
+        }
         ++i;
       }
       screenSetup_.update();

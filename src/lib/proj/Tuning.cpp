@@ -24,7 +24,17 @@ namespace omni
 
     void Tuning::setScreen(QScreen const* _screen, int _subScreenIndex)
     {
+      if (!_screen)
+        _screen = ScreenSetup::standardScreen();
+
+      auto _oldScreenSize = projector_.screen()->size();
       projector_.setScreen(_screen,_subScreenIndex);
+
+      if (_screen->size() != _oldScreenSize)
+      {
+        blendMask_.resize(
+            ScreenSetup::subScreenWidth(_screen),_screen->size().height());
+      }
     }
 
     QScreen const* Tuning::screen() const
@@ -90,7 +100,7 @@ namespace omni
     int Tuning::width() const
     {
       return !projector_.screen() ? 
-        ScreenSetup::standardScreen()->size().width() : 
+        ScreenSetup::subScreenWidth(ScreenSetup::standardScreen()) : 
         ScreenSetup::subScreenWidth(projector_.screen());
     }
 

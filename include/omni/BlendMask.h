@@ -66,6 +66,8 @@ namespace omni
     /// Returns stroke buffer (read only)
     BlendBuffer const& strokeBuffer() const;
 
+    void resize(int width, int height);
+
     /// Return void* pointer to strokebuffer data, used for OpenGL Texture
     void* strokeBufferData() const;
 

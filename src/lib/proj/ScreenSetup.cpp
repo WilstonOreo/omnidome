@@ -1,5 +1,6 @@
 #include <omni/proj/ScreenSetup.h>
 
+#include <QDebug>
 #include <QApplication>
 #include <QDesktopWidget>
 

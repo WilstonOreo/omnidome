@@ -85,6 +85,11 @@ namespace omni
   {
     return strokeBuffer_;
   }
+    
+  void BlendMask::resize(int width, int height)
+  {
+    strokeBuffer_.resize(width,height);
+  }
 
   void* BlendMask::strokeBufferData() const
   {
