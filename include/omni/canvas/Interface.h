@@ -45,6 +45,12 @@ namespace omni
         return (bounds().max() + bounds().min()) * 0.5; 
       }
 
+      /**@brief Flag which tells if this canvas supports UVW mapping modes (true by default)
+       **/
+      virtual bool supportsUVWMapping() const {
+        return true;
+      }
+
       /**@brief Returns overall extent of canvas. 
        * @detail Value is needed for defining ranges for projector positioning
        *         Is the length of the diagonal vector of the bounding box by default.

@@ -55,7 +55,10 @@ namespace omni
       /// Release shader
       void release();
 
+      /// Read mapping from stream
       virtual void fromStream(QDataStream&);
+      
+      /// Write mapping to stream
       virtual void toStream(QDataStream&) const;
 
       bool flipHorizontal() const;
@@ -64,13 +67,25 @@ namespace omni
       bool flipVertical() const;
       void setFlipVertical(bool);
 
+      /// Flag which tells if this mapping uses UVW texture coordinates (true by default)
+      inline virtual bool isUVW()
+      {
+        return true;
+      }
+
+      /// Static function to retrieve all registered mappings that support UVW coords
+      static IdSet getUVWMappings();
+      
+      /// Static function to retrieve all registered mappings that dont support UVW coords
+      static IdSet getPlanarMappings();
+
     protected:
       std::unique_ptr<QOpenGLShaderProgram> shader_;
 
 
     private:
       /**@brief Returns vertex shader source code 
-       * @detail Ss taken from file :/shaders/mapping/common.vert by default)
+       * @detail Is taken from file :/shaders/mapping/common.vert by default)
       **/
       virtual QString vertexShaderSourceCode() const;
 

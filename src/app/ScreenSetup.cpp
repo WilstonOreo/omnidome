@@ -64,7 +64,6 @@ namespace omni
     void ScreenSetup::updateScreens()
     {
       screenItems_.clear();
-      desktopRect_ = omni::proj::ScreenSetup::desktopRect();
 
       auto _screens = omni::proj::ScreenSetup::screens();
       for (auto& _screen : _screens)
@@ -77,15 +76,16 @@ namespace omni
     float ScreenSetup::scalingFactor() const 
     {
       auto _windowRect = this->rect();
-      float _rectAspect = desktopRect_.width() / desktopRect_.height();
+      QRect _desktopRect = omni::proj::ScreenSetup::desktopRect();
+      float _rectAspect = _desktopRect.width() / _desktopRect.height();
       float _windowAspect = _windowRect.width() / _windowRect.height();
 
       float _factor = 1.0f;
 
       if (_rectAspect > _windowAspect) {                
-        _factor = _windowRect.width() / desktopRect_.width();
+        _factor = _windowRect.width() / _desktopRect.width();
       } else {
-        _factor = _windowRect.height() / desktopRect_.height();
+        _factor = _windowRect.height() / _desktopRect.height();
       }
 
       return _factor * zoom();
@@ -95,11 +95,14 @@ namespace omni
     {
       auto _windowRect = this->rect();
       auto _zoom = scalingFactor();
+
+      QRect _desktopRect = omni::proj::ScreenSetup::desktopRect();
+
       return QRectF(
-          0.5*(_windowRect.width() - _zoom * (desktopRect_.width())),
-          0.5*(_windowRect.height() - _zoom * (desktopRect_.height())),
-          _zoom * desktopRect_.width(),
-          _zoom * desktopRect_.height());
+          0.5*(_windowRect.width() - _zoom * (_desktopRect.width() - _desktopRect.x())),
+          0.5*(_windowRect.height() - _zoom * (_desktopRect.height() - _desktopRect.y())),
+          _zoom * _desktopRect.width(),
+          _zoom * _desktopRect.height());
     }
 
     QRectF ScreenSetup::transformedRect(QRectF const& _rect) const

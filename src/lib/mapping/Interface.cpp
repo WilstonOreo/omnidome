@@ -85,7 +85,33 @@ namespace omni
     {
       flipVertical_ = _flipVertical;
     }
- 
+      
+    IdSet Interface::getUVWMappings()
+    {
+      IdSet _ids;
+      for (auto& _mappingId : Factory::classes()) 
+      {
+        auto& _id = _mappingId.first;
+        std::unique_ptr<Mapping> _mapping(Factory::create(_id));
+        if (_mapping->isUVW()) 
+          _ids.insert(_id);
+      }
+      return _ids;
+    }
+    
+    IdSet Interface::getPlanarMappings()
+    {
+      IdSet _ids;
+      for (auto& _mappingId : Factory::classes()) 
+      {
+        auto& _id = _mappingId.first;
+        std::unique_ptr<Mapping> _mapping(Factory::create(_id));
+        if (!_mapping->isUVW()) 
+          _ids.insert(_id);
+      }
+      return _ids;
+    }
+
     QString Interface::vertexShaderSourceCode() const
     {
       return util::fileToStr(":/shaders/mapping/common.vert");

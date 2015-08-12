@@ -10,7 +10,24 @@ namespace omni
     ScreenSetup::ScreenSetup()
     {
     }
-  
+
+    std::vector<QSize> const& ScreenSetup::screenResolutions()
+    {
+      static std::vector<QSize> _sizes;
+      if (_sizes.empty())
+        _sizes = {
+        QSize(640,480),
+        QSize(800,600),
+        QSize(1024,768),
+        QSize(1280,720),
+        QSize(1280,800),
+        QSize(1920,1080),
+        QSize(1920,1200)
+        };
+
+      return _sizes;
+    }
+
     QScreen const* ScreenSetup::standardScreen()
     {
       return QGuiApplication::primaryScreen();
@@ -18,23 +35,19 @@ namespace omni
  
     int ScreenSetup::subScreenCount(QScreen const* _screen)
     {
-      return 1;
-      auto _rect = _screen->geometry();
-      auto _s = _rect.size();
-      qreal _aspectRatio = _s.width() / qreal(_s.height());
-
-      if (_aspectRatio < 1.5) return 1;
-
-      // Detect triple head
-      size_t _subscreenCount = 3;
-      while (_rect.width() % _subscreenCount == 0)
+      // Go through list of screen resolutions and see if the
+      // current screen has subscreens
+      for (auto& _screenSize :screenResolutions())
       {
-        --_subscreenCount;
-        if (_subscreenCount == 1) break;
+        if (_screenSize.height() == _screen->geometry().height())
+        {
+          if ((_screen->geometry().width() % _screenSize.width()) == 0)
+          {
+            return _screen->geometry().width() / _screenSize.width();
+          }
+        }
       }
-      if (_subscreenCount <= 0) 
-        _subscreenCount = 1;
-      return _subscreenCount;
+      return 1;
     }
 
     int ScreenSetup::subScreenWidth(QScreen const* _screen)

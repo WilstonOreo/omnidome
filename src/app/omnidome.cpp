@@ -23,7 +23,8 @@ int main(int ac, char* av[])
 
   ui::MainWindow _w;
   _w.setWindowState(Qt::WindowMaximized);
-
+  _w.move(QApplication::primaryScreen()->geometry().topLeft());
+  _w.showFullScreen();
   if (ac > 1)
   {
     _w.openProjection(av[1]);

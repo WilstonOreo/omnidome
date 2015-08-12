@@ -38,7 +38,7 @@ namespace omni
 
       /// Deserialize from stream
       void fromStream(QDataStream&);
-      
+
       /// Serialize to stream
       void toStream(QDataStream&) const;
     

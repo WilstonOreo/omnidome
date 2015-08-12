@@ -39,6 +39,11 @@ namespace omni
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
 
+      bool isUVW() const
+      {
+        return false;
+      }
+
     private:
       QVector2D offset_;
       QVector2D stretch_;

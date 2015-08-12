@@ -142,7 +142,6 @@ namespace omni
 
       float zoom_ = 0.9;
       std::map<QScreen const*,std::unique_ptr<Item>> screenItems_;
-      QRectF desktopRect_;
       omni::proj::ScreenSetup* setup_;
       Session* session_ = nullptr;
     };
