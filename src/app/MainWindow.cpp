@@ -299,7 +299,6 @@ void MainWindow::closeEvent(QCloseEvent * _event)
     return;
   }
 
-  qDebug() << "Destroy ScreenSetup";
   // Delete screen setup manually, so all fullscreen widgets are free'd too
   screenSetup_->hide();
   screenSetup_->setParent(nullptr);
@@ -329,12 +328,18 @@ void MainWindow::buttonState()
   ui_->btnBlend->setVisible(_hasSession);
   ui_->btnExport->setVisible(_hasSession);
 
+  if (session_->mode() == Session::Mode::BLEND) 
+  {
+    ui_->grpInputs->setVisible(session_->blendMode() == Session::BlendMode::INPUT);
+    ui_->grpMapping->setVisible((session_->blendMode() == Session::BlendMode::INPUT)
+        && session_->inputs().current());
+  }
+
   if (_hasSession)
   {
     bool _hasTunings = session_->tunings().size() > 0;
-    bool _hasInput = (session_->inputs().size() > 0) && (session_->inputs().currentIndex() >= 0);
-    ui_->btnWarp->setEnabled(_hasTunings && _hasInput);
-    ui_->btnBlend->setEnabled(_hasTunings && _hasInput);
+    ui_->btnWarp->setEnabled(_hasTunings);
+    ui_->btnBlend->setEnabled(_hasTunings);
     ui_->btnExport->setEnabled(_hasTunings);
   }
 }
@@ -429,7 +434,7 @@ void MainWindow::setMode(Session::Mode _mode)
   case Session::Mode::WARP:
     ui_->grpCanvas->hide();
     ui_->grpInputs->show();
-    ui_->grpMapping->show();  
+    ui_->grpMapping->setVisible(session_->inputs().current());
     break;
 
   case Session::Mode::BLEND:

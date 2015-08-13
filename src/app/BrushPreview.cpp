@@ -11,6 +11,8 @@ BrushPreview::BrushPreview(QWidget* _parent) :
   QWidget(_parent)
 {
   update(brush_.feather(),brush_.invert());
+  setMinimumSize(64 / devicePixelRatio(),64 / devicePixelRatio());
+  setMaximumSize(128 / devicePixelRatio(),128 / devicePixelRatio());
 }
       
 void BrushPreview::update(float _feather, bool _invert)
