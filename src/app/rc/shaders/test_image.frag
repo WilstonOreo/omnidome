@@ -161,7 +161,7 @@ void main(void)
   float leaders = clamp((2.0 - ruler()) * (abs(sin(PI*1.0*(ruler_pos.x - pos.x)))),0.0,2.0) ;
   float coarseGrid = max(clamp(1.0 - grid(vec2(18.0,18.0),0.1),0.0,1.0),
     clamp(1.0 - grid(vec2(2.0,2.0),0.04),0.0,1.0));
-  float fineGrid = clamp(4.0 - grid(vec2(360.0,360.0),0.125),0.0,4.0);
+  float fineGrid = clamp(6.0 - grid(vec2(90.0,90.0),0.1),0.0,6.0);
 
   vec4 color = vec4(vec3(coarseGrid + fineGrid*0.10)*vec3(rgb) + vec3(leaders * 0.5 + leaders * fineGrid * 0.05) + pow(1.0 - sin(pos.y*PI) ,10.0),1.0);
 

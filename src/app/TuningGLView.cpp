@@ -563,6 +563,12 @@ namespace omni
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         _.glClearColor(0.0,0.0,0.0,1.0);
       });
+        
+      if (!session()->hasOutput())
+      {
+        drawTestCard();
+        return;
+      }
 
       switch (session()->mode())
       {
@@ -570,11 +576,7 @@ namespace omni
         drawTestCard();
         break;
       case Session::Mode::PROJECTIONSETUP:
-        if (!session()->hasOutput())
-          drawTestCard();
-        else
-          drawCanvas();
-        break;
+        drawCanvas();
       case Session::Mode::WARP:
         drawWarpGrid();
         break;

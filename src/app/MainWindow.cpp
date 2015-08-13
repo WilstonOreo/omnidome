@@ -428,14 +428,15 @@ void MainWindow::setMode(Session::Mode _mode)
 
   case Session::Mode::WARP:
     ui_->grpCanvas->hide();
-    ui_->grpInputs->hide();
-    ui_->grpMapping->hide();  
+    ui_->grpInputs->show();
+    ui_->grpMapping->show();  
     break;
 
   case Session::Mode::BLEND:
     ui_->grpCanvas->hide();
-    ui_->grpInputs->hide();
-    ui_->grpMapping->hide();
+    ui_->grpInputs->setVisible(session_->blendMode() == Session::BlendMode::INPUT);
+    ui_->grpMapping->setVisible((session_->blendMode() == Session::BlendMode::INPUT)
+        && session_->inputs().current());
     break;
 
   case Session::Mode::EXPORT:
