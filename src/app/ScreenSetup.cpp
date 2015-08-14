@@ -436,6 +436,7 @@ namespace omni
         fullscreen_->showDragWidget(hoverIndex_,_color);
       } else
       {
+        fullscreen_->hideDragWidget();
         hoverIndex_ = -1;
       }
     }
