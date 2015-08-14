@@ -35,7 +35,7 @@ common_cxx_flags()
 
 ########### Plugins ############
 
-include(src/plugins/gstreamer/gstreamer.cmake)
+#include(src/plugins/gstreamer/gstreamer.cmake)
 
 ################################
 
@@ -70,11 +70,6 @@ ADD_EXECUTABLE(test_Projector
 
 TARGET_LINK_LIBRARIES(test_Projector ${Qt5_LIBRARIES} ${omni_extra_libs} omni )
 
-
-ADD_EXECUTABLE(test_ScreenSetup
-  ./src/test/ScreenSetup.cpp 
-  ${omni_src} )
-TARGET_LINK_LIBRARIES(test_ScreenSetup ${Qt5_LIBRARIES} ${omni_extra_libs} omni )
 
 ADD_EXECUTABLE(test_GL
   ./src/test/GL.cpp 
