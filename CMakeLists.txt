@@ -39,7 +39,7 @@ common_cxx_flags()
 
 ################################
 
-setup_qt(5 4)
+setup_qt(5 4 ${CMAKE_SOURCE_DIR}/../Qt)
 QT5_WRAP_CPP(omni_headers_moc ${omni_headers})
 QT5_WRAP_CPP(slim_widgetz_headers_moc ${slim_widgetz_header_files})
 QT5_ADD_RESOURCES(omni_resources_rcc ${omni_resources})

@@ -1,15 +1,5 @@
-# Bigrep Qt Setup 
+# Qt Setup 
 include(CMakeParseArguments)
-
-# Qt4 Setup
-MACRO(setup_qt4)
-  MESSAGE(STATUS "Using Qt4")
-  find_package(Qt4 REQUIRED)
-  SET(QT_USE_QTOPENGL TRUE)
-  INCLUDE(${QT_USE_FILE})
-  ADD_DEFINITIONS(${QT_DEFINITIONS})
-
-ENDMACRO(setup_qt4)
 
 # qt5_wrap_ui(outfiles inputfile ... )
 function(QT5_GENERATE_UI outfiles )
@@ -61,16 +51,20 @@ MACRO(find_qt5_component COMPONENT_NAME)
 ENDMACRO(find_qt5_component COMPONENT_NAME)
 
 # Qt5 Setup
-MACRO(setup_qt5)
+MACRO(setup_qt MAJOR_VERSION MINOR_VERSION FOLDER)
   SET(_moc    ${CMAKE_SOURCE_DIR}/moc )
+  set(QT_MAJOR_VERSION ${MAJOR_VERSION})
+  set(QT_MINOR_VERSION ${MINOR_VERSION})
+  set(QT_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}")
+  MESSAGE(STATUS "Using Qt ${QT_VERSION}")
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(QT5_LOCATION ${CMAKE_SOURCE_DIR}/../Qt/${QT_VERSION}/clang_64)
-    include_directories({CMAKE_SOURCE_DIR}/../Qt/${QT_VERSION}/Src/qtbase/include)
+    set(QT5_LOCATION ${FOLDER}/${QT_VERSION}/clang_64)
+    include_directories(${FOLDER}/${QT_VERSION}/Src/qtbase/include)
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(QT5_LOCATION ${CMAKE_SOURCE_DIR}/../Qt/${QT_VERSION}/gcc_64)
+    set(QT5_LOCATION ${FOLDER}/${QT_VERSION}/gcc_64)
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   set(QT_QMAKE_EXECUTABLE ${QT5_LOCATION}/bin/qmake)
@@ -85,28 +79,12 @@ MACRO(setup_qt5)
   find_qt5_component(Widgets)
   find_qt5_component(OpenGL)
 
-  #set(Qt5_LIBRARIES Qt5::Widgets Qt5::Core Qt5::Gui Qt5::OpenGL) 
-  #
   # The Qt5Widgets_INCLUDES also includes the include directories for
   # dependencies QtCore and QtGui
   include_directories(${QT_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/moc)
 
   # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
   add_definitions(${Qt5Widgets_DEFINITIONS})
-ENDMACRO(setup_qt5)
-
-MACRO(setup_qt MAJOR_VERSION MINOR_VERSION)
-  set(QT_MAJOR_VERSION ${MAJOR_VERSION})
-  set(QT_MINOR_VERSION ${MINOR_VERSION})
-  set(QT_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}")
-  MESSAGE(STATUS "Using Qt ${QT_VERSION}")
-
-  if (${QT_MAJOR_VERSION} MATCHES "5")
-    setup_qt5()
-  elseif (${QT_MAJOR_VERSION} MATCHES "4")
-    setup_qt4()
-  endif()
-
 ENDMACRO(setup_qt MAJOR_VERSION MINOR_VERSION)
 
 

@@ -68,4 +68,3 @@ You can start omnidome with
 This is a preliminary release.
 Omnidome was only successfully compiled on MacOSX and Ubuntu 14.04.
 
-
