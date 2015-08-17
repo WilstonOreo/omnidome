@@ -55,7 +55,7 @@ namespace slim
     void init();
 
     template<typename T>
-    T* createEditor()
+    inline T* createEditor()
     {
       if (editor_) return nullptr;
 

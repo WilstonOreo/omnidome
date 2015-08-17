@@ -12,11 +12,7 @@ MACRO(set_version_string dir)
 ENDMACRO(set_version_string dir)
 
 MACRO(common_cxx_flags)
-  IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  # Set clang as standard compiler
   ADD_DEFINITIONS(-fPIC -fsigned-char -Wall -std=c++11 -Wno-missing-braces)
-
-  ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   IF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
     ADD_DEFINITIONS("-g -DDEBUG -O1")
@@ -24,7 +20,13 @@ MACRO(common_cxx_flags)
 
   IF(${CMAKE_BUILD_TYPE} MATCHES "Release")
     ADD_DEFINITIONS("-O3")
+    
+    IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  # Set clang as standard compiler
     set(CMAKE_EXE_LINKER_FLAGS "-s")  ## Strip binary
+    ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+    
   ENDIF(${CMAKE_BUILD_TYPE} MATCHES "Release")
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
