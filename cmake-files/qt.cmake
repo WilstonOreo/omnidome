@@ -50,7 +50,7 @@ MACRO(find_qt5_component COMPONENT_NAME)
 
 ENDMACRO(find_qt5_component COMPONENT_NAME)
 
-FUNCTION(detect_qt)
+MACRO (detect_qt)
     UNSET(QT5_LOCATION)
 
     IF(NOT QT_PATH)
@@ -81,22 +81,31 @@ FUNCTION(detect_qt)
             MESSAGE(STATUS "Searching for Qt ${_VERSION} in ${_PATH}")
             setup_qt(${_VERSION} ${_PATH})
             if(QT_FOUND)
-                set(QT_PATH ${_PATH} PARENT_SCOPE)
-                set(QT5_LOCATION ${QT5_LOCATION} PARENT_SCOPE)
-                set(QT_FOUND ${QT_FOUND} PARENT_SCOPE)
+                # set(QT_PATH ${_PATH} PARENT_SCOPE)
+                # set(QT5_LOCATION ${QT5_LOCATION} PARENT_SCOPE)
+                #set(QT_FOUND ${QT_FOUND} PARENT_SCOPE)
+  
+                #set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} PARENT_SCOPE)
+                #set(QT_MOC_EXECUTABLE ${QT_MOC_EXECUTABLE} PARENT_SCOPE)
+                #set(QT_RCC_EXECUTABLE ${QT_RCC_EXECUTABLE} PARENT_SCOPE)
+                #set(QT_UIC_EXECUTABLE ${QT_UIC_EXECUTABLE} PARENT_SCOPE)
+                #set(QT_INCLUDE_DIR ${QT_INCLUDE_DIR} PARENT_SCOPE )
+                #set(QT_LIBRARY_DIR ${QT_LIBRARY_DIR} PARENT_SCOPE )
+  
+                #SET(_moc ${_moc} PARENT_SCOPE )
+
                 return()
             endif()
         endforeach()
     endforeach()
-            
-ENDFUNCTION()
+ENDMACRO()
 
 
 
 
 # Qt5 Setup
 MACRO(setup_qt VERSION FOLDER)
-  SET(_moc    ${CMAKE_SOURCE_DIR}/moc )
+  SET(_moc ${CMAKE_SOURCE_DIR}/moc )
 
   SET(QT_FOUND FALSE)
   SET(QT_VERSION ${VERSION})
@@ -115,7 +124,7 @@ MACRO(setup_qt VERSION FOLDER)
   set(QT_RCC_EXECUTABLE "${QT5_LOCATION}/bin/rcc" )
   set(QT_UIC_EXECUTABLE "${QT5_LOCATION}/bin/uic" )
   set(QT_INCLUDE_DIR "${QT5_LOCATION}/include" )
-  set(QT_LIBRARY_DIR "${QT5_LOCATION}/lib")
+  set(QT_LIBRARY_DIR "${QT5_LOCATION}/lib" )
 
   if(IS_DIRECTORY ${QT5_LOCATION})
     find_qt5_component(Core)
