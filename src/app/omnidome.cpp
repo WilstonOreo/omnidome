@@ -21,6 +21,7 @@
 #include <omni/ui/MainWindow.h>
 
 #include <QApplication>
+#include <QDir>
 #include <QFile>
 
 using namespace std;
@@ -43,6 +44,7 @@ int main(int ac, char* av[])
   ui::MainWindow _w;
   _w.setWindowState(Qt::WindowMaximized);
   _w.move(QApplication::primaryScreen()->geometry().topLeft());
+
   if (ac > 1)
   {
     _w.openProjection(av[1]);

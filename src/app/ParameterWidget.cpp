@@ -34,7 +34,7 @@ namespace omni
 
 
     void ParameterWidget::clear()
-    {   
+    { 
       this->locked([&]() 
       {
         parameters_.clear();

@@ -26,8 +26,7 @@
 #include <QTimer>
 #include <chrono>
 #include <type_traits>
-#include <omni/util.h>
-
+#include <omni/util.h> 
 
 using namespace omni::ui;
 
