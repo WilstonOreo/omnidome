@@ -58,8 +58,9 @@ From the terminal, go in to omnidome folder, and run
 $ cmake -DCMAKE_BUILD_TYPE=Release .  && make
 
 You can start omnidome with
-./bin/Release/omnidome
+./bin/Release/omnidome.app/Contents/MacOS/omnidome
 
+The app bundle "omnidome.app" is in ./bin/Release
 
 
 2 Release Notes
