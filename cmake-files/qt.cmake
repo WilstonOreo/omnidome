@@ -53,13 +53,15 @@ ENDMACRO(find_qt5_component COMPONENT_NAME)
 FUNCTION(detect_qt)
     UNSET(QT5_LOCATION)
 
-    IF(NOT DEFINED ${QT_PATH})
+    IF(NOT QT_PATH)
         set(QT_PATHS "")
         list(APPEND QT_PATHS "${CMAKE_SOURCE_DIR}/../Qt")
         list(APPEND QT_PATHS "$ENV{HOME}/Qt")
     ELSEIF()
-        set(QT_PATHS ${QT_PATH})
+        set(QT_PATHS "${QT_PATH}")
     ENDIF()
+    
+    message(STATUS ${QT_PATHS})
 
     IF(NOT DEFINED ${QT_VERSION})
         # Default versions to test
@@ -76,13 +78,17 @@ FUNCTION(detect_qt)
 
         # Scan though list of available version
         foreach(_VERSION ${QT_VERSIONS})
+            MESSAGE(STATUS "Searching for Qt ${_VERSION} in ${_PATH}")
             setup_qt(${_VERSION} ${_PATH})
-
-            if(DEFINED ${QT5_LOCATION})
+            if(QT_FOUND)
+                set(QT_PATH ${_PATH} PARENT_SCOPE)
+                set(QT5_LOCATION ${QT5_LOCATION} PARENT_SCOPE)
+                set(QT_FOUND ${QT_FOUND} PARENT_SCOPE)
                 return()
             endif()
         endforeach()
     endforeach()
+            
 ENDFUNCTION()
 
 
@@ -92,6 +98,7 @@ ENDFUNCTION()
 MACRO(setup_qt VERSION FOLDER)
   SET(_moc    ${CMAKE_SOURCE_DIR}/moc )
 
+  SET(QT_FOUND FALSE)
   SET(QT_VERSION ${VERSION})
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -126,6 +133,7 @@ MACRO(setup_qt VERSION FOLDER)
     set(QT_VERSION "${VERSION}")
                 
     MESSAGE(STATUS "Using Qt ${QT_VERSION}")
+    set(QT_FOUND TRUE)
   elseif()
     unset(QT5_LOCATION)
   endif()

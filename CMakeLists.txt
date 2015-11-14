@@ -67,8 +67,15 @@ ADD_DEFINITIONS()
 #include(src/plugins/input/gstreamer/gstreamer.cmake)
 
 ################################
-
+#set(QT_PATH Test/Qt)
 detect_qt()
+
+if(NOT QT_FOUND) 
+    MESSAGE(FATAL_ERROR "Qt Framework was not found. You might set QT_PATH manually.")
+    return()
+endif()
+
+
 QT5_WRAP_CPP(omni_headers_moc ${omni_headers})
 QT5_WRAP_CPP(slim_widgetz_headers_moc ${slim_widgetz_header_files})
 QT5_ADD_RESOURCES(omni_resources_rcc ${omni_resources})
