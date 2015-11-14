@@ -16,6 +16,17 @@ import(
 set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 
 
+################################
+#set(QT_PATH Test/Qt)
+detect_qt()
+#setup_qt(5.5 ${CMAKE_SOURCE_DIR}/../Qt )
+
+if(NOT QT_FOUND) 
+    MESSAGE(FATAL_ERROR "Qt Framework was not found. You might set QT_PATH manually.")
+    return()
+endif()
+
+
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # use, i.e. don't skip the full RPATH for the build tree
@@ -66,15 +77,6 @@ ADD_DEFINITIONS()
 
 #include(src/plugins/input/gstreamer/gstreamer.cmake)
 
-################################
-#set(QT_PATH Test/Qt)
-detect_qt()
-#setup_qt(5.5 ${CMAKE_SOURCE_DIR}/../Qt )
-
-if(NOT QT_FOUND) 
-    MESSAGE(FATAL_ERROR "Qt Framework was not found. You might set QT_PATH manually.")
-    return()
-endif()
 
 
 QT5_WRAP_CPP(omni_headers_moc ${omni_headers})
@@ -121,7 +123,6 @@ ADD_EXECUTABLE(test_Serialization
   ${omni_src} )
 TARGET_LINK_LIBRARIES(test_Serialization ${Qt5_LIBRARIES} ${omni_extra_libs}  omni )
 
-
 # Main Application
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
@@ -140,8 +141,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     MACOSX_PACKAGE_LOCATION Resources
   )
 
-
-  ADD_EXECUTABLE(omnidome MACOSX_BUNDLE ./src/app/omnidome.cpp ${omni_src} )
+  ADD_EXECUTABLE(omnidome MACOSX_BUNDLE ${CMAKE_SOURCE_DIR}/src/app/omnidome.cpp ${omni_src} )
   set_target_properties(omnidome PROPERTIES
                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/cmake-files/Info.plist")
   TARGET_LINK_LIBRARIES(omnidome omni ${omni_extra_libs} ${Qt5_LIBRARIES} )

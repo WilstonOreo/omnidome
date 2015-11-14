@@ -78,23 +78,9 @@ MACRO (detect_qt)
 
         # Scan though list of available version
         foreach(_VERSION ${QT_VERSIONS})
-            MESSAGE(STATUS "Searching for Qt ${_VERSION} in ${_PATH}")
-            setup_qt(${_VERSION} ${_PATH})
-            if(QT_FOUND)
-                # set(QT_PATH ${_PATH} PARENT_SCOPE)
-                # set(QT5_LOCATION ${QT5_LOCATION} PARENT_SCOPE)
-                #set(QT_FOUND ${QT_FOUND} PARENT_SCOPE)
-  
-                #set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} PARENT_SCOPE)
-                #set(QT_MOC_EXECUTABLE ${QT_MOC_EXECUTABLE} PARENT_SCOPE)
-                #set(QT_RCC_EXECUTABLE ${QT_RCC_EXECUTABLE} PARENT_SCOPE)
-                #set(QT_UIC_EXECUTABLE ${QT_UIC_EXECUTABLE} PARENT_SCOPE)
-                #set(QT_INCLUDE_DIR ${QT_INCLUDE_DIR} PARENT_SCOPE )
-                #set(QT_LIBRARY_DIR ${QT_LIBRARY_DIR} PARENT_SCOPE )
-  
-                #SET(_moc ${_moc} PARENT_SCOPE )
-
-                return()
+            if(NOT QT_FOUND)
+                MESSAGE(STATUS "Searching for Qt ${_VERSION} in ${_PATH}")
+                setup_qt(${_VERSION} ${_PATH})
             endif()
         endforeach()
     endforeach()
