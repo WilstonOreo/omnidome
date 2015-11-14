@@ -50,41 +50,86 @@ MACRO(find_qt5_component COMPONENT_NAME)
 
 ENDMACRO(find_qt5_component COMPONENT_NAME)
 
+FUNCTION(detect_qt)
+    UNSET(QT5_LOCATION)
+
+    IF(NOT DEFINED ${QT_PATH})
+        set(QT_PATHS "")
+        list(APPEND QT_PATHS "${CMAKE_SOURCE_DIR}/../Qt")
+        list(APPEND QT_PATHS "$ENV{HOME}/Qt")
+    ELSEIF()
+        set(QT_PATHS ${QT_PATH})
+    ENDIF()
+
+    IF(NOT DEFINED ${QT_VERSION})
+        # Default versions to test
+        set(QT_VERSIONS "5.5;5.4;5.3;5.6;5.7")
+    ELSEIF()
+        set(QT_VERSIONS ${QT_VERSION})
+    ENDIF()
+        
+    # Scan through list of candidate paths
+    foreach(_PATH ${QT_PATHS})
+        if (NOT EXISTS ${_PATH})
+            continue()
+        endif()
+
+        # Scan though list of available version
+        foreach(_VERSION ${QT_VERSIONS})
+            setup_qt(${_VERSION} ${_PATH})
+
+            if(DEFINED ${QT5_LOCATION})
+                return()
+            endif()
+        endforeach()
+    endforeach()
+ENDFUNCTION()
+
+
+
+
 # Qt5 Setup
-MACRO(setup_qt MAJOR_VERSION MINOR_VERSION FOLDER)
+MACRO(setup_qt VERSION FOLDER)
   SET(_moc    ${CMAKE_SOURCE_DIR}/moc )
-  set(QT_MAJOR_VERSION ${MAJOR_VERSION})
-  set(QT_MINOR_VERSION ${MINOR_VERSION})
-  set(QT_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}")
-  MESSAGE(STATUS "Using Qt ${QT_VERSION}")
+
+  SET(QT_VERSION ${VERSION})
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(QT5_LOCATION ${FOLDER}/${QT_VERSION}/clang_64)
+    set(QT5_LOCATION "${FOLDER}/${QT_VERSION}/clang_64")
     include_directories(${FOLDER}/${QT_VERSION}/Src/qtbase/include)
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(QT5_LOCATION ${FOLDER}/${QT_VERSION}/gcc_64)
+    set(QT5_LOCATION "${FOLDER}/${QT_VERSION}/gcc_64")
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-  set(QT_QMAKE_EXECUTABLE ${QT5_LOCATION}/bin/qmake)
-  set(QT_MOC_EXECUTABLE ${QT5_LOCATION}/bin/moc)
-  set(QT_RCC_EXECUTABLE ${QT5_LOCATION}/bin/rcc)
-  set(QT_UIC_EXECUTABLE ${QT5_LOCATION}/bin/uic)
-  set(QT_INCLUDE_DIR ${QT5_LOCATION}/include)
-  set(QT_LIBRARY_DIR ${QT5_LOCATION}/lib)
+  set(QT_QMAKE_EXECUTABLE "${QT5_LOCATION}/bin/qmake" )
+  set(QT_MOC_EXECUTABLE "${QT5_LOCATION}/bin/moc" )
+  set(QT_RCC_EXECUTABLE "${QT5_LOCATION}/bin/rcc" )
+  set(QT_UIC_EXECUTABLE "${QT5_LOCATION}/bin/uic" )
+  set(QT_INCLUDE_DIR "${QT5_LOCATION}/include" )
+  set(QT_LIBRARY_DIR "${QT5_LOCATION}/lib")
 
-  find_qt5_component(Core)
-  find_qt5_component(Gui)
-  find_qt5_component(Widgets)
-  find_qt5_component(OpenGL)
+  if(IS_DIRECTORY ${QT5_LOCATION})
+    find_qt5_component(Core)
+    find_qt5_component(Gui)
+    find_qt5_component(Widgets)
+    find_qt5_component(OpenGL)
 
-  # The Qt5Widgets_INCLUDES also includes the include directories for
-  # dependencies QtCore and QtGui
-  include_directories(${QT_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/moc)
+    # The Qt5Widgets_INCLUDES also includes the include directories for
+    # dependencies QtCore and QtGui
+    include_directories(${QT_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/moc)
 
-  # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
-  add_definitions(${Qt5Widgets_DEFINITIONS})
+    # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
+    add_definitions(${Qt5Widgets_DEFINITIONS})
+  
+    set(QT_VERSION "${VERSION}")
+                
+    MESSAGE(STATUS "Using Qt ${QT_VERSION}")
+  elseif()
+    unset(QT5_LOCATION)
+  endif()
+
 ENDMACRO(setup_qt MAJOR_VERSION MINOR_VERSION)
 
 

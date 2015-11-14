@@ -68,7 +68,7 @@ ADD_DEFINITIONS()
 
 ################################
 
-setup_qt(5 5 ${CMAKE_SOURCE_DIR}/../Qt)
+detect_qt()
 QT5_WRAP_CPP(omni_headers_moc ${omni_headers})
 QT5_WRAP_CPP(slim_widgetz_headers_moc ${slim_widgetz_header_files})
 QT5_ADD_RESOURCES(omni_resources_rcc ${omni_resources})
@@ -91,8 +91,6 @@ if(DEFINED OMNI_GSTREAMER)
   omni_gstreamer_test()
 endif()
 
-
-message(STATUS ${omni_extra_libs})
 ADD_EXECUTABLE(test_Projector
   ./src/test/Projector.cpp 
   ${omni_src} )
