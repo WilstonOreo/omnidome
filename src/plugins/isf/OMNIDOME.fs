@@ -81,8 +81,8 @@
     You should have received a copy of the GNU General Public License
     along with DomeSimulator.  If not, see <http://www.gnu.org/licenses/>.
 
-    Omnidome is free for non-commercial use. If you want to use it 
-    commercially, you should contact the author 
+    Omnidome is free for non-commercial use. If you want to use it
+    commercially, you should contact the author
     Michael Winkelmann aka Wilston Oreo by mail:
     me@wilstonoreo.net
 **************************************************************************/
@@ -134,8 +134,8 @@ mat3 rotateAroundY( in float angle )
 /// Calculate rotation by given yaw and pitch angles (in degrees!)
 mat3 rotationMatrix(in float yaw, in float pitch, in float roll)
 {
-  return rotateAroundZ(deg2rad(yaw)) * 
-         rotateAroundY(deg2rad(-pitch)) * 
+  return rotateAroundZ(deg2rad(yaw)) *
+         rotateAroundY(deg2rad(-pitch)) *
          rotateAroundX(deg2rad(roll));
 }
 
@@ -162,7 +162,7 @@ float map_fisheye(out vec2 texCoords)
   float theta = atan(n.x,n.y);
   texCoords.s = fract(0.5 * (1.0 + r* cos(theta)));
   texCoords.t = fract(0.5 * (1.0 + r * sin(theta)));
-  return 1.0; 
+  return 1.0;
 }
 
 float map_cube(out vec2 texCoords)
@@ -198,7 +198,7 @@ float map_cube(out vec2 texCoords)
 }
 
 float mapping(out vec2 texCoords)
-{ 
+{
 #ifdef MAP_EQUIRECTANGULAR
   if (map_mode == MAP_EQUIRECTANGULAR)
   {
@@ -210,7 +210,7 @@ float mapping(out vec2 texCoords)
   {
     return map_fisheye(texCoords);
   }
-#endif 
+#endif
 #ifdef MAP_CUBE
   if (map_mode == MAP_CUBE)
   {
@@ -234,13 +234,13 @@ void main()
     vec2 blendmask = vec2(uv.x*s.x,uv.y*s.y/3.0);
 
     vec3 n = texture2DRect(uvw_map,uvw_upper).xyz*2.0 - 1.0 + texture2DRect(uvw_map,uvw_lower).xyz*2.0/255.0 - 1.0 / 255.0;
-    
-    
-  if (length(n) <= 0.01) 
+
+
+  if (length(n) <= 0.01)
   {
     return;
   }
-  uvw = uvwize(n);
+  uvw = normalize(n);
 
   vec2 texCoords;
   if (mapping(texCoords) < 0.0)
@@ -250,14 +250,13 @@ void main()
 
   if (map_mirror_horizontal)
   {
-    texCoords.s = 1.0 - texCoords.s; 
+    texCoords.s = 1.0 - texCoords.s;
   }
-  if (map_mirror_vertical)    
+  if (map_mirror_vertical)
   {
-    texCoords.t = 1.0 - texCoords.t; 
+    texCoords.t = 1.0 - texCoords.t;
   }
-  
+
   float alpha =  texture2DRect(uvw_map,blendmask).r;
   gl_FragColor = vec4(texture2DRect(image, texCoords * _image_imgSize).rgb*alpha,1.0);
 }
-
