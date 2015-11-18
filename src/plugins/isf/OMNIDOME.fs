@@ -8,11 +8,11 @@
     "INPUTS":
     [
         {
-            "NAME": "Input Image",
+            "NAME": "image",
             "TYPE": "image"
         },
         {
-            "NAME": "UVW Map",
+            "NAME": "uvw_map",
             "TYPE": "image"
         },
 
@@ -219,7 +219,7 @@ float mapping(out vec2 texCoords)
 #endif
   return -1.0;
 }
-#endif
+//#endif
 
 
 void main()
