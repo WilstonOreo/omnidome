@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -29,21 +29,25 @@ namespace omni
   {
     /**@brief A fullsphere dome with z offset and squeeze factor
      **/
-    class InflatableDome : 
-      public FullSphere, 
+    class InflatableDome :
+      public FullSphere,
       Registrar<InflatableDome>
     {
-    public: 
+    public:
       OMNI_TYPEID("InflatableDome")
 
       InflatableDome();
       ~InflatableDome();
-      
+
       float squeeze() const;
       void setSqueeze(float _squeeze);
 
       void draw() const;
       void update();
+
+      inline MappingMode defaultMappingMode() const {
+          return MappingMode::EQUIRECTANGULAR;
+      }
 
     private:
       float squeeze_ = 1.0;

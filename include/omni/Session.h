@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -36,7 +36,7 @@ namespace omni
   {
   public:
     /// General mode of the User Interface
-    enum class Mode 
+    enum class Mode
     {
       SCREENSETUP, // Mode for setup screens
       PROJECTIONSETUP, // Mode for setting up projectors and canvas
@@ -51,9 +51,9 @@ namespace omni
     {
       COLOR, // Displays blend mask with color of tuning
       WHITE, // Displays white blend mask
-      INPUT // Displays blend mask with current input 
+      INPUT // Displays blend mask with current input
     };
-    
+
     /// Default constructor
     Session();
     ~Session();
@@ -67,16 +67,19 @@ namespace omni
     /// Makes new mapping with given type Id
     Mapping* setMapping(Id const& _typeId);
 
+    /// Set mapping by given mapping mode
+    Mapping* setMapping(MappingMode _mode);
+
     /// Returns pointer to mapping
     Mapping* mapping();
 
     /// Returns pointer to mapping (const version)
     Mapping const* mapping() const;
 
-    /// Returns reference to list of inputs 
+    /// Returns reference to list of inputs
     InputList& inputs();
-    
-    /// Returns const reference to list of inputs 
+
+    /// Returns const reference to list of inputs
     InputList const& inputs() const;
 
     /// Makes new canvas with given type id and returns pointer if successful
@@ -84,14 +87,14 @@ namespace omni
 
     /// Return pointer to canvas
     Canvas* canvas();
- 
+
     /// Return pointer to canvas (const version)
     Canvas const* canvas() const;
 
     /// Return reference to current screen setup
-    ScreenSetup& screenSetup(); 
+    ScreenSetup& screenSetup();
 
-    /// Return const reference to current screen setup 
+    /// Return const reference to current screen setup
     ScreenSetup const& screenSetup() const;
 
     /// Return current mode
@@ -114,7 +117,7 @@ namespace omni
 
     /// Save session to file
     void save(QString const& _filename) const;
-    
+
     /// Load session to file
     void load(QString const& _filename);
 
@@ -127,13 +130,13 @@ namespace omni
 
     /// Owning pointer for mapping
     std::unique_ptr<Mapping> mapping_;
-    
-    /// List with all inputs (e.g. images, videos etc) 
+
+    /// List with all inputs (e.g. images, videos etc)
     InputList inputs_;
-    
+
     /// Owning pointer for canvas
     std::unique_ptr<Canvas> canvas_;
-    
+
     /// Current screen setup
     ScreenSetup screenSetup_;
 

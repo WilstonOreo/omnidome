@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -27,8 +27,8 @@ namespace omni
 {
   namespace canvas
   {
-    /// A planar canvas 
-    class Planar : 
+    /// A planar canvas
+    class Planar :
       public Canvas,
       Registrar<Planar>
     {
@@ -37,26 +37,34 @@ namespace omni
 
       Planar();
       ~Planar();
-      
+
       void draw() const;
       void drawAux() const;
 
       float width() const;
       void setWidth(float _width);
-      
+
       float height() const;
       void setHeight(float _height);
 
       QVector3D center() const;
       void setCenter(QVector3D const&);
-      
+
       EulerAngles& angles();
       EulerAngles const& angles() const;
-       
+
       omni::Box bounds() const;
 
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
+
+      inline MappingModeSet supportedMappingModes() const {
+          return MappingModeSet({ MappingMode::PLANAR });
+      }
+
+      inline MappingMode defaultMappingMode() const {
+          return MappingMode::PLANAR;
+      }
 
     private:
       float width_ = 1.0, height_ = 1.0;

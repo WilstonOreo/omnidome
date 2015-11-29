@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -99,14 +99,15 @@ MainWindow::MainWindow( QMainWindow *parent) :
     // Connect projector position change with view update
     connect(ui_->tuningList,SIGNAL(projectorSetupChanged()),this,SLOT(modified()));
     connect(ui_->tuningList,SIGNAL(currentIndexChanged(int)),this,SLOT(modified()));
-    
+
     // Detach tuning from screen setup when it was removed
     connect(ui_->tuningList,SIGNAL(tuningToBeRemoved(omni::ui::proj::Tuning*)),
         screenSetup_.get(),SLOT(detachTuning(omni::ui::proj::Tuning*)));
 
     // Connect canvas parameter change with view update
     connect(ui_->grpCanvas,SIGNAL(canvasChanged()),this,SLOT(modified()));
-    connect(ui_->grpCanvas,SIGNAL(canvasTypeChanged()),this,SLOT(modified()));
+    connect(ui_->grpCanvas,SIGNAL(canvasTypeChanged()),
+        ui_->grpMapping,SLOT(setDefaultMappingForCanvas()));
     connect(ui_->grpCanvas,SIGNAL(displayInputToggled(bool)),projectionSetup_.get(),SLOT(setDisplayInput(bool)));
 
     // Update all views when input has changed
@@ -116,7 +117,7 @@ MainWindow::MainWindow( QMainWindow *parent) :
     connect(ui_->grpMapping,SIGNAL(mappingChanged()),this,SLOT(modified()));
     connect(ui_->grpMapping,SIGNAL(mappingTypeChanged()),this,SLOT(modified()));
 
-    
+
     // Update all views when warp grid has changed
     connect(ui_->grpWarp,SIGNAL(warpGridChanged()),this,SLOT(modified()));
 
@@ -140,8 +141,6 @@ MainWindow::MainWindow( QMainWindow *parent) :
 MainWindow::~MainWindow()
 {
 }
-
-
 
 void MainWindow::setupSession()
 {
@@ -347,7 +346,7 @@ void MainWindow::buttonState()
   ui_->btnBlend->setVisible(_hasSession);
   ui_->btnExport->setVisible(_hasSession);
 
-  if (session_->mode() == Session::Mode::BLEND) 
+  if (session_->mode() == Session::Mode::BLEND)
   {
     ui_->grpInputs->setVisible(session_->blendMode() == Session::BlendMode::INPUT);
     ui_->grpMapping->setVisible((session_->blendMode() == Session::BlendMode::INPUT)
@@ -377,11 +376,11 @@ void MainWindow::setTuningIndex(int _index)
   ui_->grpWarp->updateWarpGrid();
   ui_->grpBlend->updateBlendMask();
 }
-      
+
 void MainWindow::addProjector(QAction* _action)
 {
   auto _id = _action->data().toString();
-  
+
   /// Check for single projector setups
   for (auto& _idSetup : omni::proj::SetupFactory::classes())
   {
@@ -390,14 +389,14 @@ void MainWindow::addProjector(QAction* _action)
       ui_->tuningList->addTuning(_id);
       return;
     }
-  }  
+  }
 
-  /// Check for multi projector setups 
+  /// Check for multi projector setups
   for (auto& _idMultiSetup : omni::proj::MultiSetupFactory::classes())
   {
     if (_idMultiSetup.first.str() == _id)
     {
-      ui_->tuningList->addMultiSetup(_id);  
+      ui_->tuningList->addMultiSetup(_id);
       return;
     }
   }
@@ -490,4 +489,3 @@ QMessageBox::StandardButton MainWindow::saveChangesPrompt()
   }
   return QMessageBox::No;
 }
-

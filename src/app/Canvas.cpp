@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -57,7 +57,7 @@ namespace omni
 
       // Update parameter when canvas has changed
       connect(ui_->widget,SIGNAL(parametersUpdated()),this,SIGNAL(canvasChanged()));
-      
+
       // Forward display input checkbox toggle to canvas widget
       connect(ui_->chkDisplayInput,SIGNAL(clicked(bool)),this,SIGNAL(displayInputToggled(bool)));
     }

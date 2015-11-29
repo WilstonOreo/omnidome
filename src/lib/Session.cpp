@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -44,9 +44,9 @@
 namespace omni
 {
   Session::Session()
-  { 
+  {
     // Register all classes
-    
+
     // Register canvases
     {
       using namespace canvas;
@@ -104,11 +104,24 @@ namespace omni
   {
     return tunings_;
   }
- 
+
   Mapping* Session::setMapping(Id const& _id)
   {
     mapping_.reset(MappingFactory::create(_id));
     return mapping();
+  }
+
+  Mapping* Session::setMapping(MappingMode _mode) {
+
+      for (auto& _idClass : MappingFactory::classes()) {
+          auto&& _mapping = MappingFactory::create(_idClass.first);
+          if (_mapping->mode() == _mode) {
+              mapping_.reset(std::move(_mapping));
+              break;
+          }
+      }
+
+      return mapping();
   }
 
   Mapping* Session::mapping()
@@ -121,12 +134,12 @@ namespace omni
     return mapping_.get();
   }
 
-  InputList& Session::inputs() 
+  InputList& Session::inputs()
   {
     return inputs_;
   }
-  
-  InputList const& Session::inputs() const 
+
+  InputList const& Session::inputs() const
   {
     return inputs_;
   }
@@ -137,7 +150,7 @@ namespace omni
     return canvas();
   }
 
-  Canvas* Session::canvas() 
+  Canvas* Session::canvas()
   {
     return canvas_.get();
   }
@@ -166,7 +179,7 @@ namespace omni
   {
     mode_=_mode;
   }
-    
+
   Session::BlendMode Session::blendMode() const
   {
     return blendMode_;
@@ -176,19 +189,19 @@ namespace omni
   {
     blendMode_ = _blendMode;
   }
-    
+
   bool Session::hasOutput() const
   {
-    return inputs().current() && canvas() && mapping(); 
+    return inputs().current() && canvas() && mapping();
   }
-    
+
   /// Export calibration data of session to a file
   void Session::renderToFile(QString const& _filename, RenderOptions const& _options)
   {
     Renderer _renderer(*this,_options);
     _renderer.renderToFile(_filename);
   }
-    
+
   void Session::save(QString const& _filename) const
   {
     QFile _file(_filename);
@@ -196,7 +209,7 @@ namespace omni
     QDataStream _stream(&_file);
     _stream << *this;
   }
-    
+
   void Session::load(QString const& _filename)
   {
     QFile _file(_filename);
@@ -207,7 +220,7 @@ namespace omni
 
   bool operator==(Session const& _lhs,Session const& _rhs)
   {
-    return 
+    return
       OMNI_TEST_MEMBER_EQUAL(tunings_) &&
       OMNI_TEST_PTR_MEMBER_EQUAL(mapping_) &&
       OMNI_TEST_MEMBER_EQUAL(inputs_) &&
@@ -220,12 +233,12 @@ QDataStream& operator<<(QDataStream& _stream, omni::Session const& _session)
   using namespace omni::util;
 
   _stream << _session.tunings();
-  
+
   serializePtr(_stream,_session.mapping());
 
   _stream << _session.inputs();
-  
-  serializePtr(_stream,_session.canvas()); 
+
+  serializePtr(_stream,_session.canvas());
   return _stream;
 }
 
@@ -233,16 +246,16 @@ QDataStream& operator>>(QDataStream& _stream, omni::Session& _session)
 {
   using namespace omni::util;
   _stream >> _session.tunings();
-  
-  deserializePtr(_stream,[&](omni::Id const& _id) -> 
-      omni::mapping::Interface* 
+
+  deserializePtr(_stream,[&](omni::Id const& _id) ->
+      omni::mapping::Interface*
   {
-    return _session.setMapping(_id); 
+    return _session.setMapping(_id);
   });
 
   _stream >> _session.inputs();
 
-  deserializePtr(_stream,[&](omni::Id const& _id) -> 
+  deserializePtr(_stream,[&](omni::Id const& _id) ->
       omni::canvas::Interface*
   {
     return _session.setCanvas(_id);
@@ -250,4 +263,3 @@ QDataStream& operator>>(QDataStream& _stream, omni::Session& _session)
 
   return _stream;
 }
-

@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -35,7 +35,7 @@ namespace omni
      * @detail A canvas represents the surface on which the projection is performed.
      *         It might be a dome or a planar surface.
      **/
-    class Interface : 
+    class Interface :
       public SerializationInterface,
       public visual::Interface
     {
@@ -43,16 +43,20 @@ namespace omni
 
       /// Virtual destructor
       virtual ~Interface() {}
- 
+
       /// Draws auxiliary elements which are not used for mapping (e.g. positioning grids)
-      inline virtual void drawAux() const 
+      inline virtual void drawAux() const
       {
       }
 
       /// Returns set of supported map modes (an empty set means that all map modes are supported)
-      inline virtual MappingModeSet supportedMapModes() const 
+      inline virtual MappingModeSet supportedMappingModes() const
       {
         return MappingModeSet();
+      }
+
+      inline virtual MappingMode defaultMappingMode() const {
+          return MappingMode::NONE;
       }
 
       /// Abstract method for returning bounding box of canvas
@@ -61,7 +65,7 @@ namespace omni
       /// Spectator's center of canvas (center of bounding box by default)
       inline virtual QVector3D center() const
       {
-        return (bounds().max() + bounds().min()) * 0.5; 
+        return (bounds().max() + bounds().min()) * 0.5;
       }
 
       /**@brief Flag which tells if this canvas supports UVW mapping modes (true by default)
@@ -70,7 +74,7 @@ namespace omni
         return true;
       }
 
-      /**@brief Returns overall extent of canvas. 
+      /**@brief Returns overall extent of canvas.
        * @detail Value is needed for defining ranges for projector positioning
        *         Is the length of the diagonal vector of the bounding box by default.
        ***/
@@ -78,9 +82,9 @@ namespace omni
       {
         return bounds().size().length();
       }
-     
+
       /// Canvas radius (is half of size by default)
-      inline virtual qreal radius() const 
+      inline virtual qreal radius() const
       {
         return extent() * 0.5;
       }

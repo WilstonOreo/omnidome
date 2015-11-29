@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -29,7 +29,7 @@ namespace omni
   namespace canvas
   {
     /// A basic dome canvas width a radius/diameter and offset
-    class Dome : public Envelope 
+    class Dome : public Envelope
     {
     public:
       Dome();
@@ -37,10 +37,10 @@ namespace omni
 
       /// Return radius (10.0m by default)
       qreal radius() const;
-      
+
       /// Set radius in meter
-      void setRadius(qreal); 
-      
+      void setRadius(qreal);
+
       /// Return diameter in meter
       qreal diameter() const;
 
@@ -49,7 +49,7 @@ namespace omni
 
       /// Return internally cached bounding box
       Box bounds() const;
-      
+
       /// Return center of sphere
       QVector3D center() const;
 
@@ -63,7 +63,7 @@ namespace omni
 
       virtual void toStream(QDataStream&) const;
       virtual void fromStream(QDataStream&);
- 
+
     protected:
 
       visual::Sphere sphere_;

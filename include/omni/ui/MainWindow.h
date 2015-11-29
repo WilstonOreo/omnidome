@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -30,7 +30,7 @@
 #include <omni/Session.h>
 
 namespace omni
-{ 
+{
   namespace ui
   {
     class TuningGLView;
@@ -52,10 +52,10 @@ namespace omni
       ~MainWindow();
 
     public slots:
-      /// Initiaties a new session after dialog was confirmed 
+      /// Initiaties a new session after dialog was confirmed
       void newProjection();
 
-      /// Save current session 
+      /// Save current session
       void saveProjection();
 
       /// Set current session under a new filename
@@ -64,9 +64,9 @@ namespace omni
       /// Open a new session
       void openProjection();
 
-      /// Open a new session from filename 
+      /// Open a new session from filename
       bool openProjection(const QString& _filename);
-      
+
       /// Edit current session with a new filename
       void editAsNew();
 
@@ -105,14 +105,13 @@ namespace omni
       /// Set current tuning index
       void setTuningIndex(int);
 
-
       void addProjector(QAction* _action);
 
 
     private:
       /// Sets session mode
       void setMode(Session::Mode _mode);
-      
+
       /// Makes a new session
       void setupSession();
 
@@ -124,10 +123,10 @@ namespace omni
 
       /// Current projection session
       std::unique_ptr<Session> session_;
-      
+
       /// Modified flag
       bool modified_ = false;
- 
+
       /// Locked flag
       bool locked_;
 
@@ -136,19 +135,19 @@ namespace omni
 
       /// Screen Setup page
       QUniquePtr<ScreenSetup> screenSetup_;
-      
+
       /// ProjectionSetup/Canvas preview page
       QUniquePtr<GLView3D> projectionSetup_;
 
       /// Page for current warp grid
       QUniquePtr<TuningGLView> warp_;
-      
+
       /// Page for current blend mask
       QUniquePtr<TuningGLView> blend_;
-      
+
       /// Page for exporting projection
       QUniquePtr<Export> export_;
-    
+
       QUniquePtr<QOpenGLContext> glContext_;
     };
   }

@@ -41,7 +41,8 @@ namespace omni
       PLANAR, // Planar mapping
       FISHEYE, // Fish eye mapping, e.g. for half domes
       EQUIRECTANGULAR, // Equirectangular mappings, e.g. for inflatable domes or fullsphere domes
-      CUBEMAP // Cube mapping
+      CUBEMAP, // Cube mapping
+      NONE // Invalid Mode, default mode is used when set
     };
 
     enum class OutputMode
