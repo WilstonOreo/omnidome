@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -31,10 +31,10 @@
 namespace omni
 {
   class Session;
- 
+
   namespace ui
   {
-    /**@brief A widget for setup fullscreen windows
+    /**@brief A widget for seting up fullscreen windows
      * @details Holds fullscreen widgets
      **/
     class ScreenSetup : public QWidget
@@ -56,13 +56,15 @@ namespace omni
       /// Set zoom factor
       void setZoom(float);
 
+      void detachTuning(omni::ui::proj::Tuning*);
+
     protected:
       void paintEvent(QPaintEvent*);
 
       void mouseMoveEvent(QMouseEvent*);
 
       /// Detach tuning on double click on screen event
-      void mouseDoubleClickEvent(QMouseEvent*); 
+      void mouseDoubleClickEvent(QMouseEvent*);
       void dragEnterEvent(QDragEnterEvent*);
       void dragMoveEvent(QDragMoveEvent*);
       void dropEvent(QDropEvent*);
@@ -79,11 +81,11 @@ namespace omni
       public:
         SubScreenItem();
         SubScreenItem(Item const* _parent, int _index);
-        
+
         omni::ui::proj::Tuning* tuning();
         omni::ui::proj::Tuning const* tuning() const;
         void setTuning(omni::ui::proj::Tuning* _tuning);
-        
+
         QRect rect() const;
         QSize size() const;
 
@@ -105,13 +107,16 @@ namespace omni
         QScreen const* screen() const;
 
         void paint(QPainter&);
- 
+
         /// Attach projector to screen on current hover index
         void attachTuning(omni::ui::proj::Tuning*);
 
+        /// Detach projector from screen
+        void detachTuning(omni::ui::proj::Tuning*);
+
         /// Detach projector from item on current hover index
         void detachCurrentTuning();
-        
+
         /// Detach all tunings/projectors
         void detachTunings();
 
@@ -124,7 +129,7 @@ namespace omni
         /// Set hover index from mouse position
         void setHoverIndex(QPoint const&);
 
-        /// Flag whether a drop is supposed to happen on this item 
+        /// Flag whether a drop is supposed to happen on this item
         bool drop() const;
 
         /// Drop and color of drop

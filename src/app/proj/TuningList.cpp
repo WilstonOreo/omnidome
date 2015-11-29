@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -77,7 +77,7 @@ namespace omni
       /// Return fullscreen and preview widget from index
       std::set<TuningGLView*> TuningList::getViews(int _index) const
       {
-        std::set<TuningGLView*> _views; 
+        std::set<TuningGLView*> _views;
         if (_index < 0 || _index >= widgets_.size()) return _views;
 
         auto* _widget = widgets_[_index].get();
@@ -99,7 +99,7 @@ namespace omni
         }
         addTuning(_setupId);
       }
-        
+
       /// Add tuning with specific projector setup
       void TuningList::addTuning(QString const& _projSetupId)
       {
@@ -114,7 +114,7 @@ namespace omni
         // Select this tuning index
         setTuningIndex(session_->tunings().size()-1);
       }
-        
+
       /// Opens multi setup dialog and appends/replaces new projections when dialogs was accepted
       void TuningList::addMultiSetup(QString const& _multiSetupId)
       {
@@ -131,6 +131,7 @@ namespace omni
         {
         case MultiSetupDialog::Result::REPLACE:
           this->clear();
+          _numTunings = 0; // Set number of tunings zero because it is not up-to-date anymore
         case MultiSetupDialog::Result::APPEND:
           for (auto& _projector : _projectors)
           {
@@ -146,7 +147,7 @@ namespace omni
         default:
           return;
         };
-         
+
       }
 
       void TuningList::addTuning(omni::proj::Tuning* _tuning)
@@ -217,8 +218,8 @@ namespace omni
             auto _tuningColor = session_->tunings()[i]->color();
 
             /// Compare R,G,B channels for both colors, alpha can be ignored
-            _colorsEqual |= _color.red() == _tuningColor.red() && 
-                _color.green() == _tuningColor.green() && 
+            _colorsEqual |= _color.red() == _tuningColor.red() &&
+                _color.green() == _tuningColor.green() &&
                 _color.blue() == _tuningColor.blue();
           }
 
@@ -233,13 +234,13 @@ namespace omni
       {
         if (_index < 0 || _index >= widgets_.size()) return;
 
-        auto& _widget = widgets_[_index]; 
+        auto& _widget = widgets_[_index];
         contents_->layout()->removeWidget(_widget.get());
         _widget->setParent(nullptr);
         emit tuningToBeRemoved(_widget.get());
-        _widget.reset(); 
+        _widget.reset();
 
-        widgets_.erase(widgets_.begin() + _index);        
+        widgets_.erase(widgets_.begin() + _index);
         session_->tunings().remove(_index);
 
         // Re assign tuning indices to remaining widgets
@@ -249,7 +250,7 @@ namespace omni
         }
 
         setTuningIndex(std::max(_index-1,0));
-      
+
         emit projectorSetupChanged();
       }
 
@@ -263,8 +264,9 @@ namespace omni
       {
         removeWidgets();
         session_->tunings().clear();
+
       }
-        
+
       void TuningList::removeWidgets()
       {
         for (auto& _widget : widgets_)

@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -28,8 +28,8 @@ namespace omni
 {
   namespace ui
   {
-    MappingParameters::MappingParameters(QWidget* _parent) : 
-      ParameterWidget(_parent) 
+    MappingParameters::MappingParameters(QWidget* _parent) :
+      ParameterWidget(_parent)
     {
     }
 
@@ -57,7 +57,7 @@ namespace omni
     {
       if (!mapping_ || isLocked()) return;
 
-      auto applyRotation = [&](mapping::Rotatable* _rotatable) 
+      auto applyRotation = [&](mapping::Rotatable* _rotatable)
       {
         _rotatable->setRoll(rotation_->x());
         _rotatable->setPitch(rotation_->y());
@@ -94,13 +94,13 @@ namespace omni
 
       emit parametersUpdated();
     }
-    
+
     void MappingParameters::setup()
     {
       clear();
       if (!mapping_) return;
 
-      this->locked([&]() 
+      this->locked([&]()
       {
         auto applyRotation = [&](mapping::Rotatable* _rotatable)
         {
@@ -115,9 +115,9 @@ namespace omni
           // Set slider values for Equirectangular mapping
           auto* _equirectangular = static_cast<mapping::Equirectangular*>(mapping_);
           applyRotation(_equirectangular);
-          auto* _stripTop = addOffsetWidget("Strip Top",_equirectangular->stripTop(),0.0,1.0);
-          auto* _stripBottom = addOffsetWidget("Strip Bottom",_equirectangular->stripBottom(),0.0,1.0);
-
+          addOffsetWidget("Strip Top",_equirectangular->stripTop(),0.0,1.0);
+          addOffsetWidget("Strip Bottom",_equirectangular->stripBottom(),0.0,1.0);
+          
         } else
         if (mapping_->getTypeId() == "Fisheye")
         {
@@ -126,6 +126,8 @@ namespace omni
           applyRotation(_fisheye);
           auto* _stretch = addOffsetWidget("Stretch",0.0,0.0,1.0);
           _stretch->setValue(_fisheye->stretch());
+          _stretch->setSuffix("");
+
         } else
         if (mapping_->getTypeId() == "CubeMap")
         {
@@ -146,7 +148,7 @@ namespace omni
           _stretchX->setValue(_planar->stretch().x());
           _stretchY->setValue(_planar->stretch().y());
         }
-        
+
         addCheckBox("Flip horizontal",mapping_->flipHorizontal());
         addCheckBox("Flip vertical",mapping_->flipVertical());
       });
