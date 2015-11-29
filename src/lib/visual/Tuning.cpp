@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -80,7 +80,7 @@ namespace omni
         warpGrid_->drawHandles(tuning_.color(),tuningRect());
       });
     }
-    
+
     void Tuning::drawWarpPatch() const
     {
       visual::with_current_context([this](QOpenGLFunctions& _)
@@ -95,10 +95,10 @@ namespace omni
     void Tuning::update()
     {
       if (!QOpenGLContext::currentContext()) return;
-        
+
       using omni::util::fileToStr;
 
-      if (!testCardShader_) 
+      if (!testCardShader_)
       {
         static QString _vertSrc = fileToStr(":/shaders/testcard.vert");
         static QString _fragmentSrc = fileToStr(":/shaders/testcard.frag");
@@ -121,7 +121,7 @@ namespace omni
 
       updateBlendTexture();
     }
-      
+
     void Tuning::setBlendTextureUpdateRect(QRect const& _rect)
     {
       int _radius = tuning_.blendMask().brush().size() / 2 + 1;
@@ -132,11 +132,11 @@ namespace omni
     void Tuning::updateBlendTexture()
     {
       if (!QOpenGLContext::currentContext()) return;
- 
+
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
         bool _reset = !blendTex_;
-        if (!!blendTex_) 
+        if (!!blendTex_)
         {
           _reset = blendTex_->width() != tuning_.width() || blendTex_->height() != tuning_.height();
         }
@@ -145,23 +145,23 @@ namespace omni
           blendTextureUpdateRect_ = QRect(0,0,tuning_.width(),tuning_.height());
           blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().strokeBuffer().toQImage()));
         }
- 
-        auto& _blendMask = tuning().blendMask(); 
+
+        auto& _blendMask = tuning().blendMask();
         auto _ptr = _blendMask.strokeBufferData();
-        
+
         auto _fullRect = QRect(0,0,tuning_.width(),tuning_.height());
         auto& _r = blendTextureUpdateRect_;
-        
+
         /// Optimization for uploading only a portion of the blend buffer to texture
         if (_r != _fullRect)
         {
           auto _data = _blendMask.strokeBuffer().cropRect(_r);
-          _ptr = (void*)(_data.data().data()); 
-          _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());          
+          _ptr = (void*)(_data.data().data());
+          _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
           _.glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
           _.glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
           _.glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-          _.glPixelStorei(GL_UNPACK_SKIP_ROWS, 0); 
+          _.glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
           _.glTexSubImage2D(GL_TEXTURE_2D, 0, _r.x(),_r.y(), _r.width(), _r.height(), GL_ALPHA, GL_UNSIGNED_BYTE, _ptr);
           _.glBindTexture(GL_TEXTURE_2D, 0);
           blendTextureUpdateRect_ = _fullRect;
@@ -195,7 +195,7 @@ namespace omni
         _.glEnable(GL_LINE_SMOOTH);
       });
     }
-      
+
     bool Tuning::initialized() const
     {
       return !!blendTex_ && !!blendShader_ && !!testCardShader_;
@@ -208,14 +208,14 @@ namespace omni
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
         warpGrid_->draw();
-   
+
         auto& _mask = tuning().blendMask();
         glBlendColor(1.0,1.0,1.0,1.0);
         _.glEnable(GL_DEPTH_TEST);
         _.glDepthFunc(GL_LEQUAL);
         _.glEnable(GL_BLEND);
-        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
- 
+        _.glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
         glColor4f(0.0,0.0,0.0,1.0);
         blendShader_->bind();
         {
@@ -257,7 +257,7 @@ namespace omni
 
         _.glEnable(GL_BLEND);
         _.glEnable(GL_TEXTURE_2D);
-        _.glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        _.glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         blendTex_->bind();
         {
           glColor4f(0.0,0.0,0.0,1.0);
@@ -266,13 +266,13 @@ namespace omni
           glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        
+
           Rectangle::drawFlipped();
         }
         blendTex_->release();
       });
     }
-      
+
     void Tuning::free()
     {
       if (!!blendTex_)
@@ -280,7 +280,7 @@ namespace omni
         blendTex_->destroy();
         blendTex_.reset();
       }
-      
+
       blendShader_.reset();
       testCardShader_.reset();
     }

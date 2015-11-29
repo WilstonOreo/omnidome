@@ -21,7 +21,7 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 detect_qt()
 #setup_qt(5.5 ${CMAKE_SOURCE_DIR}/../Qt )
 
-if(NOT QT_FOUND) 
+if(NOT QT_FOUND)
     MESSAGE(FATAL_ERROR "Qt Framework was not found. You might set QT_PATH manually.")
     return()
 endif()
@@ -34,7 +34,7 @@ SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 
 # when building, don't use the install RPATH already
 # (but later on when installing)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
@@ -50,19 +50,18 @@ IF("${isSystemDir}" STREQUAL "-1")
 ENDIF("${isSystemDir}" STREQUAL "-1")
 
 
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 ########### BUILD_TARGETS ############
 
 FILE(GLOB_RECURSE omni_cpp_files ${CMAKE_SOURCE_DIR}/src/lib/*.cpp )
 
-
 ADD_LIBRARY(omni STATIC ${omni_cpp_files})
-TARGET_LINK_LIBRARIES(omni ${QT5_LIBRARIES})
+TARGET_LINK_LIBRARIES(omni ${Qt5_LIBRARIES})
 
-FILE(GLOB_RECURSE omni_app_cpp_files 
-  ${CMAKE_SOURCE_DIR}/src/slim/*.cpp 
-  ${CMAKE_SOURCE_DIR}/src/app/*.cpp 
+FILE(GLOB_RECURSE omni_app_cpp_files
+  ${CMAKE_SOURCE_DIR}/src/slim/*.cpp
+  ${CMAKE_SOURCE_DIR}/src/app/*.cpp
   )
 list(REMOVE_ITEM omni_app_cpp_files "${CMAKE_SOURCE_DIR}/src/app/omnidome.cpp")
 
@@ -71,7 +70,7 @@ FILE(GLOB_RECURSE omni_forms ${CMAKE_SOURCE_DIR}/src/app/ui/*.ui )
 FILE(GLOB_RECURSE omni_resources ${CMAKE_SOURCE_DIR}/src/app/rc/*.qrc )
 
 common_cxx_flags()
-ADD_DEFINITIONS()
+
 
 ########### Plugins ############
 
@@ -84,11 +83,11 @@ QT5_WRAP_CPP(slim_widgetz_headers_moc ${slim_widgetz_header_files})
 QT5_ADD_RESOURCES(omni_resources_rcc ${omni_resources})
 QT5_GENERATE_UI(omni_forms_headers ${omni_forms})
 SET(omni_src ${omni_app_cpp_files} ${omni_headers_moc} ${omni_forms_headers} ${omni_resources_rcc})
-  
+
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
     FIND_LIBRARY(omni_extra_libs OpenGL )
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET(omni_extra_libs GL )
@@ -102,24 +101,20 @@ if(DEFINED OMNI_GSTREAMER)
 endif()
 
 ADD_EXECUTABLE(test_Projector
-  ./src/test/Projector.cpp 
+  ./src/test/Projector.cpp
   ${omni_src} )
 
 TARGET_LINK_LIBRARIES(test_Projector ${Qt5_LIBRARIES} ${omni_extra_libs} omni )
 
 
-ADD_EXECUTABLE(test_GL
-  ./src/test/GL.cpp 
-  ${omni_src} )
+ADD_EXECUTABLE(test_GL ./src/test/GL.cpp  ${omni_src})
 TARGET_LINK_LIBRARIES(test_GL ${Qt5_LIBRARIES} ${omni_extra_libs} omni )
 
-ADD_EXECUTABLE(test_WarpGL
-  ./src/test/WarpGL.cpp 
-  ${omni_src} )
+ADD_EXECUTABLE(test_WarpGL ./src/test/WarpGL.cpp ${omni_src} )
 TARGET_LINK_LIBRARIES(test_WarpGL ${Qt5_LIBRARIES}  ${omni_extra_libs} omni  )
 
 ADD_EXECUTABLE(test_Serialization
-  ./src/test/Serialization.cpp 
+  ./src/test/Serialization.cpp
   ${omni_src} )
 TARGET_LINK_LIBRARIES(test_Serialization ${Qt5_LIBRARIES} ${omni_extra_libs}  omni )
 
@@ -137,7 +132,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   SET(MACOSX_BUNDLE_COPYRIGHT "(C) 2015, Michael Winkelmann, cr8tr.org, omnido.me")
 
   SET_SOURCE_FILES_PROPERTIES("cmake-files/${MACOSX_BUNDLE_ICON_FILE}.icns"
-    PROPERTIES                           
+    PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources
   )
 
@@ -147,9 +142,8 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   TARGET_LINK_LIBRARIES(omnidome omni ${omni_extra_libs} ${Qt5_LIBRARIES} )
 
 
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   ADD_EXECUTABLE(omnidome ./src/app/omnidome.cpp ${omni_src} )
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-

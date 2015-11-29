@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -36,12 +36,12 @@ namespace omni
 
   namespace mapping
   {
-    enum class Mode   
+    enum class Mode
     {
-      PLANAR, // Planar mapping 
+      PLANAR, // Planar mapping
       FISHEYE, // Fish eye mapping, e.g. for half domes
       EQUIRECTANGULAR, // Equirectangular mappings, e.g. for inflatable domes or fullsphere domes
-      CUBEMAP // Cube mapping 
+      CUBEMAP // Cube mapping
     };
 
     enum class OutputMode
@@ -52,7 +52,7 @@ namespace omni
     };
 
 
-    /**@brief Mapping interface with one or several inputs and shader 
+    /**@brief Mapping interface with one or several inputs and shader
      * @detail Holds inputs and shader
      */
     class Interface : public SerializationInterface
@@ -76,7 +76,7 @@ namespace omni
 
       /// Read mapping from stream
       virtual void fromStream(QDataStream&);
-      
+
       /// Write mapping to stream
       virtual void toStream(QDataStream&) const;
 
@@ -87,14 +87,14 @@ namespace omni
       void setFlipVertical(bool);
 
       /// Flag which tells if this mapping uses UVW texture coordinates (true by default)
-      inline virtual bool isUVW()
+      inline virtual bool isUVW() const
       {
         return true;
       }
 
       /// Static function to retrieve all registered mappings that support UVW coords
       static IdSet getUVWMappings();
-      
+
       /// Static function to retrieve all registered mappings that dont support UVW coords
       static IdSet getPlanarMappings();
 
@@ -103,13 +103,13 @@ namespace omni
 
 
     private:
-      /**@brief Returns vertex shader source code 
+      /**@brief Returns vertex shader source code
        * @detail Is taken from file :/shaders/mapping/common.vert by default)
       **/
       virtual QString vertexShaderSourceCode() const;
 
-      /**@brief Returns fragment shader source code 
-       * @detail Is taken from file :/shaders/mapping/$MAPPING_TYPEID by default) 
+      /**@brief Returns fragment shader source code
+       * @detail Is taken from file :/shaders/mapping/$MAPPING_TYPEID by default)
       **/
       virtual QString fragmentShaderSourceCode() const;
 
