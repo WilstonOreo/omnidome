@@ -94,7 +94,6 @@ namespace omni
 
           glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-          _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
           _f->bind();
 
           _.glViewport(0,0, _f->width(), _f->height());
@@ -104,14 +103,6 @@ namespace omni
         _.glEnable(GL_DEPTH_TEST);
         _.glDepthFunc(GL_LEQUAL);
         _.glEnable(GL_BLEND);
-        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        _.glEnable(GL_LINE_SMOOTH);
-        _.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-        _.glEnable(GL_POINT_SMOOTH);
-        _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-        _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-        glPolygonMode(GL_FRONT,GL_FILL);
-        glPolygonMode(GL_BACK,GL_FILL);
         _.glDisable(GL_CULL_FACE);
         _.glEnable(GL_NORMALIZE);
         // fix outlines z-fighting with quads
