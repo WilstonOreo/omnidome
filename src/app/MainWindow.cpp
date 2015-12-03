@@ -132,6 +132,19 @@ MainWindow::MainWindow( QMainWindow *parent) :
     connect(ui_->btnAddTuning,SIGNAL(clicked()),this,SLOT(buttonState()));
   }
 
+  /// Setup button actions
+  {
+      ui_->btnNew->setDefaultAction(ui_->actionNew);
+      ui_->btnOpen->setDefaultAction(ui_->actionOpen);
+      ui_->btnSave->setDefaultAction(ui_->actionSave);
+      ui_->btnEditAsNew->setDefaultAction(ui_->actionEditAsNew);
+      ui_->btnScreenSetup->setDefaultAction(ui_->actionScreenSetup);
+      ui_->btnProjectionSetup->setDefaultAction(ui_->actionProjectionSetup);
+      ui_->btnWarp->setDefaultAction(ui_->actionWarp);
+      ui_->btnBlend->setDefaultAction(ui_->actionBlend);
+      ui_->btnExport->setDefaultAction(ui_->actionExport);
+  }
+
   session_.reset(new Session());
   setupSession();
   raise();
@@ -151,6 +164,7 @@ void MainWindow::setupSession()
     ui_->tuningList->setSession(session_.get());
     ui_->grpCanvas->setSession(session_.get());
     ui_->grpMapping->setSession(session_.get());
+    ui_->grpMapping->setDefaultMappingForCanvas();
     ui_->grpInputs->setSession(session_.get());
     ui_->grpWarp->setSession(session_.get());
     ui_->grpBlend->setSession(session_.get());

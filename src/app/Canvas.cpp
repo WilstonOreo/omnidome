@@ -71,6 +71,7 @@ namespace omni
       if (!session()->canvas())
       {
         session()->setCanvas("HalfDome");
+        emit canvasTypeChanged();
       }
 
       // Search combobox for available canvas types

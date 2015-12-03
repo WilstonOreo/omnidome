@@ -40,12 +40,14 @@ namespace omni
 
     TuningGLView::~TuningGLView()
     {
-      if (initialized() && context())
         free();
     }
 
     void TuningGLView::free()
     {
+      if (!initialized() || !context()) return;
+      if (!context()->isValid()) return;
+
       makeCurrent();
       tuning_->free();
       tuning_.reset();

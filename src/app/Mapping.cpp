@@ -55,6 +55,7 @@ namespace omni
       if (!session()->mapping())
       {
         session()->setMapping("Equirectangular");
+        setDefaultMappingForCanvas();
       }
 
       // Search combobox for available mapping types
@@ -108,7 +109,6 @@ namespace omni
                  ++_index;
              }
          }
-
 
          for (auto& _idMappingClass : omni::mapping::Factory::classes()) {
              QString _id = _idMappingClass.first.str();
