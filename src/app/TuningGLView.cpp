@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -43,7 +43,7 @@ namespace omni
       if (initialized() && context())
         free();
     }
-      
+
     void TuningGLView::free()
     {
       makeCurrent();
@@ -104,7 +104,7 @@ namespace omni
       showCursor_ = _showCursor;
       setMouseTracking(showCursor_ && !viewOnly_);
     }
-    
+
     bool TuningGLView::showCursor() const
     {
       return showCursor_;
@@ -124,7 +124,7 @@ namespace omni
     {
       return border_;
     }
-      
+
     void TuningGLView::setChildViews(std::set<TuningGLView*> const& _childViews)
     {
       childViews_ = _childViews;
@@ -135,7 +135,7 @@ namespace omni
       return childViews_;
     }
 
-    void TuningGLView::updateWithChildViews(bool _update) 
+    void TuningGLView::updateWithChildViews(bool _update)
     {
       updateContext(_update);
       for (auto& _childView : childViews_)
@@ -143,7 +143,7 @@ namespace omni
         _childView->updateContext(_update);
       }
     }
-      
+
     void TuningGLView::updateWithChildViews(QRect const& _rect)
     {
       tuning_->setBlendTextureUpdateRect(_rect);
@@ -204,7 +204,7 @@ namespace omni
         {
           auto _from = pixelPos(mousePosition_).toPoint();
           auto _to = pixelPos(event->pos()).toPoint();
-          leftOverDistance_ = tuning()->blendMask().drawLine(_from,_to,leftOverDistance_); 
+          leftOverDistance_ = tuning()->blendMask().drawLine(_from,_to,leftOverDistance_);
           mousePosition_ = event->pos();
           cursorPosition_ = screenPos(mousePosition_);
           for (auto& _childView : childViews_)
@@ -227,7 +227,7 @@ namespace omni
             _childView->update();
         }
         update();
-      } 
+      }
     }
 
     void TuningGLView::mousePressEvent(QMouseEvent *event)
@@ -275,7 +275,7 @@ namespace omni
 
         leftOverDistance_ = 0.0;
       }
-      
+
       for (auto& _childView : childViews_)
       {
         _childView->cursorPosition_ = cursorPosition_;
@@ -322,7 +322,7 @@ namespace omni
     void TuningGLView::keyPressEvent(QKeyEvent* event)
     {
     }
-      
+
     void TuningGLView::destroy()
     {
       aboutToBeDestroyed_ = true;
@@ -388,8 +388,15 @@ namespace omni
 
       glLoadIdentity();
 
-      glDisable(GL_LIGHTING);
-      session_->drawCanvas();
+      visual::with_current_context([this](QOpenGLFunctions& _)
+      {
+          _.glDisable(GL_LIGHTING);
+          _.glDisable(GL_CULL_FACE);
+          _.glCullFace(GL_FRONT_AND_BACK);
+          _.glEnable(GL_DEPTH_TEST);
+          session_->drawCanvas();
+          _.glDisable(GL_DEPTH_TEST);
+      });
     }
 
     /// Update warp buffer which contains image of projector perspective
@@ -428,9 +435,9 @@ namespace omni
         });
       });
     }
-      
-    template<typename F> 
-    void TuningGLView::drawOnSurface(F f)    
+
+    template<typename F>
+    void TuningGLView::drawOnSurface(F f)
     {
         makeCurrent();
         visual::with_current_context([&](QOpenGLFunctions& _)
@@ -480,8 +487,8 @@ namespace omni
       {
         _.glDisable(GL_LIGHTING);
         _.glEnable(GL_BLEND);
-   
-        switch (_blendMode) 
+
+        switch (_blendMode)
         {
         case Session::BlendMode::COLOR:
         {
@@ -494,7 +501,7 @@ namespace omni
         }
         case Session::BlendMode::WHITE:
         {
-          // Draw white blend mask 
+          // Draw white blend mask
           _.glDisable(GL_TEXTURE_2D);
           glColor4f(1.0,1.0,1.0,1.0);
           tuning_->drawBlendMask();
@@ -510,14 +517,14 @@ namespace omni
           break;
         }
         };
- 
+
         drawScreenBorder();
 
         if (showCursor_ || !viewOnly_)
           tuning_->drawCursor(cursorPosition_);
       });
     }
-      
+
     void TuningGLView::drawExportView()
     {
       if (!session()->hasOutput())
@@ -531,7 +538,7 @@ namespace omni
       {
         _.glDisable(GL_LIGHTING);
         _.glEnable(GL_BLEND);
-   
+
         // Draw blend mask with input attached
         _.glEnable(GL_TEXTURE_2D);
         _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
@@ -571,7 +578,7 @@ namespace omni
 
       session_->update();
 
-      if (!tuning_->initialized()) 
+      if (!tuning_->initialized())
         tuning_->update();
 
       makeCurrent();
@@ -582,7 +589,7 @@ namespace omni
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         _.glClearColor(0.0,0.0,0.0,1.0);
       });
-        
+
       if (!session()->hasOutput())
       {
         drawTestCard();
@@ -603,7 +610,7 @@ namespace omni
         drawBlendMask();
         break;
       case Session::Mode::EXPORT:
-        drawExportView();  
+        drawExportView();
         break;
       }
       glPopAttrib();
