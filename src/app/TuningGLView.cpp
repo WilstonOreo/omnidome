@@ -392,7 +392,6 @@ namespace omni
       {
           _.glDisable(GL_LIGHTING);
           _.glDisable(GL_CULL_FACE);
-          _.glCullFace(GL_FRONT_AND_BACK);
           _.glEnable(GL_DEPTH_TEST);
           session_->drawCanvas();
           _.glDisable(GL_DEPTH_TEST);
@@ -416,6 +415,7 @@ namespace omni
         warpGridBuffer_.reset(new QOpenGLFramebufferObject(
                                 tuning()->width(),
                                 tuning()->height()));
+        warpGridBuffer_->setAttachment(QOpenGLFramebufferObject::Depth);
       }
 
       // Draw projector's perspective on framebuffer texture
@@ -431,6 +431,24 @@ namespace omni
         [&](QOpenGLFunctions& _) // Model View Operation
         {
           _.glClearColor(0.0,0.0,0.0,1.0);
+          _.glClear(GL_DEPTH_BUFFER_BIT);
+
+        _.glEnable(GL_DEPTH_TEST);
+        _.glDepthFunc(GL_LEQUAL);
+        _.glEnable(GL_BLEND);
+        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        _.glEnable(GL_LINE_SMOOTH);
+        _.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        _.glEnable(GL_POINT_SMOOTH);
+        _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+        _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+        glPolygonMode(GL_FRONT,GL_FILL);
+        glPolygonMode(GL_BACK,GL_FILL);
+        _.glEnable(GL_NORMALIZE);
+        // fix outlines z-fighting with quads
+        _.glPolygonOffset(1, 1);
+
+          _.glEnable(GL_DEPTH_TEST);
           session_->drawCanvas();
         });
       });
@@ -466,6 +484,7 @@ namespace omni
         _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
         _.glDisable(GL_LIGHTING);
         _.glEnable(GL_BLEND);
+
         tuning_->drawWarpGrid();
 
         _.glBindTexture(GL_TEXTURE_2D, 0);
@@ -603,6 +622,7 @@ namespace omni
         break;
       case Session::Mode::PROJECTIONSETUP:
         drawCanvas();
+        break;
       case Session::Mode::WARP:
         drawWarpGrid();
         break;

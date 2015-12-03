@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -38,7 +38,7 @@ namespace omni
       {
         QPointF _texCoord(
                atan2(-_normal.y(),_normal.x()) / (2.0*M_PI),
-               acos(_normal.z()) / M_PI); 
+               acos(_normal.z()) / M_PI);
         return _texCoord;
       }
 
@@ -85,31 +85,43 @@ namespace omni
       {
         return _size.width() / qreal(_size.height());
       }
-   
-      template<typename PROJECTION, typename MODELVIEW>
-      void draw_on_framebuffer()
-      {
-      }
 
       /// Draw into QOpenGLFramebufferObject
       template<typename FRAMEBUFFER, typename PROJECTION, typename MODELVIEW>
       void draw_on_framebuffer(FRAMEBUFFER& _f, PROJECTION _p, MODELVIEW _m)
       {
-        with_current_context([&](QOpenGLFunctions& _) { 
-          
+        with_current_context([&](QOpenGLFunctions& _) {
+
           glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+          _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
           _f->bind();
+
           _.glViewport(0,0, _f->width(), _f->height());
           _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
           _.glEnable(GL_TEXTURE_2D);
-          _.glEnable(GL_DEPTH_TEST);
-          _.glDepthFunc(GL_LEQUAL);
-  
+
+        _.glEnable(GL_DEPTH_TEST);
+        _.glDepthFunc(GL_LEQUAL);
+        _.glEnable(GL_BLEND);
+        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        _.glEnable(GL_LINE_SMOOTH);
+        _.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        _.glEnable(GL_POINT_SMOOTH);
+        _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+        _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+        glPolygonMode(GL_FRONT,GL_FILL);
+        glPolygonMode(GL_BACK,GL_FILL);
+        _.glDisable(GL_CULL_FACE);
+        _.glEnable(GL_NORMALIZE);
+        // fix outlines z-fighting with quads
+        _.glPolygonOffset(1, 1);
           // Projection matrix setup
           glMatrixMode(GL_PROJECTION);
           glLoadIdentity();
           _p(_); // Projection operation
 
+          _.glEnable(GL_DEPTH_TEST);
           // Model view matrix setup
           glMatrixMode(GL_MODELVIEW);
           glLoadIdentity();
@@ -118,7 +130,7 @@ namespace omni
         _f->release();
 
         glPopAttrib();
-          
+
       });
     }
 
@@ -131,7 +143,7 @@ namespace omni
         int d = _widget->devicePixelRatio();
         _.glViewport(0,0, _widget->width()*d, _widget->height()*d);
       });
-      
+
       }
     }
     using util::with_current_context;
