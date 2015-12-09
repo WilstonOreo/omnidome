@@ -189,6 +189,9 @@
            <height>54</height>
           </size>
          </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
          <property name="autoRaise">
           <bool>true</bool>
          </property>
@@ -233,8 +236,14 @@
          <property name="text">
           <string>Screen Setup</string>
          </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
          <property name="autoRaise">
           <bool>true</bool>
+         </property>
+         <property name="arrowType">
+          <enum>Qt::NoArrow</enum>
          </property>
         </widget>
        </item>
@@ -420,49 +429,35 @@
             <number>3</number>
            </property>
            <item>
-            <widget class="omni::ui::Canvas" name="grpCanvas">
-             <property name="title">
+            <widget class="omni::ui::Canvas" name="grpCanvas" native="true">
+             <property name="title" stdset="0">
               <string>Canvas</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="omni::ui::Blend" name="grpBlend">
-             <property name="title">
-              <string>Blend Settings</string>
-             </property>
-            </widget>
+            <widget class="omni::ui::Blend" name="grpBlend" native="true"/>
            </item>
            <item>
-            <widget class="omni::ui::Warp" name="grpWarp">
-             <property name="title">
-              <string>Warp Grid Settings</string>
-             </property>
-            </widget>
+            <widget class="omni::ui::Warp" name="grpWarp" native="true"/>
            </item>
            <item>
-            <widget class="omni::ui::Input" name="grpInputs">
+            <widget class="omni::ui::Input" name="grpInputs" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="title">
-              <string>Input</string>
-             </property>
             </widget>
            </item>
            <item>
-            <widget class="omni::ui::Mapping" name="grpMapping">
+            <widget class="omni::ui::Mapping" name="grpMapping" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
-             </property>
-             <property name="title">
-              <string>Mapping</string>
              </property>
             </widget>
            </item>
@@ -680,33 +675,33 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>omni::ui::Mapping</class>
-   <extends>QGroupBox</extends>
-   <header location="global">omni/ui/Mapping.h</header>
+   <class>omni::ui::Canvas</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/Canvas.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>omni::ui::Blend</class>
-   <extends>QGroupBox</extends>
+   <extends>QWidget</extends>
    <header location="global">omni/ui/Blend.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>omni::ui::Warp</class>
-   <extends>QGroupBox</extends>
+   <extends>QWidget</extends>
    <header location="global">omni/ui/Warp.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>omni::ui::Canvas</class>
-   <extends>QGroupBox</extends>
-   <header location="global">omni/ui/Canvas.h</header>
+   <class>omni::ui::Input</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/Input.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>omni::ui::Input</class>
-   <extends>QGroupBox</extends>
-   <header>omni/ui/Input.h</header>
+   <class>omni::ui::Mapping</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/Mapping.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

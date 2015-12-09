@@ -21,7 +21,7 @@
 #define OMNI_UI_MAPPING_H_
 
 #include <memory>
-#include <QGroupBox>
+#include <omni/ui/CollapsibleGroupBox.h>
 #include <omni/ui/SessionWidget.h>
 
 namespace omni
@@ -38,7 +38,7 @@ namespace omni
     /**@brief Widget for selecting a mapping mode and the parameters
      **/
     class Mapping :
-      public QGroupBox,
+      public CollapsibleGroupBox,
       public SessionWidget
     {
       Q_OBJECT
@@ -52,7 +52,7 @@ namespace omni
 
     public slots:
       void mappingTypeSelected(QString const&);
- 
+
       void setDefaultMappingForCanvas();
       void sessionParameters();
 

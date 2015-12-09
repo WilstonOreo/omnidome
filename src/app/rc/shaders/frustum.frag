@@ -3,10 +3,11 @@
  varying vec3 vVertexNormal;
 uniform vec3 eye;
 uniform vec3 look_at;
-uniform vec3 top_left; 
+uniform vec3 top_left;
 uniform vec3 top_right;
 uniform vec3 bottom_left;
 uniform vec3 bottom_right;
+uniform int view_mode; // 0 = inside, 1 = outside, 2 = both
 
 /// Color of frustum border
 uniform vec3 color;
@@ -23,17 +24,17 @@ float frustum_intersection(in vec3 point)
   vec3 n_right = -normalize(cross(top_right,bottom_right)); // Right normal
 
   /// Distances to frustum planes
-  float d = dot(o,look_at); 
-  float d_top = dot(o,n_top); 
+  float d = dot(o,look_at);
+  float d_top = dot(o,n_top);
   float d_bottom = dot(o,n_bottom);
   float d_left = dot(o,n_left);
   float d_right = dot(o,n_right);
-  
+
   if (d < 0.0) return -100000000.0;
   if ((d_top < 0.0) && (d_bottom < 0.0) && (d_left < 0.0) && (d_right < 0.0))
   {
     return -1000000.0; // min(min(-d_top,-d_bottom),min(-d_left,-d_right));
-  } 
+  }
 
   /// Return minimum distance
   return min(min(d_top,d_bottom),min(d_left,d_right));
@@ -41,11 +42,20 @@ float frustum_intersection(in vec3 point)
 
 void main()
 {
-  float d = frustum_intersection(vVertexPosition);  
+  float d = frustum_intersection(vVertexPosition);
 
-  if (d > 0.0)
+  float angle =  dot(vVertexNormal,normalize(vVertexPosition - eye));
+  if (view_mode == 1) {
+      angle = -angle;
+  }
+  if (view_mode == 2) {
+      angle = 0.1;
+  }
+
+  float alpha = d < 0.1 ? abs(angle)*6.0 : 2.0*abs(angle);
+
+  if (d > 0.0 && angle > 0.0)
   {
-    float alpha = d < 0.1 ? 0.5 : 0.1;
     gl_FragColor = vec4(color,alpha);
   } else
   {

@@ -109,6 +109,8 @@ MainWindow::MainWindow( QMainWindow *parent) :
     connect(ui_->grpCanvas,SIGNAL(canvasTypeChanged()),
         ui_->grpMapping,SLOT(setDefaultMappingForCanvas()));
     connect(ui_->grpCanvas,SIGNAL(displayInputToggled(bool)),projectionSetup_.get(),SLOT(setDisplayInput(bool)));
+    connect(ui_->grpCanvas,SIGNAL(displayInputToggled(bool)),projectionSetup_.get(),SLOT(setDisplayInput(bool)));
+    connect(ui_->grpCanvas,SIGNAL(projectorViewModeChanged(ProjectorViewMode)),projectionSetup_.get(),SLOT(setProjectorViewMode(ProjectorViewMode)));
 
     // Update all views when input has changed
     connect(ui_->grpInputs,SIGNAL(inputChanged()),this,SLOT(modified()));

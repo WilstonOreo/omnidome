@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -82,15 +82,18 @@ namespace omni
       });
     }
 
-    void Session::drawCanvasWithFrustumIntersections() const
+    void Session::drawCanvasWithFrustumIntersections(ProjectorViewMode _projectorViewMode) const
     {
       for (auto& _tuning : session_.tunings())
       {
-        drawFrustumIntersection(_tuning->projector(),_tuning->color());
+        drawFrustumIntersection(_tuning->projector(),_tuning->color(),_projectorViewMode);
       }
     }
 
-    void Session::drawFrustumIntersection(proj::Projector const& _proj, QColor const& _color) const
+    void Session::drawFrustumIntersection(
+        proj::Projector const& _proj,
+        QColor const& _color,
+        ProjectorViewMode _projectorViewMode) const
     {
       auto _canvas = session_.canvas();
       if (!frustumShader_ || !_canvas) return;
@@ -121,6 +124,7 @@ namespace omni
       frustumShader_->setUniformValue("bottom_left",_bottomLeft);
       frustumShader_->setUniformValue("bottom_right",_bottomRight);
       frustumShader_->setUniformValue("matrix",_rot);
+      frustumShader_->setUniformValue("view_mode",int(_projectorViewMode));
 
       glDisable(GL_DEPTH_TEST);
       _canvas->draw();

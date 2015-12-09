@@ -19,15 +19,31 @@
    </item>
    <item>
     <widget class="QCheckBox" name="chkDisplayInput">
-     <property name="toolTip">
-      <string>Show input on 3D preview</string>
-     </property>
      <property name="text">
-      <string>Display input</string>
+      <string>Display Input</string>
      </property>
      <property name="checked">
       <bool>true</bool>
      </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="boxProjectorViewMode">
+     <item>
+      <property name="text">
+       <string>Inside</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Outside</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Both sides</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>
@@ -44,24 +60,7 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>boxCanvasSelect</sender>
-   <signal>currentIndexChanged(QString)</signal>
-   <receiver>omni::ui::Canvas</receiver>
-   <slot>canvasTypeSelected(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>199</x>
-     <y>22</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <signal>displayInputToggled(bool)</signal>
   <slot>canvasTypeSelected(QString)</slot>

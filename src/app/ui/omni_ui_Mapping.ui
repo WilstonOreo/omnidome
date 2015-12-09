@@ -38,24 +38,7 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>boxMappingSelect</sender>
-   <signal>currentIndexChanged(QString)</signal>
-   <receiver>omni::ui::Mapping</receiver>
-   <slot>mappingTypeSelected(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>161</x>
-     <y>22</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>161</x>
-     <y>139</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>mappingTypeSelected(QString)</slot>
  </slots>

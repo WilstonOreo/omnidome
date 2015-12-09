@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -30,7 +30,7 @@ namespace omni
       GLView(_parent)
     {
     }
-    
+
     GLView3D::~GLView3D()
     {
     }
@@ -61,12 +61,12 @@ namespace omni
       this->session_->update();
       return true;
     }
-      
+
     void GLView3D::setupCamera()
     {
       camera_.setup(30.0,aspect());
     }
- 
+
     void GLView3D::updateLight()
     {
       GLuint _index = GL_LIGHT0;
@@ -90,7 +90,7 @@ namespace omni
       updateLight();
       this->session_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,displayInput_);
       this->session_->drawProjectors();
-      this->session_->drawCanvasWithFrustumIntersections();
+      this->session_->drawCanvasWithFrustumIntersections(projectorViewMode_);
       this->session_->drawProjectorHalos();
     }
 
@@ -100,7 +100,7 @@ namespace omni
 
       float _r = event->delta()/100.0;
       camera_.track( 0, 0, _r );
-      
+
       if (session()->canvas())
       {
         auto _r = session()->canvas()->radius();
@@ -141,7 +141,7 @@ namespace omni
 
       this->mousePosition_ = event->pos();
     }
-      
+
     bool GLView3D::displayInput() const
     {
       return displayInput_;
@@ -153,6 +153,17 @@ namespace omni
       update();
     }
 
+    ProjectorViewMode GLView3D::projectorViewMode() const
+    {
+      return projectorViewMode_;
+    }
+
+    void GLView3D::setProjectorViewMode(ProjectorViewMode _projectorViewMode)
+    {
+      projectorViewMode_ = _projectorViewMode;
+      update();
+    }
+
     void GLView3D::changeZoom(int _value)
     {
       camera_.setDistance(_value/5.0);
@@ -160,4 +171,3 @@ namespace omni
     }
   }
 }
-

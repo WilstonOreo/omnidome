@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -21,43 +21,46 @@
 #define OMNI_UI_CANVAS_H_
 
 #include <memory>
-#include <QGroupBox>
+#include <omni/ui/CollapsibleGroupBox.h>
+#include <omni/visual/ProjectorViewMode.h>
 #include <omni/ui/SessionWidget.h>
 
 namespace omni
 {
-  class Session;
-  
-  namespace ui
-  {
-    namespace Ui
-    {
-      class Canvas;
-    }
+        class Session;
 
-    class Canvas : 
-      public QGroupBox,
-      public SessionWidget
-    {
-      Q_OBJECT
-    public:
-      Canvas(QWidget* = nullptr);
-      ~Canvas();
+        namespace ui
+        {
+                namespace Ui
+                {
+                    class Canvas;
+                }
 
-    signals:
-      void canvasTypeChanged();
-      void canvasChanged();
-      void displayInputToggled(bool);
+                class Canvas :
+                    public CollapsibleGroupBox,
+                    public SessionWidget
+                {
+                        Q_OBJECT
+                    public:
+                        Canvas(QWidget* = nullptr);
+                        ~Canvas();
 
-    public slots:
-      void canvasTypeSelected(QString const&);
+                    signals:
+                        void canvasTypeChanged();
+                        void canvasChanged();
+                        void displayInputToggled(bool);
+                        void projectorViewModeChanged(ProjectorViewMode);
 
-      void sessionParameters();
+                    public slots:
+                        void canvasTypeSelected(QString);
+                        void sessionParameters();
+                    private slots:
+                        void changeProjectorViewMode(int);
 
-    private:
-      std::unique_ptr<Ui::Canvas> ui_;
-    };
-  }
+                    private:
+                        std::unique_ptr<Ui::Canvas> ui_;
+                };
+        }
 }
 
 #endif /* OMNI_UI_CANVAS_H_ */

@@ -10,6 +10,12 @@
     <height>884</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -101,7 +107,7 @@
    <item>
     <widget class="omni::ui::InputPreview" name="preview" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
        <verstretch>1</verstretch>
       </sizepolicy>
@@ -128,56 +134,7 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>inputList</sender>
-   <signal>clicked(QModelIndex)</signal>
-   <receiver>omni::ui::Input</receiver>
-   <slot>changeSelection(QModelIndex)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>298</x>
-     <y>280</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>298</x>
-     <y>265</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnRemoveInput</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::Input</receiver>
-   <slot>removeSelection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>442</x>
-     <y>36</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>298</x>
-     <y>263</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>inputList</sender>
-   <signal>activated(QModelIndex)</signal>
-   <receiver>omni::ui::Input</receiver>
-   <slot>changeSelection(QModelIndex)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>217</x>
-     <y>351</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>217</x>
-     <y>441</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>changeSelection(QModelIndex)</slot>
   <slot>removeSelection()</slot>

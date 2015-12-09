@@ -30,10 +30,11 @@ namespace omni
   namespace ui
   {
     Mapping::Mapping(QWidget* _parent) :
-      QGroupBox(_parent),
+        CollapsibleGroupBox(_parent),
       ui_(new Ui::Mapping)
     {
-      ui_->setupUi(this);
+        setTitle("Mapping");
+      ui_->setupUi(widget());
 
       // Configure layout
       QLayout* _layout = new QVBoxLayout;
@@ -43,6 +44,9 @@ namespace omni
 
       // Update parameter when canvas has changed
       connect(ui_->widget,SIGNAL(parametersUpdated()),this,SIGNAL(mappingChanged()));
+
+      connect(ui_->boxMappingSelect,SIGNAL(currentIndexChanged(QString)),this,SLOT(mappingTypeSelected(QString)));
+
       setDefaultMappingForCanvas();
     }
 

@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -22,6 +22,7 @@
 
 #include <list>
 #include <omni/Session.h>
+#include <omni/visual/ProjectorViewMode.h>
 #include <omni/visual/Projector.h>
 #include <omni/visual/WarpGrid.h>
 
@@ -30,7 +31,7 @@ namespace omni
   namespace visual
   {
     /// Base class for drawing a session
-    class Session 
+    class Session
     {
     public:
       Session(omni::Session&);
@@ -39,9 +40,9 @@ namespace omni
       omni::Session& session();
 
       void drawCanvas(mapping::OutputMode = mapping::OutputMode::MAPPED_INPUT, bool _displayInput = true) const;
-      void drawCanvasWithFrustumIntersections() const;
+      void drawCanvasWithFrustumIntersections(ProjectorViewMode) const;
 
-      void drawFrustumIntersection(proj::Projector const& _proj, QColor const& _color) const;
+      void drawFrustumIntersection(proj::Projector const&, QColor const&, ProjectorViewMode) const;
 
       void update();
       void free();

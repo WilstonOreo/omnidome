@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -37,10 +37,11 @@ namespace omni
   namespace ui
   {
     Input::Input(QWidget* _parent) :
-      QGroupBox(_parent),
+      CollapsibleGroupBox(_parent),
       ui_(new Ui::Input)
     {
-      ui_->setupUi(this);
+        setTitle("Inputs");
+      ui_->setupUi(widget());
 
 
       ui_->preview->hide();
@@ -55,14 +56,18 @@ namespace omni
           QAction* _menuItem = new QAction(QIcon(QString(":/input/")+ _id + QString(".png")),_id,_menu);
           _menu->addAction(_menuItem);
         }
-        connect(_menu,SIGNAL(triggered(QAction*)),this,SLOT(addInput(QAction*))); 
+        connect(_menu,SIGNAL(triggered(QAction*)),this,SLOT(addInput(QAction*)));
       }
 
       // Update preview when input has changed
       connect(this,SIGNAL(inputChanged()),ui_->preview,SLOT(update()));
-      
-      // Input can be changed in preview (e.g. ruler position), so update views as well 
+
+      // Input can be changed in preview (e.g. ruler position), so update views as well
       connect(ui_->preview,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
+
+      connect(ui_->inputList,SIGNAL(clicked(QModelIndex)),this,SLOT(changeSelection(QModelIndex)));
+      connect(ui_->inputList,SIGNAL(activated(QModelIndex)),this,SLOT(changeSelection(QModelIndex)));
+      connect(ui_->btnRemoveInput,SIGNAL(clicked()),this,SLOT(removeSelection()));
 
       prepareModel();
       ui_->widget->setLayout(new QVBoxLayout);
@@ -82,9 +87,9 @@ namespace omni
       ui_->preview->hide();
       session_=_session;
       ui_->preview->setSession(_session);
-      
+
       prepareModel();
-      for (auto& _input : session_->inputs()) 
+      for (auto& _input : session_->inputs())
       {
         addItem(_input.get());
       }
@@ -92,7 +97,7 @@ namespace omni
 
       emit inputChanged();
     }
-       
+
     void Input::addInput(QAction* _action)
     {
       if (!session_) return;
@@ -104,7 +109,7 @@ namespace omni
       {
         addItem(_input);
         session_->inputs().setCurrentIndex(session_->inputs().size()-1);
-      
+
         // Show preview only if there is an input
         ui_->preview->show();
 
@@ -115,8 +120,8 @@ namespace omni
       }
     }
 
-    void Input::removeSelection() 
-    { 
+    void Input::removeSelection()
+    {
       if (session_->inputs().empty()) return;
 
       int _row = ui_->inputList->currentIndex().row() - 1;
@@ -135,7 +140,7 @@ namespace omni
       prepareModel();
       emit inputChanged();
     }
-      
+
     void Input::changeSelection(QModelIndex _index)
     {
       if (!session_) return;
@@ -150,7 +155,7 @@ namespace omni
         emit inputChanged();
         return;
       }
- 
+
       session_->inputs().setCurrentIndex(_row);
 
       // Show preview only if there is an input
@@ -159,7 +164,7 @@ namespace omni
       emit inputChanged();
     }
 
-    void Input::prepareModel() 
+    void Input::prepareModel()
     {
       model_.reset(new QStandardItemModel());
       model_->clear();
@@ -179,7 +184,7 @@ namespace omni
 
     bool Input::showSettingsDialog(input::Interface* _input)
     {
-      if (_input->getTypeId() == "Image") 
+      if (_input->getTypeId() == "Image")
       {
         QString _filename = QFileDialog::getOpenFileName(this, "Open image file...", ".", "Image files (*.png *.jpg *.jpeg)");
         if (_filename.isEmpty()) return false;
@@ -200,7 +205,7 @@ namespace omni
 
       return true;
     }
- 
+
     void Input::addItem(input::Interface const* _input)
     {
       if (!_input) return;

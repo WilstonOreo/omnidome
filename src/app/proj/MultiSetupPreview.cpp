@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -52,7 +52,7 @@ namespace omni
         multiSetup_ = _multiSetup;
         updateProjectors();
       }
-        
+
       void MultiSetupPreview::updateProjectors()
       {
         if (!multiSetup_) return;
@@ -61,7 +61,7 @@ namespace omni
 
         projectors_ = multiSetup_->projectors();
         for (auto& _projector : projectors_)
-        { 
+        {
           visual::Projector _projViz(_projector);
           _projViz.setColor("#00ccff");
           /// Make new projector visualizer
@@ -87,7 +87,7 @@ namespace omni
         visual::with_current_context([&](QOpenGLFunctions& _)
         {
           auto* _canvas = session()->canvas();
-    
+
           _.glEnable(GL_LIGHTING);
           _.glEnable(GL_DEPTH_TEST);
           if (_canvas)
@@ -95,18 +95,18 @@ namespace omni
             glColor4f(1.0,1.0,1.0,1.0);
             _canvas->draw();
           }
-          
+
           _.glDisable(GL_DEPTH_TEST);
           _.glDisable(GL_LIGHTING);
-          for (auto& _projector : projectorViz_) 
+          for (auto& _projector : projectorViz_)
           {
             _projector.draw();
             _projector.drawPositioning(_canvas ? _canvas->center() : QVector3D(0,0,0));
           }
 
           for (auto& _projector : projectors_)
-            session_->drawFrustumIntersection(_projector,"#00ccff");
-          
+            session_->drawFrustumIntersection(_projector,"#00ccff",ProjectorViewMode::BOTH);
+
           _.glEnable(GL_DEPTH_TEST);
 
           for (auto& _projector : projectorViz_)
@@ -116,4 +116,3 @@ namespace omni
     }
   }
 }
-
