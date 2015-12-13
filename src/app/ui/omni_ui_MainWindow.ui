@@ -364,6 +364,15 @@
     </item>
     <item>
      <widget class="QFrame" name="horizontalFrame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <property name="midLineWidth">
+       <number>1</number>
+      </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="leftMargin">
         <number>7</number>
@@ -402,8 +411,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>266</width>
-            <height>623</height>
+            <width>265</width>
+            <height>615</height>
            </rect>
           </property>
           <property name="sizePolicy">
