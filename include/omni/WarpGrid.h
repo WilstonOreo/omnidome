@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -26,13 +26,13 @@
 
 namespace omni
 {
-  /**@brief A warp grid is a 2D bezier grid with MxN points 
+  /**@brief A warp grid is a 2D bezier grid with MxN points
      @detail Default size 6x6 points. Selected points are also stored:
    **/
   class WarpGrid
   {
   public:
-    /// Default constructor 
+    /// Default constructor
     WarpGrid();
 
     /// Resets all points to form a regular grid
@@ -61,15 +61,17 @@ namespace omni
 
     /// Returns pointer set of selected points
     std::set<WarpPoint*> getSelected();
-    
+
     /// Returns pointer set of selected points (const version)
     std::set<WarpPoint const*> getSelected() const;
 
     /// Get point with x and y index
     WarpPoint* getPoint(int x, int y);
-    
+
     /// Get point with x and y index (const version)
     WarpPoint const* getPoint(int x, int y) const;
+
+    QVector2D getWarpPointPos(int x, int y) const;
 
     /// Return texture coordinate on x,y index
     QVector2D getTexCoord(int _x, int _y) const;
@@ -84,7 +86,7 @@ namespace omni
     /// Return index to nearest point
     size_t getNearest(const QPointF& _p) const;
 
-    int horizontal_ = 6;
+    int horizontal_ = 5;
     int vertical_ = 6;
     std::vector<WarpPoint> points_;
   };

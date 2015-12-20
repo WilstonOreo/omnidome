@@ -119,6 +119,7 @@ namespace omni
         blendShader_->link();
       }
 
+      updateWarpGrid();
       updateBlendTexture();
     }
 
@@ -138,10 +139,12 @@ namespace omni
         bool _reset = !blendTex_;
         if (!!blendTex_)
         {
+          // Reset blend texture if its size has changed
           _reset = blendTex_->width() != tuning_.width() || blendTex_->height() != tuning_.height();
         }
         if (_reset)
         {
+          // Reset blend texture
           blendTextureUpdateRect_ = QRect(0,0,tuning_.width(),tuning_.height());
           blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().strokeBuffer().toQImage()));
         }
@@ -271,6 +274,12 @@ namespace omni
         }
         blendTex_->release();
       });
+    }
+
+    void Tuning::updateWarpGrid() {
+        if (!warpGrid_) return;
+
+        warpGrid_->update();
     }
 
     void Tuning::free()

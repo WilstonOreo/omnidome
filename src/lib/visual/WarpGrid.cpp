@@ -19,101 +19,370 @@
 
 #include <omni/visual/WarpGrid.h>
 
+#include <iostream>
 #include <array>
 #include <QPointF>
 #include <QRectF>
 #include <QColor>
 #include <omni/visual/util.h>
 
-namespace omni
-{
-  namespace visual
-  {
-    WarpGrid::WarpGrid(omni::WarpGrid const& _warpGrid) :
-      warpGrid_(_warpGrid)
-    {
-      update();
-    }
-
-    WarpGrid::~WarpGrid()
-    {
-    }
-
-    void WarpGrid::draw() const
-    {
-        for (int y = 0; y < warpGrid_.vertical()-1; ++y)
+namespace omni {
+    namespace visual {
+        WarpGrid::WarpGrid(omni::WarpGrid const& _warpGrid) :
+            warpGrid_(_warpGrid)
         {
-          glBegin(GL_QUAD_STRIP);
-          for (int x = 0; x < warpGrid_.horizontal(); ++x)
-          {
-            auto _p0 = warpGrid_.getPoint(x,y);
-            auto _py = warpGrid_.getPoint(x,y+1);
-            auto _texCoord0 = warpGrid_.getTexCoord(x,y);
-            auto _texCoordY = warpGrid_.getTexCoord(x,y+1);
-
-            glTexCoord2f(_texCoord0.x(), 1.0 - _texCoord0.y());
-            glVertex2f(_p0->x(),_p0->y());
-            glTexCoord2f(_texCoordY.x(), 1.0 - _texCoordY.y());
-            glVertex2f(_py->x(),_py->y());
-          }
-          glEnd();
         }
-    }
 
-    void WarpGrid::drawLines()
-    {
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
-        _.glEnable(GL_BLEND);
-        glPolygonMode(GL_FRONT,GL_LINE);
-        glPolygonMode(GL_BACK,GL_LINE);
-        glColor4f(1.0,1.0,1.0,0.2);
-        glLineWidth(2.0);
-        draw();
-        glPolygonMode(GL_FRONT,GL_FILL);
-        glPolygonMode(GL_BACK,GL_FILL);
-      });
-    };
+        WarpGrid::~WarpGrid()
+        {}
 
-    void WarpGrid::drawHandles(QColor const& _color, QRectF const& _rect)
-    {
-      constexpr size_t _numVertices = 16;
-      const float _radius = 0.1 / sqrt(warpGrid_.horizontal() * warpGrid_.vertical());
-      std::array<QPointF,_numVertices> _circlePoints;
-      util::for_each_circle_point(_numVertices,_radius,[&](size_t i, const QPointF& _p)
-      {
-        _circlePoints[i] = QPointF(_p.x() * _rect.width(),_p.y() * _rect.height());
-      });
-
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
-        _.glEnable(GL_BLEND);
-        for (auto& _point : warpGrid_.points())
+        void WarpGrid::draw() const
         {
-          glBegin(GL_LINE_LOOP);
-          glColor4f(1.0,1.0,1.0,0.5);
-          for (auto& _p : _circlePoints)
-            glVertex2f(_p.x() + _point.x(),_p.y() + _point.y());
-          glEnd();
-          if (_point.selected())
-          {
-            glBegin(GL_TRIANGLE_FAN);
-            glColor4f(_color.redF(),_color.greenF(),_color.blueF(),0.5);
-            glVertex2f(_point.x(),_point.y());
-            for (auto& _p : _circlePoints)
+            with_current_context([this](QOpenGLFunctions& _)
             {
-              glVertex2f(_p.x() + _point.x(),_p.y() + _point.y());
-            }
-            auto& _p = _circlePoints[0];
-            glVertex2f(_p.x() + _point.x(),_p.y() + _point.y());
-            glEnd();
-          }
-        }
-      });
-    }
+                _.glBindBuffer(GL_ARRAY_BUFFER,         vertexVbo_.id());
+                _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_.id());
 
-    void WarpGrid::update()
-    {
+                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                glEnableClientState(GL_VERTEX_ARRAY);
+
+                glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex2D),
+                                  (void *)Vertex2D::texCoordOffset());
+                glVertexPointer(2, GL_FLOAT, sizeof(Vertex2D),
+                                (void *)Vertex2D::posOffset());
+
+                _.glDrawElements(GL_QUADS, indices_.size() - 4,
+                                 GL_UNSIGNED_INT, 0);
+
+                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                glDisableClientState(GL_VERTEX_ARRAY);
+
+                _.glBindBuffer(GL_ARRAY_BUFFER,         0);
+                _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            });
+        }
+
+        void WarpGrid::drawLines()
+        {
+            with_current_context([this](QOpenGLFunctions& _)
+            {
+                _.glEnable(GL_BLEND);
+                glColor4f(1.0, 1.0, 1.0, 0.2);
+                glLineWidth(2.0);
+                _.glBindBuffer(GL_ARRAY_BUFFER,         gridVertexVbo_.id());
+                _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gridIndexVbo_.id());
+
+                glEnableClientState(GL_VERTEX_ARRAY);
+
+                glVertexPointer(2, GL_FLOAT, sizeof(QVector2D),0);
+
+                _.glDrawElements(GL_LINES, gridIndices_.size() - 4,
+                                 GL_UNSIGNED_INT, 0);
+
+                glDisableClientState(GL_VERTEX_ARRAY);
+
+                _.glBindBuffer(GL_ARRAY_BUFFER,         0);
+                _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            });
+        }
+
+        void WarpGrid::drawHandles(QColor const& _color, QRectF const& _rect)
+        {
+            if (!circle_) return;
+
+            const float _radius           = 0.1 / sqrt(
+                warpGrid_.horizontal() * warpGrid_.vertical());
+            float _rX = _radius * _rect.width();
+            float _rY = _radius * _rect.height();
+
+            visual::with_current_context([&](QOpenGLFunctions& _)
+            {
+                _.glEnable(GL_BLEND);
+
+                for (auto& _point : warpGrid_.points())
+                {
+                    glColor4f(1.0, 1.0, 1.0, 0.5);
+                    circle_->drawLine(_point.pos(),_rX,_rY);
+
+                    if (_point.selected())
+                    {
+                        glColor4f(_color.redF(), _color.greenF(), _color.blueF(),
+                                  0.5);
+                        circle_->drawFill(_point.pos(),_rX,_rY);
+                    }
+                }
+            });
+        }
+
+        int WarpGrid::subdivisions() const {
+            return subdivisions_;
+        }
+
+        void WarpGrid::setSubdivisions(int _subdivisions) {
+            subdivisions_ = _subdivisions;
+            update();
+        }
+
+           // from http://www.paulinternet.nl/?page=bicubic : fast catmull-rom calculation
+           QVector2D WarpGrid::cubicInterpolate(
+               const std::array<QVector2D,4>& knots,
+               float t ) const
+           {
+                return knots[1] + 0.5f * t*(knots[2] - knots[0] +
+                        t*(2.0f*knots[0] - 5.0f*knots[1] +
+                        4.0f*knots[2] - knots[3] +
+                        t*(3.0f*(knots[1] - knots[2]) +
+                        knots[3] - knots[0])));
+           }
+/*
+           void WarpBilinear::setNumControlX(int n)
+           {
+                // there should be a minimum of 2 control points
+                n = math<int>::max(2, n);
+
+                // create a list of new points
+                std::vector<Vec2f> temp(n * mControlsY);
+
+                // perform spline fitting
+                for(int row=0;row<mControlsY;++row) {
+                        std::vector<Vec2f> points;
+                        if(mIsLinear) {
+                                // construct piece-wise linear spline
+                                for(int col=0;col<mControlsX;++col) {
+                                        points.push_back( getPoint(col, row) );
+                                }
+
+                                BSpline2f s( points, 1, false, true );
+
+                                // calculate position of new control points
+                                float length = s.getLength(0.0f, 1.0f);
+                                float step = 1.0f / (n-1);
+                                for(int col=0;col<n;++col) {
+                                        temp[(col * mControlsY) + row] =
+                                           s.getPosition( s.getTime( length *
+                                           col * step ) );
+                                }
+                        }
+                        else {
+                                // construct piece-wise catmull-rom spline
+                                for(int col=0;col<mControlsX;++col) {
+                                        Vec2f p0 = getPoint(col-1, row);
+                                        Vec2f p1 = getPoint(col, row);
+                                        Vec2f p2 = getPoint(col+1, row);
+                                        Vec2f p3 = getPoint(col+2, row);
+
+                                        // control points according to an
+                                           optimized Catmull-Rom implementation
+                                        Vec2f b1 = p1 + (p2 - p0) / 6.0f;
+                                        Vec2f b2 = p2 - (p3 - p1) / 6.0f;
+
+                                        points.push_back(p1);
+
+                                        if(col < (mControlsX-1)) {
+                                                points.push_back(b1);
+                                                points.push_back(b2);
+                                        }
+                                }
+
+                                BSpline2f s( points, 3, false, true );
+
+                                // calculate position of new control points
+                                float length = s.getLength(0.0f, 1.0f);
+                                float step = 1.0f / (n-1);
+                                for(int col=0;col<n;++col) {
+                                        temp[(col * mControlsY) + row] =
+                                           s.getPosition( s.getTime( length *
+                                           col * step ) );
+                                }
+                        }
+                }
+
+                // copy new control points
+                mPoints = temp;
+                mControlsX = n;
+
+                mIsDirty = true;
+           }
+
+           void WarpBilinear::setNumControlY(int n)
+           {
+                // there should be a minimum of 2 control points
+                n = math<int>::max(2, n);
+
+                // create a list of new points
+                std::vector<Vec2f> temp(mControlsX * n);
+
+                // perform spline fitting
+                for(int col=0;col<mControlsX;++col) {
+                        std::vector<Vec2f> points;
+                        if(mIsLinear) {
+                                // construct piece-wise linear spline
+                                for(int row=0;row<mControlsY;++row)
+                                        points.push_back( getPoint(col, row) );
+
+                                BSpline2f s( points, 1, false, true );
+
+                                // calculate position of new control points
+                                float length = s.getLength(0.0f, 1.0f);
+                                float step = 1.0f / (n-1);
+                                for(int row=0;row<n;++row) {
+                                        temp[(col * n) + row] = s.getPosition(
+                                           s.getTime( length * row * step ) );
+                                }
+                        }
+                        else {
+                                // construct piece-wise catmull-rom spline
+                                for(int row=0;row<mControlsY;++row) {
+                                        Vec2f p0 = getPoint(col, row-1);
+                                        Vec2f p1 = getPoint(col, row);
+                                        Vec2f p2 = getPoint(col, row+1);
+                                        Vec2f p3 = getPoint(col, row+2);
+
+                                        // control points according to an
+                                           optimized Catmull-Rom implementation
+                                        Vec2f b1 = p1 + (p2 - p0) / 6.0f;
+                                        Vec2f b2 = p2 - (p3 - p1) / 6.0f;
+
+                                        points.push_back(p1);
+
+                                        if(row < (mControlsY-1)) {
+                                                points.push_back(b1);
+                                                points.push_back(b2);
+                                        }
+                                }
+
+                                BSpline2f s( points, 3, false, true );
+
+                                // calculate position of new control points
+                                float length = s.getLength(0.0f, 1.0f);
+                                float step = 1.0f / (n-1);
+                                for(int row=0;row<n;++row) {
+                                        temp[(col * n) + row] = s.getPosition(
+                                           s.getTime( length * row * step ) );
+                                }
+                        }
+                }
+
+                // copy new control points
+                mPoints = temp;
+                mControlsY = n;
+
+                mIsDirty = true;
+           }
+         */
+        float WarpGrid::lerp(float v0, float v1, float t) const {
+            return v0 + t * (v1 - v0);
+        }
+
+        void WarpGrid::update()
+        {
+            if(!circle_) {
+                circle_.reset(new Circle());
+            }
+            circle_->update();
+            vertexVbo_.gen();
+            indexVbo_.gen();
+            gridVertexVbo_.gen();
+            gridIndexVbo_.gen();
+
+            size_t _resX        = subdivisions() * (warpGrid_.horizontal() - 1) + 1;
+            size_t _resY        = subdivisions() * (warpGrid_.vertical() - 1) + 1;
+            size_t _numVertices = _resX * _resY;
+            bool _resized = vertices_.size() != _numVertices;
+
+            if (_resized) {
+                vertices_.clear();
+                vertices_.resize(_numVertices);
+                indices_.clear();
+                indices_.resize(4 * _numVertices);
+
+                gridVertices_.clear();
+                size_t _num = (2*subdivisions()) * warpGrid_.horizontal() * warpGrid_.vertical();
+                gridVertices_.resize(_num);
+                gridIndices_.clear();
+                gridIndices_.resize(_num*2);
+            }
+
+            auto _vertexIt = vertices_.begin();
+            auto _indexIt = indices_.begin();
+
+            for (size_t x = 0; x < _resX; ++x) {
+                for (size_t y = 0; y < _resY; ++y) {
+                    // index
+                    if (_resized) {
+                        if (((x + 1) < _resX) && ((y + 1) < _resY)) {
+                            *(_indexIt++) = (x + 0) * _resY + (y + 0);
+                            *(_indexIt++) = (x + 1) * _resY + (y + 0);
+                            *(_indexIt++) = (x + 1) * _resY + (y + 1);
+                            *(_indexIt++) = (x + 0) * _resY + (y + 1);
+                        }
+
+                        // texCoords
+                        float tx = lerp(0.0f, 1.0f, x / (float)(_resX - 1));
+                        float ty = lerp(0.0f, 1.0f, y / (float)(_resY - 1));
+                        _vertexIt->setTexCoord(QVector2D(tx, 1.0 - ty));
+                    }
+
+                    // transform coordinates to [0..numControls]
+                    float u = x * (warpGrid_.horizontal() - 1) /
+                            (float)(_resX - 1);
+                    float v = y * (warpGrid_.vertical() - 1) /
+                            (float)(_resY - 1);
+
+                    // determine col and row
+                    int col = (int)(u);
+                    int row = (int)(v);
+
+                    // normalize coordinates to [0..1]
+                    u -= col;
+                    v -= row;
+
+                    // perform linear interpolation
+                    auto _p00   = warpGrid_.getWarpPointPos(col + 0, row + 0);
+                    auto _p10   = warpGrid_.getWarpPointPos(col + 1, row + 0);
+                    auto _p01   = warpGrid_.getWarpPointPos(col + 0, row + 1);
+                    auto _p11   = warpGrid_.getWarpPointPos(col + 1, row + 1);
+                    QVector2D p1((1.0f - u) * _p00 + u * _p10);
+                    QVector2D p2((1.0f - u) * _p01 + u * _p11);
+
+                    QVector2D p((1.0f - v) * p1 + v * p2);
+                    _vertexIt->setPos(p);
+                    ++_vertexIt;
+                }
+            }
+
+            /// Generate grid
+            auto _gridVertexIt = gridVertices_.begin();
+            auto _gridIndexIt = gridIndices_.begin();
+
+            size_t i = 0;
+            for (size_t y = 0; y < _resY; y += subdivisions()) {
+                for (size_t x = 0; x < _resX; ++x) {
+                    *(_gridVertexIt++) = vertices_[x*_resY + y].pos();
+                    if (x < _resX-1) {
+                    *(_gridIndexIt++) = i;
+                        *(_gridIndexIt++) = i+1;
+                    }
+                    ++i;
+                }
+            }
+
+            for (size_t x = 0; x < _resX; x += subdivisions()) {
+                for (size_t y = 0; y < _resY; ++y) {
+                    *(_gridVertexIt++) = vertices_[x*_resY + y].pos();
+                    if (y < _resY-1) {
+                    *(_gridIndexIt++) = i;
+                        *(_gridIndexIt++) = i+1;
+                    }
+                    ++i;
+                }
+            }
+
+            vertexVbo_.bufferStaticArray(vertices_);
+            indexVbo_.bufferStaticElementArray(indices_);
+
+            gridVertexVbo_.bufferStaticArray(gridVertices_);
+            gridIndexVbo_.bufferStaticElementArray(gridIndices_);
+        }
     }
-  }
 }

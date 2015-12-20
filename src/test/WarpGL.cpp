@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -39,32 +39,35 @@ int main(int ac, char* av[])
   /// Start gui
   QApplication _a(ac, av);
 
+  /// Initalize new session
   Session _session;
   _session.inputs().add<input::Image>("/Users/wilstonoreo/Dropbox/Balaton1920x1080.jpg");
   _session.inputs().setCurrentIndex(0);
 
   auto* _tuning = _session.tunings().add();
-  auto* _projSetup = static_cast<proj::PeripheralSetup*>(_tuning->projector().setup("PeripheralSetup"));
 
+  // Set color
   _tuning->setColor("#FF0000");
   _tuning->blendMask().setRect(QRectF(0.2,0.2,0.6,0.6));
 
+  // Setup projector
+  auto* _projSetup = static_cast<proj::PeripheralSetup*>(_tuning->projector().setup("PeripheralSetup"));
   _projSetup->setYaw(0);
   _projSetup->setPitch(-90.0);
   _projSetup->setDistanceCenter(0.0);
   _projSetup->setTowerHeight(8.0);
   _tuning->projector().setup();
 
+  // Setup canvas
   auto* _canvas = _session.setCanvas("HalfDome");
   _canvas->update();
 
   auto* _input = _session.inputs().current();
-  qDebug() << _input->getTypeId();
-
   _input->update();
 
-  _session.setMode(Session::Mode::BLEND);
+  _session.setMode(Session::Mode::WARP);
   _session.setBlendMode(Session::BlendMode::INPUT);
+  _input->update();
 
   ui::TuningGLView _view;
   _view.show();
@@ -76,10 +79,10 @@ int main(int ac, char* av[])
   _options.setMappingOutputMode(mapping::OutputMode::UVW);
   Renderer _renderer(_session,_options);
 
+  // Render image
   QImage _image;
   _renderer.render(_tuning,_image);
   _image.save("renderer.png");
 
   return _a.exec();
 }
-

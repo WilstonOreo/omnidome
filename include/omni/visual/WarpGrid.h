@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -18,12 +18,14 @@
  */
 
 #ifndef OMNI_VISUAL_WARPGRID_H_
-#define OMNI_VISUAL_WARPGRID_H_ 
+#define OMNI_VISUAL_WARPGRID_H_
 
+#include <omni/Vertex2D.h>
 #include <omni/WarpGrid.h>
 #include <omni/visual/Interface.h>
 #include <omni/visual/Circle.h>
 #include <omni/visual/VBO.h>
+
 
 namespace omni
 {
@@ -38,7 +40,7 @@ namespace omni
 
       /// Draw warp grid
       void draw() const;
-      
+
       /// Draw lines for warp grid
       void drawLines();
 
@@ -48,9 +50,26 @@ namespace omni
       /// Generate geometry
       void update();
 
+      /// Return number of subdivisions
+      int subdivisions() const;
+
+      /// Set number of subdivisions
+      void setSubdivisions(int _subDiv);
+
+      QVector2D cubicInterpolate(const std::array<QVector2D,4>& knots, float t) const;
+
     private:
+      float lerp(float,float,float) const;
+      std::unique_ptr<Circle> circle_;
+      std::vector<Vertex2D> vertices_;
+      std::vector<QVector2D> gridVertices_;
+      std::vector<GLuint> indices_;
+      std::vector<GLuint> gridIndices_;
+      VBO vertexVbo_, indexVbo_;
+      VBO gridVertexVbo_, gridIndexVbo_;
 
       omni::WarpGrid const& warpGrid_;
+      int subdivisions_ = 8;
     };
   }
 }

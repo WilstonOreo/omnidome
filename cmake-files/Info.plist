@@ -33,10 +33,10 @@
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>NSHumanReadableCopyright</key>
-  <string>${MACOSX_BUNDLE_COPYRIGHT}</string>
-  <key>NSPrincipalClass</key>
-  <string>NSApplication</string>
-  <key>NSHighResolutionCapable</key>
-  <true/>
+  	<string>${MACOSX_BUNDLE_COPYRIGHT}</string>
+  	<key>NSPrincipalClass</key>
+  	<string>NSApplication</string>
+  	<key>NSHighResolutionCapable</key>
+  	<true/>
 </dict>
 </plist>

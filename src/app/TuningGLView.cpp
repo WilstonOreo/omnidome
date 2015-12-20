@@ -49,8 +49,8 @@ namespace omni
       if (!context()->isValid()) return;
 
       makeCurrent();
-      tuning_->free();
-      tuning_.reset();
+      vizTuning_->free();
+      vizTuning_.reset();
       session_->free();
       session_.reset();
       frameBuffer_.reset();
@@ -75,8 +75,10 @@ namespace omni
       auto* _tuning = tuning();
 
       if (!_tuning) return;
-      tuning_.reset(new visual::Tuning(*_tuning));
-      tuning_->update();
+
+      // Make new visualizer
+      vizTuning_.reset(new visual::Tuning(*_tuning));
+      vizTuning_->update();
     }
 
     bool TuningGLView::keepAspectRatio() const
@@ -148,8 +150,8 @@ namespace omni
 
     void TuningGLView::updateWithChildViews(QRect const& _rect)
     {
-      tuning_->setBlendTextureUpdateRect(_rect);
-      tuning_->update();
+      vizTuning_->setBlendTextureUpdateRect(_rect);
+      vizTuning_->update();
       for (auto& _childView : childViews_)
       {
         if (_childView->tuning() == tuning())
@@ -163,7 +165,7 @@ namespace omni
     void TuningGLView::updateContext(bool _update)
     {
       if (_update)
-        tuning_->update();
+        vizTuning_->update();
       update();
     }
 
@@ -180,7 +182,7 @@ namespace omni
 
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
     {
-      if (!session() || !tuning_ || (viewOnly() && !showCursor_)) return;
+      if (!session() || !vizTuning_ || (viewOnly() && !showCursor_)) return;
 
       auto&& _rect = viewRect();
       float dx = float(event->x() - mousePosition().x()) / width() * _rect.width();
@@ -200,7 +202,10 @@ namespace omni
           {
             _selected->pos() += QPointF(dx,-dy);
           }
-          updateWithChildViews(false);
+
+          // Update warp grid mesh
+          vizTuning_->updateWarpGrid();
+          updateWithChildViews(true);
         }
         else if (_mode == Session::Mode::BLEND)
         {
@@ -236,7 +241,7 @@ namespace omni
     {
       makeCurrent();
       QOpenGLWidget::mousePressEvent(event);
-      if (!session() || !tuning_ || viewOnly()) return;
+      if (!session() || !vizTuning_ || viewOnly()) return;
 
       this->mousePosition_ = event->pos();
       auto&& _newPos = screenPos(this->mousePosition_);
@@ -288,11 +293,15 @@ namespace omni
 
     void TuningGLView::mouseReleaseEvent(QMouseEvent *event)
     {
-      if (!session() || !tuning_ || viewOnly()) return;
+      if (!session() || !vizTuning_ || viewOnly()) return;
 
       mouseDown_ = false;
       makeCurrent();
       auto _mode = session()->mode();
+      if (_mode == Session::Mode::WARP) {
+          vizTuning_->updateWarpGrid();
+      }
+
       if (_mode == Session::Mode::BLEND)
       {
         leftOverDistance_ = 0.0;
@@ -487,7 +496,7 @@ namespace omni
         _.glDisable(GL_LIGHTING);
         _.glEnable(GL_BLEND);
 
-        tuning_->drawWarpGrid();
+        vizTuning_->drawWarpGrid();
 
         _.glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -517,7 +526,7 @@ namespace omni
           _.glDisable(GL_TEXTURE_2D);
           auto _color = tuning()->color();
           glColor4f(_color.redF(),_color.greenF(),_color.blueF(),1.0);
-          tuning_->drawBlendMask();
+          vizTuning_->drawBlendMask();
           break;
         }
         case Session::BlendMode::WHITE:
@@ -525,7 +534,7 @@ namespace omni
           // Draw white blend mask
           _.glDisable(GL_TEXTURE_2D);
           glColor4f(1.0,1.0,1.0,1.0);
-          tuning_->drawBlendMask();
+          vizTuning_->drawBlendMask();
           break;
         }
         case Session::BlendMode::INPUT:
@@ -533,7 +542,7 @@ namespace omni
           // Draw blend mask with input attached
           _.glEnable(GL_TEXTURE_2D);
           _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
-          tuning_->drawBlendMask();
+          vizTuning_->drawBlendMask();
           _.glBindTexture(GL_TEXTURE_2D, 0.0);
           break;
         }
@@ -542,7 +551,7 @@ namespace omni
         drawScreenBorder();
 
         if (showCursor_ || !viewOnly_)
-          tuning_->drawCursor(cursorPosition_);
+          vizTuning_->drawCursor(cursorPosition_);
       });
     }
 
@@ -563,7 +572,7 @@ namespace omni
         // Draw blend mask with input attached
         _.glEnable(GL_TEXTURE_2D);
         _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
-        tuning_->drawBlendMask();
+        vizTuning_->drawBlendMask();
         _.glBindTexture(GL_TEXTURE_2D, 0.0);
       });
     }
@@ -587,7 +596,7 @@ namespace omni
     {
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        tuning_->drawTestCard(index_+1);
+        vizTuning_->drawTestCard(index_+1);
       });
     }
 
@@ -595,12 +604,12 @@ namespace omni
     {
       if (!isVisible() || !context() || aboutToBeDestroyed_) return;
 
-      if (!tuning_ || !session_) return;
+      if (!vizTuning_ || !session_) return;
 
       session_->update();
 
-      if (!tuning_->initialized())
-        tuning_->update();
+      if (!vizTuning_->initialized())
+        vizTuning_->update();
 
       makeCurrent();
       glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -634,6 +643,7 @@ namespace omni
       case Session::Mode::EXPORT:
         drawExportView();
         break;
+      default: break;
       }
       glPopAttrib();
     }

@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -25,7 +25,7 @@
 
 namespace omni
 {
-  /// A vertex is geometry entiry with a position, normal and texture coordinates
+  /// A vertex is a geometry entity with a position, normal and texture coordinates
   struct Vertex
   {
     /// Default constructor
@@ -35,41 +35,41 @@ namespace omni
     Vertex(
         const QVector3D& _pos,
         const QVector3D& _normal,
-        const QVector3D& _texCoord = QVector3D()); 
+        const QVector3D& _texCoord = QVector3D());
 
     /// Set new position
     void setPos(QVector3D const& _pos);
-    
-    /// Return reference to position 
+
+    /// Return reference to position
     QVector3D& pos();
 
     /// Return const reference to position
     QVector3D const& pos() const;
-    
+
     /// Sets new normal (is not normalized!)
     void setNormal(QVector3D const& _normal);
-    
+
     /// Return reference to normal
     QVector3D& normal();
 
     /// Return const reference to normal
     QVector3D const& normal() const;
-   
-    /// Set new texture coordinates 
+
+    /// Set new texture coordinates
     void setTexCoord(QVector3D const& _texCoord);
-    
- 
+
+
     /// Return reference to texture coordinates
     QVector3D& texCoord();
 
     /// Return const reference to texture coordinates
     QVector3D const& texCoord() const;
-    
+
     inline static constexpr size_t texCoordOffset()
     {
       return 0;
     }
-    
+
     inline static constexpr size_t normalOffset()
     {
       return sizeof(QVector3D);
@@ -79,7 +79,7 @@ namespace omni
     {
       return sizeof(QVector3D) + sizeof(QVector3D);
     }
- 
+
   private:
     QVector3D texCoord_;
     QVector3D normal_;

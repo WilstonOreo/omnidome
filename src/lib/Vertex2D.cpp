@@ -17,34 +17,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_VISUAL_CIRCLE_H_
-#define OMNI_VISUAL_CIRCLE_H_
+#include <omni/Vertex2D.h>
 
-#include <array>
-#include <omni/visual/VBO.h>
+namespace omni {
 
-namespace omni
-{
-  namespace visual
-  {
-    class Circle
+    Vertex2D::Vertex2D() {
+
+    }
+
+    Vertex2D::Vertex2D(
+        const QVector2D& _pos,
+        const QVector2D& _texCoord) :
+        texCoord_(_texCoord),
+        pos_(_pos)
     {
-    public:
-      Circle();
 
-      static constexpr std::size_t numberSegments = 24;
+    }
 
-      void drawLine(QPointF const& _pos, float _rX, float _rY) const;
-      void drawFill(QPointF const& _pos, float _rX, float _rY) const;
+    void Vertex2D::setPos(QVector2D const& _pos) {
+        pos_=_pos;
+    }
 
-      void update();
+    QVector2D& Vertex2D::pos() {
+        return pos_;
+    }
 
-    private:
-       VBO vertexVbo_;
-       std::array<QVector2D,numberSegments+2> vertices_;
-    };
-  }
+    QVector2D const& Vertex2D::pos() const {
+        return pos_;
+    }
+
+    void Vertex2D::setTexCoord(QVector2D const& _texCoord) {
+        texCoord_ = _texCoord;
+    }
+
+    QVector2D& Vertex2D::texCoord() {
+        return texCoord_;
+    }
+
+    QVector2D const& Vertex2D::texCoord() const {
+        return texCoord_;
+    }
 }
-
-
-#endif /* OMNI_VISUAL_CIRCLE_H_ */
