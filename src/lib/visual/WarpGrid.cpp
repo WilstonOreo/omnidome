@@ -337,7 +337,10 @@ namespace omni {
                     u -= col;
                     v -= row;
 
+                    QVector2D p;
+
                     // perform linear interpolation
+                    /*
                     auto _p00   = warpGrid_.getWarpPointPos(col + 0, row + 0);
                     auto _p10   = warpGrid_.getWarpPointPos(col + 1, row + 0);
                     auto _p01   = warpGrid_.getWarpPointPos(col + 0, row + 1);
@@ -345,7 +348,23 @@ namespace omni {
                     QVector2D p1((1.0f - u) * _p00 + u * _p10);
                     QVector2D p2((1.0f - u) * _p01 + u * _p11);
 
-                    QVector2D p((1.0f - v) * p1 + v * p2);
+                    p = QVector2D((1.0f - v) * p1 + v * p2);
+                    */
+                    // perform bicubic interpolation
+
+
+                    array4_type _rows, _cols;
+
+                    for(int i=-1;i<3;++i) {
+                        for(int j=-1;j<3;++j) {
+                            auto _point = warpGrid_.getWarpPointPos(col + i, row + j);
+                            _cols[j+1] = _point;
+                        }
+                        _rows[i+1] = cubicInterpolate( _cols, v );
+                    }
+                    p = cubicInterpolate( _rows, u );
+
+
                     _vertexIt->setPos(p);
                     ++_vertexIt;
                 }

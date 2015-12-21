@@ -45,16 +45,6 @@ namespace omni
             glDisableClientState(GL_VERTEX_ARRAY);
             glPopMatrix();
         });
-        /*
-            glPushMatrix();
-            glScalef(_rX,_rY,1.0);
-            glTranslatef(_pos.x()/_rX,_pos.y()/_rY,0.0);
-        glBegin(GL_LINE_LOOP);
-         glColor4f(1.0,1.0,1.0,0.5);
-         for (auto& _p : vertices_)
-           glVertex2f(_p.x(),_p.y());
-         glEnd();
-            glPopMatrix();*/
     }
 
     void Circle::drawFill(QPointF const& _pos, float _rX, float _rY) const
