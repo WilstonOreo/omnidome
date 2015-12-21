@@ -128,7 +128,11 @@ namespace omni {
             if(!circle_) {
                 circle_.reset(new Circle());
             }
-            circle_->update();
+
+            if (!warpGrid_.hasChanged()) {
+                return;
+            }
+
             vertexVbo_.gen();
             indexVbo_.gen();
             gridVertexVbo_.gen();
@@ -195,6 +199,7 @@ namespace omni {
             auto _gridVertexIt = gridVertices_.begin();
             auto _gridIndexIt = gridIndices_.begin();
 
+            // Generate horizontal lines
             size_t i = 0;
             for (size_t y = 0; y < _resY; y += subdivisions()) {
                 for (size_t x = 0; x < _resX; ++x) {
@@ -207,6 +212,7 @@ namespace omni {
                 }
             }
 
+            // Generate vertical lines
             for (size_t x = 0; x < _resX; x += subdivisions()) {
                 for (size_t y = 0; y < _resY; ++y) {
                     *(_gridVertexIt++) = vertices_[x*_resY + y].pos();

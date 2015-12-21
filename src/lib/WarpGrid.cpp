@@ -246,6 +246,10 @@ namespace omni {
         return true;
     }
 
+    bool WarpGrid::hasChanged() const {
+        return hasChanged_;
+    }
+
     std::vector<WarpPoint>const& WarpGrid::points() const
     {
         return points_;

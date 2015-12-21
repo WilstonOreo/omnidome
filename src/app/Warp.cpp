@@ -40,6 +40,9 @@ namespace omni
       connect(ui_->btnReset,SIGNAL(clicked()),this,
               SLOT(resetWarpGrid()));
 
+      connect(ui_->boxInterpolation,SIGNAL(currentIndexChanged(int)),this,
+              SLOT(changeInterpolation(int)));
+
       auto setupSlider = [&](slim::RangedInt* _slider)
       {
         _slider->hide();
@@ -81,7 +84,15 @@ namespace omni
         ui_->sliderHorz->setValue(warpGrid()->horizontal());
         ui_->sliderVert->setValue(warpGrid()->vertical());
         locked_ = false;
+        emit warpGridChanged();
       }
+    }
+    void Warp::changeInterpolation(int _index) {
+        if (!warpGrid()) return;
+
+        auto _interp = util::intToEnum<WarpGrid::Interpolation>(_index);
+        warpGrid()->setInterpolation(_interp);
+        emit warpGridChanged();
     }
 
     void Warp::resetWarpGrid()

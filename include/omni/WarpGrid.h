@@ -34,8 +34,8 @@ namespace omni
   {
   public:
     enum class Interpolation {
-        LINEAR,
-        BICUBIC
+        BICUBIC,
+        LINEAR
     };
     /// Default constructor
     WarpGrid();

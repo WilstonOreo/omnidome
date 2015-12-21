@@ -50,6 +50,7 @@ namespace omni
       void resizeWarpGrid(bool);
       void resizeWarpGrid();
       void updateWarpGrid();
+      void changeInterpolation(int);
 
     signals:
       void warpGridChanged();

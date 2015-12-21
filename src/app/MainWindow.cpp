@@ -489,6 +489,7 @@ void MainWindow::setMode(Session::Mode _mode)
   }
 
   ui_->tuningList->sessionModeChange();
+  updateAllViews();
   buttonState();
 }
 

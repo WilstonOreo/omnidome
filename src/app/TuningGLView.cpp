@@ -203,8 +203,6 @@ namespace omni
             _selected->pos() += QPointF(dx,-dy);
           }
 
-          // Update warp grid mesh
-          vizTuning_->updateWarpGrid();
           updateWithChildViews(true);
         }
         else if (_mode == Session::Mode::BLEND)
@@ -298,9 +296,6 @@ namespace omni
       mouseDown_ = false;
       makeCurrent();
       auto _mode = session()->mode();
-      if (_mode == Session::Mode::WARP) {
-          vizTuning_->updateWarpGrid();
-      }
 
       if (_mode == Session::Mode::BLEND)
       {
@@ -428,6 +423,7 @@ namespace omni
                                 tuning()->height()));
         warpGridBuffer_->setAttachment(QOpenGLFramebufferObject::Depth);
       }
+      vizTuning_->updateWarpGrid();
 
       // Draw projector's perspective on framebuffer texture
       visual::with_current_context([this](QOpenGLFunctions& _)
@@ -510,8 +506,12 @@ namespace omni
 
       if (_blendMode == Session::BlendMode::INPUT)
       {
+        // Generate mesh and re-render texture
         updateWarpBuffer();
-      }
+    } else {
+        // Generate mesh only
+        vizTuning_->updateWarpGrid();
+    }
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
