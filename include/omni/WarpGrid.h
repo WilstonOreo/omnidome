@@ -20,6 +20,7 @@
 #ifndef OMNI_WARPGRID_H_
 #define OMNI_WARPGRID_H_
 
+#include <array>
 #include <set>
 #include <QVector2D>
 #include <omni/WarpPoint.h>
@@ -32,6 +33,10 @@ namespace omni
   class WarpGrid
   {
   public:
+    enum class Interpolation {
+        LINEAR,
+        BICUBIC
+    };
     /// Default constructor
     WarpGrid();
 
@@ -47,8 +52,17 @@ namespace omni
     /// Return horizontal resolution
     int horizontal() const;
 
+    /// Return interpolation type (BICUBIC is default)
+    Interpolation interpolation() const;
+
+    /// Interpolation value
+    void setInterpolation(Interpolation);
+
     /// Returns true if all warp points are in regular position
     bool isReset() const;
+
+    /// Return true if warp grid has changed
+    bool hasChanged() const;
 
     /// Select all points
     void selectAll();
@@ -71,7 +85,11 @@ namespace omni
     /// Get point with x and y index (const version)
     WarpPoint const* getPoint(int x, int y) const;
 
+    /// Return position of warp point
     QVector2D getWarpPointPos(int x, int y) const;
+
+    /// Return interpolated position of warp point x, y
+    QVector2D getWarpPointPos(int x, int y, float u, float v) const;
 
     /// Return texture coordinate on x,y index
     QVector2D getTexCoord(int _x, int _y) const;
@@ -86,8 +104,15 @@ namespace omni
     /// Return index to nearest point
     size_t getNearest(const QPointF& _p) const;
 
-    int horizontal_ = 5;
-    int vertical_ = 6;
+    typedef std::array<QVector2D,4> array4_type;
+
+    /// Interpolate four points
+    QVector2D cubicInterpolate(const array4_type& _points, float t) const;
+
+    int horizontal_ = 4;
+    int vertical_ = 4;
+    bool hasChanged_ = true;
+    Interpolation interpolation_ = Interpolation::BICUBIC;
     std::vector<WarpPoint> points_;
   };
 }

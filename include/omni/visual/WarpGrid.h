@@ -56,13 +56,7 @@ namespace omni
       /// Set number of subdivisions
       void setSubdivisions(int _subDiv);
 
-
     private:
-      typedef std::array<QVector2D,4> array4_type;
-
-      float lerp(float,float,float) const;
-      QVector2D cubicInterpolate(const std::array<QVector2D,4>& knots, float t) const;
-
       std::unique_ptr<Circle> circle_;
       std::vector<Vertex2D> vertices_;
       std::vector<QVector2D> gridVertices_;

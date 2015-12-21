@@ -46,7 +46,7 @@ namespace omni {
             for (size_t x = 0; x < horizontal();
                  ++x) points_.emplace_back((getTexCoord(x, y) - QVector2D(0.5,
                                                                           0.5)).toPointF());
-
+        hasChanged_ = true;
     }
 
     void WarpGrid::resize(int _horz, int _vert)
@@ -68,6 +68,17 @@ namespace omni {
         return horizontal_;
     }
 
+    /// Return interpolation type (BICUBIC is default)
+    WarpGrid::Interpolation WarpGrid::interpolation() const {
+        return interpolation_;
+    }
+
+    /// Interpolation value
+    void WarpGrid::setInterpolation(Interpolation _interpolation) {
+        interpolation_ = _interpolation;
+        hasChanged_ = true;
+    }
+
     void WarpGrid::selectAll()
     {
         for (auto& _point : points_) _point.setSelected(true);
@@ -78,6 +89,7 @@ namespace omni {
         size_t _nearestIdx = getNearest(_p);
         auto   _nearest    =
             (_nearestIdx == -1) ? nullptr : &points_[_nearestIdx];
+        hasChanged_ = true;
 
         return _nearest;
     }
@@ -95,33 +107,79 @@ namespace omni {
         // here's the magic: extrapolate points beyond the edges
         if (x < 0) {
             return QVector2D(
-                2.0f * getWarpPointPos(0, y) - getWarpPointPos(0 - x,y));
+                2.0f * getWarpPointPos(0, y) - getWarpPointPos(0 - x, y));
         }
 
         if (y < 0) {
             return QVector2D(
-                2.0f * getWarpPointPos(x, 0) - getWarpPointPos(x,0 - y));
+                2.0f * getWarpPointPos(x, 0) - getWarpPointPos(x, 0 - y));
         }
 
         if (x > maxX) {
             return QVector2D(2.0f * getWarpPointPos(maxX, y) - getWarpPointPos(
-                2 * maxX - x,
-                y));
+                                 2 * maxX - x,
+                                 y));
         }
 
         if (y > maxY) {
             return QVector2D(
                 2.0f * getWarpPointPos(x, maxY)
-                - getWarpPointPos(x,2 * maxY -y));
+                - getWarpPointPos(x, 2 * maxY - y));
         }
 
 
-        return QVector2D(getPoint(x,y)->pos());
+        return QVector2D(getPoint(x, y)->pos());
+    }
+
+    // from http://www.paulinternet.nl/?page=bicubic : fast catmull-rom
+    // calculation
+    QVector2D WarpGrid::cubicInterpolate(
+        const array4_type& knots,
+        float t) const
+    {
+        return knots[1] + 0.5f * t * (knots[2] - knots[0] +
+                                      t * (2.0f * knots[0] - 5.0f * knots[1] +
+                                           4.0f * knots[2] - knots[3] +
+                                           t * (3.0f * (knots[1] - knots[2]) +
+                                                knots[3] - knots[0])));
+    }
+
+    QVector2D WarpGrid::getWarpPointPos(int x, int y, float u, float v) const {
+        switch (interpolation_) {
+        default:
+
+        // perform linear interpolation
+        case Interpolation::LINEAR:
+        {
+            auto _p00 = getWarpPointPos(x + 0, y + 0);
+            auto _p10 = getWarpPointPos(x + 1, y + 0);
+            auto _p01 = getWarpPointPos(x + 0, y + 1);
+            auto _p11 = getWarpPointPos(x + 1, y + 1);
+            QVector2D p1((1.0f - u) * _p00 + u * _p10);
+            QVector2D p2((1.0f - u) * _p01 + u * _p11);
+            return QVector2D((1.0f - v) * p1 + v * p2);
+        }
+        // perform bicubic interpolation
+        case Interpolation::BICUBIC:
+        {
+            array4_type _rows, _cols;
+            for (int i = -1; i < 3; ++i) {
+                for (int j = -1; j < 3; ++j) {
+                    _cols[j + 1] = getWarpPointPos(x + i, y + j);
+                }
+                _rows[i + 1] = cubicInterpolate(_cols, v);
+            }
+            return cubicInterpolate(_rows, u);
+        }
+        }
+        return QVector2D(0.0, 0.0);
     }
 
     std::set<WarpPoint *>WarpGrid::getSelected()
     {
         std::set<WarpPoint *> _selection;
+
+        hasChanged_ = true;
 
         for (auto& _point : points_)
             if (_point.selected()) _selection.insert(&_point);
@@ -142,6 +200,7 @@ namespace omni {
         if ((x < 0) || (y < 0)) return nullptr;
 
         if ((x >= horizontal_) || (y >= vertical_)) return nullptr;
+        hasChanged_ = true;
 
         return &points_[y * horizontal_ + x];
     }
@@ -204,6 +263,7 @@ namespace omni {
 QDataStream& operator<<(QDataStream& _os, const omni::WarpGrid& _p)
 {
     _os << _p.horizontal() << _p.vertical();
+    _os << omni::util::enumToInt(_p.interpolation());
 
     for (auto& _point : _p.points()) _os << _point;
     return _os;
@@ -211,10 +271,14 @@ QDataStream& operator<<(QDataStream& _os, const omni::WarpGrid& _p)
 
 QDataStream& operator>>(QDataStream& _is, omni::WarpGrid& _p)
 {
+    using namespace omni;
     int _horizontal, _vertical;
+    int _interpolation;
 
     _is >> _horizontal >> _vertical;
+    _is >> _interpolation;
     _p.resize(_horizontal, _vertical);
+    _p.setInterpolation(util::intToEnum<WarpGrid::Interpolation>(_interpolation));
 
     for (int y = 0; y < _p.vertical(); ++y)
         for (int x = 0; x < _p.horizontal(); ++x) _is >> *_p.getPoint(x, y);

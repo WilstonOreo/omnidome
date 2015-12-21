@@ -123,157 +123,6 @@ namespace omni {
             update();
         }
 
-           // from http://www.paulinternet.nl/?page=bicubic : fast catmull-rom calculation
-           QVector2D WarpGrid::cubicInterpolate(
-               const std::array<QVector2D,4>& knots,
-               float t ) const
-           {
-                return knots[1] + 0.5f * t*(knots[2] - knots[0] +
-                        t*(2.0f*knots[0] - 5.0f*knots[1] +
-                        4.0f*knots[2] - knots[3] +
-                        t*(3.0f*(knots[1] - knots[2]) +
-                        knots[3] - knots[0])));
-           }
-/*
-           void WarpBilinear::setNumControlX(int n)
-           {
-                // there should be a minimum of 2 control points
-                n = math<int>::max(2, n);
-
-                // create a list of new points
-                std::vector<Vec2f> temp(n * mControlsY);
-
-                // perform spline fitting
-                for(int row=0;row<mControlsY;++row) {
-                        std::vector<Vec2f> points;
-                        if(mIsLinear) {
-                                // construct piece-wise linear spline
-                                for(int col=0;col<mControlsX;++col) {
-                                        points.push_back( getPoint(col, row) );
-                                }
-
-                                BSpline2f s( points, 1, false, true );
-
-                                // calculate position of new control points
-                                float length = s.getLength(0.0f, 1.0f);
-                                float step = 1.0f / (n-1);
-                                for(int col=0;col<n;++col) {
-                                        temp[(col * mControlsY) + row] =
-                                           s.getPosition( s.getTime( length *
-                                           col * step ) );
-                                }
-                        }
-                        else {
-                                // construct piece-wise catmull-rom spline
-                                for(int col=0;col<mControlsX;++col) {
-                                        Vec2f p0 = getPoint(col-1, row);
-                                        Vec2f p1 = getPoint(col, row);
-                                        Vec2f p2 = getPoint(col+1, row);
-                                        Vec2f p3 = getPoint(col+2, row);
-
-                                        // control points according to an
-                                           optimized Catmull-Rom implementation
-                                        Vec2f b1 = p1 + (p2 - p0) / 6.0f;
-                                        Vec2f b2 = p2 - (p3 - p1) / 6.0f;
-
-                                        points.push_back(p1);
-
-                                        if(col < (mControlsX-1)) {
-                                                points.push_back(b1);
-                                                points.push_back(b2);
-                                        }
-                                }
-
-                                BSpline2f s( points, 3, false, true );
-
-                                // calculate position of new control points
-                                float length = s.getLength(0.0f, 1.0f);
-                                float step = 1.0f / (n-1);
-                                for(int col=0;col<n;++col) {
-                                        temp[(col * mControlsY) + row] =
-                                           s.getPosition( s.getTime( length *
-                                           col * step ) );
-                                }
-                        }
-                }
-
-                // copy new control points
-                mPoints = temp;
-                mControlsX = n;
-
-                mIsDirty = true;
-           }
-
-           void WarpBilinear::setNumControlY(int n)
-           {
-                // there should be a minimum of 2 control points
-                n = math<int>::max(2, n);
-
-                // create a list of new points
-                std::vector<Vec2f> temp(mControlsX * n);
-
-                // perform spline fitting
-                for(int col=0;col<mControlsX;++col) {
-                        std::vector<Vec2f> points;
-                        if(mIsLinear) {
-                                // construct piece-wise linear spline
-                                for(int row=0;row<mControlsY;++row)
-                                        points.push_back( getPoint(col, row) );
-
-                                BSpline2f s( points, 1, false, true );
-
-                                // calculate position of new control points
-                                float length = s.getLength(0.0f, 1.0f);
-                                float step = 1.0f / (n-1);
-                                for(int row=0;row<n;++row) {
-                                        temp[(col * n) + row] = s.getPosition(
-                                           s.getTime( length * row * step ) );
-                                }
-                        }
-                        else {
-                                // construct piece-wise catmull-rom spline
-                                for(int row=0;row<mControlsY;++row) {
-                                        Vec2f p0 = getPoint(col, row-1);
-                                        Vec2f p1 = getPoint(col, row);
-                                        Vec2f p2 = getPoint(col, row+1);
-                                        Vec2f p3 = getPoint(col, row+2);
-
-                                        // control points according to an
-                                           optimized Catmull-Rom implementation
-                                        Vec2f b1 = p1 + (p2 - p0) / 6.0f;
-                                        Vec2f b2 = p2 - (p3 - p1) / 6.0f;
-
-                                        points.push_back(p1);
-
-                                        if(row < (mControlsY-1)) {
-                                                points.push_back(b1);
-                                                points.push_back(b2);
-                                        }
-                                }
-
-                                BSpline2f s( points, 3, false, true );
-
-                                // calculate position of new control points
-                                float length = s.getLength(0.0f, 1.0f);
-                                float step = 1.0f / (n-1);
-                                for(int row=0;row<n;++row) {
-                                        temp[(col * n) + row] = s.getPosition(
-                                           s.getTime( length * row * step ) );
-                                }
-                        }
-                }
-
-                // copy new control points
-                mPoints = temp;
-                mControlsY = n;
-
-                mIsDirty = true;
-           }
-         */
-        float WarpGrid::lerp(float v0, float v1, float t) const {
-            return v0 + t * (v1 - v0);
-        }
-
         void WarpGrid::update()
         {
             if(!circle_) {
@@ -318,8 +167,8 @@ namespace omni {
                         }
 
                         // texCoords
-                        float tx = lerp(0.0f, 1.0f, x / (float)(_resX - 1));
-                        float ty = lerp(0.0f, 1.0f, y / (float)(_resY - 1));
+                        float tx = x / (float)(_resX - 1);
+                        float ty = y / (float)(_resY - 1);
                         _vertexIt->setTexCoord(QVector2D(tx, 1.0 - ty));
                     }
 
@@ -330,42 +179,14 @@ namespace omni {
                             (float)(_resY - 1);
 
                     // determine col and row
-                    int col = (int)(u);
-                    int row = (int)(v);
+                    int _col = (int)(u);
+                    int _row = (int)(v);
 
                     // normalize coordinates to [0..1]
-                    u -= col;
-                    v -= row;
+                    u -= _col;
+                    v -= _row;
 
-                    QVector2D p;
-
-                    // perform linear interpolation
-                    /*
-                    auto _p00   = warpGrid_.getWarpPointPos(col + 0, row + 0);
-                    auto _p10   = warpGrid_.getWarpPointPos(col + 1, row + 0);
-                    auto _p01   = warpGrid_.getWarpPointPos(col + 0, row + 1);
-                    auto _p11   = warpGrid_.getWarpPointPos(col + 1, row + 1);
-                    QVector2D p1((1.0f - u) * _p00 + u * _p10);
-                    QVector2D p2((1.0f - u) * _p01 + u * _p11);
-
-                    p = QVector2D((1.0f - v) * p1 + v * p2);
-                    */
-                    // perform bicubic interpolation
-
-
-                    array4_type _rows, _cols;
-
-                    for(int i=-1;i<3;++i) {
-                        for(int j=-1;j<3;++j) {
-                            auto _point = warpGrid_.getWarpPointPos(col + i, row + j);
-                            _cols[j+1] = _point;
-                        }
-                        _rows[i+1] = cubicInterpolate( _cols, v );
-                    }
-                    p = cubicInterpolate( _rows, u );
-
-
-                    _vertexIt->setPos(p);
+                    _vertexIt->setPos(warpGrid_.getWarpPointPos(_col,_row,u,v));
                     ++_vertexIt;
                 }
             }
