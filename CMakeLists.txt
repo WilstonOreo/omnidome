@@ -18,8 +18,12 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 
 ################################
 #set(QT_PATH Test/Qt)
-detect_qt()
-#setup_qt(5.5 ${CMAKE_SOURCE_DIR}/../Qt )
+if(DEFINED QT_PATH)
+    MESSAGE(STATUS "Qt Path: ${QT_PATH}")
+    setup_qt(5.5 ${QT_PATH})
+else()
+    detect_qt()
+endif()
 
 if(NOT QT_FOUND)
     MESSAGE(FATAL_ERROR "Qt Framework was not found. You might set QT_PATH manually.")
