@@ -20,6 +20,14 @@ Qt should be installed in the folder which lies on the same level as omnidome, e
  -/Qt
  -/omnidome
 
+With cmake it is also possible to specify a manual path for Qt via commandline.
+When running cmake with arguments:
+
+cmake . -DQT_PATH=/your/path/to/qt
+
+CMake is looking for Qt in this directory.
+
+
 1.2 Building on Ubuntu 14.04
 ============================
 
@@ -41,6 +49,9 @@ After bootstrapping was successful, run
 
 $ cmake -DCMAKE_BUILD_TYPE=Release .  && make
 
+You might to specify the Qt Path manually by passing the additional argument 
+-DQT_PATH=/your/path/to/qt to the cmake command
+
 You can start omnidome with
 ./bin/Release/omnidome
 
@@ -55,7 +66,10 @@ brew install cmake
 
 From the terminal, go in to omnidome folder, and run 
 
-$ cmake -DCMAKE_BUILD_TYPE=Release .  && make
+$ cmake -DCMAKE_BUILD_TYPE=Release . && make
+
+You might to specify the Qt Path manually by passing the additional argument 
+-DQT_PATH=/your/path/to/qt to the cmake command
 
 You can start omnidome with
 ./bin/Release/omnidome.app/Contents/MacOS/omnidome
