@@ -26,12 +26,10 @@ namespace omni
 {
   namespace canvas
   {
-    class FullSphere :
-      public Dome,
-      Registrar<FullSphere>
+    class FullSphere : public Dome
     {
     public:
-      OMNI_TYPEID("FullSphere")
+        OMNI_REGISTER_CLASS(Factory,FullSphere)
       FullSphere();
       ~FullSphere();
 

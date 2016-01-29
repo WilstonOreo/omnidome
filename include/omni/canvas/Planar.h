@@ -28,12 +28,10 @@ namespace omni
   namespace canvas
   {
     /// A planar canvas
-    class Planar :
-      public Canvas,
-      Registrar<Planar>
+    class Planar : public Canvas
     {
     public:
-      OMNI_TYPEID("Planar")
+      OMNI_REGISTER_CLASS(Factory,Planar)
 
       Planar();
       ~Planar();

@@ -68,6 +68,13 @@ From the terminal, go in to omnidome folder, and run
 
 $ cmake -DCMAKE_BUILD_TYPE=Release . && make
 
+If this error occurs while running CMake:
+CMake Error at /Users/wilstonoreo/Projects/Qt/5.5/clang_64/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:9 (message):
+  Failed to find "gl.h" in
+
+Please install XCode Developer Tools with "xcode-select --install".
+
+
 You might to specify the Qt Path manually by passing the additional argument 
 -DQT_PATH=/your/path/to/qt to the cmake command
 

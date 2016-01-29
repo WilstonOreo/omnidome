@@ -30,6 +30,8 @@ if(NOT QT_FOUND)
     return()
 endif()
 
+add_definitions(-DOMNIDOME_VERSION_STRING="1.0")
+
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 

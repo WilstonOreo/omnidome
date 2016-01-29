@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -21,6 +21,7 @@
 #define OMNI_INPUT_INTERFACE_H_
 
 #include <set>
+#include <QObject>
 #include <QOpenGLTexture>
 #include <omni/SerializationInterface.h>
 #include <omni/mapping/Interface.h>
@@ -33,6 +34,8 @@ namespace omni
     class Interface : public SerializationInterface
     {
     public:
+      typedef Interface interface_type;
+
       /// Virtual destructor
       virtual ~Interface();
 
@@ -41,8 +44,8 @@ namespace omni
       {
         return  MappingModeSet({  });
       }
-      
-      /// An input must return an OpenGL texture ID 
+
+      /// An input must return an OpenGL texture ID
       virtual GLuint textureId() const = 0;
 
       /// Update interface
@@ -82,23 +85,18 @@ namespace omni
         return QPointF(-1.0,-1.0);
       }
 
-      /// Set ruler position. 
-      virtual inline void setRulerPos(QPointF const&) {} 
+      /// Set ruler position.
+      virtual inline void setRulerPos(QPointF const&) {}
     };
 
     /// Input Factory typedef
     typedef AbstractFactory<Interface> Factory;
-
-    /// Template alias for our registrar (for auto registration)
-    template<typename T>
-    using Registrar = typename Factory::registrar_type<T>;
   }
 
   typedef input::Interface Input;
   typedef input::Factory InputFactory;
-
-  template<typename T>
-  using InputRegistrar = input::Registrar<T>;
 }
+
+Q_DECLARE_INTERFACE(omni::input::Interface, "org.omnidome.input.Interface")
 
 #endif /* OMNI_INPUT_INTERFACE_H_ */

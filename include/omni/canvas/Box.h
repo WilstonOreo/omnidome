@@ -30,12 +30,10 @@ namespace omni
     /**@brief A box-shaped canvas.
       *@detail Can be used for rooms or boxes
      **/
-    class Box :
-      public Envelope,
-      Registrar<Box>
+    class Box : public Envelope
     {
     public:
-      OMNI_TYPEID("Box")
+      OMNI_REGISTER_CLASS(Factory,Box)
 
       /// Default constructor
       Box();

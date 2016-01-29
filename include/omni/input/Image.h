@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -27,12 +27,10 @@ namespace omni
   namespace input
   {
     /// Still image input
-    class Image : 
-      public Interface,
-      private Registrar<Image>
+    class Image : public Interface
     {
     public:
-      OMNI_TYPEID("Image")
+      OMNI_REGISTER_CLASS(Factory,Image)
 
       /// Default Constructor
       Image();
@@ -46,7 +44,7 @@ namespace omni
       /// Free image from OpenGL context
       void free();
 
-      /// Update image 
+      /// Update image
       void update();
 
       /// Returns texture ID of image
@@ -54,13 +52,13 @@ namespace omni
 
       /// Load image from file and stores path
       void load(QString const& _path);
-      
+
       /// Reload image from stored path name
       void reload();
 
       /// Return stored path
       QString path() const;
-   
+
       /// InfoText is basename of stored path
       QString infoText() const;
 
@@ -69,7 +67,7 @@ namespace omni
 
       /// Serialize image path to stream
       void toStream(QDataStream&) const;
-      
+
       /// Deserialize from stream and load image
       void fromStream(QDataStream&);
 

@@ -29,12 +29,11 @@ namespace omni
   namespace canvas
   {
     /// A rotatable half sphere dome
-    class HalfDome :
-      public Dome,
-      public Registrar<HalfDome>
+    class HalfDome : public Dome
     {
     public:
-      OMNI_TYPEID("HalfDome")
+      OMNI_REGISTER_CLASS(Factory,HalfDome)
+
       HalfDome(qreal _diameter = 10.0);
       ~HalfDome();
 

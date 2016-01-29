@@ -29,12 +29,10 @@ namespace omni
   {
     /**@brief A fullsphere dome with z offset and squeeze factor
      **/
-    class InflatableDome :
-      public FullSphere,
-      Registrar<InflatableDome>
+    class InflatableDome : public FullSphere
     {
     public:
-      OMNI_TYPEID("InflatableDome")
+        OMNI_REGISTER_CLASS(Factory,InflatableDome)
 
       InflatableDome();
       ~InflatableDome();

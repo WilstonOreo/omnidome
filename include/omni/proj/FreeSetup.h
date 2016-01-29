@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -27,12 +27,11 @@ namespace omni
 {
   namespace proj
   {
-    class FreeSetup : 
-      public AngleSetup,
-      SetupRegistrar<FreeSetup>
+    class FreeSetup :
+      public AngleSetup
     {
     public:
-      OMNI_TYPEID("FreeSetup")
+      OMNI_REGISTER_CLASS(SetupFactory,FreeSetup)
 
       FreeSetup();
 
@@ -43,7 +42,7 @@ namespace omni
       QVector3D pos() const;
       void setPos(QVector3D const&);
       void setPos(float _x, float _y, float _z);
-      
+
     private:
       QVector3D pos_;
     };

@@ -40,7 +40,6 @@ namespace omni
       public visual::Interface
     {
     public:
-
       /// Virtual destructor
       virtual ~Interface() {}
 
@@ -101,17 +100,12 @@ namespace omni
 
     /// Our canvas factory
     typedef AbstractFactory<Interface> Factory;
-
-    /// Template alias for our canvas registrar (for auto registration)
-    template<typename T>
-    using Registrar = typename Factory::registrar_type<T>;
   }
 
   typedef canvas::Interface Canvas;
   typedef canvas::Factory CanvasFactory;
-
-  template<typename T>
-  using CanvasRegistrar = canvas::Registrar<T>;
 }
+
+Q_DECLARE_INTERFACE(omni::canvas::Interface, "org.omnidome.canvas.Interface")
 
 #endif /* OMNI_CANVAS_INTERFACE_H_ */

@@ -120,19 +120,15 @@ namespace omni
 
     /// Abstract mapping factory
     typedef AbstractFactory<Interface> Factory;
-
-    /// Template alias for our registrar (for auto registration)
-    template<typename T>
-    using Registrar = typename Factory::registrar_type<T>;
   }
 
   typedef mapping::Interface Mapping;
   typedef mapping::Factory MappingFactory;
-  template<typename T>
-  using MappingRegistrar = mapping::Registrar<T>;
 
   typedef mapping::Mode MappingMode;
   typedef std::set<MappingMode> MappingModeSet;
 }
+
+Q_DECLARE_INTERFACE(omni::mapping::Interface, "org.omnidome.mapping.Interface")
 
 #endif /* OMNI_MAPPING_INTERFACE_H_ */
