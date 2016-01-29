@@ -47,9 +47,38 @@ int main(int ac, char *av[])
     /// Start gui
     QApplication _a(ac, av);
 
+
+    QFile file(":/qss_icons/style.qss");
+
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    _a.setStyleSheet(styleSheet);
+
+    ui::MainWindow _w;
+    _w.setWindowState(Qt::WindowMaximized);
+    _w.move(QApplication::primaryScreen()->geometry().topLeft());
+
+    if (ac == 2)
+    {
+        _w.openProjection(av[1]);
+    }
+
+    parser.addOptions({
+        // An option with a value
+        {{"p", "plugin-directory"},
+            QCoreApplication::translate("main", "Plugin directory <directory>."),
+            QCoreApplication::translate("main", "plugin-directory")},
+    });
+
+    parser.process(_a);
+    const QStringList args = parser.positionalArguments();
+
     // Load plugins
     {
         std::vector<QDir> _pluginDirs;
+        if (parser.value("plugin-directory").isEmpty()) {
+            _pluginDirs.push_back(parser.value("plugin-directory"));
+        }
         _pluginDirs.push_back(_a.applicationDirPath());
         #if defined(Q_OS_MAC)
         {
@@ -62,38 +91,9 @@ int main(int ac, char *av[])
             }
         }
         #endif
+        PluginLoader::load(_pluginDirs);
     }
 
-    QFile file(":/qss_icons/style.qss");
-
-    file.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(file.readAll());
-    _a.setStyleSheet(styleSheet);
-
-    ui::MainWindow _w;
-    _w.setWindowState(Qt::WindowMaximized);
-    _w.move(QApplication::primaryScreen()->geometry().topLeft());
-
-    if (ac > 1)
-    {
-        _w.openProjection(av[1]);
-    }
-
-    parser.addOptions({
-        // A boolean option with a single name (-p)
-        {"p",
-            QCoreApplication::translate("main", "Show progress during copy")},
-        // A boolean option with multiple names (-f, --force)
-        {{"f", "force"},
-            QCoreApplication::translate("main", "Overwrite existing files.")},
-        // An option with a value
-        {{"t", "target-directory"},
-            QCoreApplication::translate("main", "Copy all source files into <directory>."),
-            QCoreApplication::translate("main", "directory")},
-    });
-
-    parser.process(_a);
-    const QStringList args = parser.positionalArguments();
 
     return _a.exec();
 }
