@@ -122,8 +122,8 @@ namespace omni
     {
       if (session_->inputs().empty()) return;
 
-      int _row = ui_->inputList->currentIndex().row() - 1;
-      if (_row < 0 || _row >= session_->inputs().size()) return;
+      int _row = ui_->inputList->currentIndex().row();
+      if (_row <= 0 || _row > session_->inputs().size()) return;
 
       session_->inputs().remove(_row);
       model_->removeRows(_row,1);

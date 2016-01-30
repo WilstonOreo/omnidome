@@ -38,9 +38,6 @@ namespace omni {
 
             setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
             widget_->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-            widget_->setFrameShape(QFrame::StyledPanel);
-            widget_->setMidLineWidth(2);
-            widget_->setFrameShadow(QFrame::Sunken);
 
             _layout->addWidget(button_);
             _layout->addWidget(widget_);
@@ -57,6 +54,12 @@ namespace omni {
 
         void CollapsibleGroupBox::collapse(bool _collapsed) {
             widget_->setVisible(!_collapsed);
+        }
+
+        void CollapsibleGroupBox::setWidget(QWidget* _widget)
+        {
+            widget_ = _widget;
+
         }
 
         QWidget* CollapsibleGroupBox::widget() {

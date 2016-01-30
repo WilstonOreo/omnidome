@@ -71,19 +71,7 @@ int main(int ac, char *av[])
         if (parser.value("plugin-directory").isEmpty()) {
             _pluginDirs.push_back(parser.value("plugin-directory"));
         }
-        _pluginDirs.push_back(_a.applicationDirPath());
-        #if defined(Q_OS_MAC)
-        {
-            QDir _appDir(_a.applicationDirPath());
-            if (_appDir.dirName() == "MacOS") {
-                _appDir.cdUp();
-                _appDir.cdUp();
-                _appDir.cdUp();
-                _pluginDirs.push_back(_appDir);
-            }
-        }
-        #endif
-        PluginLoader::load(_pluginDirs);
+        PluginLoader _pluginLoader(_pluginDirs);
     }
 
     ui::MainWindow _w;

@@ -28,6 +28,18 @@ namespace omni
     {
     }
 
+    MappingParameters::MappingParameters(
+        mapping::Interface* _mapping,
+        QWidget* _parent) :
+      ParameterWidget(_parent)
+    {
+        QLayout *_layout = new QVBoxLayout;
+        _layout->setSpacing(2);
+        _layout->setContentsMargins(0, 0, 0, 0);
+        setLayout(_layout);
+        setMapping(_mapping);
+    }
+
     MappingParameters::~MappingParameters()
     {
     }
@@ -45,22 +57,14 @@ namespace omni
     void MappingParameters::setMapping(mapping::Interface* _mapping)
     {
       mapping_ = _mapping;
-      setup();
     }
 
     void MappingParameters::updateParameters()
     {
       if (!mapping_ || isLocked()) return;
-/*
-      auto applyRotation = [&](mapping::Rotatable* _rotatable)
-      {
-        _rotatable->setRoll(rotation_->x());
-        _rotatable->setPitch(rotation_->y());
-        _rotatable->setYaw(rotation_->z());
-      };
 
-      mapping_->setFlipHorizontal(getParamAsBool("Flip horizontal"));
-      mapping_->setFlipVertical(getParamAsBool("Flip vertical"));
+      updateMappingParameters();
+/*
 
       if (mapping_->getTypeId() == "Equirectangular")
       {
@@ -71,9 +75,6 @@ namespace omni
       } else
       if (mapping_->getTypeId() == "Fisheye")
       {
-        auto* _fisheye = static_cast<mapping::Fisheye*>(mapping_);
-        _fisheye->setStretch(getParamAsFloat("Stretch"));
-        applyRotation(_fisheye);
       } else
       if (mapping_->getTypeId() == "CubeMap")
       {
@@ -116,12 +117,6 @@ namespace omni
         } else
         if (mapping_->getTypeId() == "Fisheye")
         {
-          // Set slider values for Fisheye mapping
-          auto* _fisheye = static_cast<mapping::Fisheye*>(mapping_);
-          applyRotation(_fisheye);
-          auto* _stretch = addOffsetWidget("Stretch",0.0,0.0,1.0);
-          _stretch->setValue(_fisheye->stretch());
-          _stretch->setSuffix("");
 
         } else
         if (mapping_->getTypeId() == "CubeMap")

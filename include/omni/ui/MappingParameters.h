@@ -33,7 +33,10 @@ namespace omni
     {
       Q_OBJECT
     public:
-      MappingParameters(QWidget* _parent);
+      MappingParameters(QWidget* _parent = nullptr);
+      MappingParameters(
+          mapping::Interface* _mapping,
+          QWidget* _parent = nullptr);
       ~MappingParameters();
 
       mapping::Interface* mapping();
@@ -43,12 +46,11 @@ namespace omni
       /// Set parameters from sliders to mapping
       void updateParameters();
     private:
-      slim::Rotation* rotation_ = nullptr;
 
       virtual void updateMappingParameters() = 0;
 
       /// Clear and setup all parameter widgets
-      void setup();
+      virtual void setup();
 
       mapping::Interface* mapping_ = nullptr;
     };

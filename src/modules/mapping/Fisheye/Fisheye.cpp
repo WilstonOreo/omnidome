@@ -18,6 +18,7 @@
  */
 
 #include "Fisheye.h"
+#include "FisheyeWidget.h"
 
 #include <QDataStream>
 #include <QOpenGLShaderProgram>
@@ -71,7 +72,7 @@ namespace omni
     }
 
     QWidget* Fisheye::widget() {
-        return nullptr;
+        return new ui::mapping::Fisheye(this);
     }
   }
 }

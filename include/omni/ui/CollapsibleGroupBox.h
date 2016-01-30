@@ -36,6 +36,8 @@ namespace omni {
             QWidget* widget();
             QWidget const* widget() const;
 
+            void setWidget(QWidget*);
+
             QString title();
             void setTitle(QString const&);
 
@@ -46,7 +48,7 @@ namespace omni {
             void collapsed(bool);
 
         private:
-            QFrame* widget_;
+            QWidget* widget_;
             QToolButton* button_;
         };
     }

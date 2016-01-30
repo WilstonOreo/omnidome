@@ -35,17 +35,7 @@ namespace omni
         setTitle("Mapping");
       ui_->setupUi(widget());
 
-      // Configure layout
-      QLayout* _layout = new QVBoxLayout;
-      _layout->setSpacing(2);
-      _layout->setContentsMargins(0,0,0,0);
-//      ui_->widget->setLayout(_layout);
-
-      // Update parameter when canvas has changed
-//      connect(ui_->widget,SIGNAL(parametersUpdated()),this,SIGNAL(mappingChanged()));
-
       connect(ui_->boxMappingSelect,SIGNAL(currentIndexChanged(QString)),this,SLOT(mappingTypeSelected(QString)));
-
       setDefaultMappingForCanvas();
     }
 
@@ -73,7 +63,6 @@ namespace omni
       }
 
       ui_->boxMappingSelect->setCurrentIndex(_index);
-//      ui_->widget->setMapping(session()->mapping());
       emit mappingChanged();
     }
 
@@ -82,8 +71,22 @@ namespace omni
       if (!session() || this->isLocked()) return;
 
       session()->setMapping(_id);
-//      if (session()->mapping())
-//        ui_->widget->setMapping(session()->mapping());
+      if (paramWidget_) {
+          widget()->layout()->removeWidget(paramWidget_);
+          delete paramWidget_;
+      }
+
+      auto* _mapping = session()->mapping();
+
+      paramWidget_ = qobject_cast<MappingParameters*>(session()->mapping()->widget());
+      if (paramWidget_) {
+          // Configure layout
+          widget()->layout()->addWidget(paramWidget_);
+
+          // Update parameter when canvas has changed
+          connect(paramWidget_,SIGNAL(parametersUpdated()),this,SIGNAL(mappingChanged()));
+          paramWidget_->show();
+      }
 
       emit mappingTypeChanged();
     }

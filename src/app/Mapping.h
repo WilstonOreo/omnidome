@@ -23,6 +23,7 @@
 #include <memory>
 #include <omni/ui/CollapsibleGroupBox.h>
 #include <omni/ui/SessionWidget.h>
+#include <omni/ui/MappingParameters.h>
 
 namespace omni
 {
@@ -58,6 +59,7 @@ namespace omni
 
     private:
       std::unique_ptr<Ui::Mapping> ui_;
+      MappingParameters* paramWidget_ = nullptr;
     };
   }
 }
