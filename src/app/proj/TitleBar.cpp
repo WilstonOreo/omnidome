@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,8 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/proj/TitleBar.h>
-#include <omni/ui/proj/Tuning.h>
+#include "proj/TitleBar.h"
+#include "proj/Tuning.h"
 
 #include <QPainter>
 #include <QMouseEvent>
@@ -54,7 +54,7 @@ namespace omni
       {
         color_=_color;
         emit colorChanged(_color);
-        update(); 
+        update();
       }
 
       void TitleBar::selectColor()
@@ -64,7 +64,7 @@ namespace omni
         _colorDialog.setOptions(
                 /* do not use native dialog */
                 QColorDialog::DontUseNativeDialog);
-        
+
         if (_colorDialog.exec())
           setColor(_colorDialog.selectedColor());
 
@@ -75,7 +75,7 @@ namespace omni
         return color_;
       }
 
-      bool TitleBar::closeButtonVisible() const 
+      bool TitleBar::closeButtonVisible() const
       {
         return closeButton_ ? closeButton_->isVisible() : false;
       }
@@ -96,7 +96,7 @@ namespace omni
         _p.drawRect(_rect);
         QWidget::paintEvent(event);
       }
-        
+
       void TitleBar::setup()
       {
         this->label_->setAlignment(Qt::AlignCenter);
@@ -112,13 +112,13 @@ namespace omni
           _btn->installEventFilter(this->parent());
           _btn->installEventFilter(this);
         };
- 
+
         setupToolButton(menuButton_);
-        
+
         menuButton_->setArrowType(Qt::DownArrow);
 
         menu_.reset(new QMenu);
-        
+
         /// Generate and add popup menu
         menuButton_->setMenu(menu_.get());
         menuButton_->setPopupMode(QToolButton::InstantPopup);
@@ -128,10 +128,10 @@ namespace omni
         menu_->addSeparator();
         auto* _peripheral = menu_->addAction("Peripheral Setup");
         _peripheral->setCheckable(true);
-        
+
         auto* _free = menu_->addAction("Free Setup");
         _free->setCheckable(true);
-        
+
         setupToolButton(displayButton_);
         displayButton_->setCheckable(true);
         displayButton_->setIcon(QIcon(":/qss_icons/undock.png"));
@@ -147,7 +147,7 @@ namespace omni
         connect(closeButton_.get(),SIGNAL(clicked()),this,SIGNAL(closeButtonClicked()));
 
         ///////////////////// END Setup buttons
-        
+
         /// Add widget in this left-to-right order to layout
         layout()->addWidget(menuButton_.get());
         layout()->addWidget(displayButton_.get());
@@ -156,11 +156,11 @@ namespace omni
         layout()->addWidget(closeButton_.get());
         layout()->setSpacing(0);
         layout()->setContentsMargins(0,0,0,0);
-        
+
         if (tuningWidget_ && tuningWidget_->tuning())
           setColor(tuningWidget_->tuning()->color());
       }
-  
+
       Tuning* TitleBar::tuningWidget()
       {
         return tuningWidget_;

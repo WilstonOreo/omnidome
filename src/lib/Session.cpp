@@ -23,19 +23,6 @@
 
 #include <omni/util.h>
 
-#include <omni/canvas/HalfDome.h>
-#include <omni/canvas/FullSphere.h>
-#include <omni/canvas/InflatableDome.h>
-#include <omni/canvas/Box.h>
-#include <omni/canvas/Planar.h>
-#include <omni/input/Image.h>
-#include <omni/input/EquirectangularTestImage.h>
-
-#include <omni/mapping/Equirectangular.h>
-#include <omni/mapping/CubeMap.h>
-#include <omni/mapping/Fisheye.h>
-#include <omni/mapping/Planar.h>
-
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
 
@@ -45,38 +32,6 @@ namespace omni
 {
   Session::Session()
   {
-    // Register all classes
-
-    // Register canvases
-    {
-      using namespace canvas;
-      Factory::reg<HalfDome>();
-      Factory::reg<FullSphere>();
-      Factory::reg<InflatableDome>();
-      Factory::reg<HalfDome>();
-      Factory::reg<canvas::Box>();
-      Factory::reg<Planar>();
-    }
-    // END Register canvases
-
-    // Register inputs
-    {
-      using namespace input;
-      Factory::reg<Image>();
-      Factory::reg<EquirectangularTestImage>();
-    }
-    // END Register inputs
-
-    // Register mappings
-    {
-      using namespace mapping;
-      Factory::reg<Equirectangular>();
-      Factory::reg<CubeMap>();
-      Factory::reg<Fisheye>();
-      Factory::reg<Planar>();
-    }
-    // END Register mappings
-
     // Register Projector Setups
     {
       using namespace proj;

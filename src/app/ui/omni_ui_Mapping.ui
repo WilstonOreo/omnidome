@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>319</width>
-    <height>279</height>
+    <width>374</width>
+    <height>200</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,26 +17,8 @@
    <item>
     <widget class="QComboBox" name="boxMappingSelect"/>
    </item>
-   <item>
-    <widget class="omni::ui::MappingParameters" name="widget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>omni::ui::MappingParameters</class>
-   <extends>QWidget</extends>
-   <header location="global">omni/ui/MappingParameters.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
  <slots>

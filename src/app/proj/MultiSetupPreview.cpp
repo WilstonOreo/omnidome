@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/proj/MultiSetupPreview.h>
+#include "proj/MultiSetupPreview.h"
 
 #include <omni/visual/util.h>
 #include <omni/visual/Projector.h>

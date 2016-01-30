@@ -42,7 +42,7 @@
   <customwidget>
    <class>omni::ui::AboutGL</class>
    <extends>QWidget</extends>
-   <header>omni/ui/AboutGL.h</header>
+   <header>AboutGL.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

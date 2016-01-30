@@ -17,11 +17,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/proj/TuningList.h>
+#include "proj/TuningList.h"
 
 #include <omni/Session.h>
 #include <omni/proj/MultiSetup.h>
-#include <omni/ui/proj/MultiSetupDialog.h>
+#include "proj/MultiSetupDialog.h"
 
 #include <QVBoxLayout>
 #include <QMessageBox>

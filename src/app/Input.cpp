@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/Input.h>
+#include "Input.h"
 
 #include "ui_omni_ui_Input.h"
 
@@ -29,8 +29,6 @@
 
 #include <omni/Session.h>
 #include <omni/input/Interface.h>
-#include <omni/input/Image.h>
-#include <omni/input/TestImage.h>
 
 namespace omni
 {
@@ -44,7 +42,7 @@ namespace omni
       ui_->setupUi(widget());
 
 
-      ui_->preview->hide();
+//      ui_->preview->hide();
 
       // Make popup menu for adding inputs
       {
@@ -60,17 +58,17 @@ namespace omni
       }
 
       // Update preview when input has changed
-      connect(this,SIGNAL(inputChanged()),ui_->preview,SLOT(update()));
+      //connect(this,SIGNAL(inputChanged()),ui_->preview,SLOT(update()));
 
       // Input can be changed in preview (e.g. ruler position), so update views as well
-      connect(ui_->preview,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
+//      connect(ui_->preview,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
 
       connect(ui_->inputList,SIGNAL(clicked(QModelIndex)),this,SLOT(changeSelection(QModelIndex)));
       connect(ui_->inputList,SIGNAL(activated(QModelIndex)),this,SLOT(changeSelection(QModelIndex)));
       connect(ui_->btnRemoveInput,SIGNAL(clicked()),this,SLOT(removeSelection()));
 
       prepareModel();
-      ui_->widget->setLayout(new QVBoxLayout);
+      //ui_->widget->setLayout(new QVBoxLayout);
     }
 
     Input::~Input()
@@ -84,16 +82,16 @@ namespace omni
 
     void Input::setSession(Session* _session)
     {
-      ui_->preview->hide();
+      //ui_->preview->hide();
       session_=_session;
-      ui_->preview->setSession(_session);
+      //ui_->preview->setSession(_session);
 
       prepareModel();
       for (auto& _input : session_->inputs())
       {
         addItem(_input.get());
       }
-      ui_->preview->setVisible(session_->inputs().current() != nullptr);
+      //ui_->preview->setVisible(session_->inputs().current() != nullptr);
 
       emit inputChanged();
     }
@@ -111,7 +109,7 @@ namespace omni
         session_->inputs().setCurrentIndex(session_->inputs().size()-1);
 
         // Show preview only if there is an input
-        ui_->preview->show();
+        //ui_->preview->show();
 
         emit inputChanged();
       } else
@@ -151,7 +149,7 @@ namespace omni
       if (_row < 0 || _row >= session_->inputs().size())
       {
         session_->inputs().setCurrentIndex(-1);
-        ui_->preview->hide();
+        //ui_->preview->hide();
         emit inputChanged();
         return;
       }
@@ -159,7 +157,7 @@ namespace omni
       session_->inputs().setCurrentIndex(_row);
 
       // Show preview only if there is an input
-      ui_->preview->setVisible(session_->inputs().current() != nullptr);
+    //  ui_->preview->setVisible(session_->inputs().current() != nullptr);
 
       emit inputChanged();
     }
@@ -184,6 +182,7 @@ namespace omni
 
     bool Input::showSettingsDialog(input::Interface* _input)
     {
+        /*
       if (_input->getTypeId() == "Image")
       {
         QString _filename = QFileDialog::getOpenFileName(this, "Open image file...", ".", "Image files (*.png *.jpg *.jpeg)");
@@ -202,7 +201,7 @@ namespace omni
       } else if (_input->getTypeId() == "TestImage") {
         return true;
       }
-
+*/
       return true;
     }
 

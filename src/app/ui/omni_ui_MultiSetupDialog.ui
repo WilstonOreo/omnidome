@@ -152,13 +152,13 @@
   <customwidget>
    <class>omni::ui::proj::MultiSetupParameters</class>
    <extends>QWidget</extends>
-   <header location="global">omni/ui/proj/MultiSetupParameters.h</header>
+   <header>proj/MultiSetupParameters.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>omni::ui::proj::MultiSetupPreview</class>
    <extends>QWidget</extends>
-   <header location="global">omni/ui/proj/MultiSetupPreview.h</header>
+   <header>proj/MultiSetupPreview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

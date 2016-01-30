@@ -77,6 +77,8 @@ namespace omni
         return size().height();
       }
 
+      virtual QWidget* widget() = 0;
+
       /**@brief An Input may have an optional ruler position
        * @detail Position is between (0.0,0.0) and (1.0,1.0)
        **/
@@ -97,6 +99,13 @@ namespace omni
   typedef input::Factory InputFactory;
 }
 
-Q_DECLARE_INTERFACE(omni::input::Interface, "org.omnidome.input.Interface")
+#define OMNI_INPUT_INTERFACE_IID "org.omnidome.input.Interface"
+
+Q_DECLARE_INTERFACE(omni::input::Interface, OMNI_INPUT_INTERFACE_IID)
+
+#define OMNI_INPUT_PLUGIN_DECL \
+    Q_OBJECT \
+    Q_PLUGIN_METADATA(IID OMNI_INPUT_INTERFACE_IID) \
+    Q_INTERFACES(omni::input::Interface)
 
 #endif /* OMNI_INPUT_INTERFACE_H_ */

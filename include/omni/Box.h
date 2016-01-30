@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -24,7 +24,7 @@
 
 namespace omni
 {
-  /// A box defines a 3D bounding box with a min and max point 
+  /// A box defines a 3D bounding box with a min and max point
   class Box
   {
   public:
@@ -36,19 +36,19 @@ namespace omni
 
     /// Returns the size of the box (= max - min)
     QVector3D size() const;
-    
+
     /// Returns radius of the box (= half length of size vector)
     qreal radius() const;
 
     /// Returns the minimum point
     QVector3D min() const;
 
-    /// Returns the maximum point 
+    /// Returns the maximum point
     QVector3D max() const;
 
     /// Set minimum point of the box
     void setMin(QVector3D const&);
-    
+
     /// Set maximum point of the box
     void setMax(QVector3D const&);
 

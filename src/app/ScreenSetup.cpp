@@ -17,10 +17,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/ScreenSetup.h>
+#include "ScreenSetup.h"
 
 #include <omni/Session.h>
-#include <omni/ui/proj/Tuning.h>
 #include <omni/ui/TuningGLView.h>
 #include <omni/proj/ScreenSetup.h>
 
@@ -33,6 +32,8 @@
 #include <QDragMoveEvent>
 #include <QDropEvent>
 #include <QGuiApplication>
+
+#include "proj/Tuning.h"
 
 namespace omni
 {
@@ -517,7 +518,7 @@ namespace omni
       int i = 0;
 
         for (auto& _subScreen : subScreens_) {
-            if (_tuning == _subScreen.tuning())            
+            if (_tuning == _subScreen.tuning())
             {
                 fullscreen_->detach(i);
                 _subScreen.tuning()->detachScreen();

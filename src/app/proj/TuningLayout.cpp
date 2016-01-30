@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,10 +17,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/proj/TuningLayout.h>
+#include "proj/TuningLayout.h"
 
 #include <QDebug>
-#include <omni/ui/proj/Tuning.h>
+#include "proj/Tuning.h"
 
 namespace omni
 {
@@ -126,7 +126,7 @@ namespace omni
         return static_cast<Tuning const*>(parent())->tuning();
       }
 
-        
+
       void TuningLayout::setWidgets(widgetgroup_type const& _widgets)
       {
         clear();
@@ -139,7 +139,7 @@ namespace omni
         update();
       }
 
-      void TuningLayout::clear() 
+      void TuningLayout::clear()
       {
         QLayoutItem *l;
         while ((l = takeAt(0)))
@@ -160,7 +160,7 @@ namespace omni
       {
         const int _border = 2;
         int _height = _border;
- 
+
         auto _parent = static_cast<Tuning*>(parent());
 
         /// Adjust geometry for each widget

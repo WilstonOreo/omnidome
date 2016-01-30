@@ -11,17 +11,22 @@ namespace omni {
      **/
     class PluginLoader {
     public:
-        PluginLoader(std::vector<QDir> const& _paths);
+        PluginLoader(
+            std::vector<QDir> const& _paths = std::vector<QDir>(),
+            bool _defaultPaths = true);
 
         /// Load plugins from list of paths
         static void load(std::vector<QDir> const& _paths);
 
         /// Load plugins from single path
         static void load(QDir const& _path);
+
+        static std::vector<QDir> defaultPaths();
+
     private:
 
         /// Load a single plugin from file
-        void loadPlugin(QString const& _file);
+        static void loadPlugin(QString const& _file);
     };
 }
 

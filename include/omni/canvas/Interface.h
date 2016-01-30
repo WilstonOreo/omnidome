@@ -94,6 +94,9 @@ namespace omni
         return QMatrix4x4();
       }
 
+      /// Returns pointer to parameter widget
+      virtual QWidget* widget() = 0;
+
     protected:
       bool needsUpdate_ = true;
     };
@@ -106,6 +109,13 @@ namespace omni
   typedef canvas::Factory CanvasFactory;
 }
 
-Q_DECLARE_INTERFACE(omni::canvas::Interface, "org.omnidome.canvas.Interface")
+#define OMNI_CANVAS_INTERFACE_IID  "org.omnidome.canvas.Interface"
+
+Q_DECLARE_INTERFACE(omni::canvas::Interface, OMNI_CANVAS_INTERFACE_IID)
+
+#define OMNI_CANVAS_PLUGIN_DECL \
+    Q_OBJECT \
+    Q_PLUGIN_METADATA(IID OMNI_CANVAS_INTERFACE_IID) \
+    Q_INTERFACES(omni::canvas::Interface)
 
 #endif /* OMNI_CANVAS_INTERFACE_H_ */

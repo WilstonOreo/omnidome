@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -18,7 +18,7 @@
  */
 
 
-#include <omni/ui/AboutGL.h>
+#include "AboutGL.h"
 
 #include <QDesktopServices>
 #include <QUrl>
@@ -26,7 +26,7 @@
 #include <QTimer>
 #include <chrono>
 #include <type_traits>
-#include <omni/util.h> 
+#include <omni/util.h>
 
 using namespace omni::ui;
 
@@ -55,7 +55,7 @@ void AboutGL::initializeGL()
   glEnable(GL_POINT_SMOOTH);
   glEnable(GL_LINE_SMOOTH);
   glEnable(GL_NORMALIZE);
-  
+
   glDepthFunc(GL_LEQUAL);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
@@ -81,7 +81,7 @@ void AboutGL::resizeGL(int _w, int _h)
   glViewport(0, 0, (GLint)_w, (GLint)_h);
   glClearColor(0.0,0.0,0.0,1.0);
 }
-      
+
 void AboutGL::mousePressEvent(QMouseEvent*)
 {
   QDesktopServices::openUrl(QUrl("http://omnido.me", QUrl::TolerantMode));
@@ -107,7 +107,7 @@ void AboutGL::paintGL()
 
   double _time = startTime_ -
                  std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0 ;
- 
+
   shader_->bind();
   {
     shader_->setUniformValue("time",GLfloat(_time));
@@ -135,4 +135,3 @@ void AboutGL::paintGL()
   renderText(10,150,"This is a preliminary version.");
 */
 }
-

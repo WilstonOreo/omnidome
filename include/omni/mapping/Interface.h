@@ -99,6 +99,9 @@ namespace omni
       /// Static function to retrieve all registered mappings that dont support UVW coords
       static IdSet getPlanarMappings();
 
+      /// Return pointer to parameter widget
+      virtual QWidget* widget() = 0;
+
     protected:
       std::unique_ptr<QOpenGLShaderProgram> shader_;
 
@@ -129,6 +132,15 @@ namespace omni
   typedef std::set<MappingMode> MappingModeSet;
 }
 
-Q_DECLARE_INTERFACE(omni::mapping::Interface, "org.omnidome.mapping.Interface")
+
+#define OMNI_MAPPING_INTERFACE_IID  "org.omnidome.mapping.Interface"
+
+Q_DECLARE_INTERFACE(omni::mapping::Interface, OMNI_MAPPING_INTERFACE_IID)
+
+#define OMNI_MAPPING_PLUGIN_DECL \
+    Q_OBJECT \
+    Q_PLUGIN_METADATA(IID OMNI_MAPPING_INTERFACE_IID) \
+    Q_INTERFACES(omni::mapping::Interface)
+
 
 #endif /* OMNI_MAPPING_INTERFACE_H_ */

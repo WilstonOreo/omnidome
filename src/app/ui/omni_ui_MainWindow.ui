@@ -352,7 +352,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Export</string>
+          <string>Play / Export</string>
          </property>
          <property name="autoRaise">
           <bool>true</bool>
@@ -680,37 +680,37 @@
   <customwidget>
    <class>omni::ui::proj::TuningList</class>
    <extends>QWidget</extends>
-   <header location="global">omni/ui/proj/TuningList.h</header>
+   <header location="global">proj/TuningList.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>omni::ui::Canvas</class>
    <extends>QWidget</extends>
-   <header location="global">omni/ui/Canvas.h</header>
+   <header>Canvas.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>omni::ui::Blend</class>
    <extends>QWidget</extends>
-   <header location="global">omni/ui/Blend.h</header>
+   <header>Blend.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>omni::ui::Warp</class>
    <extends>QWidget</extends>
-   <header location="global">omni/ui/Warp.h</header>
+   <header>Warp.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>omni::ui::Input</class>
    <extends>QWidget</extends>
-   <header location="global">omni/ui/Input.h</header>
+   <header>Input.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>omni::ui::Mapping</class>
    <extends>QWidget</extends>
-   <header location="global">omni/ui/Mapping.h</header>
+   <header>Mapping.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

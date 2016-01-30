@@ -17,8 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/Mapping.h>
-
+#include "Mapping.h"
 #include "ui_omni_ui_Mapping.h"
 
 #include <QVBoxLayout>
@@ -40,10 +39,10 @@ namespace omni
       QLayout* _layout = new QVBoxLayout;
       _layout->setSpacing(2);
       _layout->setContentsMargins(0,0,0,0);
-      ui_->widget->setLayout(_layout);
+//      ui_->widget->setLayout(_layout);
 
       // Update parameter when canvas has changed
-      connect(ui_->widget,SIGNAL(parametersUpdated()),this,SIGNAL(mappingChanged()));
+//      connect(ui_->widget,SIGNAL(parametersUpdated()),this,SIGNAL(mappingChanged()));
 
       connect(ui_->boxMappingSelect,SIGNAL(currentIndexChanged(QString)),this,SLOT(mappingTypeSelected(QString)));
 
@@ -74,7 +73,7 @@ namespace omni
       }
 
       ui_->boxMappingSelect->setCurrentIndex(_index);
-      ui_->widget->setMapping(session()->mapping());
+//      ui_->widget->setMapping(session()->mapping());
       emit mappingChanged();
     }
 
@@ -83,8 +82,8 @@ namespace omni
       if (!session() || this->isLocked()) return;
 
       session()->setMapping(_id);
-      if (session()->mapping())
-        ui_->widget->setMapping(session()->mapping());
+//      if (session()->mapping())
+//        ui_->widget->setMapping(session()->mapping());
 
       emit mappingTypeChanged();
     }

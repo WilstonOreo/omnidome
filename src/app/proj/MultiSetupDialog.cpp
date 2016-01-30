@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/proj/MultiSetupDialog.h>
+#include "proj/MultiSetupDialog.h"
 
 #include "ui_omni_ui_MultiSetupDialog.h"
 
@@ -34,7 +34,7 @@ namespace omni
         ui_(new Ui::MultiSetupDialog)
       {
         ui_->setupUi(this);
-        
+
         ui_->btnReplace->setVisible(!session_->tunings().empty());
 
 
@@ -49,13 +49,13 @@ namespace omni
 
         connect(ui_->btnCancel,SIGNAL(clicked()),this,SLOT(cancel()));
         connect(ui_->btnAppend,SIGNAL(clicked()),this,SLOT(append()));
-        connect(ui_->btnReplace,SIGNAL(clicked()),this,SLOT(replace())); 
+        connect(ui_->btnReplace,SIGNAL(clicked()),this,SLOT(replace()));
       }
 
       MultiSetupDialog::~MultiSetupDialog()
       {
       }
-        
+
       MultiSetupDialog::Result MultiSetupDialog::open(omni::proj::MultiSetup* _multiSetup, Session* _session)
       {
         MultiSetupDialog _dialog(_multiSetup,_session);
@@ -75,7 +75,7 @@ namespace omni
         accept();
       }
 
-      void MultiSetupDialog::cancel() 
+      void MultiSetupDialog::cancel()
       {
         result_ = Result::CANCELLED;
         reject();

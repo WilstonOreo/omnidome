@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/Warp.h>
+#include "Warp.h"
 
 #include "ui_omni_ui_Warp.h"
 #include <QMessageBox>

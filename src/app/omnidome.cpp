@@ -18,7 +18,7 @@
  */
 
 
-#include <omni/ui/MainWindow.h>
+#include "MainWindow.h"
 
 #include <QApplication>
 #include <QDir>
@@ -54,14 +54,6 @@ int main(int ac, char *av[])
     QString styleSheet = QLatin1String(file.readAll());
     _a.setStyleSheet(styleSheet);
 
-    ui::MainWindow _w;
-    _w.setWindowState(Qt::WindowMaximized);
-    _w.move(QApplication::primaryScreen()->geometry().topLeft());
-
-    if (ac == 2)
-    {
-        _w.openProjection(av[1]);
-    }
 
     parser.addOptions({
         // An option with a value
@@ -94,6 +86,14 @@ int main(int ac, char *av[])
         PluginLoader::load(_pluginDirs);
     }
 
+    ui::MainWindow _w;
+    _w.setWindowState(Qt::WindowMaximized);
+    _w.move(QApplication::primaryScreen()->geometry().topLeft());
+
+    if (ac == 2)
+    {
+        _w.openProjection(av[1]);
+    }
 
     return _a.exec();
 }

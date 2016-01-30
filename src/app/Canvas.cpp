@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/Canvas.h>
+#include "Canvas.h"
 
 #include "ui_omni_ui_Canvas.h"
 
@@ -26,11 +26,6 @@
 
 #include <omni/Session.h>
 #include <omni/canvas/Interface.h>
-#include <omni/canvas/HalfDome.h>
-#include <omni/canvas/FullSphere.h>
-#include <omni/canvas/InflatableDome.h>
-#include <omni/canvas/Box.h>
-#include <omni/canvas/Planar.h>
 
 namespace omni {
     namespace ui {
@@ -52,6 +47,7 @@ namespace omni {
             }
 
             // Configure layout
+            /*
             QLayout *_layout = new QVBoxLayout;
             _layout->setSpacing(2);
             _layout->setContentsMargins(0, 0, 0, 0);
@@ -69,7 +65,7 @@ namespace omni {
 
             connect(ui_->boxProjectorViewMode, SIGNAL(currentIndexChanged(int)),this,
                     SLOT(changeProjectorViewMode(int)));
-
+            */
         }
 
         Canvas::~Canvas()
@@ -83,7 +79,7 @@ namespace omni {
         {
             if (!session()->canvas())
             {
-                session()->setCanvas("HalfDome");
+                session()->setCanvas("Box");
                 emit canvasTypeChanged();
             }
 
@@ -101,7 +97,7 @@ namespace omni {
             }
 
             ui_->boxCanvasSelect->setCurrentIndex(_index);
-            ui_->widget->setCanvas(session()->canvas());
+            //ui_->widget->setCanvas(session()->canvas());
             emit canvasChanged();
         }
 
@@ -111,7 +107,7 @@ namespace omni {
 
             session()->setCanvas(_id);
 
-            if (session()->canvas()) ui_->widget->setCanvas(session()->canvas());
+            //if (session()->canvas()) ui_->widget->setCanvas(session()->canvas());
 
             emit canvasTypeChanged();
         }

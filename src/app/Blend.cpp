@@ -17,8 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/Blend.h>
-
+#include "Blend.h"
 #include "ui_omni_ui_Blend.h"
 
 #include <omni/Session.h>

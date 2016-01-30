@@ -104,35 +104,8 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="omni::ui::InputPreview" name="preview" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>1</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="omni::ui::ParameterWidget" name="widget" native="true"/>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>omni::ui::ParameterWidget</class>
-   <extends>QWidget</extends>
-   <header>omni/ui/ParameterWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>omni::ui::InputPreview</class>
-   <extends>QWidget</extends>
-   <header>omni/ui/InputPreview.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
  <slots>

@@ -46,19 +46,8 @@
      </item>
     </widget>
    </item>
-   <item>
-    <widget class="omni::ui::CanvasParameters" name="widget" native="true"/>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>omni::ui::CanvasParameters</class>
-   <extends>QWidget</extends>
-   <header location="global">omni/ui/CanvasParameters.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
  <slots>

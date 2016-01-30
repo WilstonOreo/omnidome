@@ -11,10 +11,11 @@ import(
   doxygen
   qt
   cpack
+  plugin
 )
 
+set(CMAKE_MACOSX_RPATH 1)
 set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
-
 
 ################################
 #set(QT_PATH Test/Qt)
@@ -32,63 +33,16 @@ endif()
 
 add_definitions(-DOMNIDOME_VERSION_STRING="1.0")
 
+# Load canvas plugins
+load_plugins(${CMAKE_SOURCE_DIR}/src/modules/canvas)
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+# Load input plugins
+load_plugins(${CMAKE_SOURCE_DIR}/src/modules/input)
 
-# use, i.e. don't skip the full RPATH for the build tree
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-
-# when building, don't use the install RPATH already
-# (but later on when installing)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-
-SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-
-# add the automatically determined parts of the RPATH
-# which point to directories outside the build tree to the install RPATH
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-
-# the RPATH to be used when installing, but only if it's not a system directory
-LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
-IF("${isSystemDir}" STREQUAL "-1")
-   SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-ENDIF("${isSystemDir}" STREQUAL "-1")
-
-
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+# Load mapping inputs
+load_plugins(${CMAKE_SOURCE_DIR}/src/modules/mapping)
 
 ########### BUILD_TARGETS ############
-
-FILE(GLOB_RECURSE omni_cpp_files ${CMAKE_SOURCE_DIR}/src/lib/*.cpp )
-
-ADD_LIBRARY(omni STATIC ${omni_cpp_files})
-TARGET_LINK_LIBRARIES(omni ${Qt5_LIBRARIES})
-
-FILE(GLOB_RECURSE omni_app_cpp_files
-  ${CMAKE_SOURCE_DIR}/src/slim/*.cpp
-  ${CMAKE_SOURCE_DIR}/src/app/*.cpp
-  )
-list(REMOVE_ITEM omni_app_cpp_files "${CMAKE_SOURCE_DIR}/src/app/omnidome.cpp")
-
-FILE(GLOB_RECURSE omni_headers ${CMAKE_SOURCE_DIR}/include/omni/ui/*.h ${CMAKE_SOURCE_DIR}/include/slim/*.h )
-FILE(GLOB_RECURSE omni_forms ${CMAKE_SOURCE_DIR}/src/app/ui/*.ui )
-FILE(GLOB_RECURSE omni_resources ${CMAKE_SOURCE_DIR}/src/app/rc/*.qrc )
-
-common_cxx_flags()
-
-
-########### Plugins ############
-
-#include(src/plugins/input/gstreamer/gstreamer.cmake)
-
-
-
-QT5_WRAP_CPP(omni_headers_moc ${omni_headers})
-QT5_WRAP_CPP(slim_widgetz_headers_moc ${slim_widgetz_header_files})
-QT5_ADD_RESOURCES(omni_resources_rcc ${omni_resources})
-QT5_GENERATE_UI(omni_forms_headers ${omni_forms})
-SET(omni_src ${omni_app_cpp_files} ${omni_headers_moc} ${omni_forms_headers} ${omni_resources_rcc})
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
@@ -100,28 +54,67 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 
-########### Tests #############
+common_cxx_flags()
 
+################################
+# Setup libomni build target
+
+FILE(GLOB_RECURSE omni_lib_cpp_files ${CMAKE_SOURCE_DIR}/src/lib/*.cpp )
+FILE(GLOB_RECURSE omni_lib_ui_headers ${CMAKE_SOURCE_DIR}/include/omni/ui/*.h ${CMAKE_SOURCE_DIR}/include/slim/*.h )
+FILE(GLOB_RECURSE omni_lib_ui_forms ${CMAKE_SOURCE_DIR}/src/lib/ui/*.ui )
+FILE(GLOB_RECURSE omni_lib_resources ${CMAKE_SOURCE_DIR}/src/lib/*.qrc )
+
+QT5_WRAP_CPP(omni_lib_ui_headers_moc ${omni_lib_ui_headers})
+QT5_ADD_RESOURCES(omni_lib_resources_rcc ${omni_lib_resources})
+#QT5_GENERATE_UI(omni_lib_forms_headers ${omni_lib_ui_forms})
+
+SET(omni_lib_src
+    ${omni_lib_cpp_files}
+    ${omni_lib_ui_headers_moc}
+    ${omni_lib_ui_forms_headers}
+    ${omni_lib_resources_rcc}
+)
+
+ADD_LIBRARY(omni SHARED ${omni_lib_src})
+TARGET_LINK_LIBRARIES(omni ${Qt5_LIBRARIES} ${omni_extra_libs} )
+
+# END Setup libomni build target
+################################
+
+################################
+# Setup omnidome executable
+
+include_directories(${CMAKE_SOURCE_DIR}/src/app)
+FILE(GLOB_RECURSE omni_app_cpp_files
+  ${CMAKE_SOURCE_DIR}/src/app/*.cpp
+  )
+
+FILE(GLOB_RECURSE omni_headers ${CMAKE_SOURCE_DIR}/src/app/*.h )
+FILE(GLOB_RECURSE omni_forms ${CMAKE_SOURCE_DIR}/src/app/ui/*.ui )
+FILE(GLOB_RECURSE omni_resources ${CMAKE_SOURCE_DIR}/src/app/rc/*.qrc )
+
+QT5_WRAP_CPP(omni_headers_moc ${omni_headers})
+QT5_ADD_RESOURCES(omni_resources_rcc ${omni_resources})
+QT5_GENERATE_UI(omni_forms_headers ${omni_forms})
+SET(omni_src ${omni_app_cpp_files} ${omni_headers_moc} ${omni_forms_headers} ${omni_resources_rcc})
+
+
+# END Setup omnidome executable
+################################
+
+
+
+########### Plugins ############
+
+#include(src/plugins/input/gstreamer/gstreamer.cmake)
+
+########### Tests #############
 if(DEFINED OMNI_GSTREAMER)
   omni_gstreamer_test()
 endif()
 
-ADD_EXECUTABLE(test_Projector
-  ./src/test/Projector.cpp
-  ${omni_src} )
-
-TARGET_LINK_LIBRARIES(test_Projector ${Qt5_LIBRARIES} ${omni_extra_libs} omni )
-
-
-ADD_EXECUTABLE(test_GL ./src/test/GL.cpp  ${omni_src})
-TARGET_LINK_LIBRARIES(test_GL ${Qt5_LIBRARIES} ${omni_extra_libs} omni )
-
-ADD_EXECUTABLE(test_WarpGL ./src/test/WarpGL.cpp ${omni_src} )
-TARGET_LINK_LIBRARIES(test_WarpGL ${Qt5_LIBRARIES}  ${omni_extra_libs} omni  )
-
 ADD_EXECUTABLE(test_Serialization
-  ./src/test/Serialization.cpp
-  ${omni_src} )
+  ./src/test/Serialization.cpp )
 TARGET_LINK_LIBRARIES(test_Serialization ${Qt5_LIBRARIES} ${omni_extra_libs}  omni )
 
 # Main Application
@@ -142,11 +135,10 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     MACOSX_PACKAGE_LOCATION Resources
   )
 
-  ADD_EXECUTABLE(omnidome MACOSX_BUNDLE ${CMAKE_SOURCE_DIR}/src/app/omnidome.cpp ${omni_src} )
+  ADD_EXECUTABLE(omnidome MACOSX_BUNDLE ${omni_src} )
   set_target_properties(omnidome PROPERTIES
                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/cmake-files/Info.plist")
   TARGET_LINK_LIBRARIES(omnidome omni ${omni_extra_libs} ${Qt5_LIBRARIES} )
-
 
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 

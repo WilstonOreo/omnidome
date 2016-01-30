@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/MainWindow.h>
+#include "MainWindow.h"
 
 #include "ui_omni_ui_MainWindow.h"
 
@@ -30,15 +30,16 @@
 
 #include <omni/Session.h>
 #include <omni/proj/MultiSetup.h>
-#include <omni/ui/proj/Tuning.h>
-#include <omni/ui/proj/TuningList.h>
-#include <omni/ui/About.h>
-
-#include <omni/ui/ScreenSetup.h>
 #include <omni/ui/GLView3D.h>
 #include <omni/ui/TuningGLView.h>
-#include <omni/ui/Export.h>
-#include <omni/ui/proj/MultiSetupDialog.h>
+
+#include "About.h"
+#include "ScreenSetup.h"
+#include "Export.h"
+
+#include "proj/Tuning.h"
+#include "proj/TuningList.h"
+#include "proj/MultiSetupDialog.h"
 
 
 using namespace omni::ui;
@@ -48,6 +49,7 @@ MainWindow::MainWindow( QMainWindow *parent) :
   modified_(false),
   ui_(new Ui::MainWindow)
 {
+  session_.reset(new Session());
   ui_->setupUi(this);
 
   // Make and setup pages
@@ -147,7 +149,6 @@ MainWindow::MainWindow( QMainWindow *parent) :
       ui_->btnExport->setDefaultAction(ui_->actionExport);
   }
 
-  session_.reset(new Session());
   setupSession();
   raise();
   show();

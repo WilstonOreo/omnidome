@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/proj/Tuning.h>
+#include "proj/Tuning.h"
 
 #include <vector>
 
@@ -30,12 +30,13 @@
 #include <QPixmap>
 
 
-#include <omni/ui/proj/TitleBar.h>
 #include <omni/ui/TuningGLView.h>
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
 
-#include <omni/ui/proj/TuningLayout.h>
+#include "proj/TitleBar.h"
+#include "proj/TuningLayout.h"
+
 
 namespace omni
 {
@@ -126,17 +127,17 @@ namespace omni
       {
         return fullscreen_.get();
       }
-      
+
       TuningGLView const* Tuning::fullscreenWidget() const
       {
         return fullscreen_.get();
       }
-      
+
       TuningGLView* Tuning::previewWidget()
       {
         return glView_;
       }
-      
+
       TuningGLView const* Tuning::previewWidget() const
       {
         return glView_;
@@ -472,7 +473,7 @@ namespace omni
           setGroup("PreviewOnly");
           return;
         }
-          
+
         auto _mode = session()->mode();
 
         // Show close button only in screen- and projection setup
@@ -556,7 +557,7 @@ namespace omni
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
 
-        // Generate pixmap for projector 
+        // Generate pixmap for projector
         QPixmap _pixmap(128,128);
         {
           _pixmap.fill(tuning()->color());
