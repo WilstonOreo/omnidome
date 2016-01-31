@@ -16,30 +16,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef OMNI_UI_CANVAS_BOX_H_
-#define OMNI_UI_CANVAS_BOX_H_
+#ifndef OMNI_UI_MAPPING_PLANAR_H_
+#define OMNI_UI_MAPPING_PLANAR_H_
 
-#include <omni/ui/CanvasParameters.h>
+#include <omni/ui/MappingParameters.h>
 
 namespace omni {
     namespace ui {
-        namespace canvas {
-            /**@brief Parameter widget for box canvas
-             **/
-            class Box : public CanvasParameters {
+        namespace mapping {
+            class Planar : public MappingParameters
+            {
                 Q_OBJECT
             public:
-                Box(QWidget* _parent = nullptr);
-                Box(omni::canvas::Interface*, QWidget* _parent = nullptr);
-                ~Box();
+                Planar(QWidget* = nullptr);
+                Planar(omni::mapping::Interface*, QWidget* = nullptr);
+                ~Planar();
 
             private:
-                void updateCanvasParameters();
-
+                void updateMappingParameters();
                 void setup();
+
+                slim::Rotation* rotation_ = nullptr;
             };
         }
     }
 }
 
-#endif /* OMNI_UI_CANVAS_BOX_H_ */
+#endif /* OMNI_UI_MAPPING_PLANAR_H_ */

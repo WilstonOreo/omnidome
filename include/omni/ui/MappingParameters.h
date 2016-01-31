@@ -45,12 +45,24 @@ namespace omni
 
       /// Set parameters from sliders to mapping
       void updateParameters();
+
+    protected:
+        void addFlipParameters();
+
+        template<typename T>
+        slim::Rotation* addRotationParameters(T* _mapping) {
+            slim::Rotation* _rotation = nullptr;
+            this->locked([&]() {
+                _rotation = addRotationWidget("Rotation");
+                _rotation->setX(_mapping->roll().degrees());
+                _rotation->setY(_mapping->pitch().degrees());
+                _rotation->setZ(_mapping->yaw().degrees());
+            });
+            return _rotation;
+        }
+
     private:
-
       virtual void updateMappingParameters() = 0;
-
-      /// Clear and setup all parameter widgets
-      virtual void setup();
 
       mapping::Interface* mapping_ = nullptr;
     };

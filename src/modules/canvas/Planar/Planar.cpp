@@ -18,6 +18,7 @@
  */
 
 #include "Planar.h"
+#include "PlanarWidget.h"
 
 #include <QVector2D>
 
@@ -116,7 +117,7 @@ namespace omni
     }
 
     QWidget* Planar::widget() {
-        return nullptr;
+        return new ui::canvas::Planar(this);
     }
   }
 }

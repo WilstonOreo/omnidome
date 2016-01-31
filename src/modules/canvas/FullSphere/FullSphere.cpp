@@ -18,6 +18,7 @@
  */
 
 #include "FullSphere.h"
+#include "FullSphereWidget.h"
 
 namespace omni
 {
@@ -35,10 +36,7 @@ namespace omni
     }
 
     QWidget* FullSphere::widget() {
-        return nullptr;/*
-        ui::canvas::Box* _widget = new ui::canvas::Box();
-        _widget->setCanvas(this);
-        return _widget;*/
+        return new ui::canvas::FullSphere(this);
     }
   }
 }

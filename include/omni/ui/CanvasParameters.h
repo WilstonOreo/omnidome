@@ -33,7 +33,8 @@ namespace omni
     {
       Q_OBJECT
     public:
-      CanvasParameters(QWidget* _parent);
+      CanvasParameters(QWidget* _parent = nullptr);
+      CanvasParameters(canvas::Interface*, QWidget* _parent = nullptr);
       virtual ~CanvasParameters();
 
       canvas::Interface* canvas();
@@ -43,15 +44,11 @@ namespace omni
       /// Set parameters from sliders to canvas
       void updateParameters();
     private:
-      slim::Rotation* rotation_ = nullptr;
-
       virtual void updateCanvasParameters() = 0;
 
       /// Show widgets parameter according to given canvas type
       void widgetVisibility();
 
-      /// Clear and setup all parameter widgets
-      void setup();
 
       canvas::Interface* canvas_ = nullptr;
     };

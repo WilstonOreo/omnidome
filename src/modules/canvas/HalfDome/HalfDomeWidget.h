@@ -16,8 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef OMNI_UI_CANVAS_BOX_H_
-#define OMNI_UI_CANVAS_BOX_H_
+
+#ifndef OMNI_UI_CANVAS_HALFDOME_H_
+#define OMNI_UI_CANVAS_HALFDOME_H_
 
 #include <omni/ui/CanvasParameters.h>
 
@@ -26,20 +27,23 @@ namespace omni {
         namespace canvas {
             /**@brief Parameter widget for box canvas
              **/
-            class Box : public CanvasParameters {
+            class HalfDome : public CanvasParameters {
                 Q_OBJECT
             public:
-                Box(QWidget* _parent = nullptr);
-                Box(omni::canvas::Interface*, QWidget* _parent = nullptr);
-                ~Box();
+                HalfDome(QWidget* _parent = nullptr);
+                HalfDome(omni::canvas::Interface*, QWidget* _parent = nullptr);
+                ~HalfDome();
 
             private:
                 void updateCanvasParameters();
 
+                /// Clear and setup all parameter widgets
                 void setup();
+
+                slim::Rotation* rotation_ = nullptr;
             };
         }
     }
 }
 
-#endif /* OMNI_UI_CANVAS_BOX_H_ */
+#endif /* OMNI_UI_CANVAS_HALFDOME_H_ */

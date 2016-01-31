@@ -71,14 +71,15 @@ namespace omni
       if (!session() || this->isLocked()) return;
 
       session()->setMapping(_id);
+
       if (paramWidget_) {
           widget()->layout()->removeWidget(paramWidget_);
-          delete paramWidget_;
       }
 
       auto* _mapping = session()->mapping();
+      if (!_mapping) return;
 
-      paramWidget_ = qobject_cast<MappingParameters*>(session()->mapping()->widget());
+      paramWidget_ = qobject_cast<MappingParameters*>(_mapping->widget());
       if (paramWidget_) {
           // Configure layout
           widget()->layout()->addWidget(paramWidget_);
@@ -87,8 +88,12 @@ namespace omni
           connect(paramWidget_,SIGNAL(parametersUpdated()),this,SIGNAL(mappingChanged()));
           paramWidget_->show();
       }
-
       emit mappingTypeChanged();
+
+      /// Remove widget on next mapping type change
+      if (paramWidget_) {
+          connect(this,SIGNAL(mappingTypeChanged()),paramWidget_,SLOT(deleteLater()));
+      }
     }
 
      void Mapping::setDefaultMappingForCanvas() {
@@ -116,6 +121,11 @@ namespace omni
              }
          }
 
+         if (paramWidget_) {
+             widget()->layout()->removeWidget(paramWidget_);
+             delete paramWidget_;
+         }
+
          for (auto& _idMappingClass : omni::mapping::Factory::classes()) {
              QString _id = _idMappingClass.first.str();
              auto&& _mapping = omni::mapping::Factory::create(_id);
@@ -124,11 +134,9 @@ namespace omni
              if (_mapping->mode() == _canvas->defaultMappingMode()) {
                  ui_->boxMappingSelect->setCurrentIndex(_idToIndex[_id]);
                  mappingTypeSelected(_mapping->getTypeId());
+                 return;
              }
          }
-
-
-        emit mappingTypeChanged();
      }
   }
 }

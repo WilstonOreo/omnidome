@@ -72,9 +72,7 @@ namespace omni
     }
 
     QWidget* Box::widget() {
-        ui::canvas::Box* _widget = new ui::canvas::Box();
-        _widget->setCanvas(this);
-        return _widget;
+        return new ui::canvas::Box(this);
     }
   }
 }

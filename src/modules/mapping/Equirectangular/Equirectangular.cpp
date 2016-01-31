@@ -19,9 +19,11 @@
 
 #include "Equirectangular.h"
 
+
 #include <QDataStream>
 #include <QOpenGLShaderProgram>
 #include <omni/util.h>
+#include "EquirectangularWidget.h"
 
 namespace omni
 {
@@ -97,7 +99,7 @@ namespace omni
     }
 
     QWidget* Equirectangular::widget() {
-        return nullptr;
+        return new ui::mapping::Equirectangular(this);
     }
   }
 }

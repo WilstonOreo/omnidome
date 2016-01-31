@@ -18,6 +18,7 @@
  */
 
 #include "CubeMap.h"
+#include "CubeMapWidget.h"
 
 
 namespace omni
@@ -38,7 +39,7 @@ namespace omni
     }
 
     QWidget* CubeMap::widget() {
-        return nullptr;
+        return new ui::mapping::CubeMap(this);
     }
   }
 }

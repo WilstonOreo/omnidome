@@ -18,6 +18,7 @@
  */
 
 #include "HalfDome.h"
+#include "HalfDomeWidget.h"
 
 namespace omni
 {
@@ -75,7 +76,7 @@ namespace omni
     }
 
     QWidget* HalfDome::widget() {
-        return nullptr;
+        return new ui::canvas::HalfDome(this);
     }
   }
 }

@@ -46,17 +46,6 @@ namespace omni {
                                               QVariant(_id));
             }
 
-            // Configure layout
-            /*
-            QLayout *_layout = new QVBoxLayout;
-            _layout->setSpacing(2);
-            _layout->setContentsMargins(0, 0, 0, 0);
-            ui_->widget->setLayout(_layout);
-
-            // Update parameter when canvas has changed
-            connect(ui_->widget, SIGNAL(parametersUpdated()), this,
-                    SIGNAL(canvasChanged()));
-
             connect(ui_->boxCanvasSelect, SIGNAL(currentIndexChanged(QString)), this,
                     SLOT(canvasTypeSelected(QString)));
 
@@ -65,7 +54,8 @@ namespace omni {
 
             connect(ui_->boxProjectorViewMode, SIGNAL(currentIndexChanged(int)),this,
                     SLOT(changeProjectorViewMode(int)));
-            */
+
+            canvasTypeSelected("HalfDome");
         }
 
         Canvas::~Canvas()
@@ -79,10 +69,9 @@ namespace omni {
         {
             if (!session()->canvas())
             {
-                session()->setCanvas("Box");
-                emit canvasTypeChanged();
+                session()->setCanvas("HalfDome");
+                canvasTypeSelected("HalfDome");
             }
-
             // Search combobox for available canvas types
             int _index = 0;
 
@@ -97,19 +86,37 @@ namespace omni {
             }
 
             ui_->boxCanvasSelect->setCurrentIndex(_index);
-            //ui_->widget->setCanvas(session()->canvas());
             emit canvasChanged();
         }
 
         void Canvas::canvasTypeSelected(QString _id)
         {
-            if (!session() || this->isLocked()) return;
+            if (!session()) return;
 
             session()->setCanvas(_id);
+            if (paramWidget_) {
+                widget()->layout()->removeWidget(paramWidget_);
+            }
+
+            auto* _canvas = session()->canvas();
+            if (!_canvas) return;
 
             //if (session()->canvas()) ui_->widget->setCanvas(session()->canvas());
+            paramWidget_ = qobject_cast<CanvasParameters*>(_canvas->widget());
+            if (paramWidget_) {
+                // Configure layout
+                widget()->layout()->addWidget(paramWidget_);
 
+                // Update parameter when canvas has changed
+                connect(paramWidget_,SIGNAL(parametersUpdated()),this,SIGNAL(canvasChanged()));
+                paramWidget_->show();
+            }
             emit canvasTypeChanged();
+
+            ///   Remove widget on next mapping type change
+            if (paramWidget_) {
+                connect(this,SIGNAL(canvasTypeChanged()),paramWidget_,SLOT(deleteLater()));
+            }
         }
     }
 }

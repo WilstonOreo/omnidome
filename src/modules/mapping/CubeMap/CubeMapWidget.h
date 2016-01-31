@@ -16,45 +16,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef OMNI_UI_MAPPING_CUBEMAP_H_
+#define OMNI_UI_MAPPING_CUBEMAP_H_
 
-#ifndef OMNI_CANVAS_INFLATABLEDOME_H_
-#define OMNI_CANVAS_INFLATABLEDOME_H_
+#include <omni/ui/MappingParameters.h>
 
-#include <omni/canvas/Dome.h>
+namespace omni {
+    namespace ui {
+        namespace mapping {
+            class CubeMap : public MappingParameters
+            {
+                Q_OBJECT
+            public:
+                CubeMap(QWidget* = nullptr);
+                CubeMap(omni::mapping::Interface*, QWidget* = nullptr);
+                ~CubeMap();
 
-namespace omni
-{
-  namespace canvas
-  {
-    /**@brief A fullsphere dome with z offset and squeeze factor
-     **/
-    class InflatableDome : public QObject, public Dome
-    {
-        OMNI_CANVAS_PLUGIN_DECL
-    public:
-        OMNI_REGISTER_CLASS(Factory,InflatableDome)
+            private:
+                void updateMappingParameters();
+                void setup();
 
-      InflatableDome();
-      ~InflatableDome();
-
-      float squeeze() const;
-      void setSqueeze(float _squeeze);
-
-      void draw() const;
-      void update();
-
-      inline MappingMode defaultMappingMode() const {
-          return MappingMode::EQUIRECTANGULAR;
-      }
-
-      QWidget* widget();
-
-    private:
-      float squeeze_ = 1.0;
-    };
-  }
-
-  using canvas::InflatableDome;
+                slim::Rotation* rotation_ = nullptr;
+            };
+        }
+    }
 }
 
-#endif /* OMNI_DOME_INFLATABLE_H_ */
+#endif /* OMNI_UI_MAPPING_CUBEMAP_H_ */

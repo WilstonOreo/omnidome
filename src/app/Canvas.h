@@ -24,6 +24,7 @@
 #include <omni/ui/CollapsibleGroupBox.h>
 #include <omni/visual/ProjectorViewMode.h>
 #include <omni/ui/SessionWidget.h>
+#include <omni/ui/CanvasParameters.h>
 
 namespace omni
 {
@@ -58,6 +59,7 @@ namespace omni
                         void changeProjectorViewMode(int);
 
                     private:
+                        CanvasParameters* paramWidget_ = nullptr;
                         std::unique_ptr<Ui::Canvas> ui_;
                 };
         }

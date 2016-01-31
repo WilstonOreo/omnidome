@@ -18,6 +18,7 @@
  */
 
 #include "Planar.h"
+#include "PlanarWidget.h"
 
 #include <QOpenGLShaderProgram>
 #include <QDataStream>
@@ -115,7 +116,7 @@ namespace omni
     }
 
     QWidget* Planar::widget() {
-        return nullptr;
+        return new ui::mapping::Planar(this);
     }
   }
 }

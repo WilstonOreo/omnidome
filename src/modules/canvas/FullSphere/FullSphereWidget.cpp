@@ -17,40 +17,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Box.h"
-#include "BoxWidget.h"
+#include "FullSphere.h"
+#include "FullSphereWidget.h"
 
 namespace omni {
     namespace ui {
         namespace canvas {
-            Box::Box(QWidget *_parent) : CanvasParameters(_parent) {
+            FullSphere::FullSphere(QWidget *_parent) : CanvasParameters(_parent) {
                 setup();
             }
 
-            Box::Box(omni::canvas::Interface *_canvas, QWidget *_parent) :
+            FullSphere::FullSphere(omni::canvas::Interface *_canvas, QWidget *_parent) :
                 CanvasParameters(_canvas, _parent) {
                 setup();
             }
 
-            Box::~Box() {}
+            FullSphere::~FullSphere() {}
 
-            void Box::updateCanvasParameters() {
-                auto *_box = static_cast<omni::canvas::Box *>(canvas());
-
-                _box->setSize(QVector3D(
-                                  getParamAsFloat("Width"),
-                                  getParamAsFloat("Length"),
-                                  getParamAsFloat("Height")
-                                  ));
+            void FullSphere::updateCanvasParameters() {
+                auto *_fullsphere = static_cast<omni::canvas::FullSphere *>(canvas());
+                _fullsphere->setDiameter(getParamAsFloat("Diameter"));
+                _fullsphere->setCenter(QVector3D(
+                           getParamAsFloat("X Offset"),
+                           getParamAsFloat("Y Offset"),
+                           getParamAsFloat("Z Offset")));
             }
 
-            void Box::setup() {
+            void FullSphere::setup() {
                 if (!canvas()) return;
 
                 this->locked([&]() {
-                    auto *_height = addOffsetWidget("Height", 1.0, 0.1, 10.0);
-                    auto *_length = addOffsetWidget("Length", 1.0, 0.1, 10.0);
-                    auto *_width = addOffsetWidget("Width", 1.0, 0.1, 10.0);
+                    auto* _diameter = addOffsetWidget("Diameter",5.0,0.5,20.0);
                     auto *_xOffset = addOffsetWidget("X Offset",
                                                      0.0,
                                                      -10.0,
@@ -64,14 +61,12 @@ namespace omni {
                                                      -10.0,
                                                      10.0);
 
-                    /// Retrieve parameters for Box canvas
-                    auto *_box = static_cast<omni::canvas::Box *>(canvas());
-                    _width->setValue(_box->size().x());
-                    _length->setValue(_box->size().y());
-                    _height->setValue(_box->size().z());
-                    _xOffset->setValue(_box->center().x());
-                    _yOffset->setValue(_box->center().y());
-                    _zOffset->setValue(_box->center().z());
+                    /// Retrieve parameters for FullSphere canvas
+                    auto* _fullsphere = static_cast<omni::canvas::FullSphere*>(canvas());
+                    _diameter->setValue(_fullsphere->diameter());
+                    _xOffset->setValue(_fullsphere->center().x());
+                    _yOffset->setValue(_fullsphere->center().y());
+                    _zOffset->setValue(_fullsphere->center().z());
                 });
             }
         }

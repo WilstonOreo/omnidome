@@ -39,11 +39,6 @@ namespace omni
       SetupFactory::reg<PeripheralSetup>();
     }
     // END Register Projector Setups
-
-
-    // Set default settings
-    setCanvas("HalfDome");
-    setMapping("Planar");
   }
 
   Session::~Session()

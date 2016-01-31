@@ -17,43 +17,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "InflatableDome.h"
+#ifndef OMNI_UI_CANVAS_PLANAR_H_
+#define OMNI_UI_CANVAS_PLANAR_H_
 
-namespace omni
-{
-  namespace canvas
-  {
-    InflatableDome::InflatableDome()
-    {
+#include <omni/ui/CanvasParameters.h>
+
+namespace omni {
+    namespace ui {
+        namespace canvas {
+            /**@brief Parameter widget for box canvas
+             **/
+            class Planar : public CanvasParameters {
+                Q_OBJECT
+            public:
+                Planar(QWidget* _parent = nullptr);
+                Planar(omni::canvas::Interface*, QWidget* _parent = nullptr);
+                ~Planar();
+
+            private:
+                void updateCanvasParameters();
+
+                void setup();
+
+                slim::Rotation* rotation_ = nullptr;
+            };
+        }
     }
-
-    InflatableDome::~InflatableDome()
-    {
-    }
-
-    void InflatableDome::draw() const
-    {
-
-    }
-
-    void InflatableDome::update()
-    {
-    }
-
-    float InflatableDome::squeeze() const
-    {
-      return squeeze_;
-    }
-
-    void InflatableDome::setSqueeze(float _squeeze)
-    {
-      if (_squeeze <= 0.1) _squeeze = 0.1;
-      if (_squeeze > 10.0) _squeeze = 10.0;
-      squeeze_ = _squeeze;
-    }
-
-    QWidget* InflatableDome::widget() {
-        return nullptr;
-    }
-  }
 }
+
+#endif /* OMNI_UI_CANVAS_PLANAR_H_ */
