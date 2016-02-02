@@ -61,10 +61,13 @@ namespace omni
 
     signals:
       void inputChanged();
+      void inputIndexChanged();
 
     private:
       /// Setup the item model with columns etc
       void prepareModel();
+
+      void setupInputWidget();
 
       bool showSettingsDialog(input::Interface*);
 
@@ -74,6 +77,7 @@ namespace omni
       Session* session_ = nullptr;
       std::unique_ptr<Ui::Input> ui_;
       std::unique_ptr<QStandardItemModel> model_;
+      QWidget* paramWidget_ = nullptr;
     };
   }
 }

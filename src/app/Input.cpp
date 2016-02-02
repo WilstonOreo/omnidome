@@ -24,8 +24,6 @@
 #include <QMenu>
 #include <QDebug>
 #include <QVBoxLayout>
-#include <QErrorMessage>
-#include <QFileDialog>
 
 #include <omni/Session.h>
 #include <omni/input/Interface.h>
@@ -39,10 +37,7 @@ namespace omni
       ui_(new Ui::Input)
     {
         setTitle("Inputs");
-      ui_->setupUi(widget());
-
-
-//      ui_->preview->hide();
+        ui_->setupUi(widget());
 
       // Make popup menu for adding inputs
       {
@@ -57,18 +52,11 @@ namespace omni
         connect(_menu,SIGNAL(triggered(QAction*)),this,SLOT(addInput(QAction*)));
       }
 
-      // Update preview when input has changed
-      //connect(this,SIGNAL(inputChanged()),ui_->preview,SLOT(update()));
-
-      // Input can be changed in preview (e.g. ruler position), so update views as well
-//      connect(ui_->preview,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
-
       connect(ui_->inputList,SIGNAL(clicked(QModelIndex)),this,SLOT(changeSelection(QModelIndex)));
       connect(ui_->inputList,SIGNAL(activated(QModelIndex)),this,SLOT(changeSelection(QModelIndex)));
       connect(ui_->btnRemoveInput,SIGNAL(clicked()),this,SLOT(removeSelection()));
 
       prepareModel();
-      //ui_->widget->setLayout(new QVBoxLayout);
     }
 
     Input::~Input()
@@ -103,15 +91,13 @@ namespace omni
       auto* _input = session_->inputs().add(_action->text());
       if (!_input) return;
 
-      if (showSettingsDialog(_input))
+      if (_input->canAdd())
       {
         addItem(_input);
         session_->inputs().setCurrentIndex(session_->inputs().size()-1);
 
-        // Show preview only if there is an input
-        //ui_->preview->show();
-
-        emit inputChanged();
+        paramWidget_ = _input->widget();
+        setupInputWidget();
       } else
       {
         session_->inputs().remove(session_->inputs().size()-1);
@@ -122,12 +108,12 @@ namespace omni
     {
       if (session_->inputs().empty()) return;
 
-      int _row = ui_->inputList->currentIndex().row();
-      if (_row <= 0 || _row > session_->inputs().size()) return;
+      int _row = ui_->inputList->currentIndex().row() - 1;
+      if (_row < 0 || _row >= session_->inputs().size()) return;
 
       session_->inputs().remove(_row);
-      model_->removeRows(_row,1);
-      changeSelection(model_->index(_row-1,0));
+      changeSelection(model_->index(_row,0));
+      model_->removeRows(_row+1,1);
 
       emit inputChanged();
     }
@@ -136,30 +122,61 @@ namespace omni
     {
       session_->inputs().clear();
       prepareModel();
+      setupInputWidget();
       emit inputChanged();
     }
 
     void Input::changeSelection(QModelIndex _index)
     {
       if (!session_) return;
+      if (_index.row() == session_->inputs().currentIndex()+1) return;
 
       int _row = _index.row() - 1;
       qDebug() << _row;
 
       if (_row < 0 || _row >= session_->inputs().size())
       {
-        session_->inputs().setCurrentIndex(-1);
-        //ui_->preview->hide();
-        emit inputChanged();
-        return;
+          _row = -1;
       }
 
       session_->inputs().setCurrentIndex(_row);
+      setupInputWidget();
+    }
+    void Input::setupInputWidget() {
+        auto* _input = session_->inputs().current();
+        if (!_input) {
+            if (paramWidget_) {
+                paramWidget_->hide();
+            }
+            emit inputIndexChanged();
+            return;
+        }
 
-      // Show preview only if there is an input
-    //  ui_->preview->setVisible(session_->inputs().current() != nullptr);
+        paramWidget_ = session_->inputs().current()->widget();
+        if (paramWidget_) {
+            QSizePolicy _sizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+            _sizePolicy.setVerticalStretch(1);
+            paramWidget_->setSizePolicy(_sizePolicy);
+            paramWidget_->setMinimumSize(QSize(0,128));
 
-      emit inputChanged();
+            // Configure layout
+            widget()->layout()->addWidget(paramWidget_);
+
+            paramWidget_->show();
+            emit inputChanged();
+
+                // Update parameter when canvas has changed
+            connect(paramWidget_,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
+
+
+        }
+
+        emit inputIndexChanged();
+
+        ///   Remove widget on next mapping type change
+        if (paramWidget_) {
+            connect(this,SIGNAL(inputIndexChanged()),paramWidget_,SLOT(deleteLater()));
+        }
     }
 
     void Input::prepareModel()
@@ -178,31 +195,6 @@ namespace omni
       model_->invisibleRootItem()->appendRow(_row);
       ui_->inputList->resizeColumnToContents(0);
       ui_->inputList->resizeColumnToContents(1);
-    }
-
-    bool Input::showSettingsDialog(input::Interface* _input)
-    {
-        /*
-      if (_input->getTypeId() == "Image")
-      {
-        QString _filename = QFileDialog::getOpenFileName(this, "Open image file...", ".", "Image files (*.png *.jpg *.jpeg)");
-        if (_filename.isEmpty()) return false;
-
-        try {
-          static_cast<input::Image*>(_input)->load(_filename);
-        } catch (...) {
-          QErrorMessage _errorMessageBox(this);
-          _errorMessageBox.showMessage("Error loading image.");
-          return false;
-        }
-
-        return true;
-
-      } else if (_input->getTypeId() == "TestImage") {
-        return true;
-      }
-*/
-      return true;
     }
 
     void Input::addItem(input::Interface const* _input)

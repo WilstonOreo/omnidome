@@ -20,6 +20,7 @@
 #ifndef OMNI_VISUAL_WARPGRID_H_
 #define OMNI_VISUAL_WARPGRID_H_
 
+#include <memory>
 #include <omni/Vertex2D.h>
 #include <omni/WarpGrid.h>
 #include <omni/visual/Interface.h>

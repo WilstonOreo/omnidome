@@ -59,10 +59,12 @@ namespace omni {
                     auto *_equirectangular =
                         static_cast<omni::mapping::Equirectangular *>(mapping());
                     rotation_ = addRotationParameters(_equirectangular);
-                    addOffsetWidget("Strip Top", _equirectangular->stripTop(),
+                    auto* _stripTop = addOffsetWidget("Strip Top", _equirectangular->stripTop(),
                                                                      0.0, 1.0);
-                    addOffsetWidget("Strip Bottom",
+                    _stripTop->setSuffix("");
+                    auto* _stripBottom = addOffsetWidget("Strip Bottom",
                                     _equirectangular->stripBottom(), 0.0, 1.0);
+                    _stripBottom->setSuffix("");
                     addFlipParameters();
                 });
             }

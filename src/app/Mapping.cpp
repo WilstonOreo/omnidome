@@ -79,7 +79,7 @@ namespace omni
       auto* _mapping = session()->mapping();
       if (!_mapping) return;
 
-      paramWidget_ = qobject_cast<MappingParameters*>(_mapping->widget());
+      paramWidget_ = _mapping->widget();//qobject_cast<MappingParameters*>(_mapping->widget());
       if (paramWidget_) {
           // Configure layout
           widget()->layout()->addWidget(paramWidget_);

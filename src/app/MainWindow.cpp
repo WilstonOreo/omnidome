@@ -116,6 +116,7 @@ MainWindow::MainWindow( QMainWindow *parent) :
 
     // Update all views when input has changed
     connect(ui_->grpInputs,SIGNAL(inputChanged()),this,SLOT(modified()));
+    connect(ui_->grpInputs,SIGNAL(inputIndexChanged()),this,SLOT(modified()));
 
     // Update all views when mapping mode has changed
     connect(ui_->grpMapping,SIGNAL(mappingChanged()),this,SLOT(modified()));
@@ -317,7 +318,8 @@ void MainWindow::modified()
 
   if (session_->mode() != Session::Mode::WARP &&
       session_->mode() != Session::Mode::BLEND)
-    ui_->grpMapping->setVisible(session_->inputs().current() != nullptr);
+    ui_->grpMapping->setVisible(session_->inputs().current() != nullptr &&
+            session_->mode() != Session::Mode::SCREENSETUP);
   buttonState();
 }
 

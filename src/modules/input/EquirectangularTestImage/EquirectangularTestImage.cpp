@@ -20,6 +20,7 @@
 #include "EquirectangularTestImage.h"
 
 #include <omni/util.h>
+#include <omni/ui/InputPreview.h>
 
 namespace omni
 {
@@ -54,7 +55,7 @@ namespace omni
     }
 
     QWidget* EquirectangularTestImage::widget() {
-        return nullptr;
+        return new ui::InputPreview(this);
     }
   }
 }

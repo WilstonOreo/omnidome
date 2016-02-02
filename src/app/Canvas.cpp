@@ -54,8 +54,6 @@ namespace omni {
 
             connect(ui_->boxProjectorViewMode, SIGNAL(currentIndexChanged(int)),this,
                     SLOT(changeProjectorViewMode(int)));
-
-            canvasTypeSelected("HalfDome");
         }
 
         Canvas::~Canvas()
@@ -102,7 +100,7 @@ namespace omni {
             if (!_canvas) return;
 
             //if (session()->canvas()) ui_->widget->setCanvas(session()->canvas());
-            paramWidget_ = qobject_cast<CanvasParameters*>(_canvas->widget());
+            paramWidget_ = _canvas->widget();
             if (paramWidget_) {
                 // Configure layout
                 widget()->layout()->addWidget(paramWidget_);

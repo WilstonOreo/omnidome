@@ -63,7 +63,7 @@ namespace omni
       };
 
       /// An input must return width and height information
-      inline virtual QSize size() const = 0;
+      virtual QSize size() const = 0;
 
       /// Return width from size
       inline int width() const
@@ -77,7 +77,17 @@ namespace omni
         return size().height();
       }
 
+      /// Make new parameter widget
       virtual QWidget* widget() = 0;
+
+      /**@brief Returns true if this input can be added
+         @detail E.g., an input can be added after an initial settings dialog
+                was approved or it has valid settings.
+         @return Flag if input can be added
+      **/
+      inline virtual bool canAdd() {
+          return true;
+      }
 
       /**@brief An Input may have an optional ruler position
        * @detail Position is between (0.0,0.0) and (1.0,1.0)

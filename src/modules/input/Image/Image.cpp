@@ -21,8 +21,11 @@
 
 #include <QOpenGLContext>
 #include <QFileInfo>
-#include <omni/visual/util.h>
 #include <QDebug>
+#include <QErrorMessage>
+#include <QFileDialog>
+#include <omni/visual/util.h>
+#include <omni/ui/InputPreview.h>
 
 namespace omni
 {
@@ -106,8 +109,23 @@ namespace omni
       reload();
     }
 
+    bool Image::canAdd() {
+
+        QString _filename = QFileDialog::getOpenFileName(widget(), "Open image file...", ".", "Image files (*.png *.jpg *.jpeg)");
+        if (_filename.isEmpty()) return false;
+
+        try {
+          this->load(_filename);
+        } catch (...) {
+          QErrorMessage _errorMessageBox(widget());
+          _errorMessageBox.showMessage("Error loading image.");
+          return false;
+        }
+        return true;
+    }
+
     QWidget* Image::widget() {
-        return nullptr;
+        return new ui::InputPreview(this);
     }
   }
 }

@@ -74,6 +74,8 @@ namespace omni
 
       QWidget* widget();
 
+      bool canAdd();
+
     private:
       QImage image_;
       bool needsUpdate_ = true;

@@ -59,7 +59,7 @@ namespace omni
 
     private:
       std::unique_ptr<Ui::Mapping> ui_;
-      MappingParameters* paramWidget_ = nullptr;
+      QWidget* paramWidget_ = nullptr;
     };
   }
 }

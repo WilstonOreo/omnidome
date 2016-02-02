@@ -35,6 +35,11 @@ namespace omni
       setMinimumSize(128 / devicePixelRatio(),128 / devicePixelRatio());
     }
 
+    InputPreview::InputPreview(input::Interface* _input, QWidget* _parent) :
+        GLView(_parent),
+        input_(_input) {
+    }
+
     InputPreview::~InputPreview()
     {
     }
@@ -83,17 +88,22 @@ namespace omni
       QPointF _pos = screenPos(_eventPos);
       input()->setRulerPos(_pos);
       emit inputChanged();
+      update();
     }
 
     input::Interface* InputPreview::input()
     {
-      return this->session_->session().inputs().current();
+      return input_;
     }
 
     input::Interface const* InputPreview::input() const
     {
-      return this->session_->session().inputs().current();
+      return input_;
     }
+
+     void InputPreview::setInput(input::Interface* _input) {
+         input_=_input;
+     }
 
     bool InputPreview::initialize()
     {
@@ -134,19 +144,17 @@ namespace omni
 
     void InputPreview::paintGL()
     {
-      auto* _input = input();
-
       visual::with_current_context([this](QOpenGLFunctions& _)
       {
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         _.glDisable(GL_BLEND);
       });
 
-      if (!_input) return;
+      if (!input_) return;
 
       auto _rect = viewRect();
 
-      _input->update();
+      input_->update();
       makeCurrent();
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -164,7 +172,7 @@ namespace omni
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
         _.glEnable(GL_TEXTURE_2D);
-        _.glBindTexture(GL_TEXTURE_2D, _input->textureId());
+        _.glBindTexture(GL_TEXTURE_2D, input_->textureId());
         visual::Rectangle::draw();
         _.glBindTexture(GL_TEXTURE_2D, 0);
       });

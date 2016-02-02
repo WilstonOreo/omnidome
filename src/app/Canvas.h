@@ -59,7 +59,7 @@ namespace omni
                         void changeProjectorViewMode(int);
 
                     private:
-                        CanvasParameters* paramWidget_ = nullptr;
+                        QWidget* paramWidget_ = nullptr;
                         std::unique_ptr<Ui::Canvas> ui_;
                 };
         }

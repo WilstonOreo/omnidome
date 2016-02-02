@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1315</width>
-    <height>778</height>
+    <width>1163</width>
+    <height>580</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -411,8 +411,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>265</width>
-            <height>615</height>
+            <width>233</width>
+            <height>417</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -439,33 +439,66 @@
            </property>
            <item>
             <widget class="omni::ui::Canvas" name="grpCanvas" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
              <property name="title" stdset="0">
               <string>Canvas</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="omni::ui::Blend" name="grpBlend" native="true"/>
+            <widget class="omni::ui::Blend" name="grpBlend" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
            </item>
            <item>
-            <widget class="omni::ui::Warp" name="grpWarp" native="true"/>
+            <widget class="omni::ui::Warp" name="grpWarp" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="omni::ui::Input" name="grpInputs" native="true">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
+               <verstretch>1</verstretch>
               </sizepolicy>
              </property>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item>
             <widget class="omni::ui::Mapping" name="grpMapping" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
                <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
+               <verstretch>1</verstretch>
               </sizepolicy>
              </property>
             </widget>
