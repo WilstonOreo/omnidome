@@ -22,7 +22,7 @@
 
 #include <omni/Vertex.h>
 #include <omni/visual/Interface.h>
-#include <omni/visual/VBO.h>
+#include <omni/visual/VertexVBO.h>
 
 namespace omni
 {
@@ -76,9 +76,9 @@ namespace omni
       qreal radius_ = 1.0;
       QVector3D scale_;
 
-      std::vector<Vertex> vertices_;
-      std::vector<int> indices_;
-      VBO vertexVbo_, indexVbo_;
+      VertexVBO vbo_;
+      VertexVBO::vertex_buffer_type vertices_;
+      VertexVBO::index_buffer_type indices_;
     };
   }
 }

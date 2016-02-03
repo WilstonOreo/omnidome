@@ -109,37 +109,18 @@ namespace omni
         // Scale offset
         glScalef(radius_ * scale_.x(),radius_ * scale_.y(),radius_ * scale_.z());
 
-        _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
-        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_.id());
-
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);
-
-        glTexCoordPointer(3, GL_FLOAT, sizeof(Vertex),(void*)Vertex::texCoordOffset());
-        glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)Vertex::normalOffset());
-        glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)Vertex::posOffset());
-
-        _.glDrawElements(GL_TRIANGLES,indices_.size()-4,GL_UNSIGNED_INT,0);
-
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glDisableClientState(GL_NORMAL_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
-
-        _.glBindBuffer(GL_ARRAY_BUFFER, 0 );
-        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        vbo_.bind();
+        vbo_.draw();
+        vbo_.unbind();
       });
       glPopMatrix();
     }
 
     void Sphere::update()
     {
-      vertexVbo_.freeAndGen();
-      indexVbo_.freeAndGen();
-
       vertices_.clear();
-      vertices_.reserve(2 * slices_ * stacks_);
       indices_.clear();
+      vertices_.reserve(2 * slices_ * stacks_);
       indices_.reserve(6 * slices_ * stacks_);
 
       // If there are M lines of latitude (horizontal) and
@@ -162,23 +143,9 @@ namespace omni
                       stackRadius(i),stackRadius(i+1));
       }
 
-      with_current_context([this](QOpenGLFunctions& _)
-      {
-        // bind VBO in order to use
-        _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
-        {
-          _.glBufferData(GL_ARRAY_BUFFER, vertices_.size()*sizeof(Vertex), vertices_.data(), GL_STATIC_DRAW);
-        }
-        _.glBindBuffer(GL_ARRAY_BUFFER,0);
-
-        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_.id());
-        {
-          _.glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size()*sizeof(GLuint), indices_.data(), GL_STATIC_DRAW);
-        }
-        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-      });
-
+      vbo_.buffer(vertices_,indices_);
       vertices_.clear();
+      indices_.clear();
     }
 
     void Sphere::generateStack(float _top, float _bottom,
