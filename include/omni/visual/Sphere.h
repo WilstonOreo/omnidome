@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -28,7 +28,7 @@ namespace omni
 {
   namespace visual
   {
-    /// Draw Handler for visualizing a centered sphere 
+    /// Draw Handler for visualizing a centered sphere
     class Sphere : public Interface
     {
     public:
@@ -43,7 +43,7 @@ namespace omni
 
       /// Return number of stacks (in Z direction)
       int stacks() const;
-      
+
       /// Set number of stacks
       void setStacks(int _stacks);
 
@@ -52,12 +52,14 @@ namespace omni
 
       float top() const;
       void setTop(float);
-      
+
       float bottom() const;
       void setBottom(float);
 
+      /// Draws sphere from vertex buffer object
       void draw() const;
 
+      /// Regenerates the mesh and updates the vertex buffer objects
       void update();
 
     private:
@@ -68,7 +70,7 @@ namespace omni
       int stacks_ = 64;
       int slices_ = 128;
 
-      float top_ = 1.0; 
+      float top_ = 1.0;
       float bottom_ = 0.0;
 
       qreal radius_ = 1.0;

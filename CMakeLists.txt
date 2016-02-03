@@ -14,11 +14,10 @@ import(
   plugin
 )
 
-set(CMAKE_MACOSX_RPATH 1)
+set( CMAKE_MACOSX_RPATH 1)
 set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 
 ################################
-#set(QT_PATH Test/Qt)
 if(DEFINED QT_PATH)
     MESSAGE(STATUS "Qt Path: ${QT_PATH}")
     setup_qt(5.5 ${QT_PATH})
@@ -32,15 +31,6 @@ if(NOT QT_FOUND)
 endif()
 
 add_definitions(-DOMNIDOME_VERSION_STRING="1.0")
-
-# Load canvas plugins
-load_plugins(${CMAKE_SOURCE_DIR}/src/modules/canvas)
-
-# Load input plugins
-load_plugins(${CMAKE_SOURCE_DIR}/src/modules/input)
-
-# Load mapping inputs
-load_plugins(${CMAKE_SOURCE_DIR}/src/modules/mapping)
 
 ########### BUILD_TARGETS ############
 
@@ -81,6 +71,17 @@ TARGET_LINK_LIBRARIES(omni ${Qt5_LIBRARIES} ${omni_extra_libs} )
 # END Setup libomni build target
 ################################
 
+########### Plugins ############
+
+# Load canvas plugins
+load_plugins(${CMAKE_SOURCE_DIR}/src/modules/canvas)
+
+# Load input plugins
+load_plugins(${CMAKE_SOURCE_DIR}/src/modules/input)
+
+# Load mapping inputs
+load_plugins(${CMAKE_SOURCE_DIR}/src/modules/mapping)
+
 ################################
 # Setup omnidome executable
 
@@ -102,11 +103,6 @@ SET(omni_src ${omni_app_cpp_files} ${omni_headers_moc} ${omni_forms_headers} ${o
 # END Setup omnidome executable
 ################################
 
-
-
-########### Plugins ############
-
-#include(src/plugins/input/gstreamer/gstreamer.cmake)
 
 ########### Tests #############
 if(DEFINED OMNI_GSTREAMER)
