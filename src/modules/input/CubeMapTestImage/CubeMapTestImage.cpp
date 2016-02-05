@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "EquirectangularTestImage.h"
+#include "CubeMapTestImage.h"
 
 #include <omni/util.h>
 #include <omni/ui/InputPreview.h>
@@ -26,22 +26,23 @@ namespace omni
 {
   namespace input
   {
-    EquirectangularTestImage::EquirectangularTestImage()
+    CubeMapTestImage::CubeMapTestImage()
     {
     }
 
-    EquirectangularTestImage::~EquirectangularTestImage()
+    CubeMapTestImage::~CubeMapTestImage()
     {
     }
 
-    QString EquirectangularTestImage::fragmentShaderSource() const
+    QString CubeMapTestImage::fragmentShaderSource() const
     {
       static QString _fragmentSrc;
       if (_fragmentSrc.isEmpty())
-        _fragmentSrc = util::fileToStr(":/shaders/test_image.frag");
+        _fragmentSrc = util::fileToStr(":/shaders/CubeMapTestImage.frag");
       return _fragmentSrc;
     }
-    QString EquirectangularTestImage::vertexShaderSource() const
+
+    QString CubeMapTestImage::vertexShaderSource() const
     {
       static QString _vertSrc;
       if (_vertSrc.isEmpty())
@@ -49,13 +50,13 @@ namespace omni
       return _vertSrc;
     }
 
-    QSize EquirectangularTestImage::size() const
+    QSize CubeMapTestImage::size() const
     {
       return QSize(4096,2048);
     }
 
-    QWidget* EquirectangularTestImage::widget() {
-        return nullptr;
+    QWidget* CubeMapTestImage::widget() {
+        return new ui::InputPreview(this);
     }
   }
 }

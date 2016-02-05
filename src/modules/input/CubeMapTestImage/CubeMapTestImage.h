@@ -17,48 +17,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_INPUT_TESTIMAGE_H_
-#define OMNI_INPUT_TESTIMAGE_H_
+#ifndef OMNI_INPUT_CUBEMAP_TESTIMAGE_H_
+#define OMNI_INPUT_CUBEMAP_TESTIMAGE_H_
 
-#include <QOpenGLShaderProgram>
-#include <QOpenGLFramebufferObject>
-#include "Interface.h"
+#include <omni/input/TestImage.h>
 
 namespace omni
 {
   namespace input
   {
-    /**@brief Abstract class for test images that are generated with a shader
-     **/
-    class TestImage :
-      public Interface
+    class CubeMapTestImage : public QObject, public TestImage
     {
+      OMNI_INPUT_PLUGIN_DECL
     public:
-      TestImage();
-      virtual ~TestImage();
+      OMNI_REGISTER_CLASS(Factory,CubeMapTestImage)
 
-      GLuint textureId() const;
-      void free();
-      void update();
+      CubeMapTestImage();
+      ~CubeMapTestImage();
 
-      QPointF rulerPos() const;
-      void setRulerPos(QPointF const&);
+      QSize size() const;
 
-      virtual void toStream(QDataStream&) const;
-      virtual void fromStream(QDataStream&);
+      QWidget* widget();
 
     private:
-      virtual QString fragmentShaderSource() const = 0;
-      virtual QString vertexShaderSource() const = 0;
-      virtual void shaderUniformHandler();
-
-      QPointF rulerPos_;
-      bool rulerPosChanged_ = true;
-      std::unique_ptr<QOpenGLShaderProgram> shader_;
-      std::unique_ptr<QOpenGLFramebufferObject> framebuffer_;
+      QString fragmentShaderSource() const;
+      QString vertexShaderSource() const;
     };
-
   }
 }
 
-#endif /* OMNI_INPUT_TESTIMAGE_H_ */
+#endif /* OMNI_INPUT_CUBEMAP_TESTIMAGE_H_ */

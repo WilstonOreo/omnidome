@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -26,7 +26,7 @@
 
 namespace omni
 {
-  namespace input 
+  namespace input
   {
     TestImage::TestImage() :
       rulerPos_(-1.0,-1.0)
@@ -37,7 +37,7 @@ namespace omni
     {
       free();
     }
-      
+
     GLuint TestImage::textureId() const
     {
       return framebuffer_->texture();
@@ -49,7 +49,7 @@ namespace omni
       framebuffer_.reset();
     }
 
-    void TestImage::setRulerPos(QPointF const& _rulerPos) 
+    void TestImage::setRulerPos(QPointF const& _rulerPos)
     {
       rulerPos_ = _rulerPos;
       rulerPosChanged_ = true;
@@ -59,7 +59,7 @@ namespace omni
     {
       return rulerPos_;
     }
-      
+
     void TestImage::shaderUniformHandler()
     {
       shader_->setUniformValue("ruler_pos",rulerPos_ - QPointF(0.5,0.5));
@@ -92,8 +92,8 @@ namespace omni
 
       if (!shader_)
       {
-        static QString _vertSrc = util::fileToStr(":/shaders/test_image.vert");
-        static QString _fragmentSrc = util::fileToStr(":/shaders/test_image.frag");
+        static QString _vertSrc = this->vertexShaderSource();
+        static QString _fragmentSrc = this->fragmentShaderSource();
         shader_.reset(new QOpenGLShaderProgram());
         shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
         shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
@@ -111,7 +111,7 @@ namespace omni
         glMultMatrixf(_m.constData());
       },
       [&](QOpenGLFunctions& _) // Model View Operation
-      { 
+      {
         shader_->bind();
         {
           shaderUniformHandler();
@@ -130,29 +130,28 @@ namespace omni
         }
         shader_->release();
       });
-      
+
       rulerPosChanged_ = false;
 
 
       if (!shader_)
-      { 
+      {
         shader_.reset(new QOpenGLShaderProgram());
         shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,vertexShaderSource());
         shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,fragmentShaderSource());
         shader_->link();
       }
     }
-      
+
     void TestImage::toStream(QDataStream& _stream) const
     {
       _stream << rulerPos_;
     }
 
     void TestImage::fromStream(QDataStream& _stream)
-    { 
+    {
       _stream >> rulerPos_;
       update();
     }
   }
 }
-
