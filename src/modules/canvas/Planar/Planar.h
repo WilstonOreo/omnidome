@@ -20,6 +20,7 @@
 #ifndef OMNI_CANVAS_PLANAR_H_
 #define OMNI_CANVAS_PLANAR_H_
 
+#include <omni/visual/Plane.h>
 #include <omni/canvas/Interface.h>
 #include <omni/EulerAngles.h>
 
@@ -40,6 +41,8 @@ namespace omni
       void draw() const;
       void drawAux() const;
 
+      void update();
+
       float width() const;
       void setWidth(float _width);
 
@@ -57,20 +60,15 @@ namespace omni
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
 
-      inline MappingModeSet supportedMappingModes() const {
-          return MappingModeSet({ MappingMode::PLANAR });
-      }
-
-      inline MappingMode defaultMappingMode() const {
-          return MappingMode::PLANAR;
-      }
-
       QWidget* widget();
+
+      QMatrix4x4 matrix() const;
 
     private:
       float width_ = 1.0, height_ = 1.0;
       QVector3D center_;
       EulerAngles angles_;
+      visual::Plane plane_;
     };
   }
 }

@@ -39,12 +39,6 @@ namespace omni
       /// Virtual destructor
       virtual ~Interface();
 
-      /// Return supported map modes (if set is empty, all map modes are supported)
-      inline virtual MappingModeSet mapModes() const
-      {
-        return  MappingModeSet({  });
-      }
-
       /// An input must return an OpenGL texture ID
       virtual GLuint textureId() const = 0;
 

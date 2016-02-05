@@ -62,7 +62,7 @@ namespace omni {
             draw(numIndices_);
         }
 
-        void VertexVBO::draw(uint32_t _numElements) const {
+        void VertexVBO::draw(uint32_t _numElements, GLuint _drawType) const {
             if (_numElements < 4 || _numElements > numIndices_) {
                 return;
             }
@@ -71,7 +71,7 @@ namespace omni {
                 glTexCoordPointer(3, GL_FLOAT, sizeof(Vertex),(void*)Vertex::texCoordOffset());
                 glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)Vertex::normalOffset());
                 glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)Vertex::posOffset());
-                _.glDrawElements(GL_TRIANGLES,_numElements-4,GL_UNSIGNED_INT,0);
+                _.glDrawElements(_drawType,_numElements-4,GL_UNSIGNED_INT,0);
             });
         }
 

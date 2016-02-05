@@ -23,6 +23,7 @@
 #include <map>
 #include <memory>
 #include <omni/SerializationInterface.h>
+#include <omni/visual/Interface.h>
 
 class QOpenGLShaderProgram;
 
@@ -36,15 +37,6 @@ namespace omni
 
   namespace mapping
   {
-    enum class Mode
-    {
-      PLANAR, // Planar mapping
-      FISHEYE, // Fish eye mapping, e.g. for half domes
-      EQUIRECTANGULAR, // Equirectangular mappings, e.g. for inflatable domes or fullsphere domes
-      CUBEMAP, // Cube mapping
-      NONE // Invalid Mode, default mode is used when set
-    };
-
     enum class OutputMode
     {
       MAPPED_INPUT, // Draws actual input texture on mapping
@@ -52,19 +44,17 @@ namespace omni
       UVW // Draws uvw coordinates of mapping
     };
 
-
     /**@brief Mapping interface with one or several inputs and shader
      * @detail Holds inputs and shader
      */
-    class Interface : public SerializationInterface
+    class Interface :
+        public SerializationInterface,
+        public visual::Interface
     {
     public:
       Interface();
 
       virtual ~Interface();
-
-      /// Returns mapping mode
-      virtual Mode mode() const = 0;
 
       /// Initialized OpenGL shader
       void initialize();
@@ -102,9 +92,11 @@ namespace omni
       /// Return pointer to parameter widget
       virtual QWidget* widget() = 0;
 
+      inline virtual void draw() const {}
+      inline virtual void update() {}
+
     protected:
       std::unique_ptr<QOpenGLShaderProgram> shader_;
-
 
     private:
       /**@brief Returns vertex shader source code
@@ -127,9 +119,6 @@ namespace omni
 
   typedef mapping::Interface Mapping;
   typedef mapping::Factory MappingFactory;
-
-  typedef mapping::Mode MappingMode;
-  typedef std::set<MappingMode> MappingModeSet;
 }
 
 

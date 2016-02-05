@@ -104,21 +104,16 @@ namespace omni
 
          ui_->boxMappingSelect->clear();
 
-         auto _canvasMappingModes = _canvas->supportedMappingModes();
          std::map<Id,int> _idToIndex;
          int _index = 0;
 
          for (auto& _idMappingClass : omni::mapping::Factory::classes())
          {
              QString _id = _idMappingClass.first.str();
-             auto&& _mapping = omni::mapping::Factory::create(_id);
-
              // Add mapping mode to combobox if it supported by canvas
-             if (_canvasMappingModes.count(_mapping->mode())) {
-                 _idToIndex[_id] = _index;
-                 ui_->boxMappingSelect->addItem(QIcon(QString(":/mapping/")+ _id + QString(".png")),_id);
-                 ++_index;
-             }
+            _idToIndex[_id] = _index;
+            ui_->boxMappingSelect->addItem(QIcon(QString(":/mapping/")+ _id + QString(".png")),_id);
+            ++_index;
          }
 
          if (paramWidget_) {
@@ -131,7 +126,7 @@ namespace omni
              auto&& _mapping = omni::mapping::Factory::create(_id);
 
              // Get type id of mapping and select it
-             if (_mapping->mode() == _canvas->defaultMappingMode()) {
+             if (_mapping->getTypeId() == _canvas->defaultMappingMode()) {
                  ui_->boxMappingSelect->setCurrentIndex(_idToIndex[_id]);
                  mappingTypeSelected(_mapping->getTypeId());
                  return;

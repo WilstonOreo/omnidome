@@ -35,11 +35,6 @@ namespace omni
     {
     }
 
-    Mode Fisheye::mode() const
-    {
-      return Mode::FISHEYE;
-    }
-
     void Fisheye::bind(OutputMode _outputMode)
     {
       Rotatable::bind(_outputMode);

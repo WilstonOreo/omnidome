@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -76,7 +76,7 @@ namespace omni
       if (shader_)
         shader_->release();
     }
- 
+
     void Interface::fromStream(QDataStream&)
     {
     }
@@ -84,7 +84,7 @@ namespace omni
     void Interface::toStream(QDataStream&) const
     {
     }
-      
+
     bool Interface::flipHorizontal() const
     {
       return flipHorizontal_;
@@ -104,28 +104,28 @@ namespace omni
     {
       flipVertical_ = _flipVertical;
     }
-      
+
     IdSet Interface::getUVWMappings()
     {
       IdSet _ids;
-      for (auto& _mappingId : Factory::classes()) 
+      for (auto& _mappingId : Factory::classes())
       {
         auto& _id = _mappingId.first;
         std::unique_ptr<Mapping> _mapping(Factory::create(_id));
-        if (_mapping->isUVW()) 
+        if (_mapping->isUVW())
           _ids.insert(_id);
       }
       return _ids;
     }
-    
+
     IdSet Interface::getPlanarMappings()
     {
       IdSet _ids;
-      for (auto& _mappingId : Factory::classes()) 
+      for (auto& _mappingId : Factory::classes())
       {
         auto& _id = _mappingId.first;
         std::unique_ptr<Mapping> _mapping(Factory::create(_id));
-        if (!_mapping->isUVW()) 
+        if (!_mapping->isUVW())
           _ids.insert(_id);
       }
       return _ids;
@@ -138,8 +138,8 @@ namespace omni
 
     QString Interface::fragmentShaderSourceCode() const
     {
-      return 
-        util::fileToStr(":/shaders/mapping/Template.frag") + 
+      return
+        util::fileToStr(":/shaders/mapping/Template.frag") +
         util::fileToStr(QString(":/shaders/mapping/") + getTypeId().str() + ".frag");
     }
   }

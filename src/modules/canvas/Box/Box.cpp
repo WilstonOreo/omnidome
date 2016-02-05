@@ -26,8 +26,7 @@ namespace omni
 {
   namespace canvas
   {
-    Box::Box() :
-      vizBox_(bounds_)
+    Box::Box()
     {
       setSize(QVector3D(10,10,10));
     }
@@ -56,7 +55,6 @@ namespace omni
       bounds_.setMinMax(
           QVector3D(-_s.x()*0.5,-_s.y()*0.5,0.0),
           QVector3D( _s.x()*0.5, _s.y()*0.5,_s.z()));
-      update();
     }
 
     void Box::fromStream(QDataStream& _stream)
@@ -69,6 +67,15 @@ namespace omni
     void Box::toStream(QDataStream& _stream) const
     {
       _stream << size();
+    }
+
+    QMatrix4x4 Box::matrix() const
+    {
+      QMatrix4x4 _m;
+      _m.translate(center());
+      _m *= angles_.matrix();
+      _m.scale(size());
+      return _m;
     }
 
     QWidget* Box::widget() {

@@ -48,14 +48,8 @@ namespace omni
       {
       }
 
-      /// Returns set of supported map modes (an empty set means that all map modes are supported)
-      inline virtual MappingModeSet supportedMappingModes() const
-      {
-        return MappingModeSet();
-      }
-
-      inline virtual MappingMode defaultMappingMode() const {
-          return MappingMode::NONE;
+      inline virtual Id defaultMappingMode() const {
+          return "TexCoords";
       }
 
       /// Abstract method for returning bounding box of canvas

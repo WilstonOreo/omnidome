@@ -53,6 +53,8 @@ namespace omni
       bool needsUpdate() const;
 
     private:
+      void drawCanvasWithMatrix() const;
+
       omni::Session& session_;
       static std::unique_ptr<QOpenGLShaderProgram> frustumShader_;
 

@@ -36,21 +36,11 @@ namespace omni
 
     void Planar::draw() const
     {
-      glPushMatrix();
+      plane_.draw();
+    }
 
-      glLoadIdentity();
-      glTranslatef(center_.x(),center_.y(),center_.z());
-      glMultMatrixf(angles_.matrix().constData());
-
-      glBegin(GL_QUADS);
-      float _h = width_ * 0.5;
-      float _w = height_ * 0.5;
-      glVertex3f(-_w, -_h, 0.0);
-      glVertex3f( _w, -_h, 0.0);
-      glVertex3f( _w,  _h, 0.0);
-      glVertex3f(-_w,  _h, 0.0);
-      glEnd();
-      glPopMatrix();
+    void Planar::update() {
+        plane_.update();
     }
 
     void Planar::drawAux() const
@@ -114,6 +104,15 @@ namespace omni
     void Planar::toStream(QDataStream& _stream) const
     {
       _stream << width_ << height_ << center_ << angles_;
+    }
+
+    QMatrix4x4 Planar::matrix() const
+    {
+      QMatrix4x4 _m;
+      _m.translate(center());
+      _m *= angles_.matrix();
+      _m.scale(QVector3D(width(),height(),1.0));
+      return _m;
     }
 
     QWidget* Planar::widget() {

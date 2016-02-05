@@ -16,30 +16,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef OMNI_UI_MAPPING_PLANAR_H_
-#define OMNI_UI_MAPPING_PLANAR_H_
 
-#include <omni/ui/MappingParameters.h>
+#ifndef OMNI_VISUAL_BOX_H_
+#define OMNI_VISUAL_BOX_H_
 
-namespace omni {
-    namespace ui {
-        namespace mapping {
-            class Planar : public MappingParameters
-            {
-                Q_OBJECT
-            public:
-                Planar(QWidget* = nullptr);
-                Planar(omni::mapping::Interface*, QWidget* = nullptr);
-                ~Planar();
+#include <omni/visual/Interface.h>
+#include <omni/visual/VertexVBO.h>
+#include <omni/Box.h>
 
-            private:
-                void updateMappingParameters();
-                void setup();
+namespace omni
+{
+  namespace visual
+  {
+    class BoundingBox : public Interface
+    {
+    public:
+      BoundingBox(omni::Box const& _box);
+      ~BoundingBox();
 
-                slim::Rotation* rotation_ = nullptr;
-            };
-        }
-    }
+      void draw() const;
+
+      static void draw(omni::Box const& _box);
+
+      void update();
+
+    private:
+      omni::Box const& box_;
+      VertexVBO vbo_;
+    };
+  }
 }
 
-#endif /* OMNI_UI_MAPPING_PLANAR_H_ */
+#endif /* OMNI_VISUAL_BOX_H_ */

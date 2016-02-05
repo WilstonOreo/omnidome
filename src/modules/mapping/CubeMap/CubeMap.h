@@ -35,8 +35,6 @@ namespace omni
       CubeMap();
       ~CubeMap();
 
-      Mode mode() const;
-
       QWidget* widget();
     };
   }

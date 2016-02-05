@@ -34,10 +34,6 @@ namespace omni
         FullSphere();
         ~FullSphere();
 
-        inline MappingMode defaultMappingMode() const {
-           return MappingMode::EQUIRECTANGULAR;
-        }
-
         QWidget* widget();
     };
   }

@@ -50,13 +50,6 @@ namespace omni
 
       virtual void draw() const;
 
-      inline MappingModeSet supportedMappingModes() const {
-          return MappingModeSet({
-              MappingMode::FISHEYE,
-              MappingMode::EQUIRECTANGULAR,
-              MappingMode::CUBEMAP });
-      }
-      
     protected:
 
       /// Protected bounding box member

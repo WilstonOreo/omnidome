@@ -112,8 +112,8 @@ namespace omni
       if (_row < 0 || _row >= session_->inputs().size()) return;
 
       session_->inputs().remove(_row);
-      changeSelection(model_->index(_row,0));
       model_->removeRows(_row+1,1);
+      changeSelection(model_->index(_row-1,0));
 
       emit inputChanged();
     }
@@ -142,11 +142,13 @@ namespace omni
       session_->inputs().setCurrentIndex(_row);
       setupInputWidget();
     }
+
     void Input::setupInputWidget() {
         auto* _input = session_->inputs().current();
         if (!_input) {
             if (paramWidget_) {
-                paramWidget_->hide();
+                paramWidget_->deleteLater();
+                paramWidget_ = nullptr;
             }
             emit inputIndexChanged();
             return;
@@ -167,8 +169,6 @@ namespace omni
 
                 // Update parameter when canvas has changed
             connect(paramWidget_,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
-
-
         }
 
         emit inputIndexChanged();

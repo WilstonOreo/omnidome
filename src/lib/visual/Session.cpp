@@ -46,6 +46,20 @@ namespace omni
       return session_;
     }
 
+    void Session::drawCanvasWithMatrix() const {
+
+        auto _canvas = session_.canvas();
+      if (!_canvas) return;
+          glPushMatrix();
+          {
+              glLoadIdentity();
+              glMultMatrixf(_canvas->matrix().constData());
+              _canvas->draw();
+          }
+          glPopMatrix();
+
+    }
+
     void Session::drawCanvas(mapping::OutputMode _mode, bool _displayInput) const
     {
       auto _canvas = session_.canvas();
@@ -64,7 +78,7 @@ namespace omni
 
           _mapping->bind(_mode);
           _.glBindTexture(GL_TEXTURE_2D, _texId);
-          _canvas->draw();
+          drawCanvasWithMatrix();
 
           _.glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -75,8 +89,7 @@ namespace omni
           // Render canvas with lighting when there is no input
           glColor4f(1.0,1.0,1.0,1.0);
           _.glEnable(GL_LIGHTING);
-          _canvas->draw();
-          glPopMatrix();
+          drawCanvasWithMatrix();
           _.glDisable(GL_LIGHTING);
         }
       });
@@ -127,7 +140,7 @@ namespace omni
       frustumShader_->setUniformValue("view_mode",int(_projectorViewMode));
 
       glDisable(GL_DEPTH_TEST);
-      _canvas->draw();
+      drawCanvasWithMatrix();
       glEnable(GL_DEPTH_TEST);
 
       frustumShader_->release();

@@ -61,19 +61,6 @@ namespace omni
     return mapping();
   }
 
-  Mapping* Session::setMapping(MappingMode _mode) {
-
-      for (auto& _idClass : MappingFactory::classes()) {
-          auto&& _mapping = MappingFactory::create(_idClass.first);
-          if (_mapping->mode() == _mode) {
-              mapping_.reset(std::move(_mapping));
-              break;
-          }
-      }
-
-      return mapping();
-  }
-
   Mapping* Session::mapping()
   {
     return mapping_.get();

@@ -37,11 +37,6 @@ namespace omni
     {
     }
 
-    Mode Equirectangular::mode() const
-    {
-      return Mode::EQUIRECTANGULAR;
-    }
-
     void Equirectangular::bind(OutputMode _outputMode)
     {
       Rotatable::bind(_outputMode);

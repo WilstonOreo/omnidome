@@ -62,15 +62,17 @@ namespace omni
       /// Serialize to stream
       void toStream(QDataStream&) const;
 
-      inline MappingMode defaultMappingMode() const {
-          return MappingMode::CUBEMAP;
-      }
-
       /// Make new box parameter widget
       QWidget* widget();
 
+      QMatrix4x4 matrix() const;
+
+      EulerAngles& angles();
+      EulerAngles const& angles() const;
+
     private:
       visual::Box vizBox_;
+      EulerAngles angles_;
     };
   }
 }

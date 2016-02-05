@@ -46,11 +46,18 @@
             /// Draw buffer as triangles
             void draw() const;
 
-            /// Draw specific elements from buffer as triangles
-            void draw(uint32_t _numElements) const;
+            /// Draw specific indices from buffer as triangles
+            void draw(uint32_t _numIndices, GLuint _drawType = GL_TRIANGLES) const;
 
             /// Unbind buffer
             void unbind() const;
+
+            template<typename...ARGS>
+            void bindAndDraw(ARGS&&..._args) const {
+                bind();
+                draw(_args...);
+                unbind();
+            }
 
             /// Return number of indices in this buffer
             size_t numIndices() const;

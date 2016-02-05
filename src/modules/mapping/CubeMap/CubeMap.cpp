@@ -33,11 +33,6 @@ namespace omni
     {
     }
 
-    Mode CubeMap::mode() const
-    {
-      return Mode::CUBEMAP;
-    }
-
     QWidget* CubeMap::widget() {
         return new ui::mapping::CubeMap(this);
     }

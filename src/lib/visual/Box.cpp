@@ -1,280 +1,124 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include <omni/visual/Box.h>
 
-#include <omni/visual/util.h>
-#include <QDebug>
+#include <array>
 
-namespace omni
-{
-  namespace visual
-  {
-
-    Box::Box(omni::Box const& _box, bool _wireframe) :
-      box_(_box),
-      wireframe_(_wireframe)
-    {
-      update();
-    }
-
-    Box::~Box()
-    {
-    }
-      
-    void Box::update() 
-    {
-      vertexVbo_.freeAndGen();
-      indexVbo_.freeAndGen();
-      
-      vertices_.clear();
-      vertices_.reserve(24);
-      indices_.clear();
-      indices_.reserve(36);
-
-      enum Side { 
-        POS_X,
-        POS_Y,
-        POS_Z,
-        NEG_X,
-        NEG_Y,
-        NEG_Z 
-      };
-
-      auto getNormal = [](Side _side)
-      {
-        switch (_side)
-        {
-        case POS_X: return QVector3D(1,0,0);
-        case POS_Y: return QVector3D(0,1,0);
-        case POS_Z: return QVector3D(0,0,1);
-        case NEG_X: return QVector3D(-1,0,0);
-        case NEG_Y: return QVector3D(0,-1,0);
-        case NEG_Z: return QVector3D(0,0,-1);
-        default: break;
+namespace omni {
+    namespace visual {
+        Box::Box() {
         }
-        return QVector3D(0,0,0);
-      };
-      
-      auto _min = box_.min();
-      auto _max = box_.max();
 
-      auto add = [&](QVector3D _pos, QVector3D _normal)
-      {
-        auto _center = (_max + _min) * 0.5;
-/*
-        QVector3D _invSize(
-            1.0 / (_max.x() - _min.x()),
-            1.0 / (_max.y() - _min.y()),
-            1.0 / (_max.z() - _min.z()));
+        Box::~Box() {
 
-        auto _uvw = ((_pos - _center) * _invSize) * 2.0;
-        vertices_.emplace_back(_pos,_normal,_uvw); */
-        vertices_.emplace_back(_pos,_normal,(_pos - _center).normalized());
-      };
-
-      auto addIndices = [&]()
-      {
-        size_t offset = vertices_.size();
-        indices_.push_back(offset+0);
-        indices_.push_back(offset+1);
-        indices_.push_back(offset+2);
-        indices_.push_back(offset+0);
-        indices_.push_back(offset+3);
-        indices_.push_back(offset+2);
-      };
-
-      addIndices();
-      add(QVector3D(_max.x(),_min.y(),_min.z()),getNormal(POS_X));
-      add(QVector3D(_max.x(),_min.y(),_max.z()),getNormal(POS_X));
-      add(QVector3D(_max.x(),_max.y(),_max.z()),getNormal(POS_X));
-      add(QVector3D(_max.x(),_max.y(),_min.z()),getNormal(POS_X));
-
-      addIndices();
-      add(QVector3D(_min.x(),_min.y(),_min.z()),getNormal(NEG_X));
-      add(QVector3D(_min.x(),_min.y(),_max.z()),getNormal(NEG_X));
-      add(QVector3D(_min.x(),_max.y(),_max.z()),getNormal(NEG_X));
-      add(QVector3D(_min.x(),_max.y(),_min.z()),getNormal(NEG_X));
-      
-      addIndices();
-      add(QVector3D(_min.x(),_max.y(),_min.z()),getNormal(POS_Y));
-      add(QVector3D(_min.x(),_max.y(),_max.z()),getNormal(POS_Y));
-      add(QVector3D(_max.x(),_max.y(),_max.z()),getNormal(POS_Y));
-      add(QVector3D(_max.x(),_max.y(),_min.z()),getNormal(POS_Y));
-      
-      addIndices();
-      add(QVector3D(_min.x(),_min.y(),_min.z()),getNormal(NEG_Y));
-      add(QVector3D(_min.x(),_min.y(),_max.z()),getNormal(NEG_Y));
-      add(QVector3D(_max.x(),_min.y(),_max.z()),getNormal(NEG_Y));
-      add(QVector3D(_max.x(),_min.y(),_min.z()),getNormal(NEG_Y));
-      
-      addIndices();
-      add(QVector3D(_min.x(),_min.y(),_max.z()),getNormal(POS_Z));
-      add(QVector3D(_min.x(),_max.y(),_max.z()),getNormal(POS_Z));
-      add(QVector3D(_max.x(),_max.y(),_max.z()),getNormal(POS_Z));
-      add(QVector3D(_max.x(),_min.y(),_max.z()),getNormal(POS_Z));
-      
-      addIndices();
-      add(QVector3D(_min.x(),_min.y(),_min.z()),getNormal(NEG_Z));
-      add(QVector3D(_min.x(),_max.y(),_min.z()),getNormal(NEG_Z));
-      add(QVector3D(_max.x(),_max.y(),_min.z()),getNormal(NEG_Z));
-      add(QVector3D(_max.x(),_min.y(),_min.z()),getNormal(NEG_Z));
-      
-      with_current_context([this](QOpenGLFunctions& _)
-      {
-        // bind VBO in order to use
-        _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
-        {
-          _.glBufferData(GL_ARRAY_BUFFER, vertices_.size()*sizeof(Vertex), vertices_.data(), GL_STATIC_DRAW);
         }
-        _.glBindBuffer(GL_ARRAY_BUFFER,0);
 
-        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_.id());
-        {
-          _.glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size()*sizeof(GLuint), indices_.data(), GL_STATIC_DRAW);
+        void Box::draw() const {
+            vbo_.bindAndDraw(vbo_.numIndices(),GL_QUADS);
         }
-        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-      });
 
-      vertices_.clear();
+        void Box::update() {
+            size_t _resX        = horizontal_ + 1;
+            size_t _resY        = vertical_ + 1;
+            size_t _numVertices = _resX * _resY;
+            VertexVBO::vertex_buffer_type _vertices(6 * _numVertices);
+            VertexVBO::index_buffer_type  _indices(6 * 4 * _numVertices);
+
+            auto _vertexIt = _vertices.begin();
+            auto _indexIt  = _indices.begin();
+
+            std::array<QVector3D,6> _normals = {
+                QVector3D( 0.0, 0.0, 1.0),
+                QVector3D( 0.0, 0.0,-1.0),
+                QVector3D( 0.0, 1.0, 0.0),
+                QVector3D( 0.0,-1.0, 0.0),
+                QVector3D( 1.0, 0.0, 0.0),
+                QVector3D(-1.0, 0.0, 0.0)
+            };
+
+            for (size_t i = 0; i < 6; ++i) {
+                auto& _normal = _normals[i];
+                for (size_t x = 0; x < _resX; ++x) {
+                    for (size_t y = 0; y < _resY; ++y) {
+                        // index
+                        if (((x + 1) < _resX) && ((y + 1) < _resY)) {
+                            *(_indexIt++) = i*_numVertices + (x + 0) * _resY + (y + 0);
+                            *(_indexIt++) = i*_numVertices + (x + 1) * _resY + (y + 0);
+                            *(_indexIt++) = i*_numVertices +  (x + 1) * _resY + (y + 1);
+                            *(_indexIt++) = i*_numVertices  + (x + 0) * _resY + (y + 1);
+                        }
+
+                        // texCoords
+                        QVector2D _pos(x / float(_resX - 1), y / float(_resY - 1));
+                        QVector2D _texCoord((i + _pos.x())/6.0,
+                                        1.0 - _pos.y());
+                        _pos -= QVector2D(0.5,0.5);
+                        _vertexIt->setTexCoord(_texCoord);
+
+                        switch(i)
+                        {
+                        case 0:
+                        _vertexIt->setPos(QVector3D(_pos.x(),_pos.y(),_normal.z()*0.5));
+                        break;
+                        case 1:
+                        _vertexIt->setPos(QVector3D(_pos.x(),_pos.y(),_normal.z()*0.5));
+                        break;
+                        case 2:
+                        _vertexIt->setPos(QVector3D(_pos.x(),_normal.y()*0.5,_pos.y()));
+                        break;
+                        case 3:
+                        _vertexIt->setPos(QVector3D(_pos.x(),_normal.y()*0.5,_pos.y()));
+                        break;
+                        case 4:
+                        _vertexIt->setPos(QVector3D(_normal.x()*0.5,_pos.x(),_pos.y()));
+                        break;
+                        case 5:
+                        _vertexIt->setPos(QVector3D(_normal.x()*0.5,_pos.x(),_pos.y()));
+                        break;
+                        }
+
+                        _vertexIt->setNormal(_normals[i]);
+                        ++_vertexIt;
+                    }
+                }
+            }
+
+            vbo_.buffer(_vertices, _indices);
+        }
+
+        size_t Box::resX() const {
+            return resX_;
+        }
+
+        size_t Box::resY() const {
+            return resY_;
+        }
+
+        size_t Box::resZ() const {
+            return resZ_;
+        }
+
+        void Box::remesh(size_t _resX, size_t _resY, size_t _resZ) {
+            resX_ = _resX;
+            resY_ = _resY;
+            resZ_ = _resZ;
+            update();
+        }
     }
-
-    void Box::draw(omni::Box const& _box, bool _wireframe)
-    {
-      float x = _box.min().x(), y = _box.min().y(), z = _box.min().z();
-      float xs = _box.max().x(), ys = _box.max().y(), zs = _box.max().z();
-      GLuint _visualMode = _wireframe ? GL_LINE_LOOP : GL_QUADS;
-
-      glBegin(_visualMode);
-      {
-        // top side
-        glNormal3f(0.0,1.0,0.0);
-        glTexCoord2f(0,0);
-        glVertex3f(x , ys, z );
-        glTexCoord2f(1,0);
-        glVertex3f(xs, ys, z );
-        glTexCoord2f(1,1);
-        glVertex3f(xs, ys, zs);
-        glTexCoord2f(0,1);
-        glVertex3f(x , ys, zs);
-      }
-      glEnd();
-      glBegin(_visualMode);
-      {
-        // bottom side
-        glNormal3f(0.0,-1.0,0.0);
-        glTexCoord2f(0,0);
-        glVertex3f(x , y, z );
-        glTexCoord2f(1,0);
-        glVertex3f(xs, y, z );
-        glTexCoord2f(1,1);
-        glVertex3f(xs, y, zs);
-        glTexCoord2f(0,1);
-        glVertex3f(x , y, zs);
-      }
-      glEnd();
-      glBegin(_visualMode);
-      {
-        // east side
-        glNormal3f(0.0,0.0,-1.0);
-        glTexCoord2f(0,0);
-        glVertex3f(x , y , z);
-        glTexCoord2f(1,0);
-        glVertex3f(xs, y , z);
-        glTexCoord2f(1,1);
-        glVertex3f(xs, ys, z);
-        glTexCoord2f(0,1);
-        glVertex3f(x , ys, z);
-      }
-      glEnd();
-      glBegin(_visualMode);
-      // west side
-      {
-        glNormal3f(0.0,0.0,1.0);
-        glTexCoord2f(0,0);
-        glVertex3f(x , y ,zs);
-        glTexCoord2f(1,0);
-        glVertex3f(xs, y ,zs);
-        glTexCoord2f(1,1);
-        glVertex3f(xs, ys,zs);
-        glTexCoord2f(0,1);
-        glVertex3f(x , ys,zs);
-      }
-      glEnd();
-      glBegin(_visualMode);
-      {
-        // north side
-        glNormal3f(-1.0,0.0,0.0);
-        glTexCoord2f(0,0);
-        glVertex3f(x , y , z );
-        glTexCoord2f(1,0);
-        glVertex3f(x , y , zs);
-        glTexCoord2f(1,1);
-        glVertex3f(x , ys, zs);
-        glTexCoord2f(0,1);
-        glVertex3f(x , ys, z );
-      }
-      glEnd();
-      glBegin(_visualMode);
-      {
-        // south side
-        glNormal3f( 1.0,0.0,0.0);
-        glTexCoord2f(0,0);
-        glVertex3f( xs, y , z );
-        glTexCoord2f(1,0);
-        glVertex3f( xs, y , zs);
-        glTexCoord2f(1,1);
-        glVertex3f( xs, ys, zs);
-        glTexCoord2f(0,1);
-        glVertex3f( xs, ys, z );
-      }
-      glEnd();
-    }
-
-    void Box::draw() const
-    {
-      glPushMatrix();
-
-      with_current_context([this](QOpenGLFunctions& _)
-      {
-        _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
-        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_.id());
-
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);
-
-        glTexCoordPointer(3, GL_FLOAT, sizeof(Vertex),(void*)Vertex::texCoordOffset());
-        glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)Vertex::normalOffset());
-        glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)Vertex::posOffset());
-
-        _.glDrawElements(GL_TRIANGLES,indices_.size(),GL_UNSIGNED_INT,0);
-
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glDisableClientState(GL_NORMAL_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
-      
-        _.glBindBuffer(GL_ARRAY_BUFFER, 0 );
-        _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-      });
-      glPopMatrix();
-    }
-  }
 }
-

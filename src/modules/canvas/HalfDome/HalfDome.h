@@ -48,10 +48,6 @@ namespace omni
 
       QMatrix4x4 matrix() const;
 
-      inline MappingMode defaultMappingMode() const {
-          return MappingMode::FISHEYE;
-      }
-
       /// Make new box parameter widget
       QWidget* widget();
 

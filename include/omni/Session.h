@@ -67,9 +67,6 @@ namespace omni
     /// Makes new mapping with given type Id
     Mapping* setMapping(Id const& _typeId);
 
-    /// Set mapping by given mapping mode
-    Mapping* setMapping(MappingMode _mode);
-
     /// Returns pointer to mapping
     Mapping* mapping();
 

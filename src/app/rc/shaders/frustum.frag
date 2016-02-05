@@ -16,7 +16,7 @@ uniform vec3 color;
 /// If distance > 0, there is an intersection
 float frustum_intersection(in vec3 point)
 {
-  vec3 o = point - eye;
+  vec3 o = normalize(point - eye);
   /// Normals of frustum required for calculating intersection
   vec3 n_top = -normalize(cross(top_left,top_right)); // Top normal
   vec3 n_bottom = normalize(cross(bottom_left,bottom_right)); // Bottom normal
@@ -52,7 +52,7 @@ void main()
       angle = 0.1;
   }
 
-  float alpha = d < 0.1 ? abs(angle)*6.0 : 2.0*abs(angle);
+  float alpha = d < angle*0.1 ? 0.8*angle : 0.2*angle;
 
   if (d > 0.0 && angle > 0.0)
   {

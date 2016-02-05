@@ -109,9 +109,7 @@ namespace omni
         // Scale offset
         glScalef(radius_ * scale_.x(),radius_ * scale_.y(),radius_ * scale_.z());
 
-        vbo_.bind();
-        vbo_.draw();
-        vbo_.unbind();
+        vbo_.bindAndDraw();
       });
       glPopMatrix();
     }
@@ -161,8 +159,21 @@ namespace omni
         QVector3D _bottomPoint(_cos * _bottomRadius,_sin * _bottomRadius,_bottom);
         QVector3D _normalTop(_topPoint.normalized());
         QVector3D _normalBottom(_bottomPoint.normalized());
-        vertices_.emplace_back(_topPoint,_normalTop,_normalTop);//QVector2D(float(i)/slices_,1.0 - acos(_normalTop.z()) / M_PI));
-        vertices_.emplace_back(_bottomPoint,_normalBottom,_normalBottom);//QVector2D(float(i)/slices_,1.0 - acos(_normalBottom.z()) / M_PI));
+
+        auto getTexCoord = [&](QVector3D const& _v) -> QVector2D {
+            QVector2D texCoords;
+            QVector3D uvw = _v.normalized();
+
+            texCoords.setX(i / float(slices_));
+            texCoords.setY(1.0 - acos(uvw.z()) / M_PI);
+            return texCoords;
+        };
+
+        QVector2D _texCoordTop(getTexCoord(_topPoint));
+        QVector2D _texCoordBottom(getTexCoord(_bottomPoint));
+
+        vertices_.emplace_back(_topPoint,_normalTop,_texCoordTop);//QVector2D(float(i)/slices_,1.0 - acos(_normalTop.z()) / M_PI));
+        vertices_.emplace_back(_bottomPoint,_normalBottom,_texCoordBottom);//QVector2D(float(i)/slices_,1.0 - acos(_normalBottom.z()) / M_PI));
 
         /// Top triangle
         indices_.push_back(_startIndex + 2 * i);

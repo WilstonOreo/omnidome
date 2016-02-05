@@ -36,13 +36,7 @@ namespace omni
 
     void HalfDome::draw() const
     {
-      glPushMatrix();
-      {
-        glLoadIdentity();
-        glMultMatrixf(matrix().constData());
         this->sphere_.draw();
-      }
-      glPopMatrix();
     }
 
     EulerAngles& HalfDome::angles()
@@ -70,7 +64,7 @@ namespace omni
 
     QMatrix4x4 HalfDome::matrix() const
     {
-      QMatrix4x4 _m;// = angles_.matrix();
+      QMatrix4x4 _m;
       _m.translate(center());
       return _m * angles_.matrix();
     }
