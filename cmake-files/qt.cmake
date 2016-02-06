@@ -1,4 +1,4 @@
-# Qt Setup 
+# Qt Setup
 include(CMakeParseArguments)
 
 # qt5_wrap_ui(outfiles inputfile ... )
@@ -15,35 +15,35 @@ function(QT5_GENERATE_UI outfiles )
         get_filename_component(outfile ${it} NAME_WE)
         get_filename_component(infile ${it} ABSOLUTE)
         set(outfile ${CMAKE_SOURCE_DIR}/moc/ui_${outfile}.h)
-        
+
         add_custom_command(OUTPUT ${outfile}
           COMMAND ${Qt5Widgets_UIC_EXECUTABLE}
           ARGS ${ui_options} -o ${outfile} ${infile}
          MAIN_DEPENDENCY ${infile} VERBATIM)
        #execute_process(COMMAND ${QT_UIC_EXECUTABLE} ${ui_options} -o ${outfile} ${infile}
-       #  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
- 
+       # WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
         list(APPEND ${outfiles} ${outfile})
     endforeach()
     set(${outfiles} ${${outfiles}} PARENT_SCOPE)
 endfunction()
 
 
-MACRO(find_qt5_component COMPONENT_NAME) 
+MACRO(find_qt5_component COMPONENT_NAME)
 
   set(Qt5${COMPONENT_NAME}_DIR ${QT_LIBRARY_DIR}/cmake/Qt5${COMPONENT_NAME} )
   find_package(Qt5${COMPONENT_NAME} REQUIRED)
 
   set(Qt5_LIBRARIES ${Qt5_LIBRARIES} Qt5::${COMPONENT_NAME})
-  
+
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     include_directories(${Qt5${COMPONENT_NAME}_INCLUDE_DIRS})
-  ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+  ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     include_directories(${QT_INCLUDE_DIR}/Qt${COMPONENT_NAME})
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  
+
   if (${COMPONENT_NAME} MATCHES "Widgets")
     set(Qt5${COMPONENT_NAME}_UIC_EXECUTABLE ${QT5_LOCATION}/bin/uic)
   endif (${COMPONENT_NAME} MATCHES "Widgets")
@@ -60,7 +60,7 @@ MACRO (detect_qt)
     ELSEIF()
         set(QT_PATHS "${QT_PATH}")
     ENDIF()
-    
+
     message(STATUS ${QT_PATHS})
 
     IF(NOT DEFINED ${QT_VERSION})
@@ -69,7 +69,7 @@ MACRO (detect_qt)
     ELSEIF()
         set(QT_VERSIONS ${QT_VERSION})
     ENDIF()
-        
+
     # Scan through list of candidate paths
     foreach(_PATH ${QT_PATHS})
         if (NOT EXISTS ${_PATH})
@@ -99,7 +99,7 @@ MACRO(setup_qt VERSION FOLDER)
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(QT5_LOCATION "${FOLDER}/${QT_VERSION}/clang_64")
     include_directories(${FOLDER}/${QT_VERSION}/Src/qtbase/include)
-  ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+  ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(QT5_LOCATION "${FOLDER}/${QT_VERSION}/gcc_64")
@@ -124,9 +124,9 @@ MACRO(setup_qt VERSION FOLDER)
 
     # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
     add_definitions(${Qt5Widgets_DEFINITIONS})
-  
+
     set(QT_VERSION "${VERSION}")
-                
+
     MESSAGE(STATUS "Using Qt ${QT_VERSION}")
     set(QT_FOUND TRUE)
   elseif()
@@ -142,5 +142,3 @@ ENDIF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
 IF(${CMAKE_BUILD_TYPE} MATCHES "Release")
   ADD_DEFINITIONS("-DQT_NO_DEBUG_OUTPUT -DQT_NO_WARNING_OUTPUT")
 ENDIF(${CMAKE_BUILD_TYPE} MATCHES "Release")
-
-

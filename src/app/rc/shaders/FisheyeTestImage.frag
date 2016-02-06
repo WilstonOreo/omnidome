@@ -13,14 +13,6 @@ vec3 hsv2rgb_smooth( in float c )
 	return rgb;
 }
 
-float spherical_direction(in vec2 uv, out vec3 rd)
-{
-  float theta = (uv.t) * PI,
-        phi = (uv.s - 0.5)* 2.0 * PI;
-  rd = vec3(sin(theta) * sin(phi), sin(theta) * cos(phi), cos(theta));
-  return 1.0;
-}
-
 float dist_vertical_line( vec3 p)
 {
   return length(vec2(length(p.xz)-1.0,p.y));
