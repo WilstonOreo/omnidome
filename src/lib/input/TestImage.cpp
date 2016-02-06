@@ -92,8 +92,8 @@ namespace omni
 
       if (!shader_)
       {
-        static QString _vertSrc = this->vertexShaderSource();
-        static QString _fragmentSrc = this->fragmentShaderSource();
+        QString _vertSrc = this->vertexShaderSource();
+        QString _fragmentSrc = this->fragmentShaderSource();
         shader_.reset(new QOpenGLShaderProgram());
         shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
         shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
@@ -132,15 +132,6 @@ namespace omni
       });
 
       rulerPosChanged_ = false;
-
-
-      if (!shader_)
-      {
-        shader_.reset(new QOpenGLShaderProgram());
-        shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,vertexShaderSource());
-        shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,fragmentShaderSource());
-        shader_->link();
-      }
     }
 
     void TestImage::toStream(QDataStream& _stream) const

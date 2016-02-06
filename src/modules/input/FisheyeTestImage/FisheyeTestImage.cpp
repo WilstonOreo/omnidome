@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "CubeMapTestImage.h"
+#include "FisheyeTestImage.h"
 
 #include <omni/util.h>
 #include <omni/ui/InputPreview.h>
@@ -26,23 +26,23 @@ namespace omni
 {
   namespace input
   {
-    CubeMapTestImage::CubeMapTestImage()
+    FisheyeTestImage::FisheyeTestImage()
     {
     }
 
-    CubeMapTestImage::~CubeMapTestImage()
+    FisheyeTestImage::~FisheyeTestImage()
     {
     }
 
-    QString CubeMapTestImage::fragmentShaderSource() const
+    QString FisheyeTestImage::fragmentShaderSource() const
     {
       static QString _fragmentSrc;
       if (_fragmentSrc.isEmpty())
-        _fragmentSrc = util::fileToStr(":/shaders/CubeMapTestImage.frag");
+        _fragmentSrc = util::fileToStr(":/shaders/FisheyeTestImage.frag");
       return _fragmentSrc;
     }
 
-    QString CubeMapTestImage::vertexShaderSource() const
+    QString FisheyeTestImage::vertexShaderSource() const
     {
       static QString _vertSrc;
       if (_vertSrc.isEmpty())
@@ -50,12 +50,12 @@ namespace omni
       return _vertSrc;
     }
 
-    QSize CubeMapTestImage::size() const
+    QSize FisheyeTestImage::size() const
     {
-      return QSize(6144,1024);
+      return QSize(2048,2048);
     }
 
-    QWidget* CubeMapTestImage::widget() {
+    QWidget* FisheyeTestImage::widget() {
         return new ui::InputPreview(this);
     }
   }

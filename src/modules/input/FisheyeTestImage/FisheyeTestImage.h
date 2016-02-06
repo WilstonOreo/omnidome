@@ -17,46 +17,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "CubeMapTestImage.h"
+#ifndef OMNI_INPUT_FISHEYE_TESTIMAGE_H_
+#define OMNI_INPUT_FISHEYE_TESTIMAGE_H_
 
-#include <omni/util.h>
-#include <omni/ui/InputPreview.h>
+#include <omni/input/TestImage.h>
 
 namespace omni
 {
   namespace input
   {
-    CubeMapTestImage::CubeMapTestImage()
+    class FisheyeTestImage : public QObject, public TestImage
     {
-    }
+      OMNI_INPUT_PLUGIN_DECL
+    public:
+      OMNI_REGISTER_CLASS(Factory,FisheyeTestImage)
 
-    CubeMapTestImage::~CubeMapTestImage()
-    {
-    }
+      FisheyeTestImage();
+      ~FisheyeTestImage();
 
-    QString CubeMapTestImage::fragmentShaderSource() const
-    {
-      static QString _fragmentSrc;
-      if (_fragmentSrc.isEmpty())
-        _fragmentSrc = util::fileToStr(":/shaders/CubeMapTestImage.frag");
-      return _fragmentSrc;
-    }
+      QSize size() const;
 
-    QString CubeMapTestImage::vertexShaderSource() const
-    {
-      static QString _vertSrc;
-      if (_vertSrc.isEmpty())
-        _vertSrc = util::fileToStr(":/shaders/test_image.vert");
-      return _vertSrc;
-    }
+      QWidget* widget();
 
-    QSize CubeMapTestImage::size() const
-    {
-      return QSize(6144,1024);
-    }
-
-    QWidget* CubeMapTestImage::widget() {
-        return new ui::InputPreview(this);
-    }
+    private:
+      QString fragmentShaderSource() const;
+      QString vertexShaderSource() const;
+    };
   }
 }
+
+#endif /* OMNI_INPUT_FISHEYE_TESTIMAGE_H_ */

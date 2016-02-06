@@ -5,12 +5,12 @@ uniform vec2 ruler_pos;
 const float PI = 3.14159265358979323846264;
 
 
-// Smooth HSV to RGB conversion 
+// Smooth HSV to RGB conversion
 vec3 hsv2rgb_smooth( in float c )
 {
   vec3 rgb = clamp( abs(mod(c*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0 );
-	rgb = rgb*rgb*(3.0-2.0*rgb); // cubic smoothing	
-	return rgb; 
+	rgb = rgb*rgb*(3.0-2.0*rgb); // cubic smoothing
+	return rgb;
 }
 
 float spherical_direction(in vec2 uv, out vec3 rd)
@@ -39,15 +39,15 @@ vec2 linePosition(in vec2 numLines)
 {
   return vec2(
     mod(pos.x*numLines.x + 0.25,1.0),
-    mod(pos.y*numLines.y + 0.5,1.0)); 
+    mod(pos.y*numLines.y + 0.5,1.0));
 }
 
 float grid(in vec2 numLines, in float thickness)
 {
   vec2 linePos = linePosition(numLines);
   vec2 vertical = vec2(linePos.x,pos.y);
-  vec2 horizontal = vec2(pos.x,linePos.y); 
-  
+  vec2 horizontal = vec2(pos.x,linePos.y);
+
   float theta = linePos.y * PI;
   float phi = (linePos.x - 0.5)* 2.0 * PI;
   vec3 vertPoint = vec3(sin_theta * sin(phi), sin_theta * cos(phi), cos_theta);
@@ -62,11 +62,11 @@ float ruler()
   float theta = (pos.t) * PI,
         phi = (pos.s - ruler_pos.x + 0.25)* 2.0 * PI;
   vec3 rd = vec3(sin(theta) * sin(phi), sin(theta) * cos(phi), cos(theta));
- 
+
   float mouse_theta = (0.5 + ruler_pos.y ) * PI;
   float mouse_phi = (ruler_pos.x - 0.5)* 2.0 * PI;
   vec3 mousePoint = vec3(sin(mouse_theta) * sin(mouse_phi), sin(mouse_theta) * cos(mouse_phi), cos(mouse_theta));
-  
+
   float horizontal_line = length(vec2(length(rd.xy) - length(mousePoint.xy),rd.z  + mousePoint.z));
 
   float vertical_line = length(vec2(length(rd.xz)-1.0,rd.y));
@@ -89,7 +89,7 @@ float digit(vec2 uv,int num) {
    	seg += segment(uv.yx+vec2( 0., 0.),num!=-1 && num!=0 && num!=1 && num!=7          );
 	seg += segment(uv.xy+vec2(-.5, .5),num==0 || num==2 || num==6 || num==8           );
 	seg += segment(uv.xy+vec2( .5, .5),num!=-1 && num!=2                              );
-    seg += segment(uv.yx+vec2( 1., 0.),num!=-1 && num!=1 && num!=4 && num!=7          );	
+    seg += segment(uv.yx+vec2( 1., 0.),num!=-1 && num!=1 && num!=4 && num!=7          );
 	return seg;
 }
 
@@ -103,12 +103,12 @@ float showNum(vec2 uv,int nr, bool zeroTrim) { // nr: 2 digits + sgn . zeroTrim:
 			return segment(uv.yx,true); // minus sign.
 		}
 	}
-	
+
 	if (uv.x>0.) {
 		nr /= 10; if (nr==0 && zeroTrim) nr = -1;
 		uv -= vec2(.75,0.);
 	} else {
-		uv += vec2(.75,0.); 
+		uv += vec2(.75,0.);
 		nr = int(mod(float(nr),10.));
 	}
 
@@ -122,10 +122,10 @@ float showNum(vec2 uv,int nr, bool zeroTrim) { // nr: 2 digits + sgn . zeroTrim:
 
 // 2digit int + sign
 float display(vec2 uv, vec2 pos, vec2 scale, int number) { // dot: draw separator
-	uv = (uv-pos)/scale*2.; 
+	uv = (uv-pos)/scale*2.;
   uv.x = .5-uv.x + STEPX*0.6;
 	uv.y -= 1.;
-	
+
 	float seg = showNum(uv,number,true);
 	return seg;
 }
@@ -140,14 +140,21 @@ float Cylinder_intersection(in vec3 rd, out vec3 iPoint)
   iPoint = rd * inversesqrt(disc);
   if (dot(iPoint,vec3(1.0,0.0,0.0)) < 0.0) return -1.0;
 
-  if (iPoint.y > 0.3 || 
+  if (iPoint.y > 0.3 ||
       iPoint.y < -0.3) return -1.0;
   return 1.0;
 }
 
 void main(void)
 {
-  pos = vTexCoord;
+  vec2 uv = vTexCoord - vec2(0.5);
+  pos.y = 1.0 - length(uv);
+  if (pos.y < 0.5) {
+      gl_FragColor = vec4(0.0,0.0,0.0,1.0);
+      return;
+  }
+  pos.x = atan(uv.y,uv.x) / PI / 2.0;
+
   vec3 rgb = hsv2rgb_smooth(pos.x);
   vec3 vertPoint,horzPoint;
 

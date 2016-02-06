@@ -55,7 +55,7 @@ namespace omni
     }
 
     QWidget* EquirectangularTestImage::widget() {
-        return nullptr;
+        return new ui::InputPreview(this);
     }
   }
 }
