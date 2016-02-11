@@ -327,11 +327,11 @@ namespace omni
         _z->setPivot(0.0);
 
         /// Pitch angle slider (both setups)
-        auto&& _pitch = addAngleWidget("Pitch",30.0,-90.0,90.0);
+        auto&& _pitch = addAngleWidget("Pitch",30.0,-180.0,180.0);
         _pitch->setPivot(0.0);
 
         /// Roll angle slider (both setups)
-        auto&& _roll = addAngleWidget("Roll",0.0,-45.0,45.0);
+        auto&& _roll = addAngleWidget("Roll",0.0,-180.0,180.0);
         _roll->setSingleStep(1.0);
         _roll->setPageStep(5.0);
         _roll->setPivot(0.0);

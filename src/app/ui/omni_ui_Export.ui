@@ -6,16 +6,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1289</width>
-    <height>863</height>
+    <width>839</width>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>5</number>
+   </property>
    <item>
-    <widget class="QFrame" name="settingsFrame_2">
+    <widget class="QFrame" name="framePath">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -94,6 +106,12 @@
    </item>
    <item>
     <widget class="QGroupBox" name="grpSettings">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Settings</string>
      </property>
@@ -109,7 +127,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QFrame" name="frame">
+       <widget class="QFrame" name="frameSeparation">
         <layout class="QVBoxLayout" name="verticalLayout_10">
          <item>
           <widget class="QRadioButton" name="rbSepNone">
@@ -149,7 +167,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QFrame" name="imageTypeFrame">
+       <widget class="QFrame" name="frameImageType">
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
           <widget class="QRadioButton" name="rbUVWMap">
@@ -181,8 +199,19 @@
      </layout>
     </widget>
    </item>
+   <item>
+    <widget class="omni::ui::OutputPreview" name="outputPreview" native="true"/>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>omni::ui::OutputPreview</class>
+   <extends>QWidget</extends>
+   <header>OutputPreview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
