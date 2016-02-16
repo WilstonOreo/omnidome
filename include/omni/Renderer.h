@@ -48,7 +48,7 @@ namespace omni
     void render(proj::Tuning const* _tuning, RenderBuffer& _buffer) const;
     void render(proj::Tuning const* _tuning, QImage& _image, int _height = 0) const;
 
-    RenderInfo render();
+    //RenderOutput render();
 
     std::map<QScreen const*,QImage>
       stitchScreens(std::vector<const proj::Tuning*> const&) const;

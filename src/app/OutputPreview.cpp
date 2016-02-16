@@ -21,6 +21,7 @@
 
 #include <QPainter>
 #include <omni/Renderer.h>
+#include <map>
 
 namespace omni {
     namespace ui {
@@ -46,11 +47,11 @@ namespace omni {
 
             if (!session()) return;
 
-            Renderer _renderer;
+            Renderer _renderer(*session(),renderOptions_);
 
-            std::map<QImage> _images;
+            std::map<omni::proj::Tuning const*,QImage> _images;
 
-            for (auto& _tuning : session_->tunings()) {
+            for (auto& _tuning : session()->tunings()) {
                 auto _tuningPtr = _tuning.get();
                 QImage _image;
                 _renderer.render(_tuningPtr,_image);
@@ -58,17 +59,20 @@ namespace omni {
 
             switch(renderOptions_.separationMode()) {
                 case SeparationMode::NONE:
+                break;
 
                 case SeparationMode::SCREENS:
+                break;
 
                 case SeparationMode::PROJECTORS:
+                break;
             }
 
             update();
         }
 
         void OutputPreview::paintEvent(QPaintEvent* _event) {
-            auto _rect = this->rect();
+/*            auto _rect = this->rect();
 
             QPainter _painter(this);
 
@@ -81,8 +85,7 @@ namespace omni {
 
             for (auto& _rect : rectangles)
 
-
-
+*/
         }
 
         void OutputPreview::sessionParameters() {
