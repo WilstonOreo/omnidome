@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>810</width>
-    <height>548</height>
+    <height>545</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -59,7 +59,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="../rc/ODM.qrc">
+          <iconset>
            <normaloff>:/logo/omni1rainbow.png</normaloff>:/logo/omni1rainbow.png</iconset>
          </property>
          <property name="iconSize">
@@ -412,7 +412,7 @@
             <x>0</x>
             <y>0</y>
             <width>159</width>
-            <height>385</height>
+            <height>382</height>
            </rect>
           </property>
           <property name="sizePolicy">
