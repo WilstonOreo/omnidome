@@ -52,6 +52,8 @@ MainWindow::MainWindow( QMainWindow *parent) :
   session_.reset(new Session());
   ui_->setupUi(this);
 
+  ui_->statusbar->showMessage(QString("Omnidome v") + QString(OMNIDOME_VERSION_STRING));
+
   // Setup warp and blend GL widgets
   {
       ui_->tabWarp->setBorder(0.5);
@@ -422,7 +424,10 @@ void MainWindow::setMode(Session::Mode _mode)
     ui_->dockInputs->show();
     ui_->dockMapping->setVisible(session_->inputs().current());
     break;
-
+  case Session::Mode::LIVE:
+    ui_->dockCanvas->hide();
+    ui_->dockInputs->show();
+    ui_->dockMapping->hide();
   default:
     break;
   }

@@ -44,6 +44,7 @@ namespace omni
     {
       setMouseTracking(true);
       setAcceptDrops(true);
+      setAutoFillBackground(true);
 
       connect(QGuiApplication::instance(),SIGNAL(screenAdded(QScreen*)),
           this,SLOT(updateScreens()));

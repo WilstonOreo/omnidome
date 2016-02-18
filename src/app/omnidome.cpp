@@ -20,60 +20,88 @@
 
 #include "MainWindow.h"
 
-#include <QApplication>
+#include "Application.h"
 #include <QDir>
 #include <QFile>
 #include <omni/PluginLoader.h>
 
 #include <QCommandLineParser>
 
-using namespace std;
 using namespace omni;
+
+class CommandLineParser {
+public:
+    void parse(QApplication const& _app) {
+
+        QString _argument;
+        for (auto& _arg : _app.arguments()) {
+            if (_arg[0] == '+') {
+                _argument = "";
+                for (int i = 1; i < _arg.size(); ++i) {
+                    _argument += _arg[i];
+                }
+            } else {
+                keyValues_[_argument] += _arg + " ";
+            }
+        }
+
+        for (auto& _keyValue : keyValues_) {
+            _keyValue.second = _keyValue.second.trimmed();
+
+        }
+    }
+
+    QString value(QString const& _key) const {
+        return keyValues_.at(_key);
+    }
+
+private:
+
+    std::map<QString,QString> keyValues_;
+
+};
 
 int main(int ac, char *av[])
 {
-    // This line is absolutely mandatory for being able to have multiple
-    // QOpenGLWidgets in different windows!!!
-    QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
-
-    QCoreApplication::setApplicationName("Omnidome");
-    QCoreApplication::setApplicationVersion(OMNIDOME_VERSION_STRING);
-
-    QString _styleSheetFile(":/qss_icons/style.qss");
     std::vector<QDir> _pluginDirs;
+    omni::ui::Application _a(ac, av);
 
 /// Command line parser is only available in debug mode
 #ifdef DEBUG
-    QCommandLineParser parser;
+
+    CommandLineParser parser;
+    parser.parse(_a);
+
+/*
     parser.setApplicationDescription("Omnidome");
 
-    /// Start gui
-    QApplication _a(ac, av);
 
-    parser.addOptions({
-        // An option with a value
-        {{"p", "plugin-directory"},
+    QCommandLineOption _pluginDirOption({"p", "plugin-directory"},
             QCoreApplication::translate("main", "Plugin directory <directory>."),
-            QCoreApplication::translate("main", "plugin-directory")},
-        {{"s", "stylesheet"},
+            QCoreApplication::translate("main", "plugin-directory"));
+
+    QCommandLineOption _styleSheetOption({"s", "stylesheet"},
             QCoreApplication::translate("main", "Style sheet file <filename>."),
-            QCoreApplication::translate("main", "stylesheet")},
-    });
+            QCoreApplication::translate("main", "stylesheet"));
+
     parser.addHelpOption();
     parser.addVersionOption();
-    parser.process(_a);
-    const QStringList args = parser.positionalArguments();
+    parser.addOption(_pluginDirOption);
+    parser.addOption(_styleSheetOption);
 
-    if (!parser.value("plugin-directory").isEmpty()) {
+    parser.process(_a);
+
+    //const QStringList args = parser.positionalArguments();
+
+    if (!parser.value(_pluginDirOption).isEmpty()) {
         _pluginDirs.push_back(parser.value("plugin-directory"));
     }
+*/
+    if (!parser.value("stylesheet").isEmpty()) {
+        qDebug() << parser.value("stylesheet");
+        _a.setStyleSheetFile(parser.value("stylesheet"));
+    }
 #endif
-
-    // Load application style sheet
-    QFile file(_styleSheetFile);
-    file.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(file.readAll());
-    _a.setStyleSheet(styleSheet);
 
     // Load plugins
     PluginLoader _pluginLoader(_pluginDirs);

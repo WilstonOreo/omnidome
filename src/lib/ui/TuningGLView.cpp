@@ -40,7 +40,7 @@ namespace omni
 
     TuningGLView::~TuningGLView()
     {
-        free();
+//        if (!aboutToBeDestroyed_) free();
     }
 
     void TuningGLView::free()

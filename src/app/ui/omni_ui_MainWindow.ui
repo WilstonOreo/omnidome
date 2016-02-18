@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>771</width>
-    <height>690</height>
+    <width>810</width>
+    <height>590</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -33,11 +33,20 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
        <property name="tabShape">
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
         <number>0</number>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
        <property name="elideMode">
         <enum>Qt::ElideLeft</enum>
@@ -85,22 +94,19 @@
         </attribute>
        </widget>
       </widget>
-      <widget class="QGroupBox" name="grpProjectors">
+      <widget class="QWidget" name="grpProjectors" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
          <horstretch>2</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="title">
-        <string>Projectors</string>
-       </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <property name="leftMargin">
          <number>0</number>
         </property>
         <property name="topMargin">
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
          <number>0</number>
@@ -112,9 +118,15 @@
          <widget class="omni::ui::proj::TuningList" name="tuningList" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
+            <horstretch>2</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
           </property>
           <zorder>tabs</zorder>
          </widget>
@@ -149,8 +161,11 @@
    <property name="features">
     <set>QDockWidget::DockWidgetMovable</set>
    </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea</set>
+   </property>
    <property name="windowTitle">
-    <string>Blend Settings</string>
+    <string>BLEND</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -198,8 +213,11 @@
    <property name="features">
     <set>QDockWidget::DockWidgetMovable</set>
    </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea</set>
+   </property>
    <property name="windowTitle">
-    <string>Warp Settings</string>
+    <string>WARP</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -210,8 +228,11 @@
    <property name="features">
     <set>QDockWidget::DockWidgetMovable</set>
    </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea</set>
+   </property>
    <property name="windowTitle">
-    <string>Canvas</string>
+    <string>CANVAS</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -225,8 +246,11 @@
    <property name="features">
     <set>QDockWidget::DockWidgetMovable</set>
    </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea</set>
+   </property>
    <property name="windowTitle">
-    <string>Input</string>
+    <string>INPUT</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -237,8 +261,11 @@
    <property name="features">
     <set>QDockWidget::DockWidgetMovable</set>
    </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea</set>
+   </property>
    <property name="windowTitle">
-    <string>Mapping</string>
+    <string>MAPPING</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
