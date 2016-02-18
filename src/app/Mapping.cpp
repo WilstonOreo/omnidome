@@ -29,11 +29,9 @@ namespace omni
   namespace ui
   {
     Mapping::Mapping(QWidget* _parent) :
-        CollapsibleGroupBox(_parent),
-      ui_(new Ui::Mapping)
+        DockWidget(_parent)
     {
-        setTitle("Mapping");
-      ui_->setupUi(widget());
+        this->setup(ui_);
 
       connect(ui_->boxMappingSelect,SIGNAL(currentIndexChanged(QString)),this,SLOT(mappingTypeSelected(QString)));
       setDefaultMappingForCanvas();

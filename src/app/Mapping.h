@@ -21,9 +21,9 @@
 #define OMNI_UI_MAPPING_H_
 
 #include <memory>
-#include <omni/ui/CollapsibleGroupBox.h>
 #include <omni/ui/SessionWidget.h>
 #include <omni/ui/MappingParameters.h>
+#include "DockWidget.h"
 
 namespace omni
 {
@@ -39,7 +39,7 @@ namespace omni
     /**@brief Widget for selecting a mapping mode and the parameters
      **/
     class Mapping :
-      public CollapsibleGroupBox,
+      public DockWidget,
       public SessionWidget
     {
       Q_OBJECT

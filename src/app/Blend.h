@@ -21,7 +21,7 @@
 #define OMNI_UI_BLEND_H_
 
 #include <memory>
-#include <omni/ui/CollapsibleGroupBox.h>
+#include "DockWidget.h"
 
 namespace omni
 {
@@ -35,7 +35,7 @@ namespace omni
       class Blend;
     }
 
-    class Blend : public CollapsibleGroupBox
+    class Blend : public DockWidget
     {
       Q_OBJECT
     public:

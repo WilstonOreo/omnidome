@@ -28,11 +28,9 @@ namespace omni
   namespace ui
   {
     Blend::Blend(QWidget* _parent) :
-      CollapsibleGroupBox(_parent),
-      ui_(new Ui::Blend)
+      DockWidget(_parent)
     {
-        setTitle("Blend Mask");
-      ui_->setupUi(widget());
+      this->setup(ui_);
 
       /// Setup top, left, right and bottom sliders
       {

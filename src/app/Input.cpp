@@ -33,11 +33,9 @@ namespace omni
   namespace ui
   {
     Input::Input(QWidget* _parent) :
-      CollapsibleGroupBox(_parent),
-      ui_(new Ui::Input)
+        DockWidget(_parent)
     {
-        setTitle("Inputs");
-        ui_->setupUi(widget());
+        this->setup(ui_);
 
       // Make popup menu for adding inputs
       {

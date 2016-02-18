@@ -39,49 +39,56 @@ int main(int ac, char *av[])
     QCoreApplication::setApplicationName("Omnidome");
     QCoreApplication::setApplicationVersion(OMNIDOME_VERSION_STRING);
 
+    QString _styleSheetFile(":/qss_icons/style.qss");
+    std::vector<QDir> _pluginDirs;
+
+/// Command line parser is only available in debug mode
+#ifdef DEBUG
     QCommandLineParser parser;
-    parser.setApplicationDescription("Test helper");
-    parser.addHelpOption();
-    parser.addVersionOption();
+    parser.setApplicationDescription("Omnidome");
 
     /// Start gui
     QApplication _a(ac, av);
-
-
-    QFile file(":/qss_icons/style.qss");
-
-    file.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(file.readAll());
-    _a.setStyleSheet(styleSheet);
-
 
     parser.addOptions({
         // An option with a value
         {{"p", "plugin-directory"},
             QCoreApplication::translate("main", "Plugin directory <directory>."),
             QCoreApplication::translate("main", "plugin-directory")},
+        {{"s", "stylesheet"},
+            QCoreApplication::translate("main", "Style sheet file <filename>."),
+            QCoreApplication::translate("main", "stylesheet")},
     });
-
+    parser.addHelpOption();
+    parser.addVersionOption();
     parser.process(_a);
     const QStringList args = parser.positionalArguments();
 
-    // Load plugins
-    {
-        std::vector<QDir> _pluginDirs;
-        if (parser.value("plugin-directory").isEmpty()) {
-            _pluginDirs.push_back(parser.value("plugin-directory"));
-        }
-        PluginLoader _pluginLoader(_pluginDirs);
+    if (!parser.value("plugin-directory").isEmpty()) {
+        _pluginDirs.push_back(parser.value("plugin-directory"));
     }
+#endif
+
+    // Load application style sheet
+    QFile file(_styleSheetFile);
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    _a.setStyleSheet(styleSheet);
+
+    // Load plugins
+    PluginLoader _pluginLoader(_pluginDirs);
 
     ui::MainWindow _w;
     _w.setWindowState(Qt::WindowMaximized);
     _w.move(QApplication::primaryScreen()->geometry().topLeft());
 
+// Load mapping session from given commandline argument when in release mode
+#ifndef DEBUG
     if (ac == 2)
     {
         _w.openProjection(av[1]);
     }
+#endif
 
     return _a.exec();
 }

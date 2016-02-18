@@ -24,17 +24,16 @@
 
 #include <omni/Session.h>
 #include <omni/WarpGrid.h>
+#include <omni/util.h>
 
 namespace omni
 {
   namespace ui
   {
     Warp::Warp(QWidget* _parent) :
-      CollapsibleGroupBox(_parent),
-      ui_(new Ui::Warp)
+      DockWidget(_parent)
     {
-      setTitle("Warp Grid");
-      ui_->setupUi(widget());
+        this->setup(ui_);
 
       connect(ui_->btnResize,SIGNAL(clicked(bool)),this,SLOT(resizeWarpGrid(bool)));
       connect(ui_->btnReset,SIGNAL(clicked()),this,

@@ -21,9 +21,10 @@
 #define OMNI_UI_INPUT_H_
 
 #include <memory>
+#include "DockWidget.h"
+#include <QAction>
 #include <QStandardItemModel>
 #include <omni/input/Interface.h>
-#include <omni/ui/CollapsibleGroupBox.h>
 
 namespace omni
 {
@@ -37,7 +38,7 @@ namespace omni
     }
 
     /// Input List widget
-    class Input : public CollapsibleGroupBox
+    class Input : public DockWidget
     {
       Q_OBJECT
     public:

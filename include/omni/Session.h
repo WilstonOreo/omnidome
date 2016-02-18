@@ -42,7 +42,8 @@ namespace omni
       PROJECTIONSETUP, // Mode for setting up projectors and canvas
       WARP, // Mode for adjusting warp grid
       BLEND, // Mode for editing the blend mask
-      EXPORT, // Final export mode. Output is locked for faster display
+      EXPORT, // Export mode. Output is locked for faster display
+      LIVE, // Live mode. Output is locked for faster display
       NUM_MODES
     };
 

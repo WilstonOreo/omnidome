@@ -21,10 +21,10 @@
 #define OMNI_UI_CANVAS_H_
 
 #include <memory>
-#include <omni/ui/CollapsibleGroupBox.h>
 #include <omni/visual/ProjectorViewMode.h>
 #include <omni/ui/SessionWidget.h>
 #include <omni/ui/CanvasParameters.h>
+#include "DockWidget.h"
 
 namespace omni
 {
@@ -38,7 +38,7 @@ namespace omni
                 }
 
                 class Canvas :
-                    public CollapsibleGroupBox,
+                    public DockWidget,
                     public SessionWidget
                 {
                         Q_OBJECT

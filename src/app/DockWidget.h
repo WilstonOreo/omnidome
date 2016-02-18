@@ -16,42 +16,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef OMNI_UI_COLLAPSIBLEGROUPBOX_H_
-#define OMNI_UI_COLLAPSIBLEGROUPBOX_H_
+#ifndef OMNI_UI_DOCKWIDGET_H_
+#define OMNI_UI_DOCKWIDGET_H_
 
-
-#include <omni/util.h>
-#include <QFrame>
-#include <QToolButton>
+#include <QScrollArea>
 
 namespace omni {
     namespace ui {
-        class CollapsibleGroupBox : public QWidget {
+        /// DockWidget is scroll area with an embedded widget
+        class DockWidget : public QScrollArea
+        {
             Q_OBJECT
         public:
-            CollapsibleGroupBox(QWidget* _parent = nullptr);
-            virtual ~CollapsibleGroupBox();
+            DockWidget(QWidget* = nullptr);
 
-            bool isCollapsed() const;
-            QWidget* widget();
-            QWidget const* widget() const;
+            template<typename UI>
+            DockWidget(UI& _ui, QWidget* _parent = nullptr) :
+                QScrollArea(_parent) {
+            }
 
-            void setWidget(QWidget*);
+            virtual ~DockWidget() {}
 
-            QString title();
-            void setTitle(QString const&);
-
-        public slots:
-            void collapse(bool = true);
-
-        signals:
-            void collapsed(bool);
-
-        private:
-            QWidget* widget_;
-            QToolButton* button_;
+        protected:
+            /**@brief Setup ui form
+               @detail UI parameter is smart pointer (e.g. unique_ptr) to UI form
+             **/
+            template<typename UI>
+            void setup(UI& _ui) {
+                _ui.reset(new typename UI::element_type);
+                auto* _widget = new QWidget(this);
+                this->setWidget(_widget);
+                this->setWidgetResizable(true);
+                _ui->setupUi(this->widget());
+            }
         };
     }
 }
 
-#endif /* OMNI_UI_COLLAPSIBLEGROUPBOX_H_ */
+#endif /* OMNI_UI_DOCKWIDGET_H_ */

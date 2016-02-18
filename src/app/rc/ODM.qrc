@@ -1,8 +1,7 @@
 <RCC>
-  <qresource prefix="logo">
-    <file>omni1rainbow.png</file>
-  </qresource>
+  <qresource prefix="logo"/>
   <qresource>
+    <file>logo.svg</file>
     <file>shaders/slow_fractal.frag</file>
     <file>shaders/frustum.frag</file>
     <file>shaders/frustum.vert</file>
@@ -23,5 +22,8 @@
     <file>shaders/mapping/Fisheye.frag</file>
     <file>shaders/mapping/CubeMap.frag</file>
     <file>shaders/mapping/common.vert</file>
-</qresource>
+    <file>fonts/SourceSansPro-Bold.ttf</file>
+    <file>fonts/SourceSansPro-Light.ttf</file>
+    <file>fonts/SourceSansPro-Regular.ttf</file>
+  </qresource>
 </RCC>

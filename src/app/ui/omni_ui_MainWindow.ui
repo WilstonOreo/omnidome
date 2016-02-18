@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1163</width>
-    <height>580</height>
+    <width>771</width>
+    <height>690</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -20,565 +20,231 @@
    <string>Omnidome</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_3">
-    <property name="leftMargin">
-     <number>5</number>
-    </property>
-    <property name="topMargin">
-     <number>5</number>
-    </property>
-    <property name="rightMargin">
-     <number>5</number>
-    </property>
-    <property name="bottomMargin">
-     <number>5</number>
-    </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QFrame" name="frameToolBar">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QToolButton" name="btnAbout">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>1</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../rc/ODM.qrc">
-           <normaloff>:/logo/omni1rainbow.png</normaloff>:/logo/omni1rainbow.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>56</width>
-           <height>56</height>
-          </size>
-         </property>
-         <property name="popupMode">
-          <enum>QToolButton::InstantPopup</enum>
-         </property>
-         <property name="toolButtonStyle">
-          <enum>Qt::ToolButtonIconOnly</enum>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-         <property name="arrowType">
-          <enum>Qt::NoArrow</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnNew">
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>New</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>54</width>
-           <height>54</height>
-          </size>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnOpen">
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Open</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>54</width>
-           <height>54</height>
-          </size>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnSave">
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Save</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>54</width>
-           <height>54</height>
-          </size>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnEditAsNew">
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit As New</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>54</width>
-           <height>54</height>
-          </size>
-         </property>
-         <property name="toolButtonStyle">
-          <enum>Qt::ToolButtonTextBesideIcon</enum>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnScreenSetup">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Screen Setup</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-         <property name="arrowType">
-          <enum>Qt::NoArrow</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnProjectionSetup">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Projection Setup</string>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnWarp">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Warp</string>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnBlend">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Blend</string>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnExport">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Play / Export</string>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="horizontalFrame">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Sunken</enum>
-      </property>
-      <property name="midLineWidth">
-       <number>1</number>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <property name="leftMargin">
-        <number>7</number>
+      <widget class="QTabWidget" name="tabs">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>5</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="topMargin">
-        <number>7</number>
+       <property name="tabShape">
+        <enum>QTabWidget::Rounded</enum>
        </property>
-       <property name="rightMargin">
-        <number>7</number>
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-       <property name="bottomMargin">
-        <number>7</number>
+       <property name="elideMode">
+        <enum>Qt::ElideLeft</enum>
        </property>
-       <item>
-        <widget class="QScrollArea" name="scrollArea">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-           <horstretch>4</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="horizontalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOff</enum>
-         </property>
-         <property name="sizeAdjustPolicy">
-          <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-         </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignJustify|Qt::AlignVCenter</set>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>233</width>
-            <height>417</height>
-           </rect>
-          </property>
+       <property name="usesScrollButtons">
+        <bool>false</bool>
+       </property>
+       <property name="documentMode">
+        <bool>false</bool>
+       </property>
+       <property name="tabsClosable">
+        <bool>false</bool>
+       </property>
+       <property name="movable">
+        <bool>false</bool>
+       </property>
+       <widget class="omni::ui::ScreenSetup" name="tabScreenSetup">
+        <attribute name="title">
+         <string>Screen Setup</string>
+        </attribute>
+       </widget>
+       <widget class="omni::ui::GLView3D" name="tabArrange">
+        <attribute name="title">
+         <string>Arrange</string>
+        </attribute>
+       </widget>
+       <widget class="omni::ui::TuningGLView" name="tabWarp">
+        <attribute name="title">
+         <string>Warp</string>
+        </attribute>
+       </widget>
+       <widget class="omni::ui::TuningGLView" name="tabBlend">
+        <attribute name="title">
+         <string>Blend</string>
+        </attribute>
+       </widget>
+       <widget class="omni::ui::Export" name="tabExport">
+        <attribute name="title">
+         <string>Export</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabLive">
+        <attribute name="title">
+         <string>Live</string>
+        </attribute>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="grpProjectors">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+         <horstretch>2</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>Projectors</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>9</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="omni::ui::proj::TuningList" name="tuningList" native="true">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>1</horstretch>
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <property name="spacing">
-            <number>4</number>
-           </property>
-           <property name="leftMargin">
-            <number>3</number>
-           </property>
-           <property name="topMargin">
-            <number>3</number>
-           </property>
-           <property name="rightMargin">
-            <number>3</number>
-           </property>
-           <property name="bottomMargin">
-            <number>3</number>
-           </property>
-           <item>
-            <widget class="omni::ui::Canvas" name="grpCanvas" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="title" stdset="0">
-              <string>Canvas</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="omni::ui::Blend" name="grpBlend" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="omni::ui::Warp" name="grpWarp" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="omni::ui::Input" name="grpInputs" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="omni::ui::Mapping" name="grpMapping" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <zorder>tabs</zorder>
          </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="pages" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-           <horstretch>12</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="grpProjectors">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>3</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>Projectors</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <property name="leftMargin">
-           <number>0</number>
+        </item>
+        <item>
+         <widget class="QToolButton" name="btnAddTuning">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="topMargin">
-           <number>9</number>
+          <property name="text">
+           <string>Add</string>
           </property>
-          <property name="rightMargin">
-           <number>0</number>
+          <property name="popupMode">
+           <enum>QToolButton::MenuButtonPopup</enum>
           </property>
-          <property name="bottomMargin">
-           <number>0</number>
+          <property name="autoRaise">
+           <bool>true</bool>
           </property>
-          <item>
-           <widget class="omni::ui::proj::TuningList" name="tuningList" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="btnAddTuning">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Add</string>
-            </property>
-            <property name="popupMode">
-             <enum>QToolButton::MenuButtonPopup</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="dockBlend">
+   <property name="features">
+    <set>QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Blend Settings</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="omni::ui::Blend" name="dockBlendWidget"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="font">
+    <font>
+     <family>Helvetica</family>
+    </font>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>48</width>
+     <height>48</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionSettings"/>
+   <addaction name="separator"/>
+   <addaction name="actionNew"/>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+   <addaction name="actionEditAsNew"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWarp">
+   <property name="features">
+    <set>QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Warp Settings</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="omni::ui::Warp" name="dockWarpWidget"/>
+  </widget>
+  <widget class="QDockWidget" name="dockCanvas">
+   <property name="features">
+    <set>QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Canvas</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="omni::ui::Canvas" name="dockCanvasWidget"/>
+  </widget>
+  <widget class="QDockWidget" name="dockInputs">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Input</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="omni::ui::Input" name="dockInputsWidget"/>
+  </widget>
+  <widget class="QDockWidget" name="dockMapping">
+   <property name="features">
+    <set>QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Mapping</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="omni::ui::Mapping" name="dockMappingWidget"/>
+  </widget>
   <action name="actionNew">
    <property name="text">
     <string>New</string>
@@ -588,20 +254,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionWarp">
-   <property name="text">
-    <string>Warp</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit warp grids of projectors</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+3</string>
    </property>
    <property name="shortcutContext">
     <enum>Qt::ApplicationShortcut</enum>
@@ -635,77 +287,21 @@
     <enum>Qt::ApplicationShortcut</enum>
    </property>
   </action>
-  <action name="actionScreenSetup">
+  <action name="actionSettings">
+   <property name="icon">
+    <iconset resource="../rc/ODM.qrc">
+     <normaloff>:/logo.svg</normaloff>:/logo.svg</iconset>
+   </property>
    <property name="text">
-    <string>Screen Setup</string>
+    <string>OMNIDOME</string>
    </property>
    <property name="toolTip">
-    <string>Setup Projection Screens</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+1</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionProjectionSetup">
-   <property name="text">
-    <string>Projection Setup</string>
-   </property>
-   <property name="toolTip">
-    <string>Setup Canvas, Mapping and Projectors</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+2</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionBlend">
-   <property name="text">
-    <string>Blend</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit Blend Masks</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+4</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionExport">
-   <property name="text">
-    <string>Export</string>
-   </property>
-   <property name="toolTip">
-    <string>Export Calibration To File</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+5</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
+    <string>Settings</string>
    </property>
   </action>
   <action name="actionEditAsNew">
    <property name="text">
-    <string>EditAsNew</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit calibration as new</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+N</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-   <property name="priority">
-    <enum>QAction::HighPriority</enum>
+    <string>Edit As New</string>
    </property>
   </action>
  </widget>
@@ -746,219 +342,35 @@
    <header>Mapping.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>omni::ui::ScreenSetup</class>
+   <extends>QWidget</extends>
+   <header>ScreenSetup.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::Export</class>
+   <extends>QWidget</extends>
+   <header>Export.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::TuningGLView</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/TuningGLView.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::GLView3D</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/GLView3D.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources>
   <include location="../rc/ODM.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>btnAbout</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>showAbout()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>48</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>455</x>
-     <y>226</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnNew</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>newProjection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>117</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>337</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnOpen</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>openProjection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>187</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>337</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnProjectionSetup</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>showProjectionSetup()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>735</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>337</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnScreenSetup</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>showScreenSetup()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>530</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>337</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnEditAsNew</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>editAsNew()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>354</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>337</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnSave</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>saveProjection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>257</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>337</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnWarp</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>showWarp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>827</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>337</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnBlend</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>showBlend()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>897</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>337</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnExport</sender>
-   <signal>clicked()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>showExport()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>970</x>
-     <y>49</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>337</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionBlend</sender>
-   <signal>triggered()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>showBlend()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>657</x>
-     <y>388</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionEditAsNew</sender>
-   <signal>triggered()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>editAsNew()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>657</x>
-     <y>388</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionExport</sender>
-   <signal>triggered()</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>showExport()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>657</x>
-     <y>388</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>actionNew</sender>
    <signal>triggered()</signal>
@@ -1008,66 +420,61 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionProjectionSetup</sender>
-   <signal>triggered()</signal>
+   <sender>tabs</sender>
+   <signal>currentChanged(int)</signal>
    <receiver>omni::ui::MainWindow</receiver>
-   <slot>showProjectionSetup()</slot>
+   <slot>setMode(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>458</x>
+     <y>315</y>
     </hint>
     <hint type="destinationlabel">
-     <x>657</x>
-     <y>388</y>
+     <x>404</x>
+     <y>294</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionWarp</sender>
+   <sender>actionSettings</sender>
    <signal>triggered()</signal>
    <receiver>omni::ui::MainWindow</receiver>
-   <slot>showWarp()</slot>
+   <slot>showSettings()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>657</x>
-     <y>388</y>
+     <x>404</x>
+     <y>294</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionScreenSetup</sender>
+   <sender>actionEditAsNew</sender>
    <signal>triggered()</signal>
    <receiver>omni::ui::MainWindow</receiver>
-   <slot>showScreenSetup()</slot>
+   <slot>editAsNew()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>657</x>
-     <y>388</y>
+     <x>404</x>
+     <y>294</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>showAbout()</slot>
   <slot>newProjection()</slot>
   <slot>openProjection()</slot>
   <slot>saveProjection()</slot>
   <slot>editAsNew()</slot>
-  <slot>showScreenSetup()</slot>
-  <slot>showCanvas()</slot>
-  <slot>showProjectionSetup()</slot>
-  <slot>showWarp()</slot>
-  <slot>showBlend()</slot>
-  <slot>showExport()</slot>
   <slot>addTuning()</slot>
+  <slot>setMode(int)</slot>
+  <slot>showSettings()</slot>
  </slots>
 </ui>

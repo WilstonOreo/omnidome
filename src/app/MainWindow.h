@@ -33,11 +33,6 @@ namespace omni
 {
   namespace ui
   {
-    class TuningGLView;
-    class GLView3D;
-    class ScreenSetup;
-    class Export;
-
     namespace Ui
     {
       class MainWindow;
@@ -71,22 +66,7 @@ namespace omni
       void editAsNew();
 
       /// Show About dialog
-      void showAbout();
-
-      /// Show Screen Setup Page (switches Session mode to Mode::SCREENSETUP)
-      void showScreenSetup();
-
-      /// Show Projection Setup Page (switches Session mode to Mode::PROJECTIONSETUP)
-      void showProjectionSetup();
-
-      /// Show Warp Grid Page (switches Session mode to Mode::WARP)
-      void showWarp();
-
-      /// Show Blend Mask Page (switches Session mode to Mode::BLEND)
-      void showBlend();
-
-      /// Show Export Page (switches Session mode to Mode::EXPORT)
-      void showExport();
+      void showSettings();
 
       /// Update all OpenGL views
       void updateAllViews();
@@ -106,6 +86,7 @@ namespace omni
       void setTuningIndex(int);
 
       void addProjector(QAction* _action);
+      void setMode(int);
 
 
     private:
@@ -132,21 +113,6 @@ namespace omni
 
       /// UI containing designed widgets of this window
       std::unique_ptr<Ui::MainWindow> ui_;
-
-      /// Screen Setup page
-      QUniquePtr<ScreenSetup> screenSetup_;
-
-      /// ProjectionSetup/Canvas preview page
-      QUniquePtr<GLView3D> projectionSetup_;
-
-      /// Page for current warp grid
-      QUniquePtr<TuningGLView> warp_;
-
-      /// Page for current blend mask
-      QUniquePtr<TuningGLView> blend_;
-
-      /// Page for exporting projection
-      QUniquePtr<Export> export_;
 
       QUniquePtr<QOpenGLContext> glContext_;
     };

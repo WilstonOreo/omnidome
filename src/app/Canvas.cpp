@@ -30,11 +30,9 @@
 namespace omni {
     namespace ui {
         Canvas::Canvas(QWidget *_parent) :
-            CollapsibleGroupBox(_parent),
-            ui_(new Ui::Canvas)
+            DockWidget(ui_,_parent)
         {
-            setTitle("Canvas");
-            ui_->setupUi(widget());
+            this->setup(ui_);
 
             // Add canvas types from Factory
             for (auto& _idCanvasClass : omni::canvas::Factory::classes())
