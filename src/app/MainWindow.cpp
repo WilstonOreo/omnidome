@@ -390,7 +390,6 @@ void MainWindow::setMode(Session::Mode _mode)
     _mode == Session::Mode::PROJECTIONSETUP);
   ui_->dockWarp->setVisible(_mode == Session::Mode::WARP);
   ui_->dockBlend->setVisible(_mode == Session::Mode::BLEND);
-  ui_->dockCanvas->setVisible(_mode == Session::Mode::PROJECTIONSETUP);
 
   switch (_mode)
   {

@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -35,12 +35,12 @@ namespace omni
     {
     public:
       typedef std::vector<std::unique_ptr<Tuning>> container_type;
-       
+
       using container_type::size;
       using container_type::empty;
       using container_type::begin;
       using container_type::end;
-      
+
       /**@brief Add tuning to list
        * @detail Returns pointer new tuning
        * @param _makeCurrent Flag whether to set current index when added successfully
@@ -57,7 +57,7 @@ namespace omni
        * @detail Returns nullptr if currentIdx_ == -1 or tuning list is empty
        **/
       Tuning* current();
-      
+
       /**@brief Returns pointer to current tuning (const version)
        * @detail Returns nullptr if currentIdx_ == -1 or tuning list is empty
        **/
@@ -74,7 +74,7 @@ namespace omni
 
       /// Returns tuning at a specific index
       Tuning* operator[](int);
-      
+
       /// Returns tuning at a specific index (const version)
       Tuning const* operator[](int) const;
 
@@ -83,17 +83,16 @@ namespace omni
 
       /// Serialize list to stream
       void toStream(QDataStream&) const;
-      
+
       /// Test both lists for equality
       friend bool operator==(TuningList const&,TuningList const&);
 
     private:
-      
+
       /// Test of index is between 0 and size()-1
       bool validIndex(int) const;
 
       int currentIdx_ = -1;
-      std::vector<std::unique_ptr<Tuning>> tunings_;
     };
   }
 }

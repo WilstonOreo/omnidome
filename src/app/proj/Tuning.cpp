@@ -361,10 +361,10 @@ namespace omni
         /// Make slider groups
         addGroup("PreviewOnly",_titleAndPreview);
         addGroup("FOVSliders",addParameters(_titleAndPreview, { _fov, _throwRatio }));
-        addGroup("FreeSetup",addParameters( _titleAndPreview, {_yaw, _pitch, _roll, _x, _y, _z }));
+        addGroup("FreeSetup",addParameters( _titleAndPreview, {_yaw, _pitch, _roll, _x, _y, _z, _fov, _throwRatio }));
         addGroup("PeripheralSetup",
                  addParameters( _titleAndPreview,
-        { _yaw, _pitch, _distance, _towerHeight, _shift, _deltaYaw, _roll }));
+        { _yaw, _pitch, _distance, _towerHeight, _shift, _deltaYaw, _roll, _fov, _throwRatio }));
 
         /// Setup/update mode
         sessionModeChange();

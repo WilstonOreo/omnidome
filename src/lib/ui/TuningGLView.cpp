@@ -327,6 +327,31 @@ namespace omni
 
     void TuningGLView::keyPressEvent(QKeyEvent* event)
     {
+        const float _distance = 0.005;
+        auto _moveWarpPoint = [&](float _x, float _y) {
+            auto& _warpGrid = tuning()->warpGrid();
+            auto&& _selectedPoints = _warpGrid.getSelected();
+
+            for (auto& _p : _selectedPoints) {
+                _p->pos() += QPointF(_x,_y);
+            }
+            updateWithChildViews();
+        };
+
+        switch (event->key()) {
+            case Qt::Key_Down:
+                _moveWarpPoint(0.0,_distance);
+            break;
+            case Qt::Key_Up:
+                _moveWarpPoint(0.0,-_distance);
+            break;
+            case Qt::Key_Left:
+                _moveWarpPoint(-_distance,0.0);
+            break;
+            case Qt::Key_Right:
+                _moveWarpPoint(_distance,0.0);
+            break;
+        }
     }
 
     void TuningGLView::destroy()

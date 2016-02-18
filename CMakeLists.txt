@@ -56,7 +56,9 @@ FILE(GLOB_RECURSE omni_lib_resources ${CMAKE_SOURCE_DIR}/src/lib/*.qrc )
 
 QT5_WRAP_CPP(omni_lib_ui_headers_moc ${omni_lib_ui_headers})
 QT5_ADD_RESOURCES(omni_lib_resources_rcc ${omni_lib_resources})
-#QT5_GENERATE_UI(omni_lib_forms_headers ${omni_lib_ui_forms})
+QT5_GENERATE_UI(omni_lib_forms_headers ${omni_lib_ui_forms})
+
+MESSAGE(STATUS ${omni_lib_forms_headers} ${omni_lib_ui_forms})
 
 SET(omni_lib_src
     ${omni_lib_cpp_files}
