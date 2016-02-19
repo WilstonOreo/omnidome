@@ -68,6 +68,7 @@ QTabBar::tab {
     padding-top: 3px;
     padding-bottom: 2px;
     margin-right: -1px;
+    alignment: left;
 }
 
 QTabBar::tab:selected {

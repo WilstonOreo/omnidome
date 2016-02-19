@@ -21,78 +21,58 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QSplitter" name="splitter">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QTabWidget" name="tabs">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-         <horstretch>5</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="tabShape">
-        <enum>QTabWidget::Rounded</enum>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
-       <property name="elideMode">
-        <enum>Qt::ElideLeft</enum>
-       </property>
-       <property name="usesScrollButtons">
-        <bool>false</bool>
-       </property>
-       <property name="documentMode">
-        <bool>false</bool>
-       </property>
-       <property name="tabsClosable">
-        <bool>false</bool>
-       </property>
-       <property name="movable">
-        <bool>false</bool>
-       </property>
-       <widget class="omni::ui::ScreenSetup" name="tabScreenSetup">
-        <attribute name="title">
-         <string>Screen Setup</string>
-        </attribute>
-       </widget>
-       <widget class="omni::ui::GLView3D" name="tabArrange">
-        <attribute name="title">
-         <string>Arrange</string>
-        </attribute>
-       </widget>
-       <widget class="omni::ui::TuningGLView" name="tabWarp">
-        <attribute name="title">
-         <string>Warp</string>
-        </attribute>
-       </widget>
-       <widget class="omni::ui::TuningGLView" name="tabBlend">
-        <attribute name="title">
-         <string>Blend</string>
-        </attribute>
-       </widget>
-       <widget class="omni::ui::Export" name="tabExport">
-        <attribute name="title">
-         <string>Export</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tabLive">
-        <attribute name="title">
-         <string>Live</string>
-        </attribute>
-       </widget>
+      <widget class="QWidget" name="tabContainer" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QTabBar" name="tabs" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="pages" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>11</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="grpProjectors" native="true">
        <property name="sizePolicy">
@@ -128,7 +108,6 @@
             <height>0</height>
            </size>
           </property>
-          <zorder>tabs</zorder>
          </widget>
         </item>
         <item>
@@ -370,27 +349,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>omni::ui::ScreenSetup</class>
+   <class>QTabBar</class>
    <extends>QWidget</extends>
-   <header>ScreenSetup.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>omni::ui::Export</class>
-   <extends>QWidget</extends>
-   <header>Export.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>omni::ui::TuningGLView</class>
-   <extends>QWidget</extends>
-   <header location="global">omni/ui/TuningGLView.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>omni::ui::GLView3D</class>
-   <extends>QWidget</extends>
-   <header location="global">omni/ui/GLView3D.h</header>
+   <header>QTabBar</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -443,22 +404,6 @@
     <hint type="destinationlabel">
      <x>657</x>
      <y>388</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>tabs</sender>
-   <signal>currentChanged(int)</signal>
-   <receiver>omni::ui::MainWindow</receiver>
-   <slot>setMode(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>458</x>
-     <y>315</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>404</x>
-     <y>294</y>
     </hint>
    </hints>
   </connection>

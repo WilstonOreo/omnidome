@@ -37,6 +37,10 @@ namespace omni
     {
       class MainWindow;
     }
+    class ScreenSetup;
+    class Export;
+    class TuningGLView;
+    class GLView3D;
 
     class MainWindow : public QMainWindow
     {
@@ -110,6 +114,25 @@ namespace omni
 
       /// Locked flag
       bool locked_;
+
+
+            /// Screen Setup page
+            QUniquePtr<ScreenSetup> screenSetup_;
+
+            /// ProjectionSetup/Canvas arrangement page
+            QUniquePtr<GLView3D> arrange_;
+
+            /// Page for current warp grid
+            QUniquePtr<TuningGLView> warp_;
+
+            /// Page for current blend mask
+            QUniquePtr<TuningGLView> blend_;
+
+            /// Page for exporting projection
+            QUniquePtr<Export> export_;
+
+            /// Page for exporting projection
+            QUniquePtr<GLView3D> live_;
 
       /// UI containing designed widgets of this window
       std::unique_ptr<Ui::MainWindow> ui_;

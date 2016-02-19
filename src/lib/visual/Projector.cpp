@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -36,34 +36,34 @@ namespace omni
       return size_;
     }
 
-    void Projector::setSize(qreal _size) 
+    void Projector::setSize(qreal _size)
     {
       size_=_size;
       update();
     }
-      
+
     bool Projector::isSelected() const
     {
       return selected_;
     }
-    
+
     void Projector::setSelected(bool _selected)
     {
       selected_ = _selected;
     }
- 
+
     QColor Projector::color() const
     {
-      return color_; 
+      return color_;
     }
 
-    void Projector::setColor(QColor _color) 
+    void Projector::setColor(QColor _color)
     {
       color_=_color;
     }
 
     void Projector::update()
-    {   
+    {
       qreal _a = proj_.fov().radians() *0.5;
       qreal _height = tan(_a);
       qreal _width = _height * proj_.aspectRatio();
@@ -83,7 +83,7 @@ namespace omni
         _.glLineWidth(selected_ ? 2.0 : 1.0);
       });
 
-      glPushMatrix(); 
+      glPushMatrix();
       {
         glLoadIdentity();
         // Apply matrix to OpenGL
@@ -103,7 +103,7 @@ namespace omni
 
     void Projector::drawPositioning(QVector3D const& _center) const
     {
-      Interface::color(color_); 
+      Interface::color(color_);
       with_current_context([this](QOpenGLFunctions& _)
       {
         _.glLineWidth(selected_ ? 4.0 : 1.5);
@@ -132,7 +132,7 @@ namespace omni
 
     void Projector::drawHalo() const
     {
-      glPushMatrix(); 
+      glPushMatrix();
       {
         glLoadIdentity();
         // Apply matrix to OpenGL
@@ -147,6 +147,7 @@ namespace omni
         this->vertex3(topRight_*_scale);
         this->vertex3(bottomRight_*_scale);
         this->vertex3(bottomLeft_*_scale);
+        this->vertex3(topLeft_*_scale);
         glEnd();
       }
       glPopMatrix();
