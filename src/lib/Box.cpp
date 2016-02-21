@@ -75,6 +75,10 @@ namespace omni
     validate();
   }
 
+  QVector3D Box::center() const {
+      return 0.5 * (min_ + max_);
+  }
+
   void Box::validate()
   {
     for (int i = 0; i < 3; ++i)

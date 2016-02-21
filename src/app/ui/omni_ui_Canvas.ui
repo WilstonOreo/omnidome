@@ -17,35 +17,6 @@
    <item>
     <widget class="QComboBox" name="boxCanvasSelect"/>
    </item>
-   <item>
-    <widget class="QCheckBox" name="chkDisplayInput">
-     <property name="text">
-      <string>Display Input</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="boxProjectorViewMode">
-     <item>
-      <property name="text">
-       <string>Inside</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Outside</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Both sides</string>
-      </property>
-     </item>
-    </widget>
-   </item>
   </layout>
  </widget>
  <resources/>

@@ -39,6 +39,7 @@
 #include "proj/TuningList.h"
 #include "proj/MultiSetupDialog.h"
 
+#include "Arrange.h"
 #include "ScreenSetup.h"
 #include "Export.h"
 #include "Mapping.h"
@@ -61,7 +62,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
         _layout->addWidget(screenSetup_.get());
         ui_->tabs->addTab("SCREEN SETUP");
 
-        arrange_.reset(new GLView3D(this));
+        arrange_.reset(new Arrange(this));
         _layout->addWidget(arrange_.get());
         ui_->tabs->addTab("ARRANGE");
 

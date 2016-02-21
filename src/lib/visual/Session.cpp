@@ -137,6 +137,7 @@ namespace omni
       frustumShader_->setUniformValue("bottom_left",_bottomLeft);
       frustumShader_->setUniformValue("bottom_right",_bottomRight);
       frustumShader_->setUniformValue("matrix",_rot);
+      frustumShader_->setUniformValue("scale",GLfloat(_canvas->bounds().radius()));
       frustumShader_->setUniformValue("view_mode",int(_projectorViewMode));
 
       glDisable(GL_DEPTH_TEST);

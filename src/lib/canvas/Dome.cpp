@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -31,19 +31,12 @@ namespace omni
     Dome::~Dome()
     {
     }
-      
+
     void Dome::draw() const
     {
       Envelope::draw();
 
-      glPushMatrix();
-      {
-        glLoadIdentity();
-
-        glTranslatef(center_.x(),center_.y(),center_.z());
-        this->sphere_.draw();
-      }
-      glPopMatrix();
+      this->sphere_.draw();
     }
 
     void Dome::drawAux() const
@@ -71,12 +64,12 @@ namespace omni
     {
       setRadius(_diameter * 0.5);
     }
- 
+
     Box Dome::bounds() const
     {
       return bounds_;
     }
-      
+
     QVector3D Dome::center() const
     {
       return center_;
@@ -93,8 +86,14 @@ namespace omni
 
       auto _r = radius();
       QVector3D _vr(_r,_r,_r);
-      this->bounds_ = Box(-_vr + center_,_vr + center_); 
+      this->bounds_ = Box(-_vr + center_,_vr + center_);
       sphere_.update();
+    }
+
+    QMatrix4x4 Dome::matrix() const {
+        QMatrix4x4 _m;
+        _m.translate(center_);
+        return _m;
     }
 
     void Dome::toStream(QDataStream& _stream) const

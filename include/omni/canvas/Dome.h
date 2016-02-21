@@ -61,6 +61,8 @@ namespace omni
 
       virtual void update();
 
+      virtual QMatrix4x4 matrix() const;
+
       virtual void toStream(QDataStream&) const;
       virtual void fromStream(QDataStream&);
 

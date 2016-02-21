@@ -7,6 +7,8 @@
     <file>shaders/frustum.vert</file>
     <file>shaders/blend.frag</file>
     <file>shaders/blend.vert</file>
+    <file>shaders/grid.frag</file>
+    <file>shaders/grid.vert</file>
     <file>shaders/testcard.frag</file>
     <file>shaders/testcard.vert</file>
     <file>shaders/canvas.frag</file>

@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -17,27 +17,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_CANVAS_FULLSPHERE_H_
-#define OMNI_CANVAS_FULLSPHERE_H_
+#include <QObject>
+#include <QApplication>
+#include <QSettings>
 
-#include <omni/canvas/Dome.h>
+namespace omni {
+    namespace ui {
+        class Application : public QApplication {
+            Q_OBJECT
+        public:
+            Application(int& ac, char** av);
+            ~Application();
 
-namespace omni
-{
-  namespace canvas
-  {
-    class FullSphere : public QObject, public Dome
-    {
-        OMNI_CANVAS_PLUGIN_DECL
-    public:
-        OMNI_REGISTER_CLASS(Factory,FullSphere)
-        FullSphere();
-        ~FullSphere();
+            void setStyleSheetFile(QString _file);
 
-        QWidget* widget();
+            QString styleSheetFile() const;
 
-    };
-  }
+            static QSettings& settings();
+
+        private:
+            bool eventFilter(QObject* object,QEvent* event);
+
+            QString styleSheetFile_;
+            static QSettings settings_;
+        };
+    }
 }
-
-#endif /* OMNI_DOME_FULLSPHERE_H_ */

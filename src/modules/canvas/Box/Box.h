@@ -53,6 +53,13 @@ namespace omni
       /// Return size of the box
       QVector3D size() const;
 
+      /// Center is on the center of the bottom of the box
+      QVector3D center() const;
+
+      /// Return set center of sphere
+      void setCenter(QVector3D const&);
+
+
       /// Set size of the box
       void setSize(QVector3D const&);
 
@@ -72,6 +79,7 @@ namespace omni
 
     private:
       visual::Box vizBox_;
+      QVector3D center_;
       EulerAngles angles_;
     };
   }

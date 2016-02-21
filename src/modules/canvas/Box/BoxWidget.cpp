@@ -42,6 +42,11 @@ namespace omni {
                                   getParamAsFloat("Length"),
                                   getParamAsFloat("Height")
                                   ));
+                _box->setCenter(QVector3D(
+                                  getParamAsFloat("X Offset"),
+                                  getParamAsFloat("Y Offset"),
+                                  getParamAsFloat("Z Offset")
+                                  ));
             }
 
             void Box::setup() {

@@ -26,9 +26,9 @@ namespace omni
 {
   namespace canvas
   {
-    Box::Box()
+    Box::Box() : center_(0.0,0.0,0.0)
     {
-      setSize(QVector3D(10,10,10));
+      setSize(QVector3D(5,5,5));
     }
 
     Box::~Box()
@@ -48,6 +48,15 @@ namespace omni
     QVector3D Box::size() const
     {
       return this->bounds_.size();
+    }
+
+    QVector3D Box::center() const {
+        auto _c = bounds().center();
+        return QVector3D(_c.x(),_c.y(),bounds().min().z()) + center_;
+    }
+
+    void Box::setCenter(QVector3D const& _c) {
+        center_ =_c;
     }
 
     void Box::setSize(QVector3D const& _s)
@@ -72,7 +81,7 @@ namespace omni
     QMatrix4x4 Box::matrix() const
     {
       QMatrix4x4 _m;
-      _m.translate(center());
+      _m.translate(center_ + QVector3D(0.0,0.0,bounds().center().z()));
       _m *= angles_.matrix();
       _m.scale(size());
       return _m;

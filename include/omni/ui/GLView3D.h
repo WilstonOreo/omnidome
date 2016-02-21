@@ -23,11 +23,31 @@
 #include <omni/ui/GLView.h>
 #include <omni/visual/Camera.h>
 #include <omni/visual/Light.h>
+#include <omni/visual/Grid.h>
 
 namespace omni
 {
   namespace ui
   {
+    enum class EditMode {
+        CAMERA,
+        MOVE,
+        ROTATE,
+    };
+
+    enum class MoveMode {
+        MOVE_X,
+        MOVE_Y,
+        MOVE_Z,
+        MOVE_XY
+    };
+
+    enum class RotateMode {
+        PITCH,
+        YAW,
+        ROLL
+    };
+
     /**@brief An OpenGL view with a camera and perspective view
      * @detail Also holds three lights
      **/
@@ -38,11 +58,38 @@ namespace omni
       GLView3D(QWidget* _parent = nullptr);
       ~GLView3D();
 
+      /// Input is shown on canvas
       bool displayInput() const;
+
+      /// Display measurements on elements
+      bool displayMeasures() const;
+
+      /// Display line grid
+      bool displayGrid() const;
+
+      /// Display projector frustra (selected projector is always shown)
+      bool displayProjectors() const;
+
+      /// Set edit mode (CAMERA, ROTATE or MOVE)
+      EditMode editMode() const;
+
+      /// Set rotation axis when edit mode is ROTATE
+      RotateMode rotateMode() const;
+
+      /// Set movement axis when edit mode is MOVE
+      MoveMode moveMode() const;
+
+      /// Set projector view mode (INSIDE, OUTSIDE or BOTH)
       ProjectorViewMode projectorViewMode() const;
 
     public slots:
       void setDisplayInput(bool);
+      void setDisplayMeasures(bool);
+      void setDisplayGrid(bool);
+      void setDisplayProjectors(bool);
+      void setEditMode(EditMode);
+      void setRotateMode(RotateMode);
+      void setMoveMode(MoveMode);
       void setProjectorViewMode(ProjectorViewMode);
       void changeZoom(int _value);
 
@@ -60,8 +107,17 @@ namespace omni
       bool initialize();
 
       visual::Camera camera_;
+      visual::Grid grid_;
       std::array<visual::Light,3> lights_;
       bool displayInput_ = true;
+      bool displayMeasures_ = true;
+      bool displayGrid_ = true;
+      bool displayProjectors_ = true;
+
+      EditMode editMode_ = EditMode::CAMERA;
+      RotateMode rotateMode_ = RotateMode::YAW;
+      MoveMode moveMode_ = MoveMode::MOVE_XY;
+      
       ProjectorViewMode projectorViewMode_ = ProjectorViewMode::INSIDE;
     };
   }

@@ -46,12 +46,6 @@ namespace omni {
 
             connect(ui_->boxCanvasSelect, SIGNAL(currentIndexChanged(QString)), this,
                     SLOT(canvasTypeSelected(QString)));
-
-            connect(ui_->chkDisplayInput, SIGNAL(clicked(bool)),this,
-                    SIGNAL(displayInputToggled(bool)));
-
-            connect(ui_->boxProjectorViewMode, SIGNAL(currentIndexChanged(int)),this,
-                    SLOT(changeProjectorViewMode(int)));
         }
 
         Canvas::~Canvas()

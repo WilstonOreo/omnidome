@@ -17,27 +17,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_CANVAS_FULLSPHERE_H_
-#define OMNI_CANVAS_FULLSPHERE_H_
+#include <memory>
+#include <QWidget>
+#include <omni/ui/SessionWidget.h>
 
-#include <omni/canvas/Dome.h>
+namespace omni {
+    namespace ui {
+        namespace Ui {
+            class Arrange;
+        }
+        class Arrange :
+            public QWidget,
+            public SessionWidget
+        {
+            Q_OBJECT
+        public:
+            Arrange(QWidget* = nullptr);
+            ~Arrange();
 
-namespace omni
-{
-  namespace canvas
-  {
-    class FullSphere : public QObject, public Dome
-    {
-        OMNI_CANVAS_PLUGIN_DECL
-    public:
-        OMNI_REGISTER_CLASS(Factory,FullSphere)
-        FullSphere();
-        ~FullSphere();
+            void setSession(Session* _session);
 
-        QWidget* widget();
+        public slots:
 
-    };
-  }
+        private:
+            void sessionParameters();
+
+            std::unique_ptr<Ui::Arrange> ui_;
+        };
+    }
 }
-
-#endif /* OMNI_DOME_FULLSPHERE_H_ */

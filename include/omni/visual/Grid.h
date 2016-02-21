@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <QSize>
+#include <QVector2D>
 #include <omni/visual/Interface.h>
 #include <omni/visual/Camera.h>
 #include <omni/visual/Plane.h>
@@ -39,20 +40,26 @@ namespace omni {
             /// Draw grid
             void draw() const;
 
+            /// Draw grid with alpha value
+            void draw(float _alpha) const;
+
             /// Update grid mesh
             void update();
 
             /**@brief Resolution
              **/
-            void setResolution(QSize _size);
+            void setResolution(QSize _resolution);
 
             /// Return resolution
             QSize const& resolution() const;
+
+            void setSize(QVector2D const& _size);
 
         private:
             QSize resolution_;
             Camera const& camera_;
             Plane plane_;
+            QVector2D size_;
             std::unique_ptr<QOpenGLShaderProgram> shader_;
         };
     }

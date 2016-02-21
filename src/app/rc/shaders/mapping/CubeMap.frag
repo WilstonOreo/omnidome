@@ -8,8 +8,8 @@ void swap(inout float t0, inout float t1) {
 }
 
 float intersection(out vec3 uvw) {
-    vec3 dir = uvw_normal;
-    vec3 orig = uvw - offset;
+    vec3 orig = uvw_vertex_position - offset;
+    vec3 dir = normalize(orig);
   float tmin = (-0.5 - orig.x) / dir.x;
    float tmax = (0.5 - orig.x) / dir.x;
 
@@ -53,7 +53,7 @@ float intersection(out vec3 uvw) {
        tmax = tzmax;
    }
 
-   uvw = uvw_vertex_position + tmin * dir;
+   uvw = orig + tmax * dir;
 
    return 1.0;
 }
@@ -63,7 +63,7 @@ float intersection(out vec3 uvw) {
 float mapping(in vec3 uvw, out vec2 texCoords)
 {
   float sc, tc, ma;
-  float eps =  -0.01;
+  float eps =  -0.001;
   float _off = 0.0;
   //n = n.yzx;
 

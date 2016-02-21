@@ -41,7 +41,7 @@ namespace omni
         return session_;
       }
 
-      inline void setSession(Session* _session)
+      inline virtual void setSession(Session* _session)
       {
         this->locked([&]()
         {

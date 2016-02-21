@@ -1,6 +1,5 @@
 varying vec3 uvw_vertex_position;
 varying vec3 uvw_normal;
-varying mat4 projection_matrix;
 
 const float PI = 3.14159265358979323846264;
 
@@ -65,10 +64,10 @@ mat3 rotationMatrix(in float yaw, in float pitch, in float roll)
 }
 
 
-/*
-float sphereIntersection(out vec3 uvw) {
+
+float sphereIntersection(out vec3 uvw, in vec3 center) {
     vec3 n = uvw_normal;
-    vec3 oc = normalize(uvw_vertex_position - offset);
+    vec3 oc = normalize(uvw_vertex_position - center);
     float b = 2.0 * dot(n, oc);
     float c = dot(oc, oc) - 1.0;
     float disc = b * b - 4.0 * c;
@@ -108,7 +107,7 @@ float sphereIntersection(out vec3 uvw) {
 
     return 1.0;
 }
-*/
+
 
 
 float intersection(out vec3 uvw);
@@ -117,11 +116,11 @@ float mapping(in vec3 uvw, out vec2 texCoords);
 
 void main()
 {
-  //vec3 uvw = gl_TexCoord[0].xyz * rotationMatrix(yaw_angle,pitch_angle,roll_angle);
   vec3 uvw = uvw_vertex_position;
   if (intersection(uvw) < 0.0) {
-      discard;
+//      discard;
   }
+
 
   uvw = uvw * rotationMatrix(yaw_angle,pitch_angle,roll_angle);
 

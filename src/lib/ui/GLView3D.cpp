@@ -27,7 +27,8 @@ namespace omni
   namespace ui
   {
     GLView3D::GLView3D(QWidget* _parent) :
-      GLView(_parent)
+      GLView(_parent),
+      grid_(camera_)
     {
     }
 
@@ -58,6 +59,7 @@ namespace omni
                              PolarVec(45.0,-45.0,_radius * 10.0)),0.2);
 
       updateLight();
+      grid_.update();
       this->session_->update();
       return true;
     }
@@ -79,6 +81,7 @@ namespace omni
       if (!session()) return;
 
       this->session_->update();
+      glEnable(GL_DEPTH_TEST);
 
       makeCurrent();
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -88,10 +91,16 @@ namespace omni
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
       updateLight();
+
+
       this->session_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,displayInput_);
       this->session_->drawProjectors();
       this->session_->drawCanvasWithFrustumIntersections(projectorViewMode_);
       this->session_->drawProjectorHalos();
+
+      grid_.draw(0.5);
+      glDisable(GL_DEPTH_TEST);
+      grid_.draw(0.5);
     }
 
     void GLView3D::wheelEvent(QWheelEvent* event)
@@ -147,10 +156,67 @@ namespace omni
       return displayInput_;
     }
 
+    bool GLView3D::displayMeasures() const
+    {
+      return displayMeasures_;
+    }
+
+    bool GLView3D::displayGrid() const
+    {
+      return displayGrid_;
+    }
+
+    bool GLView3D::displayProjectors() const
+    {
+      return displayProjectors_;
+    }
+
+    EditMode GLView3D::editMode() const {
+        return editMode_;
+    }
+
+    RotateMode GLView3D::rotateMode() const {
+        return rotateMode_;
+    }
+
+    MoveMode GLView3D::moveMode() const {
+        return moveMode_;
+    }
+
     void GLView3D::setDisplayInput(bool _displayInput)
     {
       displayInput_ = _displayInput;
       update();
+    }
+
+    void GLView3D::setDisplayMeasures(bool _displayMeasures) {
+        displayMeasures_ = _displayMeasures;
+        update();
+    }
+
+    void GLView3D::setDisplayGrid(bool _displayGrid) {
+        displayGrid_ = _displayGrid;
+        update();
+    }
+
+    void GLView3D::setDisplayProjectors(bool _displayProjectors) {
+        displayProjectors_ = _displayProjectors;
+        update();
+    }
+
+    void GLView3D::setEditMode(EditMode _editMode) {
+        editMode_ = _editMode;
+        update();
+    }
+
+    void GLView3D::setRotateMode(RotateMode _rotateMode) {
+        rotateMode_ = _rotateMode;
+        update();
+    }
+
+    void GLView3D::setMoveMode(MoveMode _moveMode) {
+        moveMode_ = _moveMode;
+        update();
     }
 
     ProjectorViewMode GLView3D::projectorViewMode() const

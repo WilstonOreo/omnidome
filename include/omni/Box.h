@@ -55,6 +55,9 @@ namespace omni
     /// Set minimum and maximum together
     void setMinMax(QVector3D const&, QVector3D const&);
 
+    /// Return the center point of the box
+    QVector3D center() const;
+
   private:
     /// Check if min < max and swap if necessary
     void validate();

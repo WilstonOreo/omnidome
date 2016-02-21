@@ -37,6 +37,7 @@ namespace omni
     {
       class MainWindow;
     }
+    class Arrange;
     class ScreenSetup;
     class Export;
     class TuningGLView;
@@ -120,7 +121,7 @@ namespace omni
             QUniquePtr<ScreenSetup> screenSetup_;
 
             /// ProjectionSetup/Canvas arrangement page
-            QUniquePtr<GLView3D> arrange_;
+            QUniquePtr<Arrange> arrange_;
 
             /// Page for current warp grid
             QUniquePtr<TuningGLView> warp_;

@@ -1,6 +1,8 @@
 #version 120
  varying vec3 vVertexPosition;
  varying vec3 vVertexNormal;
+
+uniform float scale;
 uniform vec3 eye;
 uniform vec3 look_at;
 uniform vec3 top_left;
@@ -11,6 +13,7 @@ uniform int view_mode; // 0 = inside, 1 = outside, 2 = both
 
 /// Color of frustum border
 uniform vec3 color;
+
 
 /// Tests if a point intersects frustum. Returns minimum distance from point to frustum
 /// If distance > 0, there is an intersection
@@ -42,9 +45,9 @@ float frustum_intersection(in vec3 point)
 
 void main()
 {
-  float d = frustum_intersection(vVertexPosition);
+  float d = frustum_intersection(vVertexPosition) * scale;
 
-  float angle =  dot(vVertexNormal,normalize(vVertexPosition - eye));
+  float angle = dot(vVertexNormal,normalize(vVertexPosition - eye));
   if (view_mode == 1) {
       angle = -angle;
   }
@@ -52,7 +55,7 @@ void main()
       angle = 0.1;
   }
 
-  float alpha = d < angle*0.1 ? 0.8*angle : 0.2*angle;
+  float alpha = d < 0.05 ? 0.8 : 0.2;
 
   if (d > 0.0 && angle > 0.0)
   {
