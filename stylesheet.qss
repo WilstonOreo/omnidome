@@ -11,7 +11,6 @@ QWidget
     selection-color: #0e0e0e;
 }
 
-
 QScrollArea
 {
     border-radius: 1px;
@@ -43,11 +42,10 @@ QHeaderView::section
 }
 
 QToolBar {
-    border: 1px solid #212121;
-    background: 1px solid #212121;
-    font-weight: bold;
+    border: 0px solid #212121;
+    background-color: #212121;
+    font: bold "Source Sans Pro";
 }
-
 
 
 QTabWidget::pane {
@@ -96,12 +94,47 @@ QDockWidget::title
     padding-left: 10px;
 }
 
+QAbstractButton
+{
+    color: #808080;
+    background-color: #212121;
+    border: 2.5px solid #3d3d3d;
+    selection-background-color: #00F472;
+    selection-color: #0e0e0e;
+    border-radius: 0px;
+}
+
+QAbstractButton:disabled
+{
+    color: #3d3d3d;
+}
+
+QAbstractButton:hover
+{
+    color: #f8f8f8;
+    background-color: #3d3d3d;
+    border: 2.5px solid #5e5e5e;
+}
+
+QLabel {
+   font: light small "Source Sans Pro";
+   font-size: 9px;
+}
+
+QToolButton:checked {
+    color: #3d3d3d;
+    background-color: #00F472;
+    border: 2.5px solid #3d3d3d;
+    border-radius: 0px;
+}
+
+
 QCheckBox::indicator:checked, QCheckBox::indicator:unchecked,
 QRadioButton::indicator:checked, QRadioButton::indicator:unchecked
 {
     color: #3d3d3d;
     background-color: #3d3d3d;
-    border: 3px solid #3d3d3d;
+    border: 2.5px solid #3d3d3d;
     border-radius: 0px;
 }
 
@@ -120,17 +153,20 @@ QRadioButton::indicator:disabled:checked
 }
 
 
+QRadioButton, QCheckBox, QRadioButton:hover, QCheckBox:hover {
+    border: 0px solid #212121;
+}
 
 QCheckBox::indicator:checked:hover,
 QRadioButton::indicator:checked:hover
  {
-    border: 3px solid #5e5e5e;
+    border: 2.5px solid #5e5e5e;
 }
 
 QCheckBox::indicator:unchecked:hover,
 QRadioButton::indicator:unchecked:hover
 {
-    border: 3px solid #5e5e5e;
+    border: 2.5px solid #5e5e5e;
     background-color: #5e5e5e;
 }
 
@@ -146,20 +182,41 @@ QRadioButton:disabled, QCheckBox:disabled {
 QComboBox
 {
     selection-background-color: #00F472;
-    background-color: #212121;
-    border: 3px solid #3d3d3d;
+    background-color: #3d3d3d;
+    border: 0px solid #3d3d3d;
     border-radius: 1px;
     padding: 2px;
+    color: #808080;
 }
 
 QComboBox QAbstractItemView::item {
     border: 2.5px solid #0e0e0e;
+    background-color: #808080;
     margin-top: 2px;
 }
 
 QComboBox:hover,QPushButton:hover,QAbstractSpinBox:hover,QLineEdit:hover,QTextEdit:hover,QPlainTextEdit:hover,QAbstractView:hover,QTreeView:hover
 {
     color: #F8F8F8;
+}
+
+QComboBox::drop-down {
+    width: 15px;
+    border: 0px solid #5e5e5e;
+}
+
+QMenu {
+    border: 2.5px solid #5e5e5e;
+    color: #5e5e5e;
+    background-color: #5e5e5e;
+}
+
+QComboBox::item {
+    color: #5e5e5e;
+}
+
+QComboBox::down-arrow {
+    color: #212121;
 }
 
 /** Scrollbar styles **/

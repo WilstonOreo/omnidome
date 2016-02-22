@@ -38,6 +38,9 @@
       </sizepolicy>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>4</number>
+      </property>
       <property name="leftMargin">
        <number>4</number>
       </property>
@@ -130,13 +133,6 @@
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Projector Preview</string>
         </property>
        </widget>
       </item>
