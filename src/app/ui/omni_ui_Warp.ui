@@ -34,10 +34,10 @@
     </widget>
    </item>
    <item>
-    <widget class="slim::RangedInt" name="sliderHorz" native="true"/>
+    <widget class="omni::ui::RangedInt" name="sliderHorz" native="true"/>
    </item>
    <item>
-    <widget class="slim::RangedInt" name="sliderVert" native="true"/>
+    <widget class="omni::ui::RangedInt" name="sliderVert" native="true"/>
    </item>
    <item>
     <widget class="QToolButton" name="btnReset">
@@ -86,9 +86,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>slim::RangedInt</class>
+   <class>omni::ui::RangedInt</class>
    <extends>QWidget</extends>
-   <header location="global">slim/RangedInt.h</header>
+   <header location="global">omni/ui/RangedInt.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

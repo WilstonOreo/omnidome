@@ -50,8 +50,8 @@ namespace omni
         void addFlipParameters();
 
         template<typename T>
-        slim::Rotation* addRotationParameters(T* _mapping) {
-            slim::Rotation* _rotation = nullptr;
+        Rotation* addRotationParameters(T* _mapping) {
+            Rotation* _rotation = nullptr;
             this->locked([&]() {
                 _rotation = addRotationWidget("Rotation");
                 _rotation->setX(_mapping->roll().degrees());

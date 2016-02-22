@@ -27,6 +27,7 @@
 #include <QHBoxLayout>
 #include <QCloseEvent>
 #include <QMenu>
+#include <QIcon>
 
 #include <omni/Session.h>
 #include <omni/proj/MultiSetup.h>
@@ -57,35 +58,36 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
     // Make and setup pages
     {
+        ui_->tabs->setIconSize(QSize(32,32));
         QLayout *_layout = new QHBoxLayout();
         screenSetup_.reset(new ScreenSetup(this));
         _layout->addWidget(screenSetup_.get());
-        ui_->tabs->addTab("SCREEN SETUP");
+        ui_->tabs->addTab(QIcon(":/icons/screens.png"),"SCREEN SETUP");
 
         arrange_.reset(new Arrange(this));
         _layout->addWidget(arrange_.get());
-        ui_->tabs->addTab("ARRANGE");
+        ui_->tabs->addTab(QIcon(":/icons/arrange.png"), "ARRANGE");
 
         warp_.reset(new TuningGLView(this));
         _layout->addWidget(warp_.get());
         warp_->setBorder(0.5);
         warp_->setKeepAspectRatio(true);
-        ui_->tabs->addTab("WARP");
+        ui_->tabs->addTab(QIcon(":/icons/warp.png"),"WARP");
 
         blend_.reset(new TuningGLView(this));
         _layout->addWidget(blend_.get());
         blend_->setBorder(0.5);
         blend_->setKeepAspectRatio(true);
-        ui_->tabs->addTab("BLEND");
+        ui_->tabs->addTab(QIcon(":/icons/blend.png"),"BLEND");
 
         export_.reset(new Export(session_.get()));
         _layout->addWidget(export_.get());
         ui_->pages->setLayout(_layout);
-        ui_->tabs->addTab("EXPORT");
+        ui_->tabs->addTab(QIcon(":/icons/export.png"),"EXPORT");
 
         live_.reset(new GLView3D(this));
         _layout->addWidget(live_.get());
-        ui_->tabs->addTab("LIVE");
+        ui_->tabs->addTab(QIcon(":/icons/live.png"),"LIVE");
 
         _layout->setContentsMargins(0,0,0,0);
         ui_->pages->setLayout(_layout);

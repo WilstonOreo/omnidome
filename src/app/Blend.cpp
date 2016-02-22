@@ -34,7 +34,7 @@ namespace omni
 
       /// Setup top, left, right and bottom sliders
       {
-        auto setupSlider = [&](slim::RangedFloat* _slider)
+        auto setupSlider = [&](RangedFloat* _slider)
         {
           _slider->setRange(0.0,0.5);
           _slider->setSingleStep(0.01);

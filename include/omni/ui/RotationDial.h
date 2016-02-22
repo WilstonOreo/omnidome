@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,16 +17,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SLIM_ROTATIONDIAL_H_
-#define SLIM_ROTATIONDIAL_H_
+#ifndef OMNI_UI_ROTATIONDIAL_H_
+#define OMNI_UI_ROTATIONDIAL_H_
 
 #include <QWidget>
 #include <QLabel>
-#include <slim/ColorSet.h>
-#include <slim/mixin/RangedValue.hpp>
+#include <omni/ui/ColorSet.h>
+#include <omni/ui/mixin/RangedValue.h>
 
-namespace slim
+namespace omni
 {
+    namespace ui {
   class RotationDial :
     public QWidget,
     public mixin::Range<double>,
@@ -106,7 +107,7 @@ namespace slim
 
     void paintPie(QPainter&, double _innerRadius, double _outerRadius, double _value, QColor _color);
     void paintPies(QPainter&);
-    
+
     static QString formatDegrees(double);
     static QString moveStateToText(MoveState);
 
@@ -117,6 +118,6 @@ namespace slim
     QColor zColor_ = "#E8F0F5";
   };
 }
-
+}
 
 #endif /* FUTON_UI_DIAL_H_ */

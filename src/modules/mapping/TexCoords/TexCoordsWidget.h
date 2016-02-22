@@ -35,8 +35,6 @@ namespace omni {
             private:
                 void updateMappingParameters();
                 void setup();
-
-                slim::Rotation* rotation_ = nullptr;
             };
         }
     }

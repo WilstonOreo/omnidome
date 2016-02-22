@@ -124,7 +124,6 @@ QLabel {
 QToolButton:checked {
     color: #3d3d3d;
     background-color: #00F472;
-    border: 2.5px solid #3d3d3d;
     border-radius: 0px;
 }
 

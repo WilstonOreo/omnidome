@@ -1,7 +1,12 @@
 <RCC>
-  <qresource prefix="logo"/>
   <qresource>
-    <file>logo.svg</file>
+    <file>icons/logo.png</file>
+    <file>icons/warp.png</file>
+    <file>icons/screens.png</file>
+    <file>icons/arrange.png</file>
+    <file>icons/live.png</file>
+    <file>icons/export.png</file>
+    <file>icons/blend.png</file>
     <file>shaders/slow_fractal.frag</file>
     <file>shaders/frustum.frag</file>
     <file>shaders/frustum.vert</file>

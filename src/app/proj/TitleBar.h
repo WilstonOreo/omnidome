@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -22,8 +22,8 @@
 
 #include <QToolButton>
 #include <QMenu>
-#include <slim/Widget.h>
-#include <slim/mixin/RangedValue.hpp>
+#include <omni/ui/Widget.h>
+#include <omni/ui/mixin/RangedValue.h>
 #include <omni/util.h>
 
 namespace omni
@@ -42,13 +42,13 @@ namespace omni
        *         * Close tuning widget for deleting a projector tuning
        **/
       class TitleBar :
-        public slim::Widget
+        public omni::ui::Widget
       {
         Q_OBJECT
       public:
         /// Construct with tuning widget as parent (is mandatory)
         TitleBar(Tuning*);
-        
+
         /// Construct with label and tuning widget as parent
         TitleBar(QString const& _label, Tuning*);
         ~TitleBar();
@@ -62,7 +62,7 @@ namespace omni
       public slots:
         /// Set color from gradient pos (between 0.0 and 1.0)
         void setColor(QColor const&);
-        
+
         /// Select color from color picker
         void selectColor();
 
@@ -83,18 +83,18 @@ namespace omni
       private:
         void setup();
 
-        /// Set moving flag to value and handle visibility of buttons 
+        /// Set moving flag to value and handle visibility of buttons
         Tuning* tuningWidget();
-         
+
         /// Button for resetting and projector setup selection
         QUniquePtr<QToolButton> menuButton_;
-        
+
         /// Button for toggling fullscreen display
         QUniquePtr<QToolButton> displayButton_;
-       
+
         /// Button for Minimizing/Maximizing widget
         QUniquePtr<QToolButton> maximizeButton_;
-        
+
         /// Button for closing widget
         QUniquePtr<QToolButton> closeButton_;
 

@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -23,9 +23,9 @@
 #include <set>
 #include <QWidget>
 #include <QCheckBox>
-#include <slim/RangedFloat.h>
-#include <slim/RangedInt.h>
-#include <slim/Rotation.h>
+#include <omni/ui/RangedFloat.h>
+#include <omni/ui/RangedInt.h>
+#include <omni/ui/Rotation.h>
 #include <omni/util.h>
 
 namespace omni
@@ -38,26 +38,26 @@ namespace omni
     {
       Q_OBJECT
     public:
-      /// Default constructor 
+      /// Default constructor
       ParameterWidget(QWidget* _parent = nullptr);
-        
-      /// Default Constructor  
+
+      /// Default Constructor
       virtual ~ParameterWidget();
 
       /// Adds a widget with a name, a value and min-max range
-      slim::RangedFloat* addWidget(QString const&,float,float,float);
-      
+      RangedFloat* addWidget(QString const&,float,float,float);
+
       /// Adds a integer widget with a name, a value and min-max range
-      slim::RangedInt* addIntegerWidget(QString const&,int,int,int);
+      RangedInt* addIntegerWidget(QString const&,int,int,int);
 
       /// Adds an angle widget with a name, a value and min-max range
-      slim::RangedFloat* addAngleWidget(QString const&,float,float,float);
-        
+      RangedFloat* addAngleWidget(QString const&,float,float,float);
+
       /// Adds an offset widget with a name, a value and min-max range
-      slim::RangedFloat* addOffsetWidget(QString const&,float,float,float);
+      RangedFloat* addOffsetWidget(QString const&,float,float,float);
 
       /// Adds an Rotation widget with three dials for X,Y and Z axis
-      slim::Rotation* addRotationWidget(QString const&);
+      Rotation* addRotationWidget(QString const&);
 
       /// Adds a checkbox
       QCheckBox* addCheckBox(QString const&, bool _checked = false);
@@ -67,16 +67,16 @@ namespace omni
       void clear();
 
       virtual void updateParameters();
-      
+
       /// Utility method for retrieving the value from a slider with id
       double getParamAsFloat(QString const&) const;
-      
+
       /// Set slider value from given value
       void setParamAsFloat(QString const& _str, double _value);
-      
+
       /// Utility method for retrieving the value from a slider with id
       int getParamAsInt(QString const&) const;
-      
+
       /// Set slider value from given value
       void setParamAsInt(QString const& _str, int _value);
 
@@ -91,10 +91,10 @@ namespace omni
     signals:
       void parametersUpdated();
 
-    protected: 
+    protected:
 
       template<typename F>
-      void locked(F f) 
+      void locked(F f)
       {
         bool _oldLocked = locked_;
         locked_ = true;
@@ -102,14 +102,14 @@ namespace omni
         locked_ = _oldLocked;
       }
 
-      inline bool isLocked() const 
+      inline bool isLocked() const
       {
         return locked_;
       }
 
       /// Slider parameter widgets
       std::vector<QUniquePtr<QWidget>> parameters_;
-        
+
       /// Slider widgets, sorted by their label
       std::map<QString,QWidget*> parameterMap_;
 

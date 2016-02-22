@@ -42,7 +42,7 @@ namespace omni
       connect(ui_->boxInterpolation,SIGNAL(currentIndexChanged(int)),this,
               SLOT(changeInterpolation(int)));
 
-      auto setupSlider = [&](slim::RangedInt* _slider)
+      auto setupSlider = [&](RangedInt* _slider)
       {
         _slider->hide();
         _slider->setRange(2,12);

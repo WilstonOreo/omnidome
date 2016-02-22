@@ -44,7 +44,7 @@
        </widget>
       </item>
       <item>
-       <widget class="slim::RangedFloat" name="sliderSize" native="true">
+       <widget class="omni::ui::RangedFloat" name="sliderSize" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -54,7 +54,7 @@
        </widget>
       </item>
       <item>
-       <widget class="slim::RangedFloat" name="sliderFeather" native="true">
+       <widget class="omni::ui::RangedFloat" name="sliderFeather" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -79,19 +79,19 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="slim::RangedFloat" name="sliderGamma" native="true"/>
+       <widget class="omni::ui::RangedFloat" name="sliderGamma" native="true"/>
       </item>
       <item>
-       <widget class="slim::RangedFloat" name="sliderTop" native="true"/>
+       <widget class="omni::ui::RangedFloat" name="sliderTop" native="true"/>
       </item>
       <item>
-       <widget class="slim::RangedFloat" name="sliderLeft" native="true"/>
+       <widget class="omni::ui::RangedFloat" name="sliderLeft" native="true"/>
       </item>
       <item>
-       <widget class="slim::RangedFloat" name="sliderRight" native="true"/>
+       <widget class="omni::ui::RangedFloat" name="sliderRight" native="true"/>
       </item>
       <item>
-       <widget class="slim::RangedFloat" name="sliderBottom" native="true"/>
+       <widget class="omni::ui::RangedFloat" name="sliderBottom" native="true"/>
       </item>
       <item>
        <widget class="QComboBox" name="boxMaskColor">
@@ -141,9 +141,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>slim::RangedFloat</class>
+   <class>omni::ui::RangedFloat</class>
    <extends>QWidget</extends>
-   <header location="global">slim/RangedFloat.h</header>
+   <header location="global">omni/ui/RangedFloat.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

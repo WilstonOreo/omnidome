@@ -33,14 +33,14 @@ namespace omni
     namespace proj
     {
       TitleBar::TitleBar(Tuning* _tuning) :
-        slim::Widget(_tuning),
+        Widget(_tuning),
         tuningWidget_(_tuning)
       {
         setup();
       }
 
       TitleBar::TitleBar(QString const& _label, Tuning* _tuning) :
-        slim::Widget(_label,_tuning),
+        Widget(_label,_tuning),
         tuningWidget_(_tuning)
       {
         setup();

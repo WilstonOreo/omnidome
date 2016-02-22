@@ -295,7 +295,7 @@
   </action>
   <action name="actionSettings">
    <property name="icon">
-    <iconset resource="../rc/ODM.qrc">
+    <iconset>
      <normaloff>:/logo.svg</normaloff>:/logo.svg</iconset>
    </property>
    <property name="text">

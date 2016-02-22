@@ -40,7 +40,7 @@ namespace omni {
                 /// Clear and setup all parameter widgets
                 void setup();
 
-                slim::Rotation* rotation_ = nullptr;
+                Rotation* rotation_ = nullptr;
             };
         }
     }
