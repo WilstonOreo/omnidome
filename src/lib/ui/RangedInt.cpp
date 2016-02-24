@@ -164,6 +164,15 @@ namespace omni {
                                             hasFocus() || editor_->hasFocus());
         }
 
+        void RangedInt::keyPressEvent(QKeyEvent* _event) {
+                if (_event->key() == Qt::Key_Left) {
+                    setValue(value() - singleStep());
+                }
+                if (_event->key() == Qt::Key_Right) {
+                    setValue(value() + singleStep());
+                }
+        }
+
         void RangedInt::mouseMoveEvent(QMouseEvent *e)
         {
             if (moving_)

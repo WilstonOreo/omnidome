@@ -116,7 +116,6 @@ namespace omni
       /// Locked flag
       bool locked_;
 
-
             /// Screen Setup page
             QUniquePtr<ScreenSetup> screenSetup_;
 
@@ -128,6 +127,9 @@ namespace omni
 
             /// Page for current blend mask
             QUniquePtr<TuningGLView> blend_;
+
+            /// Page for color correction
+            QUniquePtr<TuningGLView> colorCorrection_;
 
             /// Page for exporting projection
             QUniquePtr<Export> export_;

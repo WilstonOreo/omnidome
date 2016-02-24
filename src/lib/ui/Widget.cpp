@@ -62,12 +62,12 @@ namespace omni {
         {
             setWindowFlags(Qt::FramelessWindowHint);
             setMinimumSize(0, 24 / devicePixelRatio());
-            setMaximumSize(16000, 24 / devicePixelRatio());
+            setMaximumSize(16000, 48 / devicePixelRatio());
             setFocusPolicy(Qt::TabFocus);
             label_ = new QLabel("", this);
             label_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            label_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
-            label_->setStyleSheet("background : transparent");
+            label_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            label_->setStyleSheet("background : transparent; color: #808080;");
             label_->setPalette(this->palette());
 
             QLayout *_layout = new QHBoxLayout(this);
@@ -93,7 +93,7 @@ namespace omni {
                                                                  QPalette::Dark)),
                                     2) : Qt::NoPen);
             _p.setBrush(Qt::NoBrush);
-            _p.drawRoundedRect(_rect, 4, 4);
+            _p.drawRect(_rect);
         }
     }
 }

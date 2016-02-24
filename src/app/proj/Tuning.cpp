@@ -479,14 +479,14 @@ namespace omni
         // Show close button only in screen- and projection setup
         titleBar_->setCloseButtonVisible(
             _mode == Session::Mode::SCREENSETUP ||
-            _mode == Session::Mode::PROJECTIONSETUP);
+            _mode == Session::Mode::ARRANGE);
 
         switch (_mode)
         {
         case Session::Mode::SCREENSETUP:
           setGroup("FOVSliders");
           break;
-        case Session::Mode::PROJECTIONSETUP:
+        case Session::Mode::ARRANGE:
           if (windowState_ == ADJUSTMENT_SLIDERS)
             setGroup(tuning()->projector().setup()->getTypeId().str());
           if (windowState_ == FOV_SLIDERS)

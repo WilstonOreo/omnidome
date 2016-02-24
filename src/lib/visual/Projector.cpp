@@ -19,12 +19,15 @@
 
 #include <omni/visual/Projector.h>
 
+#include <omni/util.h>
 #include <omni/visual/util.h>
 
 namespace omni
 {
   namespace visual
   {
+    std::unique_ptr<QOpenGLShaderProgram> Projector::haloShader_;
+
     Projector::Projector(const proj::Projector& _proj) :
       proj_(_proj)
     {
@@ -64,6 +67,15 @@ namespace omni
 
     void Projector::update()
     {
+        if (!haloShader_) {
+            using omni::util::fileToStr;
+            static QString _vertSrc = fileToStr(":/shaders/halo.vert");
+            static QString _fragmentSrc = fileToStr(":/shaders/halo.frag");
+            haloShader_.reset(new QOpenGLShaderProgram);
+            haloShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
+            haloShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
+            haloShader_->link();
+        }
       qreal _a = proj_.fov().radians() *0.5;
       qreal _height = tan(_a);
       qreal _width = _height * proj_.aspectRatio();
@@ -137,18 +149,34 @@ namespace omni
         glLoadIdentity();
         // Apply matrix to OpenGL
         glMultMatrixf(proj_.matrix().data());
+        haloShader_->bind();
+        haloShader_->setUniformValue("color",
+            color_.redF(),
+            color_.greenF(),
+            color_.blueF(),
+            selected_ ? 0.45 : 0.15);
+
+        glDisable(GL_DEPTH_TEST);
         glBegin(GL_TRIANGLE_FAN);
         Interface::color(color_,selected_ ? 0.45 : 0.15);
+
+        glTexCoord2f(0.0,0.0);
+
         this->vertex3(eye_);
         Interface::color(color_,0.0);
         float _scale = size_ * 2.0;
         if (selected_) _scale *= 2.0;
+
+        glTexCoord2f(0.0,1.0);
         this->vertex3(topLeft_*_scale);
         this->vertex3(topRight_*_scale);
         this->vertex3(bottomRight_*_scale);
         this->vertex3(bottomLeft_*_scale);
         this->vertex3(topLeft_*_scale);
         glEnd();
+        glEnable(GL_DEPTH_TEST);
+
+        haloShader_->release();
       }
       glPopMatrix();
     }

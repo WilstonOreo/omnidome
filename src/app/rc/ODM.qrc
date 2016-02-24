@@ -12,6 +12,8 @@
     <file>shaders/frustum.vert</file>
     <file>shaders/blend.frag</file>
     <file>shaders/blend.vert</file>
+    <file>shaders/halo.frag</file>
+    <file>shaders/halo.vert</file>
     <file>shaders/grid.frag</file>
     <file>shaders/grid.vert</file>
     <file>shaders/testcard.frag</file>

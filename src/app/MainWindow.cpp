@@ -80,6 +80,12 @@ MainWindow::MainWindow(QMainWindow *parent) :
         blend_->setKeepAspectRatio(true);
         ui_->tabs->addTab(QIcon(":/icons/blend.png"),"BLEND");
 
+        colorCorrection_.reset(new TuningGLView(this));
+        _layout->addWidget(colorCorrection_.get());
+        colorCorrection_->setBorder(0.5);
+        colorCorrection_->setKeepAspectRatio(true);
+        ui_->tabs->addTab(QIcon(":/icons/color_correction.png"),"COLOR CORRECTION");
+
         export_.reset(new Export(session_.get()));
         _layout->addWidget(export_.get());
         ui_->pages->setLayout(_layout);
@@ -212,13 +218,15 @@ void MainWindow::setupSession()
         ui_->dockInputsWidget->setSession(session_.get());
         ui_->dockWarpWidget->setSession(session_.get());
         ui_->dockBlendWidget->setSession(session_.get());
+        ui_->dockColorCorrectionWidget->setSession(session_.get());
 
         // Set session to pages
-        arrange_.get()->setSession(session_.get());
-        blend_.get()->setSession(session_.get());
-        warp_.get()->setSession(session_.get());
-        export_.get()->setSession(session_.get());
-        live_.get()->setSession(session_.get());
+        arrange_->setSession(session_.get());
+        warp_->setSession(session_.get());
+        blend_->setSession(session_.get());
+        colorCorrection_->setSession(session_.get());
+        export_->setSession(session_.get());
+        live_->setSession(session_.get());
     }
     locked_ = false;
 
@@ -321,10 +329,11 @@ void MainWindow::showSettings()
 
 void MainWindow::updateAllViews()
 {
-    arrange_.get()->update();
-    warp_.get()->update();
-    blend_.get()->update();
-    live_.get()->update();
+    arrange_->update();
+    warp_->update();
+    blend_->update();
+    colorCorrection_->update();
+    live_->update();
     ui_->tuningList->updateViews();
 }
 
@@ -334,13 +343,13 @@ void MainWindow::modified()
     if (locked_) return;
 
     modified_ = true;
-    updateAllViews();
 
     if ((session_->mode() != Session::Mode::WARP) &&
         (session_->mode() != Session::Mode::BLEND)) ui_->dockMapping->setVisible(
             session_->inputs().current() != nullptr &&
             session_->mode() !=
             Session::Mode::SCREENSETUP);
+    updateAllViews();
     buttonState();
 }
 
@@ -388,10 +397,12 @@ void MainWindow::buttonState()
 void MainWindow::setTuningIndex(int _index)
 {
     ui_->tuningList->setTuningIndex(_index);
-    warp_.get()->setTuningIndex(_index);
-    blend_.get()->setTuningIndex(_index);
-    warp_.get()->setChildViews(ui_->tuningList->getViews(_index));
-    blend_.get()->setChildViews(ui_->tuningList->getViews(_index));
+    warp_->setTuningIndex(_index);
+    blend_->setTuningIndex(_index);
+    colorCorrection_->setTuningIndex(_index);
+    warp_->setChildViews(ui_->tuningList->getViews(_index));
+    blend_->setChildViews(ui_->tuningList->getViews(_index));
+    colorCorrection_->setChildViews(ui_->tuningList->getViews(_index));
 
     ui_->dockBlendWidget->updateBlendMask();
     ui_->dockWarpWidget->updateWarpGrid();
@@ -438,61 +449,62 @@ void MainWindow::setMode(Session::Mode _mode)
         setTuningIndex(0);
     }
 
-    screenSetup_.get()->setVisible(_mode == Session::Mode::SCREENSETUP);
-    arrange_.get()->setVisible(_mode == Session::Mode::PROJECTIONSETUP);
-    warp_.get()->setVisible(_mode == Session::Mode::WARP && _hasTunings);
-    blend_.get()->setVisible(_mode == Session::Mode::BLEND && _hasTunings);
-    export_.get()->setVisible(_mode == Session::Mode::EXPORT && _hasTunings);
-    live_.get()->setVisible(_mode == Session::Mode::LIVE && _hasTunings);
+    screenSetup_->setVisible(_mode == Session::Mode::SCREENSETUP);
+    arrange_->setVisible(_mode == Session::Mode::ARRANGE);
+    warp_->setVisible(_mode == Session::Mode::WARP && _hasTunings);
+    blend_->setVisible(_mode == Session::Mode::BLEND && _hasTunings);
+    colorCorrection_->setVisible(_mode == Session::Mode::COLORCORRECTION && _hasTunings);
+    export_->setVisible(_mode == Session::Mode::EXPORT && _hasTunings);
+    live_->setVisible(_mode == Session::Mode::LIVE && _hasTunings);
 
     using omni::ui::proj::Tuning;
 
     ui_->btnAddTuning->setVisible(
         _mode == Session::Mode::SCREENSETUP ||
-        _mode == Session::Mode::PROJECTIONSETUP);
+        _mode == Session::Mode::ARRANGE);
+    ui_->dockCanvas->setVisible(_mode == Session::Mode::ARRANGE);
     ui_->dockWarp->setVisible(_mode == Session::Mode::WARP);
     ui_->dockBlend->setVisible(_mode == Session::Mode::BLEND);
+    ui_->dockColorCorrection->setVisible(_mode == Session::Mode::COLORCORRECTION);
+    ui_->dockScene->setVisible(_mode == Session::Mode::ARRANGE ||
+                        _mode == Session::Mode::LIVE);
 
     switch (_mode)
     {
     case Session::Mode::SCREENSETUP:
-        ui_->dockCanvas->hide();
         ui_->dockMapping->hide();
         ui_->dockInputs->show();
         break;
 
-    case Session::Mode::PROJECTIONSETUP:
-        ui_->dockCanvas->show();
+    case Session::Mode::ARRANGE:
         ui_->dockInputs->show();
         ui_->dockMapping->setVisible(session_->inputs().current());
         break;
 
     case Session::Mode::WARP:
-        ui_->dockCanvas->hide();
         ui_->dockInputs->show();
         ui_->dockMapping->setVisible(session_->inputs().current());
         break;
 
     case Session::Mode::BLEND:
-        ui_->dockCanvas->hide();
         ui_->dockInputs->setVisible(
             session_->blendMode() == Session::BlendMode::INPUT);
         ui_->dockMapping->setVisible((session_->blendMode() ==
                                       Session::BlendMode::INPUT)
                                      && session_->inputs().current());
         break;
-
+    case Session::Mode::COLORCORRECTION:
+        ui_->dockInputs->setVisible(true);
+        ui_->dockMapping->setVisible(true);
+        break;
     case Session::Mode::EXPORT:
-        ui_->dockCanvas->hide();
         ui_->dockInputs->show();
         ui_->dockMapping->setVisible(session_->inputs().current());
         break;
 
     case Session::Mode::LIVE:
-        ui_->dockCanvas->hide();
         ui_->dockInputs->show();
         ui_->dockMapping->hide();
-
     default:
         break;
     }

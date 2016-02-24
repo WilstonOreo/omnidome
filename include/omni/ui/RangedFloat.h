@@ -111,6 +111,7 @@ namespace omni
 
                     protected:
                         void paintEvent(QPaintEvent*);
+                        void keyPressEvent(QKeyEvent*);
                         void mouseMoveEvent(QMouseEvent*);
                         void mousePressEvent(QMouseEvent*);
                         void mouseReleaseEvent(QMouseEvent*);
@@ -132,7 +133,7 @@ namespace omni
                         double valueToPos(double) const;
 
                         bool moving_ = false;
-                        bool drawTicks_ = true;
+                        bool drawTicks_ = false;
                         bool useDefaultValue_ = false;
                         QString suffix_;
                         int precision_ = 2;

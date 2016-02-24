@@ -656,7 +656,7 @@ namespace omni
       case Session::Mode::SCREENSETUP:
         drawTestCard();
         break;
-      case Session::Mode::PROJECTIONSETUP:
+      case Session::Mode::ARRANGE:
         drawCanvas();
         break;
       case Session::Mode::WARP:
@@ -665,8 +665,14 @@ namespace omni
       case Session::Mode::BLEND:
         drawBlendMask();
         break;
+      case Session::Mode::COLORCORRECTION:
+        //drawColorCorrected();
+        break;
       case Session::Mode::EXPORT:
         drawExportView();
+        break;
+      case Session::Mode::LIVE:
+        //drawLiveView();
         break;
       default: break;
       }

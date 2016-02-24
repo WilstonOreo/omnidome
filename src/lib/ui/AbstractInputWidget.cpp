@@ -38,8 +38,8 @@ namespace omni {
             valueLabel_ = new QLabel("", this);
             valueLabel_->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
             valueLabel_->setSizePolicy(QSizePolicy::Expanding,
-                                       QSizePolicy::Ignored);
-            valueLabel_->setStyleSheet("background : transparent");
+                                       QSizePolicy::Expanding);
+            valueLabel_->setStyleSheet("background : transparent; color: #808080;");
             layout()->addWidget(valueLabel_);
         }
 
@@ -109,7 +109,7 @@ namespace omni {
             QRectF _progressRect = rect();
 
             _p.setBrush(QBrush(colorSet().window()));
-            _p.drawRoundedRect(_progressRect, 4, 4);
+            _p.drawRect(_progressRect);
 
             if (_left > _right) std::swap(_left, _right);
 

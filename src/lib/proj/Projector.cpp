@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -26,7 +26,7 @@ namespace omni
 {
   namespace proj
   {
-    Projector::Projector() : 
+    Projector::Projector() :
       screen_(nullptr),
       fov_(45.0)
     {
@@ -63,7 +63,7 @@ namespace omni
       return setup_.get();
     }
 
-    Setup* Projector::setup() 
+    Setup* Projector::setup()
     {
       if (!setup_) return nullptr;
       setup_->setup(*this);
@@ -102,7 +102,7 @@ namespace omni
       return fov_;
     }
 
-    QMatrix4x4& Projector::matrix() 
+    QMatrix4x4& Projector::matrix()
     {
       return matrix_;
     }
@@ -112,11 +112,11 @@ namespace omni
       return matrix_;
     }
 
-    void Projector::setMatrix(QMatrix4x4 const& _matrix) 
+    void Projector::setMatrix(QMatrix4x4 const& _matrix)
     {
       matrix_=_matrix;
     }
-      
+
     QMatrix4x4 Projector::projectionMatrix() const
     {
       QMatrix4x4 _m;
@@ -129,10 +129,10 @@ namespace omni
     {
       return matrix().column(3).toVector3D();
     }
-      
+
     bool operator==(Projector const& _lhs,Projector const& _rhs)
     {
-      return 
+      return
         OMNI_TEST_MEMBER_EQUAL(matrix_) &&
         OMNI_TEST_MEMBER_EQUAL(fov_);
     }
@@ -141,7 +141,7 @@ namespace omni
 
 QDataStream& operator>>(QDataStream& _stream, omni::proj::Projector& _proj)
 {
-  omni::util::deserializePtr(_stream,[&](omni::Id const& _id) -> 
+  omni::util::deserializePtr(_stream,[&](omni::Id const& _id) ->
       omni::proj::Setup*
   {
     return _proj.setup(_id);

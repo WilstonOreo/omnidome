@@ -62,6 +62,7 @@ namespace omni
 
                     protected:
                         void paintEvent(QPaintEvent*);
+                        void keyPressEvent(QKeyEvent*);
                         void mouseMoveEvent(QMouseEvent*);
                         void mousePressEvent(QMouseEvent*);
                         void mouseReleaseEvent(QMouseEvent*);

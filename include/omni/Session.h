@@ -39,9 +39,10 @@ namespace omni
     enum class Mode
     {
       SCREENSETUP, // Mode for setup screens
-      PROJECTIONSETUP, // Mode for setting up projectors and canvas
+      ARRANGE, // Mode for setting up projectors and canvas
       WARP, // Mode for adjusting warp grid
       BLEND, // Mode for editing the blend mask
+      COLORCORRECTION, // Mode for color correction for each projector
       EXPORT, // Export mode. Output is locked for faster display
       LIVE, // Live mode. Output is locked for faster display
       NUM_MODES

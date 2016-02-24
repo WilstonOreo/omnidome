@@ -165,7 +165,7 @@ namespace omni
             paramWidget_->show();
             emit inputChanged();
 
-                // Update parameter when canvas has changed
+            // Update parameter when canvas has changed    
             connect(paramWidget_,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
         }
 
