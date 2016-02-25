@@ -193,7 +193,6 @@ namespace omni {
             double _pos = valueToPos();
 
             AbstractInputWidget::drawTrack(_p, valueToPos(pivot()), _pos);
-            AbstractInputWidget::drawHandle(_p, _pos);
 
             if (useDefaultValue()) AbstractInputWidget::drawHandle(_p,
                                                                    valueToPos(
@@ -222,12 +221,18 @@ namespace omni {
         }
 
         void RangedFloat::keyPressEvent(QKeyEvent* _event) {
-                if (_event->key() == Qt::Key_Left) {
-                    setValue(value() - singleStep());
-                }
-                if (_event->key() == Qt::Key_Right) {
-                    setValue(value() + singleStep());
-                }
+            float _step = singleStep();
+
+            if (_event->modifiers() & Qt::ShiftModifier) {
+                _step /= 10.0;
+            }
+
+            if (_event->key() == Qt::Key_Left) {
+                setValue(value() - _step);
+            }
+            if (_event->key() == Qt::Key_Right) {
+                setValue(value() + _step);
+            }
         }
 
         void RangedFloat::mouseMoveEvent(QMouseEvent *e)

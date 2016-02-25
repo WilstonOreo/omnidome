@@ -141,7 +141,6 @@ namespace omni {
 
 
             AbstractInputWidget::drawTrack(_p, _pos);
-            AbstractInputWidget::drawHandle(_p, _pos);
 
             if (drawTicks())
             {
@@ -165,12 +164,18 @@ namespace omni {
         }
 
         void RangedInt::keyPressEvent(QKeyEvent* _event) {
-                if (_event->key() == Qt::Key_Left) {
-                    setValue(value() - singleStep());
-                }
-                if (_event->key() == Qt::Key_Right) {
-                    setValue(value() + singleStep());
-                }
+            float _step = singleStep();
+
+            if (_event->modifiers() & Qt::ShiftModifier) {
+                _step /= 10.0;
+            }
+
+            if (_event->key() == Qt::Key_Left) {
+                setValue(value() - _step);
+            }
+            if (_event->key() == Qt::Key_Right) {
+                setValue(value() + _step);
+            }
         }
 
         void RangedInt::mouseMoveEvent(QMouseEvent *e)

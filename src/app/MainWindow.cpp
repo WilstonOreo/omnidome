@@ -379,18 +379,6 @@ void MainWindow::buttonState()
 
     ui_->actionEditAsNew->setEnabled(!filename_.isEmpty());
     ui_->actionSave->setEnabled(modified_);
-
-    /// Show buttons only when there is a session
-    bool _hasSession = !!session_;
-
-    if (session_->mode() == Session::Mode::BLEND)
-    {
-        ui_->dockInputs->setVisible(
-            session_->blendMode() == Session::BlendMode::INPUT);
-        ui_->dockMapping->setVisible((session_->blendMode() ==
-                                      Session::BlendMode::INPUT)
-                                     && session_->inputs().current());
-    }
 }
 
 /// Set current tuning index
@@ -487,11 +475,8 @@ void MainWindow::setMode(Session::Mode _mode)
         break;
 
     case Session::Mode::BLEND:
-        ui_->dockInputs->setVisible(
-            session_->blendMode() == Session::BlendMode::INPUT);
-        ui_->dockMapping->setVisible((session_->blendMode() ==
-                                      Session::BlendMode::INPUT)
-                                     && session_->inputs().current());
+        ui_->dockInputs->setVisible(true);
+        ui_->dockMapping->setVisible(false);
         break;
     case Session::Mode::COLORCORRECTION:
         ui_->dockInputs->setVisible(true);

@@ -54,6 +54,9 @@
        </widget>
       </item>
       <item>
+       <widget class="omni::ui::RangedFloat" name="sliderOpacity" native="true"/>
+      </item>
+      <item>
        <widget class="omni::ui::RangedFloat" name="sliderFeather" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -108,12 +111,10 @@
           <string>White Mask</string>
          </property>
         </item>
-        <item>
-         <property name="text">
-          <string>Mask with Input</string>
-         </property>
-        </item>
        </widget>
+      </item>
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderInputOpacity" native="true"/>
       </item>
      </layout>
     </widget>

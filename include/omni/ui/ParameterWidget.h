@@ -62,6 +62,9 @@ namespace omni
       /// Adds a checkbox
       QCheckBox* addCheckBox(QString const&, bool _checked = false);
 
+      /// Return id of focused parameter, -1 if no parameter is focused
+      int focusId() const;
+
     public slots:
       /// Removes all parameter widgets
       void clear();
@@ -88,11 +91,29 @@ namespace omni
 
       void setParametersVisible(bool);
 
+      /**@brief Put focus on next element
+         @param _circular Selects first parameter when last parameter has been
+                          reached
+         @returns True if last parameter has been reached, always returns true
+                  when in circular mode
+       **/
+      bool focusNext(bool _circular = false);
+
+      /**@brief Put focus on prev element
+         @param _circular Selects last parameter when first parameter has been
+                          reached
+         @returns True if first parameter has been reached, always returns true
+                  when in circular mode
+       **/
+      bool focusPrev(bool _circular = false);
+
+      /// Focus item in layout with index
+      void focus(int _index);
+
     signals:
       void parametersUpdated();
 
     protected:
-
       template<typename F>
       void locked(F f)
       {

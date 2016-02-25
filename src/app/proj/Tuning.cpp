@@ -252,6 +252,8 @@ namespace omni
 
       void Tuning::setup()
       {
+        this->setFocusPolicy(Qt::TabFocus);
+        this->installEventFilter(this->parent());
         layout_ = new TuningLayout(this);
         setLayout(layout_);
 
@@ -260,6 +262,7 @@ namespace omni
         /// Setup title bar
         titleBar_ = new TitleBar("Projector",this);
         titleBar_->installEventFilter(this);
+//        this->installEventFilter(titleBar_);
         connect(titleBar_,SIGNAL(closeButtonClicked()),this,SLOT(prepareRemove()));
         layout_->addWidget(titleBar_,TuningLayout::Role::TITLE);
 
@@ -271,6 +274,7 @@ namespace omni
         glView_->setBorder(0.0);
         glView_->setViewOnly(true);
         glView_->installEventFilter(this);
+        glView_->installEventFilter(this->parent());
         layout_->addWidget(glView_,TuningLayout::Role::PREVIEW);
 
         fullscreen_.reset(new TuningGLView());
@@ -368,6 +372,16 @@ namespace omni
 
         /// Setup/update mode
         sessionModeChange();
+
+        for (int i = 0; i < layout_->count(); ++i) {
+            auto _widget = layout_->itemAt(i)->widget();
+            if (!_widget) continue;
+            _widget->installEventFilter(this);
+//            this->installEventFilter(_widget);
+//            this->parent()->installEventFilter(_widget);
+            _widget->installEventFilter(this->parent());
+            _widget->setFocusPolicy(Qt::TabFocus);
+        }
       }
 
       /// Adds a new/changes a parameter group
@@ -597,7 +611,7 @@ namespace omni
           return false;
         }
 
-        return false;
+        return QObject::eventFilter(_obj,_event);
       }
 
       bool Tuning::isSelected() const
@@ -617,6 +631,7 @@ namespace omni
         setSelected(false);
         QWidget::focusOutEvent(event);
       }
+
     }
   }
 }

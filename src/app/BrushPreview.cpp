@@ -29,14 +29,14 @@ using namespace omni::ui;
 BrushPreview::BrushPreview(QWidget* _parent) :
   QWidget(_parent)
 {
-  update(brush_.feather(),brush_.invert());
+  update(brush_.feather(),brush_.opacity(),brush_.invert());
   setMinimumSize(64 / devicePixelRatio(),64 / devicePixelRatio());
   setMaximumSize(128 / devicePixelRatio(),128 / devicePixelRatio());
 }
 
-void BrushPreview::update(float _feather, bool _invert)
+void BrushPreview::update(float _feather, float _opacity, bool _invert)
 {
-  brush_.setBrush(std::min(width(),height()),_feather,_invert);
+  brush_.setBrush(std::min(width(),height()),_feather,_opacity,_invert);
   image_ = brush_.buffer().toQImage();
 
   if (_invert)
@@ -48,7 +48,7 @@ void BrushPreview::update(float _feather, bool _invert)
 
 void BrushPreview::resizeEvent(QResizeEvent* event)
 {
-  update(brush_.feather(),brush_.invert());
+  update(brush_.feather(),brush_.opacity(),brush_.invert());
 }
 
 void BrushPreview::paintEvent(QPaintEvent* event)

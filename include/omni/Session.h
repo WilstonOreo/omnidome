@@ -52,8 +52,7 @@ namespace omni
     enum class BlendMode
     {
       COLOR, // Displays blend mask with color of tuning
-      WHITE, // Displays white blend mask
-      INPUT // Displays blend mask with current input
+      WHITE  // Displays white blend mask
     };
 
     /// Default constructor
@@ -108,6 +107,12 @@ namespace omni
     /// Set blend mask mode
     void setBlendMode(BlendMode);
 
+    /// Return input opacity of blend mask
+    float blendMaskInputOpacity() const;
+
+    /// Opacity of input when in blend mask mode
+    void setBlendMaskInputOpacity(float _input);
+
     /// A session has an output when there is an input, a canvas and a mapping
     bool hasOutput() const;
 
@@ -143,6 +148,7 @@ namespace omni
     Mode mode_ = Mode::SCREENSETUP;
 
     BlendMode blendMode_ = BlendMode::COLOR;
+    float blendMaskInputOpacity_ = 0.0;
   };
 }
 

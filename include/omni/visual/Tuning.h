@@ -61,8 +61,7 @@ namespace omni
       void drawWarpPatch() const;
 
       /// Draws Blendmask with warp grid and brush stroke layer
-      void drawBlendMask() const;
-
+      void drawBlendMask(int _inputTexId = 0, float _inputOpacity = 0.0, QColor const& _color = Qt::white) const;
 
       /// Draw cursor for blend brush
       void drawCursor(QPointF const& _pos);

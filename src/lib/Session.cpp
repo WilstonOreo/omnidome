@@ -127,6 +127,16 @@ namespace omni
     blendMode_ = _blendMode;
   }
 
+  float Session::blendMaskInputOpacity() const
+  {
+    return blendMaskInputOpacity_;
+  }
+
+  void Session::setBlendMaskInputOpacity(float _blendMaskInputOpacity)
+  {
+    blendMaskInputOpacity_ = _blendMaskInputOpacity;
+  }
+
   bool Session::hasOutput() const
   {
     return inputs().current() && canvas() && mapping();

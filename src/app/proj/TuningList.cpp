@@ -25,6 +25,7 @@
 
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QKeyEvent>
 
 #include <QDebug>
 
@@ -56,6 +57,16 @@ namespace omni
 
       TuningList::~TuningList()
       {
+      }
+
+      QWidget* TuningList::widget(int _index) {
+         return (_index >= 0) && (_index < widgets_.size()) ?
+            widgets_[_index].get() : nullptr;
+      }
+
+      QWidget const* TuningList::widget(int _index) const {
+         return (_index >= 0) && (_index < widgets_.size()) ?
+            widgets_[_index].get() : nullptr;
       }
 
       Session const* TuningList::session() const
@@ -158,7 +169,7 @@ namespace omni
           return;
         }
 
-        int _index = 0; //session_->tunings().size();
+        int _index = 0;
         for (auto& _sessionTuning : session_->tunings())
         {
           if (_sessionTuning.get() == _tuning)
@@ -290,6 +301,29 @@ namespace omni
           _widget->layout()->update();
 
         QScrollArea::resizeEvent(event);
+      }
+
+      void TuningList::keyPressEvent(QKeyEvent* _event) {
+          if (_event->key() == Qt::Key_Up) {
+              for (auto& _widget : widgets_) {
+                  if (_widget->hasFocus()) continue;
+                  _widget->focusPrev(false);
+              }
+          }
+          if (_event->key() == Qt::Key_Down) {
+              for (auto& _widget : widgets_) {
+                  if (_widget->hasFocus()) continue;
+                  _widget->focusNext(false);
+              }
+          }
+      }
+
+      bool TuningList::eventFilter(QObject *obj, QEvent *event) {
+            if (event->type() == QEvent::KeyPress) {
+                auto *keyEvent = static_cast<QKeyEvent*>(event);
+                keyPressEvent(keyEvent);
+            }
+        return QWidget::eventFilter(obj,event);
       }
 
       void TuningList::setCurrentTuning()

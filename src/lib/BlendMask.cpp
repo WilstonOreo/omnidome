@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -77,7 +77,7 @@ namespace omni
   {
     return gamma_;
   }
-    
+
   BlendBrush& BlendMask::brush()
   {
     return brush_;
@@ -99,12 +99,12 @@ namespace omni
     autoResizeStrokeBuffer();
     return brush_.drawLine(_p0,_p1,strokeBuffer_,_leftOver);
   }
-    
-  BlendBuffer const& BlendMask::strokeBuffer() const
+
+  BlendMask::Buffer const& BlendMask::strokeBuffer() const
   {
     return strokeBuffer_;
   }
-    
+
   void BlendMask::resize(int width, int height)
   {
     strokeBuffer_.resize(width,height);
@@ -114,17 +114,17 @@ namespace omni
   {
     return (void*)(strokeBuffer_.data().data());
   }
-    
+
   void BlendMask::autoResizeStrokeBuffer()
   {
-    if (strokeBuffer_.width() != tuning_.width() || 
+    if (strokeBuffer_.width() != tuning_.width() ||
         strokeBuffer_.height() != tuning_.height())
       strokeBuffer_.resize(tuning_.width(),tuning_.height());
   }
- 
+
   bool operator==(BlendMask const& _lhs, BlendMask const& _rhs)
   {
-    return 
+    return
       OMNI_TEST_MEMBER_EQUAL(rect_) &&
       OMNI_TEST_MEMBER_EQUAL(gamma_) &&
       OMNI_TEST_MEMBER_EQUAL(brush_);
@@ -151,4 +151,3 @@ QDataStream& operator<<(QDataStream& _os, omni::BlendMask const& _mask)
   _os << _mask.brush();
   return _os;
 }
-

@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -37,6 +37,8 @@ namespace omni
   class BlendMask
   {
   public:
+      typedef Buffer<uint8_t> Buffer;
+
     BlendMask(proj::Tuning const& _tuning);
 
     /// Clears stroke buffer
@@ -70,20 +72,20 @@ namespace omni
 
     /// Return reference blend brush
     BlendBrush& brush();
-    
+
     /// Return reference blend brush (const version)
     BlendBrush const& brush() const;
 
     /// Stamp on stroke buffer with current brush at position x y
     void stamp(const QPointF& _pos);
 
-    /**@brief Draws a line on stroke buffer 
-     * @returns new left over value 
+    /**@brief Draws a line on stroke buffer
+     * @returns new left over value
      */
     float drawLine(QPointF const& _p0, QPointF const& _p1, float _leftOver = 0.0);
 
     /// Returns stroke buffer (read only)
-    BlendBuffer const& strokeBuffer() const;
+    Buffer const& strokeBuffer() const;
 
     void resize(int width, int height);
 
@@ -96,14 +98,14 @@ namespace omni
   private:
     /// Returns blend value for mask buffer at position x y
     float borderValue(float _x, float _y) const;
-   
+
     void autoResizeStrokeBuffer();
 
     proj::Tuning const& tuning_;
     QRectF rect_;
     float gamma_;
     BlendBrush brush_;
-    BlendBuffer strokeBuffer_;
+    Buffer strokeBuffer_;
   };
 }
 

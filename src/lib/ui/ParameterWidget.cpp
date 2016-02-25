@@ -190,6 +190,52 @@ namespace omni
         _parameter->setVisible(_visible);
     }
 
+    int ParameterWidget::focusId() const {
+        int _id = 0;
+        for (int i = 0; i < layout()->count(); ++i) {
+            auto _param = layout()->itemAt(i)->widget();
+            if (_param->hasFocus()) {
+                return _id;
+            }
+            ++_id;
+        }
+        return -1;
+    }
+
+    void ParameterWidget::focus(int _index) {
+        layout()->itemAt(_index)->widget()->setFocus();
+    }
+
+    bool ParameterWidget::focusNext(bool _circular) {
+        int _focusId = focusId();
+
+        if (_focusId != -1) {
+            int _nextFocus = _focusId + 1;
+            if (_nextFocus >= layout()->count()) {
+                _nextFocus = _circular ? 0 : layout()->count() - 1;
+            }
+            auto _param = layout()->itemAt(_nextFocus)->widget();
+            _param->setFocus();
+            return _focusId != _nextFocus;
+        }
+        return false;
+    }
+
+    bool ParameterWidget::focusPrev(bool _circular) {
+        int _focusId = focusId();
+
+        if (_focusId != -1) {
+            int _prevFocus = _focusId - 1;
+            if (_prevFocus < 0) {
+                _prevFocus = _circular ? layout()->count() - 1 : 0;
+            }
+            auto _param = layout()->itemAt(_prevFocus)->widget();
+            _param->setFocus();
+            return _focusId != _prevFocus;
+        }
+        return false;
+    }
+
     Rotation* ParameterWidget::addRotationWidget(QString const& _str)
     {
       auto* _widget = new Rotation(0.0,0.0,0.0,this);

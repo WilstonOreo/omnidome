@@ -204,7 +204,7 @@ namespace omni
       return !!blendTex_ && !!blendShader_ && !!testCardShader_;
     }
 
-    void Tuning::drawBlendMask() const
+    void Tuning::drawBlendMask(int _inputTexId, float _inputOpacity, QColor const& _color) const
     {
       if (!blendShader_) return;
 
@@ -219,7 +219,9 @@ namespace omni
         _.glEnable(GL_BLEND);
         _.glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-        glColor4f(0.0,0.0,0.0,1.0);
+        _.glBindTexture(GL_TEXTURE_2D, _inputTexId);
+        _.glActiveTexture(GL_TEXTURE0);
+
         blendShader_->bind();
         {
           blendShader_->setUniformValue("top",_mask.topWidth());
@@ -227,10 +229,14 @@ namespace omni
           blendShader_->setUniformValue("bottom",_mask.bottomWidth());
           blendShader_->setUniformValue("left",_mask.leftWidth());
           blendShader_->setUniformValue("gamma",_mask.gamma());
-          blendShader_->setUniformValue("mask",GLfloat(-1.0));
+          blendShader_->setUniformValue("input_tex",0);
+          blendShader_->setUniformValue("input_opacity",_inputOpacity);
+          blendShader_->setUniformValue("color",_color.redF(),_color.greenF(),_color.blueF());
+          blendShader_->setUniformValue("mask",GLfloat(1.0));
           warpGrid_->draw();
         }
         blendShader_->release();
+        _.glBindTexture(GL_TEXTURE_2D, 0);
 
         _.glDisable(GL_BLEND);
         glColor4f(0.0,0.0,0.0,1.0);

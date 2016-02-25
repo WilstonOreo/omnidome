@@ -50,6 +50,10 @@ namespace omni
         ui_->sliderRight->setLabel("Right");
         setupSlider(ui_->sliderBottom);
         ui_->sliderBottom->setLabel("Bottom");
+
+        setupSlider(ui_->sliderInputOpacity);
+        ui_->sliderInputOpacity->setLabel("Input Opacity");
+        ui_->sliderInputOpacity->setRange(0.0,1.0);
       }
 
       /// Setup gamma
@@ -66,14 +70,21 @@ namespace omni
         ui_->sliderSize->setRange(5.0,500.0);
         ui_->sliderSize->setSingleStep(5.0);
         ui_->sliderSize->setPageStep(50.0);
-        connect(ui_->sliderSize,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
         ui_->sliderSize->setLabel("Brush size");
+        connect(ui_->sliderSize,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
 
         ui_->sliderFeather->setRange(0.1,4.0);
         ui_->sliderFeather->setSingleStep(0.1);
         ui_->sliderFeather->setPageStep(0.5);
-        connect(ui_->sliderFeather,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
         ui_->sliderFeather->setLabel("Feather");
+        connect(ui_->sliderFeather,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
+
+        ui_->sliderOpacity->setRange(0.0,1.0);
+        ui_->sliderOpacity->setSingleStep(0.01);
+        ui_->sliderOpacity->setPageStep(0.1);
+        ui_->sliderOpacity->setLabel("Opacity");
+        connect(ui_->sliderOpacity,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
+
         connect(ui_->chkInvert,SIGNAL(clicked(bool)),this,SLOT(changeBlendMask()));
       }
 
@@ -108,12 +119,14 @@ namespace omni
         ui_->sliderTop->setValue(blendMask()->topWidth());
         ui_->sliderBottom->setValue(blendMask()->bottomWidth());
         ui_->sliderGamma->setValue(blendMask()->gamma());
+        ui_->sliderInputOpacity->setValue(session_->blendMaskInputOpacity());
 
         auto& _brush = blendMask()->brush();
         ui_->sliderSize->setValue(_brush.size());
         ui_->sliderFeather->setValue(_brush.feather());
+        ui_->sliderOpacity->setValue(_brush.opacity());
         ui_->chkInvert->setChecked(_brush.invert());
-        ui_->brushPreview->update(_brush.feather(),_brush.invert());
+        ui_->brushPreview->update(_brush.feather(),_brush.opacity(),_brush.invert());
         locked_ = false;
       }
     }
@@ -133,21 +146,21 @@ namespace omni
       blendMask()->setGamma(ui_->sliderGamma->value());
 
       float _feather = ui_->sliderFeather->value();
+      float _opacity = ui_->sliderOpacity->value();
       bool _invert = ui_->chkInvert->isChecked();
 
       blendMask()->brush().setBrush(
         ui_->sliderSize->value(), // Size
-        _feather,_invert);
-
-      ui_->brushPreview->update(_feather,_invert);
+        _feather,_opacity,_invert);
+      ui_->brushPreview->update(_feather,_opacity,_invert);
 
       int _blendModeIndex = ui_->boxMaskColor->currentIndex();
       if (_blendModeIndex == 0)
         session_->setBlendMode(Session::BlendMode::COLOR);
       if (_blendModeIndex == 1)
         session_->setBlendMode(Session::BlendMode::WHITE);
-      if (_blendModeIndex == 2)
-        session_->setBlendMode(Session::BlendMode::INPUT);
+
+      session_->setBlendMaskInputOpacity(ui_->sliderInputOpacity->value());
 
       emit blendMaskChanged();
     }

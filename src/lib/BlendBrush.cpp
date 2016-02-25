@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -26,7 +26,7 @@
 
 namespace omni
 {
-  BlendBrush::BlendBrush()  
+  BlendBrush::BlendBrush()
   {
     generate();
   }
@@ -50,10 +50,25 @@ namespace omni
     size_= qBound(2.0f,_size,512.0f);
     generate();
   }
-  
+
   void BlendBrush::changeSize(float _delta)
   {
     setSize(size_ + _delta);
+  }
+
+  float BlendBrush::opacity() const {
+      return opacity_;
+  }
+
+  void BlendBrush::setOpacity(float _opacity) {
+      opacity_ = _opacity;
+      if (opacity_ < 0.0) {
+          opacity_ = 0.0;
+      }
+      if (opacity_ > 1.0) {
+          opacity_ = 1.0;
+      }
+      generate();
   }
 
   float BlendBrush::feather() const
@@ -80,17 +95,27 @@ namespace omni
     generate();
   }
 
-  void BlendBrush::setBrush(float _size, float _feather, bool _invert)
+  void BlendBrush::setBrush(
+      float _size,
+      float _feather,
+      float _opacity, bool _invert)
   {
     size_= qBound(_size,2.0f,512.0f);
     feather_=_feather;
     if (feather_ < 0.0) feather_ = 0.0;
     if (feather_ > 10.0) feather_ = 10.0;
     invert_=_invert;
+      if (opacity_ < 0.0) {
+          opacity_ = 0.0;
+      }
+      if (opacity_ > 1.0) {
+          opacity_ = 1.0;
+      }
+    opacity_ = _opacity;
     generate();
   }
 
-  void BlendBrush::stamp(QPointF const& _p, BlendBuffer& _buf) const
+  void BlendBrush::stamp(QPointF const& _p, Buffer<uint8_t>& _buf) const
   {
     int _size = size();
     float r = size()*0.5;
@@ -112,24 +137,24 @@ namespace omni
 
         if (invert())
         {
-          _pix = _pix * _v / 256;
+          _pix = _pix * _v;
         }
         else
         {
-          _pix = 255 - (255 - _buf(_posx,_posy)) * _v / 256;
+          _pix = (255 - (255 - _buf(_posx,_posy)) * _v);
         }
       }
     }
   }
 
   float BlendBrush::drawLine(const QPointF& _p0, const QPointF& _p1,
-                             BlendBuffer& _buf, float _leftOver)
+                             Buffer<uint8_t>& _buf, float _leftOver)
   {
     float _spacing = size_ / 10.0;
     if (_spacing < 0.5) _spacing = 0.5;
 
     QVector2D _step(0.0,0.0);
-    
+
     // Calculate vector and distance
     QVector2D _delta(_p1 - _p0);
     float _dist = _delta.length();
@@ -157,14 +182,14 @@ namespace omni
       }
       // Draw stamp
       stamp(_p0 + _offset.toPointF(),_buf);
-      
+
       _totalDistance -= _spacing;
     }
 
     return _totalDistance;
   }
-    
-  BlendBuffer const& BlendBrush::buffer() const
+
+  Buffer<float> const& BlendBrush::buffer() const
   {
     return buffer_;
   }
@@ -172,7 +197,7 @@ namespace omni
 
   void BlendBrush::generate()
   {
-    int _size = std::max(int(size()+1),2); 
+    int _size = std::max(int(size()+1),2);
     buffer_.resize(_size,_size);
 
     float _r = _size*0.5;
@@ -186,18 +211,19 @@ namespace omni
         float _distance = QVector2D(x - _r,y - _r).length();
 
         // Pixel value
-        float _v = 256.0 * (_distance - _innerRadius) / (_r - _innerRadius);
+        float _v = (_distance - _innerRadius) / (_r - _innerRadius) * opacity_ + 1.0 - opacity_ ;
 
         // Clamp and set pixel value
-        buffer_(x,y) = qBound(0.0f,_v,255.0f);
+        buffer_(x,y) = qBound(0.0f,_v,1.0f);
       }
   }
 
   bool operator==(BlendBrush const& _lhs, BlendBrush const& _rhs)
   {
-    return 
+    return
       OMNI_TEST_MEMBER_EQUAL(size_) &&
       OMNI_TEST_MEMBER_EQUAL(feather_) &&
+      OMNI_TEST_MEMBER_EQUAL(opacity_) &&
       OMNI_TEST_MEMBER_EQUAL(invert_);
   }
 }
@@ -208,15 +234,16 @@ QDataStream& operator>>(QDataStream& _is, omni::BlendBrush& _brush)
   _is >> _size;
   float _feather;
   _is >> _feather;
+  float _opacity;
+  _is >> _opacity;
   bool _invert;
   _is >> _invert;
-  _brush.setBrush(_size,_feather,_invert);
+  _brush.setBrush(_size,_feather,_opacity,_invert);
   return _is;
 }
 
 QDataStream& operator<<(QDataStream& _os, omni::BlendBrush const& _brush)
 {
-  _os << _brush.size() << _brush.feather() << _brush.invert();
+  _os << _brush.size() << _brush.feather() << _brush.opacity() << _brush.invert();
   return _os;
 }
-

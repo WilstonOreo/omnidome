@@ -363,9 +363,7 @@ namespace omni
     {
       if (context())
       {
-        qDebug() << "connect(context(),SIGNAL(aboutToBeDestroyed()),this,SLOT(free()));";
         connect(context(),SIGNAL(aboutToBeDestroyed()),this,SLOT(free()));
-        //connect(context(),SIGNAL(aboutToBeDestroyed()),this,SLOT(destroy()));
       }
 
       return context() != nullptr;
@@ -528,50 +526,19 @@ namespace omni
     void TuningGLView::drawBlendMask()
     {
       auto _blendMode = session()->blendMode();
+      float _inputOpacity = session()->blendMaskInputOpacity();
 
-      if (_blendMode == Session::BlendMode::INPUT)
-      {
-        // Generate mesh and re-render texture
-        updateWarpBuffer();
-    } else {
-        // Generate mesh only
-        vizTuning_->updateWarpGrid();
-    }
+      updateWarpBuffer();
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
         _.glDisable(GL_LIGHTING);
         _.glEnable(GL_BLEND);
-
-        switch (_blendMode)
-        {
-        case Session::BlendMode::COLOR:
-        {
-          // Draw blend mask with color of tuning
-          _.glDisable(GL_TEXTURE_2D);
-          auto _color = tuning()->color();
-          glColor4f(_color.redF(),_color.greenF(),_color.blueF(),1.0);
-          vizTuning_->drawBlendMask();
-          break;
+        QColor _color = tuning()->color();
+        if (_blendMode == Session::BlendMode::WHITE) {
+            _color = Qt::white;
         }
-        case Session::BlendMode::WHITE:
-        {
-          // Draw white blend mask
-          _.glDisable(GL_TEXTURE_2D);
-          glColor4f(1.0,1.0,1.0,1.0);
-          vizTuning_->drawBlendMask();
-          break;
-        }
-        case Session::BlendMode::INPUT:
-        {
-          // Draw blend mask with input attached
-          _.glEnable(GL_TEXTURE_2D);
-          _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
-          vizTuning_->drawBlendMask();
-          _.glBindTexture(GL_TEXTURE_2D, 0.0);
-          break;
-        }
-        };
+        vizTuning_->drawBlendMask(warpGridBuffer_->texture(),_inputOpacity,_color);
 
         drawScreenBorder();
 
