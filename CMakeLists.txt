@@ -115,6 +115,10 @@ ADD_EXECUTABLE(test_Serialization
   ./src/test/Serialization.cpp )
 TARGET_LINK_LIBRARIES(test_Serialization ${Qt5_LIBRARIES} ${omni_extra_libs}  omni )
 
+ADD_EXECUTABLE(test_ThrowRatio
+  ./src/test/ThrowRatio.cpp )
+TARGET_LINK_LIBRARIES(test_ThrowRatio ${Qt5_LIBRARIES} ${omni_extra_libs}  omni )
+
 # Main Application
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 

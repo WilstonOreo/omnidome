@@ -21,13 +21,13 @@
 #include <QColor>
 #include <QRect>
 #include <QPoint>
-#include <omni/ui/SessionWidget.h>
+#include <omni/ui/mixin/SessionWidget.h>
 
 namespace omni {
     namespace ui {
         class OutputPreview:
             public QWidget,
-            public SessionWidget
+            public mixin::SessionWidget
         {
             Q_OBJECT
         public:

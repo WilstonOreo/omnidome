@@ -19,6 +19,7 @@
 
 #include "ColorCorrection.h"
 
+#include <omni/util.h>
 #include "ui_omni_ui_ColorCorrection.h"
 
 namespace omni {
@@ -28,14 +29,26 @@ namespace omni {
             ui_(new Ui::ColorCorrection)
         {
             this->setup(ui_);
+
+            connect(ui_->boxChannel,SIGNAL(currentIndexChanged(int)),this,SLOT(setChannel(int)));
         }
 
         ColorCorrection::~ColorCorrection() {
 
         }
 
-        void ColorCorrection::sessionParameters() {
+        void ColorCorrection::setChannel(int _index) {
+            if (!tuning()) return;
 
+            using proj::Channel;
+            Channel _channel = util::intToEnum<Channel>(_index);
+            auto* _colorCorrection = &tuning()->colorCorrection();
+            ui_->graph->setColorCorrection(_colorCorrection);
+            ui_->params->setChannelCorrection(_colorCorrection->correction(_channel));
+        }
+
+        void ColorCorrection::tuningParameters() {
+            ui_->boxChannel->setCurrentIndex(0);
         }
     }
 }

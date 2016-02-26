@@ -77,8 +77,8 @@ namespace omni
             haloShader_->link();
         }
       qreal _a = proj_.fov().radians() *0.5;
-      qreal _height = tan(_a);
-      qreal _width = _height * proj_.aspectRatio();
+      qreal _width = tan(_a);
+      qreal _height = _width / proj_.aspectRatio();
       eye_ = QVector3D(0,0,0);
       topLeft_ = QVector3D(1.0,-_width,_height);
       topRight_ = QVector3D(1.0,_width,_height);

@@ -63,6 +63,10 @@ private:
 
 int main(int ac, char *av[])
 {
+            QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+
+            QCoreApplication::setApplicationName("Omnidome");
+            QCoreApplication::setApplicationVersion(OMNIDOME_VERSION_STRING);
     std::vector<QDir> _pluginDirs;
     omni::ui::Application _a(ac, av);
 

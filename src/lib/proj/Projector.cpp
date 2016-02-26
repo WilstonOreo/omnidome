@@ -82,12 +82,12 @@ namespace omni
 
     qreal Projector::throwRatio() const
     {
-      return tan(fov_.radians() / 2.0) * aspectRatio();
+      return 0.5 / tan( fov_.radians() / 2.0 );
     }
 
     void Projector::setThrowRatio(qreal _throwRatio)
     {
-      fov_ = Angle::fromRad(2.0 * atan(_throwRatio  / aspectRatio()));
+      fov_ = Angle::fromRad(2.0 * atan(1.0 / (_throwRatio * 2.0)));
     }
 
     void Projector::setFov(Angle _fov)
@@ -120,7 +120,8 @@ namespace omni
     QMatrix4x4 Projector::projectionMatrix() const
     {
       QMatrix4x4 _m;
-      _m.perspective(fov().degrees(), aspectRatio(), 0.01, 1000.0);
+      Angle _vertFov = Angle::fromRad(2.0 * atan(1.0 / (throwRatio() * 2.0) / aspectRatio()));
+      _m.perspective(_vertFov.degrees(), aspectRatio(), 0.01, 1000.0);
       _m.lookAt(pos(), pos() + matrix().column(0).toVector3D(),matrix().column(2).toVector3D());
       return _m;
     }

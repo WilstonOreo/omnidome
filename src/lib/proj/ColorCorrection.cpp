@@ -87,5 +87,27 @@ namespace omni {
                 qBound(0, int(_g * 255), 255),
                 qBound(0, int(_b * 255), 255));
         }
+
+        ChannelCorrection* ColorCorrection::correction(Channel _channel) {
+            switch (_channel) {
+                default:
+                case Channel::ALL: return &all_;
+                case Channel::RED: return &red_;
+                case Channel::GREEN: return &green_;
+                case Channel::BLUE: return &red_;
+            }
+            return nullptr;
+        }
+
+        ChannelCorrection const* ColorCorrection::correction(Channel _channel) const {
+            switch (_channel) {
+                default:
+                case Channel::ALL: return &all_;
+                case Channel::RED: return &red_;
+                case Channel::GREEN: return &green_;
+                case Channel::BLUE: return &red_;
+            }
+            return nullptr;
+        }
     }
 }

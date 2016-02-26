@@ -218,7 +218,7 @@ void MainWindow::setupSession()
         ui_->dockInputsWidget->setSession(session_.get());
         ui_->dockWarpWidget->setSession(session_.get());
         ui_->dockBlendWidget->setSession(session_.get());
-        ui_->dockColorCorrectionWidget->setSession(session_.get());
+        ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
 
         // Set session to pages
         arrange_->setSession(session_.get());

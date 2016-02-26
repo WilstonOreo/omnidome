@@ -120,8 +120,8 @@ namespace omni
 
       /// Construct frustum
       qreal _a = _proj.fov().radians() *0.5;
-      qreal _height = tan(_a);
-      qreal _width = _height * _proj.aspectRatio();
+      qreal _width = tan(_a);
+      qreal _height = _width / _proj.aspectRatio();
       QVector3D _eye = _m.column(3).toVector3D();
       QVector3D _topLeft = _m * QVector3D(1.0,-_width,_height) - _eye;
       QVector3D _topRight = _m * QVector3D(1.0,_width,_height) - _eye;

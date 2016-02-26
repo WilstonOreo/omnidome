@@ -16,37 +16,44 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef OMNI_UI_COLORCORRECTION_H_
-#define OMNI_UI_COLORCORRECTION_H_
 
-#include <memory>
-#include <omni/ui/mixin/TuningWidget.h>
-#include "DockWidget.h"
+#include <omni/Angle.h>
+#include <omni/proj/Projector.h>
 
 namespace omni {
-    namespace ui {
-        namespace Ui {
-            class ColorCorrection;
-        }
+    namespace test {
+        /// Throw Ratio test
+        struct ThrowRatio {
+            ThrowRatio(Angle _angle) {
+                proj::Projector _proj;
+                _proj.setFov(_angle);
+                qDebug() << "FOV: " << _angle.degrees() << "\t ThrowRatio: " << _proj.throwRatio();
 
-        class ColorCorrection :
-            public DockWidget,
-            public mixin::TuningWidget
-        {
-            Q_OBJECT
-        public:
-            ColorCorrection(QWidget* _parent = nullptr);
-            ~ColorCorrection();
+            }
+        };
 
-        public slots:
-            void setChannel(int);
+        /// Field of view test
+        struct FOV {
+            FOV(qreal _throwRatio) {
+                proj::Projector _proj;
+                _proj.setThrowRatio(_throwRatio);
+                qDebug() << "FOV: " << _proj.fov().degrees() << "\t ThrowRatio: " << _throwRatio;
+            }
 
-        private:
-            void tuningParameters();
-
-            std::unique_ptr<Ui::ColorCorrection> ui_;
         };
     }
 }
 
-#endif /* OMNI_UI_COLORCORRECTION_H_ */
+int main(int ac, char* av[]) {
+
+    using namespace omni;
+    test::ThrowRatio(90.0);
+    test::ThrowRatio(60.0);
+    test::ThrowRatio(45.0);
+    test::ThrowRatio(36.0);
+
+    test::FOV(1.5);
+    test::FOV(1.0);
+    test::FOV(0.8);
+    test::FOV(0.5);
+}

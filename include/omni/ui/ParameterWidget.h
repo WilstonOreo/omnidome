@@ -23,6 +23,7 @@
 #include <set>
 #include <QWidget>
 #include <QCheckBox>
+#include <omni/ui/mixin/Locked.h>
 #include <omni/ui/RangedFloat.h>
 #include <omni/ui/RangedInt.h>
 #include <omni/ui/Rotation.h>
@@ -34,7 +35,9 @@ namespace omni
   {
     /**@brief A widget which holds sub-widgets for manipulating parameters
     **/
-    class ParameterWidget : public QWidget
+    class ParameterWidget :
+        public QWidget,
+        protected mixin::Locked
     {
       Q_OBJECT
     public:
@@ -114,29 +117,11 @@ namespace omni
       void parametersUpdated();
 
     protected:
-      template<typename F>
-      void locked(F f)
-      {
-        bool _oldLocked = locked_;
-        locked_ = true;
-        f();
-        locked_ = _oldLocked;
-      }
-
-      inline bool isLocked() const
-      {
-        return locked_;
-      }
-
       /// Slider parameter widgets
       std::vector<QUniquePtr<QWidget>> parameters_;
 
       /// Slider widgets, sorted by their label
       std::map<QString,QWidget*> parameterMap_;
-
-    private:
-      /// Flag which sets if widgets are currently locked
-      bool locked_ = false;
     };
   }
 }

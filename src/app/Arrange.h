@@ -19,7 +19,7 @@
 
 #include <memory>
 #include <QWidget>
-#include <omni/ui/SessionWidget.h>
+#include <omni/ui/mixin/SessionWidget.h>
 
 namespace omni {
     namespace ui {
@@ -28,7 +28,7 @@ namespace omni {
         }
         class Arrange :
             public QWidget,
-            public SessionWidget
+            public mixin::SessionWidget
         {
             Q_OBJECT
         public:

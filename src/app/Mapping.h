@@ -21,7 +21,7 @@
 #define OMNI_UI_MAPPING_H_
 
 #include <memory>
-#include <omni/ui/SessionWidget.h>
+#include <omni/ui/mixin/SessionWidget.h>
 #include <omni/ui/MappingParameters.h>
 #include "DockWidget.h"
 
@@ -40,7 +40,7 @@ namespace omni
      **/
     class Mapping :
       public DockWidget,
-      public SessionWidget
+      public mixin::SessionWidget
     {
       Q_OBJECT
     public:

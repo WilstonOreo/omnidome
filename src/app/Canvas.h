@@ -22,7 +22,7 @@
 
 #include <memory>
 #include <omni/visual/ProjectorViewMode.h>
-#include <omni/ui/SessionWidget.h>
+#include <omni/ui/mixin/SessionWidget.h>
 #include <omni/ui/CanvasParameters.h>
 #include "DockWidget.h"
 
@@ -39,7 +39,7 @@ namespace omni
 
                 class Canvas :
                     public DockWidget,
-                    public SessionWidget
+                    public mixin::SessionWidget
                 {
                         Q_OBJECT
                     public:

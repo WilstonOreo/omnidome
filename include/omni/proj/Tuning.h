@@ -35,6 +35,8 @@ namespace omni
   namespace proj
   {
     /**@brief A projector tuning holds adjustment and distorsion data for a single projector and screen
+       @detail A tuning consists of a projector, warp grid, blend mask and color correction.
+               It holds a color as well.
      **/
     class Tuning
     {
@@ -98,6 +100,7 @@ namespace omni
 
       WarpGrid warpGrid_;
       BlendMask blendMask_;
+      ColorCorrection colorCorrection_;
     };
   }
 }

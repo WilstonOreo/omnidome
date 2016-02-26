@@ -24,6 +24,13 @@
 
 namespace omni {
     namespace proj {
+        enum class Channel {
+            ALL,
+            RED,
+            GREEN,
+            BLUE
+        };
+
         /// Color correction for RGB color space
         class ColorCorrection {
         public:
@@ -68,6 +75,12 @@ namespace omni {
 
             /// Return corrected color
             QColor corrected(QColor) const;
+
+            /// Return color correction for given channel
+            ChannelCorrection* correction(Channel);
+
+            /// Return color correction for given channel (const version)
+            ChannelCorrection const* correction(Channel) const;
 
         private:
             bool isUsed_ = true;
