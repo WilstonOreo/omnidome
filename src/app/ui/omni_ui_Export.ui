@@ -216,6 +216,9 @@
            <property name="text">
             <string>Exclude non-selected screens</string>
            </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
         </layout>

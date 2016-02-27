@@ -115,6 +115,7 @@ namespace omni
       _offset->setSuffix("m");
       _offset->setSingleStep(0.1);
       _offset->setPageStep(0.1);
+      _offset->setPivot(0.0);
       return _offset;
     }
 

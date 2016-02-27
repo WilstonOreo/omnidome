@@ -363,6 +363,12 @@ void MainWindow::closeEvent(QCloseEvent *_event)
         _event->ignore();
         return;
     }
+
+
+      // Delete screen setup manually, so all fullscreen widgets are free'd too
+      screenSetup_->hide();
+      screenSetup_->setParent(nullptr);
+      screenSetup_.reset();
 }
 
 void MainWindow::buttonState()

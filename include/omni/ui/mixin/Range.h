@@ -26,6 +26,7 @@
 namespace omni {
     namespace ui {
         namespace mixin {
+            /// Mixin for a ranged value with min and maximum
             template<typename VALUE>
             struct Range
             {
@@ -40,22 +41,22 @@ namespace omni {
 
                 qreal ratio(value_type _v) const
                 {
-                    return qreal(_v - minimum_) / range();
+                    return qreal(_v - minimum()) / range();
                 }
 
                 value_type range() const
                 {
-                    return maximum_ - minimum_;
+                    return maximum() - minimum();
                 }
 
                 value_type minimum() const
                 {
-                    return minimum_;
+                    return minimum_ * scale_;
                 }
 
                 value_type maximum() const
                 {
-                    return maximum_;
+                    return maximum_ * scale_;
                 }
 
                 void setMinimum(value_type _minimum)
@@ -107,12 +108,22 @@ namespace omni {
                     return maximum_ != std::numeric_limits<value_type>::max();
                 }
 
+                /// Return value for scale
+                float scale() const {
+                    return scale_;
+                }
+
+                /// Set new value for scale
+                void setScale(float _scale) {
+                    scale_ = _scale;
+                }
+
             protected:
                 template<typename WIDGET>
                 void apply(WIDGET *_widget) const
                 {
-                    _widget->setMinimum(minimum_);
-                    _widget->setMaximum(maximum_);
+                    _widget->setMinimum(minimum());
+                    _widget->setMaximum(maximum());
                 }
 
                 template<typename WIDGET, typename V>
@@ -124,14 +135,14 @@ namespace omni {
 
                 virtual void validate()
                 {
-                    if (minimum_ > maximum_) std::swap(minimum_, maximum_);
+                    if (minimum() > maximum()) std::swap(minimum_, maximum_);
                 }
 
                 virtual void rangeChangedEvent()
                 {}
 
             private:
-
+                float scale_ = 1.0;
                 value_type minimum_;
                 value_type maximum_;
             };
