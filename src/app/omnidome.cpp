@@ -52,6 +52,10 @@ public:
     }
 
     QString value(QString const& _key) const {
+        if (!keyValues_.count(_key)) {
+            return QString();
+        }
+
         return keyValues_.at(_key);
     }
 

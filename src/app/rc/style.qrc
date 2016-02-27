@@ -2,7 +2,7 @@
   <qresource prefix="qss_icons">
     <file>buttons/GAMMA.svg</file>
     <file>buttons/ROLL_NEW.svg</file>
-    <file>style.qss</file>
+    <file>stylesheet.qss</file>
     <file>up_arrow_disabled.png</file>
     <file>Hmovetoolbar.png</file>
     <file>stylesheet-branch-end.png</file>

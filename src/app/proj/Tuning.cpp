@@ -274,7 +274,6 @@ namespace omni
         glView_->setBorder(0.0);
         glView_->setViewOnly(true);
         glView_->installEventFilter(this);
-        glView_->installEventFilter(this->parent());
         layout_->addWidget(glView_,TuningLayout::Role::PREVIEW);
 
         fullscreen_.reset(new TuningGLView());
@@ -377,10 +376,8 @@ namespace omni
             auto _widget = layout_->itemAt(i)->widget();
             if (!_widget) continue;
             _widget->installEventFilter(this);
-//            this->installEventFilter(_widget);
-//            this->parent()->installEventFilter(_widget);
             _widget->installEventFilter(this->parent());
-            _widget->setFocusPolicy(Qt::TabFocus);
+        //    _widget->setFocusPolicy(Qt::TabFocus);
         }
       }
 

@@ -560,12 +560,7 @@ namespace omni
       {
         _.glDisable(GL_LIGHTING);
         _.glEnable(GL_BLEND);
-
-        // Draw blend mask with input attached
-        _.glEnable(GL_TEXTURE_2D);
-        _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
-        vizTuning_->drawBlendMask();
-        _.glBindTexture(GL_TEXTURE_2D, 0.0);
+        vizTuning_->drawBlendMask(warpGridBuffer_->texture(),1.0);
       });
     }
 
