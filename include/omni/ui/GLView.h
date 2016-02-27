@@ -26,6 +26,7 @@
 #include <QOpenGLShaderProgram>
 #include <QPointF>
 #include <omni/visual/Session.h>
+#include <omni/ui/mixin/SessionWidget.h>
 
 namespace omni
 {
@@ -35,6 +36,7 @@ namespace omni
   {
     class GLView :
       public QOpenGLWidget,
+      public mixin::SessionWidget,
       protected QOpenGLFunctions
     {
       Q_OBJECT
@@ -46,8 +48,6 @@ namespace omni
       typedef std::set<GLView*> view_set_type;
 
       float aspect() const;
-      Session const* session() const;
-      void setSession(Session* _session);
 
       QPointF mousePosition() const;
 
@@ -67,6 +67,7 @@ namespace omni
       std::unique_ptr<visual::Session> session_;
 
     private:
+      virtual void sessionParameters();
       virtual bool initialize() = 0;
       bool initialized_ = false;
     };

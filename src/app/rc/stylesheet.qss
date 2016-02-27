@@ -206,8 +206,8 @@ QComboBox::drop-down {
 
 QMenu {
     border: 2.5px solid #5e5e5e;
-    color: #5e5e5e;
-    background-color: #5e5e5e;
+    color: #808080;
+    background-color: #3d3d3d;
 }
 
 QComboBox::item {

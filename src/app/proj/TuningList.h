@@ -23,6 +23,7 @@
 #include <memory>
 #include <QScrollArea>
 #include <omni/util.h>
+#include <omni/ui/mixin/SessionWidget.h>
 #include "proj/Tuning.h"
 
 namespace omni
@@ -35,7 +36,9 @@ namespace omni
     {
       class Tuning;
 
-      class TuningList : public QScrollArea
+      class TuningList :
+        public QScrollArea,
+        public mixin::SessionWidget
       {
         Q_OBJECT
       public:
@@ -44,12 +47,6 @@ namespace omni
 
         TuningList(QWidget* = nullptr);
         ~TuningList();
-
-        /// The session
-        Session const* session() const;
-
-        /// Set new session and update subwidgets
-        void setSession(Session*);
 
         /// Return fullscreen and preview widget from index
         std::set<TuningGLView*> getViews(int _index) const;
@@ -104,6 +101,8 @@ namespace omni
         void tuningToBeRemoved(omni::ui::proj::Tuning*);
 
       private:
+        void sessionParameters();
+
         /// Add widget from existing tuning
         void addTuning(omni::proj::Tuning* _tuning);
 
@@ -119,7 +118,6 @@ namespace omni
         QWidget* contents_;
         QLayout* layout_;
 
-        Session* session_ = nullptr;
         std::vector<QUniquePtr<Tuning>> widgets_;
       };
     }

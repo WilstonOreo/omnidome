@@ -19,6 +19,8 @@
 
 #include <omni/ui/ParameterWidget.h>
 
+#include <QKeyEvent>
+
 namespace omni
 {
   namespace ui
@@ -64,6 +66,8 @@ namespace omni
       auto* _widget = new RangedFloat(_str,_value,_min,_max,this);
       if (layout())
         layout()->addWidget(_widget);
+
+      this->installEventFilter(_widget);
 
       _widget->setUseDefaultValue(true);
 
@@ -113,7 +117,7 @@ namespace omni
     {
       auto* _offset = addWidget(_str,_value,_min,_max);
       _offset->setSuffix("m");
-      _offset->setSingleStep(0.1);
+      _offset->setSingleStep(0.01);
       _offset->setPageStep(0.1);
       _offset->setPivot(0.0);
       return _offset;
@@ -206,6 +210,19 @@ namespace omni
     void ParameterWidget::focus(int _index) {
         layout()->itemAt(_index)->widget()->setFocus();
     }
+
+    void ParameterWidget::keyPressEvent(QKeyEvent* _event) {
+          //if (hasFocus()) return;
+
+          qDebug() << _event->key();
+
+          if (_event->key() == Qt::Key_Up) {
+              focusPrev(true);
+          }
+          if (_event->key() == Qt::Key_Down) {
+              focusNext(true);
+          }
+      }
 
     bool ParameterWidget::focusNext(bool _circular) {
         int _focusId = focusId();

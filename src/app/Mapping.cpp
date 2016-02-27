@@ -34,6 +34,10 @@ namespace omni
         this->setup(ui_);
 
       connect(ui_->boxMappingSelect,SIGNAL(currentIndexChanged(QString)),this,SLOT(mappingTypeSelected(QString)));
+       for (auto& _idMappingClass : omni::mapping::Factory::classes()) {
+            QString _id = _idMappingClass.first.str();
+            ui_->boxMappingSelect->addItem(QIcon(QString(":/mapping/")+ _id + QString(".png")),_id);
+       }
       setDefaultMappingForCanvas();
     }
 
@@ -100,8 +104,6 @@ namespace omni
          auto* _canvas = session()->canvas();
          if (!_canvas) return;
 
-         ui_->boxMappingSelect->clear();
-
          std::map<Id,int> _idToIndex;
          int _index = 0;
 
@@ -110,7 +112,6 @@ namespace omni
              QString _id = _idMappingClass.first.str();
              // Add mapping mode to combobox if it supported by canvas
             _idToIndex[_id] = _index;
-            ui_->boxMappingSelect->addItem(QIcon(QString(":/mapping/")+ _id + QString(".png")),_id);
             ++_index;
          }
 

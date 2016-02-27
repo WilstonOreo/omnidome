@@ -78,7 +78,7 @@ namespace omni
 
     void GLView3D::paintGL()
     {
-      if (!session()) return;
+      if (!session() || this->isLocked()) return;
 
       this->session_->update();
       glEnable(GL_DEPTH_TEST);
@@ -91,7 +91,6 @@ namespace omni
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
       updateLight();
-
 
       this->session_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,displayInput_);
       this->session_->drawProjectors();

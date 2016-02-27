@@ -46,6 +46,7 @@ namespace omni
 
                                 inline virtual void setSession(Session* _session)
                                 {
+                                        session_ = nullptr;
                                         this->locked([&]()
                                         {
                                                 session_ = _session;

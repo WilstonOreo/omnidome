@@ -221,10 +221,13 @@ namespace omni {
         }
 
         void RangedFloat::keyPressEvent(QKeyEvent* _event) {
-            float _step = singleStep();
+            float _step = pageStep();
 
             if (_event->modifiers() & Qt::ShiftModifier) {
-                _step /= 10.0;
+                _step = singleStep();
+            }
+            if (_event->modifiers() & Qt::ControlModifier) {
+                _step *= 10.0;
             }
 
             if (_event->key() == Qt::Key_Left) {

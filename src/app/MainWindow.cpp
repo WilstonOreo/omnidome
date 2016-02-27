@@ -207,30 +207,33 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupSession()
 {
-    setMode(Session::Mode::SCREENSETUP);
-
+    using util::enumToInt;
+    qDebug() << "setupSession: " << enumToInt(session_->mode());
     locked_ = true;
     {
+        // Set session to pages
+        arrange_->setSession(session_.get());
+        live_->setSession(session_.get());
+
+        warp_->setSession(session_.get());
+        blend_->setSession(session_.get());
+        colorCorrection_->setSession(session_.get());
+        export_->setSession(session_.get());
+
         ui_->tuningList->setSession(session_.get());
-        ui_->dockCanvasWidget->setSession(session_.get());
         ui_->dockMappingWidget->setSession(session_.get());
-        ui_->dockMappingWidget->setDefaultMappingForCanvas();
+        ui_->dockCanvasWidget->setSession(session_.get());
         ui_->dockInputsWidget->setSession(session_.get());
         ui_->dockWarpWidget->setSession(session_.get());
         ui_->dockBlendWidget->setSession(session_.get());
         ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
 
-        // Set session to pages
-        arrange_->setSession(session_.get());
-        warp_->setSession(session_.get());
-        blend_->setSession(session_.get());
-        colorCorrection_->setSession(session_.get());
-        export_->setSession(session_.get());
-        live_->setSession(session_.get());
     }
     locked_ = false;
 
+    qDebug() << "setupSession: " << enumToInt(session_->mode());
     setMode(session_->mode());
+    qDebug() << "setupSession: " << enumToInt(session_->mode());
 }
 
 void MainWindow::newProjection()

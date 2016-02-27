@@ -284,65 +284,57 @@ namespace omni
         /// FOV view slider
         /// @todo Connect this with threshold slider
         auto* _fov =  addWidget("FOV",60.0,10.0,160.0);
-        _fov->setSingleStep(4.0);
-        _fov->setPageStep(45.0);
+        _fov->setSingleStep(1.0);
+        _fov->setPageStep(5.0);
         _fov->setSuffix("°");
         connect(_fov,SIGNAL(valueChanged()),this,SLOT(setFov()));
 
         /// Throw ratio slider
         /// @todo Connect this with FOV slider
         auto* _throwRatio = addWidget("Throw Ratio",1.0,0.1,5.0);
-        _throwRatio->setSingleStep(0.1);
-        _throwRatio->setPageStep(0.3);
+        _throwRatio->setSingleStep(0.01);
+        _throwRatio->setPageStep(0.05);
         connect(_throwRatio,SIGNAL(valueChanged()),this,SLOT(setThrowRatio()));
 
         /// Yaw angle slider (all projector setups)
         auto&& _yaw = addAngleWidget("Yaw",0.0,0.0,360.0);
+        _yaw->setSingleStep(0.1);
+        _yaw->setPageStep(1.0);
 
         /// Tower height slider (PeripheralSetup only)
         auto&& _towerHeight = addOffsetWidget("Tower Height",2.0,-5.0,10.0);
-        _towerHeight->setSingleStep(0.1);
-        _towerHeight->setPageStep(1.0);
-        _towerHeight->setPivot(0.0);
 
         /// Distance slider (PeripheralSetup only)
         auto&& _distance = addOffsetWidget("Distance",5.0,0.0,10.0);
-        _distance->setPageStep(1.0);
 
         /// Shift offset slider (PeripheralSetup only)
         auto&& _shift = addOffsetWidget("Shift",0.0,-2.0,2.0);
-        _shift->setPageStep(1.0);
-        _shift->setPivot(0.0);
 
         /// X offset slider (FreeSetup only)
         auto&& _x = addOffsetWidget("X",0.0,-10.0,10.0);
-        _x->setPageStep(1.0);
-        _x->setPivot(0.0);
 
         /// Y offset slider (FreeSetup only)
         auto&& _y = addOffsetWidget("Y",0.0,-10.0,10.0);
-        _y->setPageStep(1.0);
-        _y->setPivot(0.0);
 
         /// Z offset slider (FreeSetup only)
         auto&& _z = addOffsetWidget("Z",0.0,-10.0,10.0);
-        _z->setPageStep(1.0);
-        _z->setPivot(0.0);
 
         /// Pitch angle slider (both setups)
         auto&& _pitch = addAngleWidget("Pitch",30.0,-180.0,180.0);
+        _pitch->setSingleStep(0.1);
+        _pitch->setPageStep(1.0);
         _pitch->setPivot(0.0);
 
         /// Roll angle slider (both setups)
         auto&& _roll = addAngleWidget("Roll",0.0,-180.0,180.0);
-        _roll->setSingleStep(1.0);
-        _roll->setPageStep(5.0);
+        _roll->setSingleStep(0.1);
+        _roll->setPageStep(1.0);
         _roll->setPivot(0.0);
 
         /// Delta yaw angle slider (PeripheralSetup only)
         auto&& _deltaYaw = addAngleWidget("Delta Yaw",0.0,-45.0,45.0);
-        _deltaYaw->setSingleStep(1.0);
-        _deltaYaw->setPageStep(5.0);
+        _deltaYaw->setSingleStep(0.1);
+        _deltaYaw->setPageStep(1.0);
         _deltaYaw->setPivot(0.0);
 
         widgetgroup_type _titleAndPreview(

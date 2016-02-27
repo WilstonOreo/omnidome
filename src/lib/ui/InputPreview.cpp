@@ -150,7 +150,7 @@ namespace omni
         _.glDisable(GL_BLEND);
       });
 
-      if (!input_) return;
+      if (!input_ || this->isLocked()) return;
 
       auto _rect = viewRect();
 

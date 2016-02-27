@@ -81,6 +81,8 @@ namespace omni
 
     void GLView::resizeGL(int _w, int _h)
     {
+       if (this->isLocked()) return;
+
       _w = _w & ~1;
       _h = _h & ~1;
       makeCurrent();
@@ -94,19 +96,11 @@ namespace omni
 
     void GLView::paintGL()
     {
-      if (!session_) return;
     }
 
-    Session const* GLView::session() const
+    void GLView::sessionParameters()
     {
-      return !session_ ? nullptr : &session_->session();
-    }
-
-    void GLView::setSession(Session* _session)
-    {
-      if (!_session) return;
-
-      session_.reset(new visual::Session(*_session));
+      session_.reset(new visual::Session(*session()));
       initialized_ = initialize();
     }
 

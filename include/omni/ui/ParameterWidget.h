@@ -117,6 +117,8 @@ namespace omni
       void parametersUpdated();
 
     protected:
+      void keyPressEvent(QKeyEvent* _event);
+
       /// Slider parameter widgets
       std::vector<QUniquePtr<QWidget>> parameters_;
 

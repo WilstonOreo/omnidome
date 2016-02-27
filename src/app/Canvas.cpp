@@ -76,22 +76,15 @@ namespace omni {
             }
 
             ui_->boxCanvasSelect->setCurrentIndex(_index);
+            showParameterWidget();
             emit canvasChanged();
         }
-
-        void Canvas::canvasTypeSelected(QString _id)
-        {
+        void Canvas::showParameterWidget() {
             if (!session()) return;
-
-            session()->setCanvas(_id);
-            if (paramWidget_) {
-                widget()->layout()->removeWidget(paramWidget_);
-            }
 
             auto* _canvas = session()->canvas();
             if (!_canvas) return;
 
-            //if (session()->canvas()) ui_->widget->setCanvas(session()->canvas());
             paramWidget_ = _canvas->widget();
             if (paramWidget_) {
                 // Configure layout
@@ -107,6 +100,18 @@ namespace omni {
             if (paramWidget_) {
                 connect(this,SIGNAL(canvasTypeChanged()),paramWidget_,SLOT(deleteLater()));
             }
+        }
+
+        void Canvas::canvasTypeSelected(QString _id)
+        {
+            if (!session() || this->isLocked()) return;
+
+            session()->setCanvas(_id);
+            if (paramWidget_) {
+                widget()->layout()->removeWidget(paramWidget_);
+            }
+
+            showParameterWidget();
         }
     }
 }
