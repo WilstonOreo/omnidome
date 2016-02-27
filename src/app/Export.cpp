@@ -78,6 +78,8 @@ namespace omni
     {
       RenderOptions _renderOptions;
 
+      _renderOptions.setExcludeUnassignedProjectors(ui_->boxExcludeNonSelectedScreens->isChecked());
+
       if (ui_->rbSepNone->isChecked())
       {
         _renderOptions.setSeparationMode(SeparationMode::NONE);

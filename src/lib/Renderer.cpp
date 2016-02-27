@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -103,7 +103,6 @@ namespace omni
     // Get all tunings
     for (auto& _tuning : session_.tunings())
     {
-      qDebug() << _rawName << " " << _tuning.get();
       if (_tuning->screen() != proj::ScreenSetup::standardScreen() &&
           options_.excludeUnassignedProjectors())
         continue;
@@ -119,7 +118,7 @@ namespace omni
       auto&& _screens = stitchScreens(_tunings);
       QImage _stitchedImage(_desktopRect.width(),_desktopRect.height()*3,QImage::Format_RGB32);
       QPainter _p(&_stitchedImage);
-      for (auto& _screenImage : _screens) 
+      for (auto& _screenImage : _screens)
       {
         auto* _screen = _screenImage.first;
         auto& _image = _screenImage.second;
@@ -133,25 +132,25 @@ namespace omni
     case SeparationMode::SCREENS:
     {
       auto&& _screens = stitchScreens(_tunings);
-    
+
       for (auto& _screenImage : _screens)
       {
         auto* _screen = _screenImage.first;
-        auto& _image = _screenImage.second;  
+        auto& _image = _screenImage.second;
         auto&& _screenRect = _screen->geometry();
         QString _screenDesc(QString("_%1_%2_%3x%4.png").
             arg(_screenRect.left()).
             arg(_screenRect.top()).
             arg(_screenRect.width()).
             arg(_screenRect.height()));
-        _image.save(_rawName + _screenDesc); 
+        _image.save(_rawName + _screenDesc);
       }
     }
     break;
     case SeparationMode::PROJECTORS:
     {
       int _tuningIndex = 0;
-      
+
       for (auto& _tuning : _tunings)
       {
         QImage _image;
@@ -358,7 +357,7 @@ namespace omni
         _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _buffer.ptr());
       }
       _.glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
-        
+
 
       //Delete resources
       _.glDeleteTextures(1, &_colorTex);
