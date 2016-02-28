@@ -31,6 +31,8 @@ namespace omni {
             this->setup(ui_);
 
             connect(ui_->boxChannel,SIGNAL(currentIndexChanged(int)),this,SLOT(setChannel(int)));
+            connect(ui_->params,SIGNAL(parametersUpdated()),ui_->graph,SLOT(update()));
+            connect(ui_->params,SIGNAL(parametersUpdated()),this,SIGNAL(colorCorrectionChanged()));
         }
 
         ColorCorrection::~ColorCorrection() {
@@ -42,13 +44,16 @@ namespace omni {
 
             using proj::Channel;
             Channel _channel = util::intToEnum<Channel>(_index);
+            qDebug() << _index;
             auto* _colorCorrection = &tuning()->colorCorrection();
+            ui_->graph->setSelectedChannel(_channel);
             ui_->graph->setColorCorrection(_colorCorrection);
-            ui_->params->setChannelCorrection(_colorCorrection->correction(_channel));
+            ui_->params->setChannelCorrection(_colorCorrection->correction(_channel),_channel);
         }
 
         void ColorCorrection::tuningParameters() {
             ui_->boxChannel->setCurrentIndex(0);
+            setChannel(0);
         }
     }
 }

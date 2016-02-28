@@ -547,6 +547,23 @@ namespace omni
       });
     }
 
+    void TuningGLView::drawColorCorrected()
+    {
+      if (!session()->hasOutput())
+      {
+        drawTestCard();
+        return;
+      }
+      updateWarpBuffer();
+
+      drawOnSurface([&](QOpenGLFunctions& _)
+      {
+        _.glDisable(GL_LIGHTING);
+        _.glEnable(GL_BLEND);
+        vizTuning_->drawBlendMask(warpGridBuffer_->texture(),1.0);
+      });
+    }
+
     void TuningGLView::drawExportView()
     {
       if (!session()->hasOutput())
@@ -628,7 +645,7 @@ namespace omni
         drawBlendMask();
         break;
       case Session::Mode::COLORCORRECTION:
-        //drawColorCorrected();
+        drawColorCorrected();
         break;
       case Session::Mode::EXPORT:
         drawExportView();

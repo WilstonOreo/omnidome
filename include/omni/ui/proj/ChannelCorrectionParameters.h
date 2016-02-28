@@ -19,6 +19,7 @@
 #ifndef OMNI_UI_PROJ_CHANNELCORRECTIONPARAMETERS_H_
 #define OMNI_UI_PROJ_CHANNELCORRECTIONPARAMETERS_H_
 
+#include <omni/proj/ColorCorrection.h>
 #include <omni/proj/ChannelCorrection.h>
 #include <omni/ui/ParameterWidget.h>
 
@@ -26,6 +27,7 @@ namespace omni {
     namespace ui {
         class RangedFloat;
         using omni::proj::ChannelCorrection;
+        using omni::proj::Channel;
 
         namespace proj {
             class ChannelCorrectionParameters : public ParameterWidget
@@ -35,7 +37,7 @@ namespace omni {
                 ChannelCorrectionParameters(QWidget* = nullptr);
                 ~ChannelCorrectionParameters();
 
-                void setChannelCorrection(ChannelCorrection*);
+                void setChannelCorrection(ChannelCorrection*, Channel = Channel::ALL);
                 ChannelCorrection* channelCorrection();
                 ChannelCorrection const* channelCorrection() const;
 
@@ -49,6 +51,7 @@ namespace omni {
                 RangedFloat* brightness_ = nullptr;
                 RangedFloat* contrast_ = nullptr;
                 RangedFloat* gamma_ = nullptr;
+                RangedFloat* multiplier_ = nullptr;
             };
         }
     }

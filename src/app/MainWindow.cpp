@@ -126,6 +126,12 @@ MainWindow::MainWindow(QMainWindow *parent) :
         ui_->btnAddTuning->setMenu(_menu);
     }
 
+    /// Set dock widget tabs
+    {
+        tabifyDockWidget(ui_->dockInputs, ui_->dockMapping);
+        tabifyDockWidget(ui_->dockInputs, ui_->dockColorCorrection);
+    }
+
     // Connect signals and slots
     {
         // Connect projector position change with view update
@@ -178,12 +184,17 @@ MainWindow::MainWindow(QMainWindow *parent) :
                     warpGridChanged()),                   this,
                 SLOT(modified()));
 
-        // Update all views when warp grid has changed
+        // Update all views when blend mask has changed
         connect(ui_->dockBlendWidget, SIGNAL(
                     blendMaskChanged()),                  this,
                 SLOT(modified()));
 
-        // Connect tuning index of tuning list for warp and blend widget
+        // Update all views when color correction has changed
+        connect(ui_->dockColorCorrectionWidget, SIGNAL(
+                    colorCorrectionChanged()),                  this,
+                SLOT(modified()));
+
+        // Connect tuning index of tuning list for warp, blend and color correction
         connect(ui_->tuningList, SIGNAL(currentIndexChanged(
                                             int)),        this,
                 SLOT(setTuningIndex(int)));
@@ -227,7 +238,6 @@ void MainWindow::setupSession()
         ui_->dockWarpWidget->setSession(session_.get());
         ui_->dockBlendWidget->setSession(session_.get());
         ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
-
     }
     locked_ = false;
 
@@ -401,6 +411,7 @@ void MainWindow::setTuningIndex(int _index)
     blend_->setChildViews(ui_->tuningList->getViews(_index));
     colorCorrection_->setChildViews(ui_->tuningList->getViews(_index));
 
+    ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
     ui_->dockBlendWidget->updateBlendMask();
     ui_->dockWarpWidget->updateWarpGrid();
 }

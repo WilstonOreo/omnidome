@@ -19,6 +19,7 @@
 
 #include <omni/visual/Tuning.h>
 
+#include <QVector4D>
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
 #include <omni/util.h>
@@ -228,10 +229,36 @@ namespace omni
           blendShader_->setUniformValue("right",_mask.rightWidth());
           blendShader_->setUniformValue("bottom",_mask.bottomWidth());
           blendShader_->setUniformValue("left",_mask.leftWidth());
-          blendShader_->setUniformValue("gamma",_mask.gamma());
+          blendShader_->setUniformValue("edge_gamma",_mask.gamma());
           blendShader_->setUniformValue("input_tex",0);
           blendShader_->setUniformValue("input_opacity",_inputOpacity);
           blendShader_->setUniformValue("color",_color.redF(),_color.greenF(),_color.blueF());
+
+          auto& _cC = tuning().colorCorrection();
+          if (_cC.isUsed()) {
+              blendShader_->setUniformValue("cc_gamma",QVector4D(
+                _cC.red().gamma(),
+                _cC.green().gamma(),
+                _cC.blue().gamma(),
+                _cC.all().gamma()));
+              blendShader_->setUniformValue("cc_brightness",QVector4D(
+                _cC.red().brightness(),
+                _cC.green().brightness(),
+                _cC.blue().brightness(),
+                _cC.all().brightness()));
+              blendShader_->setUniformValue("cc_contrast",QVector4D(
+                _cC.red().contrast(),
+                _cC.green().contrast(),
+                _cC.blue().contrast(),
+                _cC.all().contrast()));
+              blendShader_->setUniformValue("cc_multiplier",QVector4D(
+                _cC.red().multiplier(),
+                _cC.green().multiplier(),
+                _cC.blue().multiplier(),
+                _cC.all().multiplier()));
+          }
+
+
           blendShader_->setUniformValue("mask",GLfloat(1.0));
           warpGrid_->draw();
         }

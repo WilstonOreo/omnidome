@@ -20,7 +20,10 @@
 #include <omni/ui/proj/ColorCorrectionGraph.h>
 
 #include <QBrush>
+#include <QDebug>
 #include <QPen>
+#include <QRectF>
+#include <QPainterPath>
 
 namespace omni {
     namespace ui {
@@ -52,6 +55,8 @@ namespace omni {
 
             void ColorCorrectionGraph::paintEvent(QPaintEvent* _paintEvent) {
                 QPainter _painter(this);
+                _painter.setRenderHint(QPainter::HighQualityAntialiasing);
+                _painter.setRenderHint(QPainter::Antialiasing, true);
 
                 QRect _rect = rect();
 
@@ -86,21 +91,27 @@ namespace omni {
                 omni::proj::ChannelCorrection const& _correction,
                 QColor _color, bool _selected) const {
 
-                QRect _rect = rect().adjusted(2,2,-2,-2);
+                QRectF _rect = QRectF(rect()).adjusted(2,2,-2,-2);
 
                 _p.setBrush(Qt::NoBrush);
-                _p.setPen(QPen(_color,_selected ? 2 : 1));
 
-                QVector<QPoint> _points;
+                QPen _pen(_color,_selected ? 1.5 : 1,Qt::SolidLine);
+                _p.setPen(_pen);
 
-                for (int _posX = _rect.left(); _posX <= _rect.right(); _posX += 2) {
-                    float _x = (_posX - _rect.left()) / float(_rect.width());
-                    float _y = qBound(0.0,_correction.corrected(_x),1.0);
-                    int _posY = _rect.height() - _y*_rect.height() + _rect.top();
-                    if (_points.size() > 0) _points << _points.back();
-                    _points << QPoint(_posX,_posY);
+                QPainterPath _path;
+                for (double _posX = _rect.left(); _posX <= _rect.right(); _posX += 2) {
+                    double _x = (_posX - _rect.left()) / double(_rect.width());
+                    double _y = qBound(0.0,_correction.corrected(_x),1.0);
+                    double _posY = float(_rect.height()) - _y*_rect.height() + _rect.top();
+                    if (_posX == _rect.left()) {
+                        _path.moveTo(_posX,_posY);
+                    } else {
+                        _path.lineTo(_posX,_posY);
+                    }
                 }
-                _p.drawLines(_points);
+
+
+                _p.drawPath(_path);
 
             }
 

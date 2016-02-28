@@ -27,44 +27,53 @@ namespace omni {
         class ChannelCorrection {
         public:
             /// Return gamma value
-            qreal gamma() const;
+            double gamma() const;
 
             /// Calculate gamma for given value
-            qreal gamma(qreal v) const;
+            double gamma(double v) const;
 
             /// Set new gamma value, value is clamped between -1 and 1
-            void setGamma(qreal);
+            void setGamma(double);
 
             /// Return brightness value
-            qreal brightness() const;
+            double brightness() const;
 
             /// Calculate brightness for given value
-            qreal brightness(qreal v) const;
+            double brightness(double v) const;
 
             /// Set new brightness value, value is clamped between -1 and 1
-            void setBrightness(qreal);
+            void setBrightness(double);
 
             /// Return contrast value
-            qreal contrast() const;
+            double contrast() const;
 
             /// Calculate contrast for given value
-            qreal contrast(qreal v) const;
+            double contrast(double v) const;
 
             /// Set new contrast value, value is clamped between -1 and 1
-            void setContrast(qreal);
+            void setContrast(double);
+
+            /// Value contrast, brightness and gamma are multiplied
+            double multiplier() const;
+
+            /// Set new multiplier value
+            void setMultiplier(double _multiplier);
 
             /// Return corrected value, value is NOT clamped
-            qreal corrected(qreal _value) const;
+            double corrected(double _value) const;
 
         private:
             // Gamma between -1 and 1
-            qreal gamma_ = 0.0;
+            double gamma_ = 0.0;
 
             /// Brightness between -1 and 1
-            qreal brightness_ = 0.0;
+            double brightness_ = 0.0;
 
             /// Contrast between -1 and 1
-            qreal contrast_ = 0.0;
+            double contrast_ = 0.0;
+
+            /// Multiplier between 0.0 and 1.0
+            double multiplier_ = 0.5;
         };
     }
 }

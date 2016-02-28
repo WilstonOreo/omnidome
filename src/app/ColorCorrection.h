@@ -41,6 +41,9 @@ namespace omni {
         public slots:
             void setChannel(int);
 
+        signals:
+            void colorCorrectionChanged();
+
         private:
             void tuningParameters();
 

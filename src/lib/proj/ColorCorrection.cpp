@@ -78,9 +78,9 @@ namespace omni {
         }
 
         QColor ColorCorrection::corrected(QColor _color) const {
-            qreal _r = red_.corrected(all_.corrected(_color.redF()));
-            qreal _g = green_.corrected(all_.corrected(_color.greenF()));
-            qreal _b = blue_.corrected(all_.corrected(_color.blueF()));
+            qreal _r = all_.corrected(red_.corrected(_color.redF()));
+            qreal _g = all_.corrected(green_.corrected(_color.greenF()));
+            qreal _b = all_.corrected(blue_.corrected(_color.blueF()));
 
             return QColor(
                 qBound(0, int(_r * 255), 255),
@@ -94,7 +94,7 @@ namespace omni {
                 case Channel::ALL: return &all_;
                 case Channel::RED: return &red_;
                 case Channel::GREEN: return &green_;
-                case Channel::BLUE: return &red_;
+                case Channel::BLUE: return &blue_;
             }
             return nullptr;
         }
@@ -105,7 +105,7 @@ namespace omni {
                 case Channel::ALL: return &all_;
                 case Channel::RED: return &red_;
                 case Channel::GREEN: return &green_;
-                case Channel::BLUE: return &red_;
+                case Channel::BLUE: return &blue_;
             }
             return nullptr;
         }
