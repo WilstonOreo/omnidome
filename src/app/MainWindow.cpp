@@ -128,8 +128,11 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
     /// Set dock widget tabs
     {
+        tabifyDockWidget(ui_->dockCanvas, ui_->dockScene);
         tabifyDockWidget(ui_->dockInputs, ui_->dockMapping);
         tabifyDockWidget(ui_->dockInputs, ui_->dockColorCorrection);
+        tabifyDockWidget(ui_->dockInputs, ui_->dockWarp);
+        tabifyDockWidget(ui_->dockInputs, ui_->dockBlend);
     }
 
     // Connect signals and slots
@@ -487,29 +490,35 @@ void MainWindow::setMode(Session::Mode _mode)
     case Session::Mode::ARRANGE:
         ui_->dockInputs->show();
         ui_->dockMapping->setVisible(session_->inputs().current());
+        ui_->dockCanvas->raise();
         break;
 
     case Session::Mode::WARP:
         ui_->dockInputs->show();
         ui_->dockMapping->setVisible(session_->inputs().current());
+        ui_->dockWarp->raise();
         break;
 
     case Session::Mode::BLEND:
         ui_->dockInputs->setVisible(true);
         ui_->dockMapping->setVisible(false);
+        ui_->dockBlend->raise();
         break;
     case Session::Mode::COLORCORRECTION:
         ui_->dockInputs->setVisible(true);
-        ui_->dockMapping->setVisible(true);
+        ui_->dockMapping->setVisible(session_->inputs().current());
+        ui_->dockColorCorrection->raise();
         break;
     case Session::Mode::EXPORT:
         ui_->dockInputs->show();
         ui_->dockMapping->setVisible(session_->inputs().current());
+        ui_->dockInputs->raise();
         break;
 
     case Session::Mode::LIVE:
         ui_->dockInputs->show();
         ui_->dockMapping->hide();
+        ui_->dockScene->raise();
     default:
         break;
     }

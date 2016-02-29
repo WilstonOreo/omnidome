@@ -423,6 +423,8 @@ namespace omni
             break;
           case Session::Mode::WARP:
           case Session::Mode::BLEND:
+          case Session::Mode::COLORCORRECTION:
+          case Session::Mode::LIVE:
           case Session::Mode::EXPORT:
             _numStates = 2;
             break;
@@ -497,7 +499,9 @@ namespace omni
           break;
         case Session::Mode::WARP:
         case Session::Mode::BLEND:
+        case Session::Mode::COLORCORRECTION:
         case Session::Mode::EXPORT:
+        case Session::Mode::LIVE:
           setGroup("PreviewOnly");
           break;
         default:

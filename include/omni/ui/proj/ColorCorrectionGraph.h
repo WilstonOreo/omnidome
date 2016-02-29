@@ -52,6 +52,7 @@ namespace omni {
                     omni::proj::ChannelCorrection const&,
                     QColor _color, bool _selected) const;
                 void drawGraphForChannel(QPainter&, Channel _channel) const;
+                void drawGridLines(QPainter&);
 
                 Channel selectedChannel_ = Channel::ALL;
                 omni::proj::ColorCorrection const* colorCorrection_ = nullptr;

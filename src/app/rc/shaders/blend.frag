@@ -38,7 +38,7 @@ float contrast(float v, float contrast_value) {
     float _c = (contrast_value <= 0.0) ?
         contrast_value + 1.0 :
         (1.0 / (1.0 - contrast_value));
-    return max((v - 0.5) * max(_c, 0.0f) + 0.5,0.0);
+    return (v - 0.5) * max(_c, 0.0f) + 0.5;
 }
 
 /// Calculate gamma corrected value
@@ -53,10 +53,10 @@ float gamma(float v, float gamma_value) {
 }
 
 float corrected(in ChannelCorrection c, in float v) {
-    return gamma(contrast(brightness(v,
-        c.brightness * c.multiplier),
+    return brightness(contrast(gamma(v,
+        c.gamma * c.multiplier),
         c.contrast * c.multiplier),
-        c.gamma * c.multiplier);
+        c.brightness * c.multiplier);
 }
 
 

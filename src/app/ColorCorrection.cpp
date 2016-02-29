@@ -44,7 +44,6 @@ namespace omni {
 
             using proj::Channel;
             Channel _channel = util::intToEnum<Channel>(_index);
-            qDebug() << _index;
             auto* _colorCorrection = &tuning()->colorCorrection();
             ui_->graph->setSelectedChannel(_channel);
             ui_->graph->setColorCorrection(_colorCorrection);

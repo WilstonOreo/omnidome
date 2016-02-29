@@ -63,6 +63,7 @@ namespace omni {
                 _painter.setBrush(QBrush("#212121"));
                 _painter.setPen(Qt::NoPen);
                 _painter.drawRect(_rect);
+                drawGridLines(_painter);
 
                 // Draw not selected graphs first
                 drawGraphs(_painter,false);
@@ -133,6 +134,21 @@ namespace omni {
                     case Channel::BLUE:
                         drawGraphForChannel(_p,colorCorrection_->blue(),Qt::blue,_selected);
                         return;
+                }
+            }
+
+            void ColorCorrectionGraph::drawGridLines(QPainter& _p) {
+                QRectF _rect = QRectF(rect()).adjusted(2,2,-2,-2);
+                QPen _pen("#080808");
+                _p.setPen(_pen);
+                // Draw vertical lines
+                for (double _posX = _rect.left(); _posX <= _rect.right(); _posX += _rect.width()/8) {
+                    _p.drawLine(_posX,_rect.top(),_posX,_rect.bottom());
+                }
+
+                // Draw horizontal lines
+                for (double _posY = _rect.top(); _posY <= _rect.bottom(); _posY += _rect.height()/8) {
+                    _p.drawLine(_rect.left(),_posY,_rect.right(),_posY);
                 }
             }
         }

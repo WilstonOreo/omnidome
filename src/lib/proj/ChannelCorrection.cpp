@@ -38,7 +38,7 @@ namespace omni {
             double _c = (contrast() <= 0.0) ?
                 contrast()*multiplier() + 1.0 :
                 (1.0 / (1.0 - contrast()*multiplier()));
-            return std::max(((v - 0.5) * std::max(_c, 0.0)) + 0.5,0.0);
+            return ((v - 0.5) * std::max(_c, 0.0)) + 0.5;
         }
 
         double ChannelCorrection::brightness(double v) const {
@@ -76,7 +76,7 @@ namespace omni {
         }
 
         double ChannelCorrection::corrected(double _value) const {
-            return gamma(contrast(brightness(_value)));
+            return brightness(contrast(gamma(_value)));
         }
     }
 }
