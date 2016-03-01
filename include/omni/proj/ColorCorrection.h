@@ -82,6 +82,8 @@ namespace omni {
             /// Return color correction for given channel (const version)
             ChannelCorrection const* correction(Channel) const;
 
+            static QColor channelColor(Channel);
+
         private:
             bool isUsed_ = true;
             ChannelCorrection all_, red_, green_, blue_;

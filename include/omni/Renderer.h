@@ -57,9 +57,7 @@ namespace omni
     void getUpper8bit(RenderBuffer const& _buffer, QImage& _image) const;
     void getLower8bit(RenderBuffer const& _buffer, QImage& _image) const;
     void getAlphaMask(RenderBuffer const& _buffer, QImage& _image) const;
-
     void bufferToRGBImage(RenderBuffer const& _buffer, QImage& _image);
-
 
     template<typename PROJECTION, typename MODELVIEW>
     static void renderToBuffer(RenderBuffer& _buffer, PROJECTION _proj, MODELVIEW _mv);

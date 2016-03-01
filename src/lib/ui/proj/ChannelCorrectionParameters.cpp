@@ -19,6 +19,7 @@
 
 #include <omni/ui/proj/ChannelCorrectionParameters.h>
 
+#include <QPushButton>
 #include <QVBoxLayout>
 
 namespace omni {
@@ -38,13 +39,9 @@ namespace omni {
                 channelCorrection_ = _channelCorrection;
                 this->locked([&]() {
                     auto _setSlider = [&](RangedFloat* _w, float _value) {
-                        QColor _color("#3d3d3d");
-                        switch (_channel) {
-                            default:
-                            case Channel::ALL: break;
-                            case Channel::RED: _color = Qt::red; break;
-                            case Channel::GREEN: _color = Qt::green; break;
-                            case Channel::BLUE: _color = Qt::blue; break;
+                        QColor _color = omni::proj::ColorCorrection::channelColor(_channel);
+                        if (_channel == Channel::ALL) {
+                            _color = QColor("#3d3d3d");
                         }
                         _w->setStyleSheet("selection-background-color  : "+_color.name());
                         _w->setValue(_value);
@@ -54,6 +51,9 @@ namespace omni {
                     _setSlider(contrast_,channelCorrection_->contrast());
                     _setSlider(gamma_,channelCorrection_->gamma());
                     _setSlider(multiplier_,channelCorrection_->multiplier());
+
+                    reset_->setStyleSheet("QPushButton { border: 2.5px solid " +
+                        omni::proj::ColorCorrection::channelColor(_channel).name() + " }");
                 });
                 emit parametersUpdated();
             }
@@ -76,6 +76,16 @@ namespace omni {
                 emit parametersUpdated();
              }
 
+            void ChannelCorrectionParameters::reset() {
+                this->locked([&](){
+                    brightness_->setValue(0.0);
+                    contrast_->setValue(0.0);
+                    gamma_->setValue(0.0);
+                    multiplier_->setValue(0.5);
+                });
+                updateParameters();
+            }
+
             void ChannelCorrectionParameters::setup() {
                 QLayout* _layout = new QVBoxLayout;
                 setLayout(_layout);
@@ -96,6 +106,10 @@ namespace omni {
                     multiplier_ = _addSlider("Multiplier");
                     multiplier_->setRange(0.0,1.0);
                     multiplier_->setDefaultValue(0.5);
+
+                    reset_ = new QPushButton("Reset");
+                    layout()->addWidget(reset_);
+                    connect(reset_,SIGNAL(clicked()),this,SLOT(reset()));
                 });
             }
         }

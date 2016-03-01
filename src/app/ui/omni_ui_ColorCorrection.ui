@@ -15,27 +15,117 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QComboBox" name="boxChannel">
-     <item>
-      <property name="text">
-       <string>All</string>
+    <widget class="QCheckBox" name="checkBox">
+     <property name="text">
+      <string>Color Correction is used</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="boxChannelButtons" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>8</number>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Red</string>
+      <property name="leftMargin">
+       <number>4</number>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Green</string>
+      <property name="topMargin">
+       <number>4</number>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Blue</string>
+      <property name="rightMargin">
+       <number>4</number>
       </property>
-     </item>
+      <property name="bottomMargin">
+       <number>4</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="btnAll">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	border: 2.5px solid #FFFFFF;
+}
+
+QPushButton:pressed, QPushButton:checked {
+   background-color: #FFFFFF;
+   color: #212121;
+}</string>
+        </property>
+        <property name="text">
+         <string>ALL</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnRed">
+        <property name="styleSheet">
+         <string notr="true">QPushButton 
+{	border: 2.5px solid #FF0000;}
+
+QPushButton:pressed, QPushButton:checked {    background-color: #FF0000;
+   color: #212121;
+}</string>
+        </property>
+        <property name="text">
+         <string>RED</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnGreen">
+        <property name="styleSheet">
+         <string notr="true">QPushButton 
+{	border: 2.5px solid #00FF00;}
+
+QPushButton:pressed, QPushButton:checked {    background-color: #00FF00;
+   color: #212121;
+}</string>
+        </property>
+        <property name="text">
+         <string>GREEN</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnBlue">
+        <property name="styleSheet">
+         <string notr="true">QPushButton 
+{	border: 2.5px solid #0000FF;}
+
+QPushButton:pressed, QPushButton:checked {    background-color: #0000FF;
+   color: #212121;
+}</string>
+        </property>
+        <property name="text">
+         <string>BLUE</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -69,4 +159,10 @@
  </customwidgets>
  <resources/>
  <connections/>
+ <slots>
+  <slot>setAllChannels()</slot>
+  <slot>setRedChannel()</slot>
+  <slot>setGreenChannel()</slot>
+  <slot>setBlueChannel()</slot>
+ </slots>
 </ui>

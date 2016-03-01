@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>527</width>
-    <height>388</height>
+    <width>445</width>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
    <item>
     <widget class="QFrame" name="framePath">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -37,7 +37,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>48</height>
+       <height>32</height>
       </size>
      </property>
      <property name="frameShape">
@@ -62,7 +62,7 @@
       <item>
        <widget class="QLineEdit" name="editExportFilename">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -75,7 +75,7 @@
       <item>
        <widget class="QPushButton" name="btnClear">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -88,7 +88,7 @@
       <item>
        <widget class="QPushButton" name="btnExport">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -119,6 +119,24 @@
       <property name="fieldGrowthPolicy">
        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
       </property>
+      <property name="horizontalSpacing">
+       <number>-1</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>8</number>
+      </property>
+      <property name="leftMargin">
+       <number>8</number>
+      </property>
+      <property name="topMargin">
+       <number>8</number>
+      </property>
+      <property name="rightMargin">
+       <number>8</number>
+      </property>
+      <property name="bottomMargin">
+       <number>8</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="separateImagesLabel">
         <property name="text">
@@ -129,6 +147,21 @@
       <item row="0" column="1">
        <widget class="QFrame" name="frameSeparation">
         <layout class="QVBoxLayout" name="verticalLayout_10">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
+          <number>4</number>
+         </property>
          <item>
           <widget class="QRadioButton" name="rbSepNone">
            <property name="text">
@@ -169,6 +202,21 @@
       <item row="1" column="1">
        <widget class="QFrame" name="frameImageType">
         <layout class="QVBoxLayout" name="verticalLayout_9">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
+          <number>4</number>
+         </property>
          <item>
           <widget class="QRadioButton" name="rbUVWMap">
            <property name="text">
@@ -211,8 +259,20 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
+          <number>4</number>
+         </property>
          <item>
-          <widget class="QCheckBox" name="boxExcludeNonSelectedScreens">
+          <widget class="QCheckBox" name="chkExcludeNonSelectedScreens">
            <property name="text">
             <string>Exclude non-selected screens</string>
            </property>
@@ -248,5 +308,121 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>rbUVWMap</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::Export</receiver>
+   <slot>renderPreview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbTextureCoordinates</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::Export</receiver>
+   <slot>renderPreview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbMappedInput</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::Export</receiver>
+   <slot>renderPreview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSepNone</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::Export</receiver>
+   <slot>renderPreview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSepProj</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::Export</receiver>
+   <slot>renderPreview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>138</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbSepScreens</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::Export</receiver>
+   <slot>renderPreview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>119</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkExcludeNonSelectedScreens</sender>
+   <signal>clicked()</signal>
+   <receiver>omni::ui::Export</receiver>
+   <slot>renderPreview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>280</x>
+     <y>271</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>renderPreview()</slot>
+ </slots>
 </ui>

@@ -30,29 +30,52 @@ namespace omni {
         {
             this->setup(ui_);
 
-            connect(ui_->boxChannel,SIGNAL(currentIndexChanged(int)),this,SLOT(setChannel(int)));
             connect(ui_->params,SIGNAL(parametersUpdated()),ui_->graph,SLOT(update()));
             connect(ui_->params,SIGNAL(parametersUpdated()),this,SIGNAL(colorCorrectionChanged()));
+
+            connect(ui_->btnAll,SIGNAL(clicked()),this,SLOT(setAllChannels()));
+            connect(ui_->btnRed,SIGNAL(clicked()),this,SLOT(setRedChannel()));
+            connect(ui_->btnGreen,SIGNAL(clicked()),this,SLOT(setGreenChannel()));
+            connect(ui_->btnBlue,SIGNAL(clicked()),this,SLOT(setBlueChannel()));
         }
 
         ColorCorrection::~ColorCorrection() {
-
         }
 
-        void ColorCorrection::setChannel(int _index) {
+        void ColorCorrection::setAllChannels() {
+            setChannel(Channel::ALL);
+        }
+
+        void ColorCorrection::setRedChannel() {
+            setChannel(Channel::RED);
+        }
+
+        void ColorCorrection::setGreenChannel() {
+            setChannel(Channel::GREEN);
+        }
+
+        void ColorCorrection::setBlueChannel() {
+            setChannel(Channel::BLUE);
+        }
+
+        void ColorCorrection::setChannel(proj::Channel _channel) {
             if (!tuning()) return;
 
-            using proj::Channel;
-            Channel _channel = util::intToEnum<Channel>(_index);
-            auto* _colorCorrection = &tuning()->colorCorrection();
-            ui_->graph->setSelectedChannel(_channel);
-            ui_->graph->setColorCorrection(_colorCorrection);
-            ui_->params->setChannelCorrection(_colorCorrection->correction(_channel),_channel);
+            this->locked([&]{
+                ui_->btnAll->setChecked(_channel == Channel::ALL);
+                ui_->btnRed->setChecked(_channel == Channel::RED);
+                ui_->btnGreen->setChecked(_channel == Channel::GREEN);
+                ui_->btnBlue->setChecked(_channel == Channel::BLUE);
+
+                auto* _colorCorrection = &tuning()->colorCorrection();
+                ui_->graph->setSelectedChannel(_channel);
+                ui_->graph->setColorCorrection(_colorCorrection);
+                ui_->params->setChannelCorrection(_colorCorrection->correction(_channel),_channel);
+            });
         }
 
         void ColorCorrection::tuningParameters() {
-            ui_->boxChannel->setCurrentIndex(0);
-            setChannel(0);
+            setAllChannels();
         }
     }
 }

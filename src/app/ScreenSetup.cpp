@@ -40,7 +40,8 @@ namespace omni
   namespace ui
   {
     ScreenSetup::ScreenSetup(QWidget* _parent) :
-      QWidget(_parent)
+      QWidget(_parent),
+      TransformedRect<ScreenSetup>(this)
     {
       setMouseTracking(true);
       setAcceptDrops(true);
@@ -59,27 +60,8 @@ namespace omni
       screenItems_.clear();
     }
 
-    Session const* ScreenSetup::session() const
-    {
-      return session_;
-    }
-
-    void ScreenSetup::setSession(Session* _session)
-    {
-      session_ = _session;
+    void ScreenSetup::sessionParameters() {
       updateScreens();
-    }
-
-
-    float ScreenSetup::zoom() const
-    {
-      return zoom_;
-    }
-
-    void ScreenSetup::setZoom(float _zoom)
-    {
-      zoom_=_zoom;
-      update();
     }
 
     void ScreenSetup::detachTuning(omni::ui::proj::Tuning* _tuning) {
@@ -99,54 +81,6 @@ namespace omni
         //if (_screen != QGuiApplication::primaryScreen()) continue;
         screenItems_[_screen].reset(new Item(*this,_screen));
       }
-    }
-
-
-    float ScreenSetup::scalingFactor() const
-    {
-      auto _windowRect = this->rect();
-      QRect _desktopRect = omni::proj::ScreenSetup::desktopRect();
-      float _rectAspect = _desktopRect.width() / _desktopRect.height();
-      float _windowAspect = _windowRect.width() / _windowRect.height();
-
-      float _factor = 1.0f;
-
-      if (_rectAspect > _windowAspect) {
-        _factor = float(_windowRect.width()) / _desktopRect.width();
-      } else {
-        _factor = float(_windowRect.height()) / _desktopRect.height();
-      }
-
-      return _factor * zoom();
-    }
-
-    QRectF ScreenSetup::transformedRect() const
-    {
-      auto _windowRect = this->rect();
-      auto _zoom = scalingFactor();
-
-
-      QRect _desktopRect = omni::proj::ScreenSetup::desktopRect();
-
-      return QRectF(
-          0.5*(_windowRect.width() - _zoom * (_desktopRect.width())),
-          0.5*(_windowRect.height() - _zoom * (_desktopRect.height())),
-          _zoom * _desktopRect.width(),
-          _zoom * _desktopRect.height());
-    }
-
-    QRectF ScreenSetup::transformedRect(QRectF const& _rect) const
-    {
-      auto _zoom = scalingFactor();
-
-      /// Transformed desktop rect
-      auto _desktopRect = transformedRect();
-
-      return QRectF(
-          _desktopRect.x() + _rect.x() * _zoom,
-          _desktopRect.y() + _rect.y() * _zoom,
-          _rect.width() * _zoom,
-          _rect.height() * _zoom);
     }
 
     void ScreenSetup::paintEvent(QPaintEvent*)

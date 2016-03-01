@@ -24,6 +24,8 @@
 #include <QWidget>
 
 #include <omni/proj/ScreenSetup.h>
+#include <omni/ui/mixin/TransformedRect.h>
+#include <omni/ui/mixin/SessionWidget.h>
 #include "proj/Tuning.h"
 #include "ScreenSetupDragWidget.h"
 #include "FullScreen.h"
@@ -37,24 +39,23 @@ namespace omni
     /**@brief A widget for seting up fullscreen windows
      * @details Holds fullscreen widgets
      **/
-    class ScreenSetup : public QWidget
+    class ScreenSetup :
+        public QWidget,
+        public mixin::TransformedRect<ScreenSetup>,
+        public mixin::SessionWidget
     {
       Q_OBJECT
     public:
       ScreenSetup(QWidget* = nullptr);
       ~ScreenSetup();
 
-      Session const* session() const;
-      void setSession(Session*);
-
-      float zoom() const;
+      inline QRect desktopRect() const {
+          return omni::proj::ScreenSetup::desktopRect();
+      }
 
     public slots:
       /// Update screen dimensions
       void updateScreens();
-
-      /// Set zoom factor
-      void setZoom(float);
 
       void detachTuning(omni::ui::proj::Tuning*);
 
@@ -150,21 +151,14 @@ namespace omni
         std::vector<SubScreenItem> subScreens_;
       };
 
-      /// Returns transformed bounding rect which fits into window and keeps aspect ratio
-      QRectF transformedRect() const;
-
-      /// Returns Transformed copy of the rect, based on transformed desktop rect
-      QRectF transformedRect(QRectF const&) const;
+      /// Set session parameters
+      void sessionParameters();
 
       /**@brief Returns pointer to a ScreenSetup::Item under given position
         *@detail Returns null otherwise
       **/
       Item* getItemAtPos(QPoint const&);
 
-      /// Returns the scaling factor which is needed so that desktopRect_ fits into window
-      float scalingFactor() const;
-
-      float zoom_ = 0.9;
       std::map<QScreen const*,std::unique_ptr<Item>> screenItems_;
       omni::proj::ScreenSetup* setup_;
       Session* session_ = nullptr;

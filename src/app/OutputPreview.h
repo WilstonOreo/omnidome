@@ -22,17 +22,21 @@
 #include <QRect>
 #include <QPoint>
 #include <omni/ui/mixin/SessionWidget.h>
+#include <omni/ui/mixin/TransformedRect.h>
 
 namespace omni {
     namespace ui {
         class OutputPreview:
             public QWidget,
-            public mixin::SessionWidget
+            public mixin::SessionWidget,
+            public mixin::TransformedRect<OutputPreview>
         {
             Q_OBJECT
         public:
             OutputPreview(QWidget* = nullptr);
             ~OutputPreview();
+
+            QRect desktopRect() const;
 
             RenderOptions const& renderOptions() const;
             void setRenderOptions(RenderOptions const&);
@@ -41,10 +45,14 @@ namespace omni {
             void render();
 
         protected:
+            void resizeEvent(QResizeEvent*);
             void paintEvent(QPaintEvent*);
 
         private:
             void drawBorder(QColor _color, QRect const& _rect, QPoint& _capPos, QString const& _caption);
+
+            /// Return non transformed rectangle for tuning
+            QRect getRectForTuning(proj::Tuning const*);
 
             void sessionParameters();
 

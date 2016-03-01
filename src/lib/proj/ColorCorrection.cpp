@@ -109,5 +109,16 @@ namespace omni {
             }
             return nullptr;
         }
+
+        QColor ColorCorrection::channelColor(Channel _channel) {
+            switch (_channel) {
+                default:
+                case Channel::ALL: return Qt::white; break;
+                case Channel::RED: return Qt::red; break;
+                case Channel::GREEN: return Qt::green; break;
+                case Channel::BLUE: return Qt::blue; break;
+            }
+            return Qt::transparent;
+        }
     }
 }

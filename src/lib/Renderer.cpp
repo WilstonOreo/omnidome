@@ -164,11 +164,13 @@ namespace omni
 
   void Renderer::render(proj::Tuning const* _tuning, RenderBuffer& _buffer) const
   {
-    int _w = _tuning->width();
-    int _h = _tuning->height();
+    int _w = _buffer.width() == 0 ? _tuning->width() : _buffer.width();
+    int _h = _buffer.height() == 0 ? _tuning->height() : _buffer.height();
 
     /// 1st Step: Render projectors view to texture
     RenderBuffer _projBuffer(_w,_h);
+
+    qDebug() << _w << " x " << _h;
 
     visual::Session _sessionViz(session_);
 
@@ -240,7 +242,6 @@ namespace omni
     [&](QOpenGLFunctions& _)
     {
       _.glDisable(GL_TEXTURE_2D);
-      glColor4f(1.0,1.0,1.0,1.0);
       _tuningViz.drawBlendMask();
     });
 
@@ -255,12 +256,12 @@ namespace omni
 
   void Renderer::render(proj::Tuning const* _tuning, QImage& _image, int _height) const
   {
-    int _w = _tuning->width();
-    int _h = _tuning->height();
+    int _w = _image.width() == 0 ? _tuning->width() : _image.width();
+    int _h = _image.height() == 0 ? _tuning->height() : _image.height();
 
     int _overallHeight = _height == 0 ? _h : _height;
 
-    RenderBuffer _buffer;
+    RenderBuffer _buffer(_w,_h);
     render(_tuning,_buffer);
     _image = QImage(_w,_overallHeight*3,QImage::Format_RGB32);
 
@@ -440,7 +441,7 @@ namespace omni
         _line[x+2] = convLower(_pixel.r);
         _line[x+1] = convLower(_pixel.g);
         _line[x+0] = convLower(_pixel.b);
-        _line[x+3] = 255;//;qBound(0,,255);
+        _line[x+3] = 255;
       }
       _pos += _image.width();
     }

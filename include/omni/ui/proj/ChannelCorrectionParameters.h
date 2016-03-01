@@ -23,6 +23,8 @@
 #include <omni/proj/ChannelCorrection.h>
 #include <omni/ui/ParameterWidget.h>
 
+class QPushButton;
+
 namespace omni {
     namespace ui {
         class RangedFloat;
@@ -43,6 +45,7 @@ namespace omni {
 
             public slots:
                 void updateParameters();
+                void reset();
 
             private:
                 void setup();
@@ -52,6 +55,7 @@ namespace omni {
                 RangedFloat* contrast_ = nullptr;
                 RangedFloat* gamma_ = nullptr;
                 RangedFloat* multiplier_ = nullptr;
+                QPushButton* reset_ = nullptr;
             };
         }
     }

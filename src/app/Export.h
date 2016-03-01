@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -23,6 +23,7 @@
 #include <memory>
 #include <QWidget>
 #include <omni/RenderOptions.h>
+#include <omni/ui/mixin/SessionWidget.h>
 
 namespace omni
 {
@@ -35,7 +36,9 @@ namespace omni
       class Export;
     }
 
-    class Export : public QWidget
+    class Export :
+        public QWidget,
+        public mixin::SessionWidget
     {
       Q_OBJECT
     public:
@@ -43,14 +46,15 @@ namespace omni
       Export(Session* _session, QWidget* = nullptr);
       ~Export();
 
-      Session const* session() const;
-      void setSession(Session* _session);
-      
+
     public slots:
       void exportToFile();
+      void renderPreview();
 
     private:
-      omni::RenderOptions getRenderOptions();
+      void sessionParameters();
+      void setup();
+      omni::RenderOptions getRenderOptions() const;
 
       Session* session_ = nullptr;
       std::unique_ptr<Ui::Export> ui_;

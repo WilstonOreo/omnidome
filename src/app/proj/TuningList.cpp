@@ -263,6 +263,7 @@ namespace omni
       {
         for (auto& _widget : widgets_)
           _widget->sessionModeChange();
+
       }
 
       void TuningList::clear()

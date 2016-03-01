@@ -120,21 +120,8 @@ namespace omni {
                 if (!colorCorrection_) return;
 
                 bool _selected = selectedChannel() == _channel;
-                switch (_channel) {
-                    default:
-                    case Channel::ALL:
-                        drawGraphForChannel(_p,colorCorrection_->all(),Qt::white,_selected);
-                        return;
-                    case Channel::RED:
-                        drawGraphForChannel(_p,colorCorrection_->red(),Qt::red,_selected);
-                        return;
-                    case Channel::GREEN:
-                        drawGraphForChannel(_p,colorCorrection_->green(),Qt::green,_selected);
-                        return;
-                    case Channel::BLUE:
-                        drawGraphForChannel(_p,colorCorrection_->blue(),Qt::blue,_selected);
-                        return;
-                }
+                drawGraphForChannel(_p,*colorCorrection_->correction(_channel),
+                    omni::proj::ColorCorrection::channelColor(_channel),_selected);
             }
 
             void ColorCorrectionGraph::drawGridLines(QPainter& _p) {

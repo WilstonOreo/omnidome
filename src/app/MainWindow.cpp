@@ -451,6 +451,7 @@ void MainWindow::setMode(int _index) {
 void MainWindow::setMode(Session::Mode _mode)
 {
     session_->setMode(_mode);
+    qDebug() << "setMode: " << session_->tunings().currentIndex();
 
     bool _hasTunings = session_->tunings().size() > 0;
 
@@ -524,6 +525,7 @@ void MainWindow::setMode(Session::Mode _mode)
     }
 
     ui_->tuningList->sessionModeChange();
+    ui_->tuningList->setCurrentTuning();
     updateAllViews();
     buttonState();
 }

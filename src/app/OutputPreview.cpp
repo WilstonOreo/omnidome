@@ -26,12 +26,31 @@
 namespace omni {
     namespace ui {
         OutputPreview::OutputPreview(QWidget* _parent) :
-            QWidget(_parent) {
-
+            QWidget(_parent),
+            TransformedRect<OutputPreview>(this)
+        {
         }
 
         OutputPreview::~OutputPreview() {
 
+        }
+
+        QRect OutputPreview::desktopRect() const {
+            QRect _rect = omni::proj::ScreenSetup::desktopRect();
+
+            switch(renderOptions_.mappingOutputMode()) {
+                default:
+                case mapping::OutputMode::MAPPED_INPUT:
+                break;
+
+                case mapping::OutputMode::TEXCOORDS:
+                    _rect.setHeight(_rect.height() * 2);
+                    break;
+                case mapping::OutputMode::UVW:
+                    _rect.setHeight(_rect.height() * 3);
+                    break;
+            }
+            return _rect;
         }
 
         RenderOptions const& OutputPreview::renderOptions() const {
@@ -44,17 +63,19 @@ namespace omni {
         }
 
         void OutputPreview::render() {
-
             if (!session()) return;
 
             Renderer _renderer(*session(),renderOptions_);
+
+            auto _desktopRect = omni::proj::ScreenSetup::desktopRect();
 
             std::map<omni::proj::Tuning const*,QImage> _images;
 
             for (auto& _tuning : session()->tunings()) {
                 auto _tuningPtr = _tuning.get();
-                QImage _image;
+                QImage _image(128,128,QImage::Format_RGB32);
                 _renderer.render(_tuningPtr,_image);
+                image_ = _image;
             }
 
             switch(renderOptions_.separationMode()) {
@@ -71,21 +92,32 @@ namespace omni {
             update();
         }
 
+        void OutputPreview::resizeEvent(QResizeEvent* _event) {
+            render();
+        }
+
         void OutputPreview::paintEvent(QPaintEvent* _event) {
-/*            auto _rect = this->rect();
+            auto _rect = this->rect();
+
+            for (auto& _tuning : session()->tunings()) {
+
+
+
+            }
 
             QPainter _painter(this);
-
+            _painter.setBrush(QBrush("#080808"));
+            _painter.setPen(Qt::NoPen);
+            _painter.drawRect(_rect);
             QRect _imageRect(0,0,image_.width(),image_.height());
 
-            auto _aspectRect = aspectRect(_rect,_imageRect);
-            _painter.drawImage(_aspectRect,_image);
+            auto _aspectRect = _rect;// aspectRect(_rect,_imageRect);
+            _painter.drawImage(_imageRect,image_);
 
-            auto _rect = getRectangles();
+            qDebug() << "paint";
 
-            for (auto& _rect : rectangles)
+//            for (auto& _rect : rectangles)
 
-*/
         }
 
         void OutputPreview::sessionParameters() {

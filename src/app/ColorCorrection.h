@@ -35,11 +35,17 @@ namespace omni {
         {
             Q_OBJECT
         public:
+            typedef omni::proj::Channel Channel;
+
             ColorCorrection(QWidget* _parent = nullptr);
             ~ColorCorrection();
 
         public slots:
-            void setChannel(int);
+            void setAllChannels();
+            void setRedChannel();
+            void setGreenChannel();
+            void setBlueChannel();
+            void setChannel(Channel _channel);
 
         signals:
             void colorCorrectionChanged();
