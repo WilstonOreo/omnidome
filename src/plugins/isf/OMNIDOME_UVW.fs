@@ -331,11 +331,11 @@ void main()
         texCoords.t = 1.0 - texCoords.t;
     }
 
-    vec2 _shift = vec2(0.0,s.y/3.0/4.0);
-    getChannelCorrectionFromImage(uvw_map,s,blendmask + 0.0*_shift,cc_all);
-    getChannelCorrectionFromImage(uvw_map,s,blendmask + 1.0*_shift,cc_red);
-    getChannelCorrectionFromImage(uvw_map,s,blendmask + 2.0*_shift,cc_green);
-    getChannelCorrectionFromImage(uvw_map,s,blendmask + 3.0*_shift,cc_blue);
+    float _shift = s.y/3.0/4.0;
+    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 2.0*_shift),cc_all);
+    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 3.0*_shift),cc_red);
+    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 0.0*_shift),cc_green);
+    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 1.0*_shift),cc_blue);
 
     float alpha =  texture2DRect(uvw_map,blendmask).r;
     vec3 color = colorCorrection(texture2DRect(image, texCoords * _image_imgSize).rgb);
