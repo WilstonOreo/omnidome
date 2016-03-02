@@ -109,9 +109,8 @@ namespace omni {
         // Get all tunings
         for (auto& _tuning : session_.tunings())
         {
-            if ((_tuning->screen() != proj::ScreenSetup::standardScreen()) ||
-                (!_tuning->hasScreen() &&
-                 options_.excludeUnassignedProjectors())) continue;
+            if (!_tuning->hasScreen() &&
+                 options_.excludeUnassignedProjectors()) continue;
             _tunings.push_back(_tuning.get());
         }
 

@@ -100,6 +100,7 @@ namespace omni {
         }
 
         void Export::sessionParameters() {
+            qDebug() << "Export::sessionParameters(): " << session();
             ui_->outputPreview->setSession(session());
             renderPreview();
         }

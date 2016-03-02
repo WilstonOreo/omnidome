@@ -55,7 +55,7 @@ namespace omni {
         }
 
         Session const * ScreenSetup::session() const {
-            return session();
+            return session_;
         }
 
         QRect ScreenSetup::virtualDesktopRect() const {
@@ -63,6 +63,7 @@ namespace omni {
 
             for (auto& _tuning : session()->tunings()) {
                 if (_tuning->hasScreen()) continue;
+                qDebug() << "ScreenSetup::virtualDesktopRect " << _rect;
                 _rect |= QRect(_rect.width(), 0,
                                _tuning->width(), _tuning->height());
             }
@@ -71,6 +72,8 @@ namespace omni {
 
         /// Returns true if no tuning is assigned to a screen
         bool ScreenSetup::noTuningsAssigned() const {
+            if (!session()) return true;
+
             for (auto& _tuning : session()->tunings()) {
                 if (_tuning->hasScreen()) {
                     return false;
@@ -82,9 +85,8 @@ namespace omni {
         /// Returns combined desktop and virtual desktop rect
         QRect ScreenSetup::combinedDesktopRect() const {
             /// If there are no tunings assigned, ignore desktopRect
-            auto _r = noTuningsAssigned() ? QRect() : desktopRect();
-
-            return _r | virtualDesktopRect().translated(_r.width(), 0);
+            auto _r = desktopRect();
+            return _r | virtualDesktopRect().translated(_r.topRight());
         }
 
         int ScreenSetup::subScreenCount(QScreen const *_screen)
@@ -139,6 +141,7 @@ namespace omni {
         }
 
         QRect ScreenSetup::tuningRect(proj::Tuning const *_t) const {
+            if (!session()) return QRect();
             auto _r = desktopRect();
 
             QRect _rect;
@@ -155,14 +158,16 @@ namespace omni {
                         _rect = subScreenRect(
                             _tuning->screen(), _tuning->subScreenIndex());
                     }
-                    continue;
                 }
             }
 
             for (auto& _tuning : session()->tunings()) {
+                if (_tuning->hasScreen()) {
+                    continue;
+                }
+
                 if (_tuning.get() == _t) {
                     _rect = QRect(_posX, 0, _tuning->width(), _tuning->height());
-                    break;
                 }
                 _posX += _tuning->width();
             }
@@ -171,6 +176,7 @@ namespace omni {
         }
 
         QRect ScreenSetup::tuningRect() const {
+            if (!session()) return QRect();
             QRect _rect;
 
             for (auto& _tuning : session()->tunings()) {

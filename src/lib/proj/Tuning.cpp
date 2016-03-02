@@ -112,7 +112,8 @@ namespace omni {
 
         bool Tuning::hasScreen() const
         {
-            return projector_.screen() != nullptr;
+            qDebug() << "Tuning::hasScreen " << (projector_.screen() != ScreenSetup::standardScreen());
+            return projector_.screen() != ScreenSetup::standardScreen();
         }
 
         bool Tuning::resolutionToBeChanged(proj::Screen const *_screen) const

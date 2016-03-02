@@ -21,6 +21,7 @@
 #define OMNI_UI_MIXIN_TRANSFORMEDRECT_H
 
 #include <QRectF>
+#include <QDebug>
 
 namespace omni {
     namespace ui {
@@ -39,14 +40,21 @@ namespace omni {
                 /// Returns the scaling factor which is needed so that desktopRect_ fits into window
                 float scalingFactor() const
                 {
+                  if (!widget_) return 0.0;
                   auto _windowRect = widget_->rect();
+
+                  if (_windowRect.height() == 0 || _windowRect.width() == 0) return 0.0;
+
                   QRect _desktopRect = this->desktopRect();
-                  float _rectAspect = _desktopRect.width() / _desktopRect.height();
-                  float _windowAspect = _windowRect.width() / _windowRect.height();
+                  if (_desktopRect.height() == 0 || _desktopRect.width() == 0) return 0.0;
+                  float _rectAspect = float(_desktopRect.width()) / float(_desktopRect.height());
+                  float _windowAspect = float(_windowRect.width()) / float(_windowRect.height());
 
                   float _factor = 1.0f;
 
-                  if (_rectAspect > _windowAspect) {
+                  qDebug() << "TransformedRect::scalingFactor: " << _windowAspect << " " << _rectAspect;
+
+                  if (_windowAspect < _rectAspect) {
                     _factor = float(_windowRect.width()) / _desktopRect.width();
                   } else {
                     _factor = float(_windowRect.height()) / _desktopRect.height();
@@ -98,7 +106,7 @@ namespace omni {
 
             private:
 
-                widget_type* widget_;
+                widget_type* widget_ = nullptr;
                 float zoom_ = 0.9;
             };
 
