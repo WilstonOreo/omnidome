@@ -32,8 +32,7 @@ namespace omni
       setStyleSheet("* { background:black; }");
       setWindowFlags( Qt::CustomizeWindowHint );
       setWindowFlags(Qt::FramelessWindowHint);
-
-      move(_screen->geometry().topLeft());
+      QWidget::setGeometry(_screen->geometry());
       this->hide();
     }
 
