@@ -160,7 +160,7 @@ namespace omni {
                 });
             }
             AbstractInputWidget::drawBorder(_p,
-                                            hasFocus() || editor_->hasFocus());
+                                            hasFocus() || editor()->hasFocus());
         }
 
         void RangedInt::keyPressEvent(QKeyEvent* _event) {
@@ -218,10 +218,12 @@ namespace omni {
 
         void RangedInt::init()
         {
-            moving_ = false;
             setSingleStep(1.0);
+            AbstractInputWidget::createEditor<editor_type>();
+        }
 
-            auto _editor = AbstractInputWidget::createEditor<editor_type>();
+        void RangedInt::editorSetup() {
+            auto _editor = this->editorAs<editor_type>();
 
             connect(_editor, SIGNAL(valueChanged(int)), this,
                     SLOT(setValue(int)));
@@ -230,7 +232,6 @@ namespace omni {
             _editor->setButtonSymbols(QAbstractSpinBox::PlusMinus);
             mixin_range_type::apply(_editor);
             valueChangedEvent();
-            hideEditor();
         }
     }
 }

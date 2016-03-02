@@ -123,6 +123,8 @@ namespace omni
 
                     private:
                         void init();
+                        void editorSetup();
+                        
                         /// Get value from x mouse position
                         double valueFromPos(double) const;
 

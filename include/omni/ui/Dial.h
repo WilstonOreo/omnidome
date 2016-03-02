@@ -21,9 +21,11 @@
 #define OMNI_UI_DIAL_H_
 
 #include <QWidget>
+#include <QDoubleSpinBox>
 #include <QLabel>
 #include <omni/ui/ColorSet.h>
 #include <omni/ui/mixin/RangedValue.h>
+#include <omni/ui/mixin/Editor.h>
 
 namespace omni
 {
@@ -31,10 +33,12 @@ namespace omni
         {
                 class Dial :
                 public QWidget,
-                public mixin::RangedValue<Dial,double>
+                public mixin::RangedValue<Dial,double>,
+                protected mixin::Editor<Dial,QDoubleSpinBox>
                 {
                         Q_OBJECT
                     public:
+                        typedef mixin::Editor<Dial,QDoubleSpinBox> mixin_editor_type;
                         typedef mixin::RangedValue<Dial,double> mixin_range_type;
                         typedef typename mixin_range_type::value_type value_type;
 
@@ -64,6 +68,8 @@ namespace omni
                         void setValue(int);
                         void setValue(double);
 
+                        void setEditorVisible(bool);
+
                     signals:
                         void valueChanged();
                         void rangeChanged();
@@ -75,6 +81,7 @@ namespace omni
                         void mouseReleaseEvent(QMouseEvent*);
                         void mouseMoveEvent(QMouseEvent*);
                         void mouseDoubleClickEvent(QMouseEvent*);
+                        void keyPressEvent(QKeyEvent*);
 
                         void valueChangedEvent();
                         void rangeChangedEvent();
@@ -88,6 +95,7 @@ namespace omni
                         ColorSet colorSet_;
 
                         void init();
+                        void editorSetup();
                         QPointF pos_;
 
                         double radius() const;

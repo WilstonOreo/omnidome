@@ -245,7 +245,7 @@ namespace omni
         if (_focusId != -1) {
             int _prevFocus = _focusId - 1;
             if (_prevFocus < 0) {
-                _prevFocus = _circular ? layout()->count() - 1 : 0;
+                _prevFocus = !_circular ? layout()->count() - 1 : 0;
             }
             auto _param = layout()->itemAt(_prevFocus)->widget();
             _param->setFocus();

@@ -35,19 +35,12 @@ namespace omni {
             setup();
         }
 
-        Export::Export(Session *_session, QWidget *_parent) :
-            QWidget(_parent),
-            ui_(new Ui::Export)
-        {
-            setup();
-            setSession(_session);
-        }
-
         Export::~Export()
         {}
 
         void Export::exportToFile()
         {
+            if (!session()) return;
             RenderOptions _options = getRenderOptions();
 
             QString _filename = QFileDialog::getSaveFileName(this,
@@ -57,7 +50,7 @@ namespace omni {
 
             if (_filename.isEmpty()) return;
 
-            session_->renderToFile(_filename, _options);
+            session()->renderToFile(_filename, _options);
             ui_->editExportFilename->setText(_filename);
             QMessageBox::information(this, "Session exported.",
                                      QString(
@@ -107,11 +100,8 @@ namespace omni {
         }
 
         void Export::sessionParameters() {
-            renderPreview();
-
-            ui_->outputPreview->setRenderOptions(getRenderOptions());
-            ui_->outputPreview->render();
             ui_->outputPreview->setSession(session());
+            renderPreview();
         }
 
         void Export::setup() {

@@ -42,6 +42,7 @@ namespace omni
     class Export;
     class TuningGLView;
     class GLView3D;
+    class ToolBar;
 
     class MainWindow : public QMainWindow
     {
@@ -91,12 +92,11 @@ namespace omni
       void setTuningIndex(int);
 
       void addProjector(QAction* _action);
-      void setMode(int);
 
-
-    private:
       /// Sets session mode
       void setMode(Session::Mode _mode);
+
+    private:
 
       /// Makes a new session
       void setupSession();
@@ -136,6 +136,9 @@ namespace omni
 
             /// Page for exporting projection
             QUniquePtr<GLView3D> live_;
+
+            /// MainWindow toolbar
+            QUniquePtr<ToolBar> toolBar_;
 
       /// UI containing designed widgets of this window
       std::unique_ptr<Ui::MainWindow> ui_;

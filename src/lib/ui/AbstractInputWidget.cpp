@@ -27,8 +27,7 @@ namespace omni {
     namespace ui {
         AbstractInputWidget::AbstractInputWidget(QWidget *_parent) :
             Widget(_parent),
-            editor_(nullptr),
-            valueLabel_(nullptr)
+            mixin_editor_type(this)
         {
             init();
         }
@@ -45,9 +44,8 @@ namespace omni {
 
         void AbstractInputWidget::setEditorVisible(bool _visible)
         {
-            if (!editor_) return;
+            mixin_editor_type::setEditorVisible(_visible);
 
-            editor_->setVisible(_visible);
             valueLabel_->setVisible(!_visible);
 
             if (!_visible)
@@ -55,17 +53,16 @@ namespace omni {
                 setFocus();
                 return;
             }
-            editor_->setFocus();
         }
 
         void AbstractInputWidget::showEditor()
         {
-            setEditorVisible(true);
+            mixin_editor_type::showEditor();
         }
 
         void AbstractInputWidget::hideEditor()
         {
-            setEditorVisible(false);
+            mixin_editor_type::hideEditor();
         }
 
         void AbstractInputWidget::mousePressEvent(QMouseEvent *)
@@ -83,7 +80,7 @@ namespace omni {
         {
             if (((e->key() == Qt::Key_Enter) || (e->key() == Qt::Key_Return)))
             {
-                setEditorVisible(!editor_->hasFocus());
+                setEditorVisible(!editor()->hasFocus());
             }
         }
 

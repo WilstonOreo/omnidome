@@ -21,16 +21,20 @@
 #define OMNI_UI_ABSTRACTINPUTWIDGET_H_
 
 #include <QLayout>
+#include <omni/ui/mixin/Editor.h>
 #include "Widget.h"
 
 namespace omni
 {
         namespace ui
         {
-                class AbstractInputWidget : public Widget
+                class AbstractInputWidget :
+                    public Widget,
+                    protected mixin::Editor<AbstractInputWidget,QWidget>
                 {
                         Q_OBJECT
                     public:
+                        typedef mixin::Editor<AbstractInputWidget,QWidget> mixin_editor_type;
                         AbstractInputWidget(QWidget* = nullptr);
                         virtual ~AbstractInputWidget() {
                         }
@@ -54,36 +58,9 @@ namespace omni
 
                         void drawTrack(QPainter& _p, double _left, double _right) const;
 
-                    protected:
                         void init();
 
-                        template<typename T>
-                        inline T* createEditor()
-                        {
-                                if (editor_) return nullptr;
-
-                                editor_ = new T(this);
-                                T* _e = editorAs<T>();
-                                _e->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Ignored);
-                                _e->setStyleSheet("background : transparent");
-                                layout()->addWidget(_e);
-                                return _e;
-                        }
-
-                        template<typename T>
-                        T* editorAs()
-                        {
-                                return static_cast<T*>(editor_);
-                        }
-
-                        template<typename T>
-                        T const* editorAs() const
-                        {
-                                return static_cast<T const*>(editor_);
-                        }
-
-                        QWidget* editor_;
-                        QLabel* valueLabel_;
+                        QLabel* valueLabel_ = nullptr;
                 };
         }
 }

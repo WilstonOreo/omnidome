@@ -19,6 +19,7 @@
 
 #include <omni/ui/RangedFloat.h>
 
+#include <QDebug>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -217,10 +218,11 @@ namespace omni {
                 });
             }
             AbstractInputWidget::drawBorder(_p,
-                                            hasFocus() || editor_->hasFocus());
+                                            hasFocus() || editor()->hasFocus());
         }
 
         void RangedFloat::keyPressEvent(QKeyEvent* _event) {
+            AbstractInputWidget::keyPressEvent(_event);
             float _step = pageStep();
 
             if (_event->modifiers() & Qt::ShiftModifier) {
@@ -291,9 +293,12 @@ namespace omni {
         void RangedFloat::init()
         {
             setSingleStep(1.0);
+            AbstractInputWidget::createEditor<editor_type>();
+        }
 
-            // Setup editor
-            auto _editor = AbstractInputWidget::createEditor<editor_type>();
+        void RangedFloat::editorSetup() {
+            auto _editor = this->editorAs<editor_type>();
+
             connect(_editor, SIGNAL(valueChanged(double)), this,
                     SLOT(setValue(double)));
             _editor->setFrame(false);
@@ -301,7 +306,6 @@ namespace omni {
             _editor->setButtonSymbols(QAbstractSpinBox::PlusMinus);
             mixin_range_type::apply(_editor);
             valueChangedEvent();
-            hideEditor();
         }
     }
 }

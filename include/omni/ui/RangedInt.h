@@ -73,6 +73,7 @@ namespace omni
 
                     private:
                         void init();
+                        void editorSetup();
                         int valueFromPos(double) const;
                         int valueToPos() const;
 
@@ -81,7 +82,7 @@ namespace omni
 
                         bool drawTicks_ = true;
                         bool useDefaultValue_ = false;
-                        bool moving_;
+                        bool moving_ = false;
                 };
         }
 }

@@ -30,6 +30,7 @@ namespace omni {
         Dial::Dial(QWidget *_parent) :
             QWidget(_parent),
             mixin_range_type(0, 0, 100),
+            mixin_editor_type(this),
             colorSet_(this)
         {
             init();
@@ -41,6 +42,7 @@ namespace omni {
                    QWidget   *_parent) :
             QWidget(_parent),
             mixin_range_type(_value, _minimum, _maximum),
+            mixin_editor_type(this),
             colorSet_(this)
         {
             init();
@@ -77,8 +79,35 @@ namespace omni {
 
             valueLabel_ = new QLabel(this);
             valueLabel_->setAlignment(Qt::AlignCenter);
-            valueLabel_->setStyleSheet("background : transparent");
+            valueLabel_->setStyleSheet("background : transparent; color: #808080;");
 
+            mixin_editor_type::createEditor<>();
+
+            valueChangedEvent();
+        }
+
+        void Dial::setEditorVisible(bool _visible)
+        {
+            mixin_editor_type::setEditorVisible(_visible);
+
+            valueLabel_->setVisible(!_visible);
+
+            if (!_visible)
+            {
+                setFocus();
+                return;
+            }
+        }
+
+        void Dial::editorSetup() {
+            auto _editor = this->editorAs<editor_type>();
+
+            connect(_editor, SIGNAL(valueChanged(double)), this,
+                    SLOT(setValue(double)));
+            _editor->setFrame(false);
+            _editor->setAlignment(Qt::AlignRight);
+            _editor->setButtonSymbols(QAbstractSpinBox::PlusMinus);
+            mixin_range_type::apply(_editor);
             valueChangedEvent();
         }
 
@@ -156,12 +185,18 @@ namespace omni {
         void Dial::resizeEvent(QResizeEvent *e)
         {
             valueLabel_->setGeometry(rect());
+            if (editor()) {
+                editor()->move(rect().center() -
+                    QPoint(editor()->width()*0.5,editor()->height()*0.5));
+            }
         }
 
         void Dial::mousePressEvent(QMouseEvent *e)
         {
             setFocus();
-            isMoving_ = QVector2D(rect().center() - e->pos()).length() < radius();
+
+            float _d = QVector2D(rect().center() - e->pos()).length();
+            isMoving_ = (_d < radius()) && (_d > radius()*0.6);
 
             if (isMoving_)
             {
@@ -212,7 +247,41 @@ namespace omni {
 
         void Dial::mouseDoubleClickEvent(QMouseEvent *event)
         {
-            setValue(minimum());
+            float _d = QVector2D(rect().center() - event->pos()).length();
+
+            if ((_d < radius()) && (_d > radius()*0.6)) {
+                setValue(minimum());
+            }
+            // Show editor when click in the middle
+            if (_d < radius()*0.4) {
+                setEditorVisible(!editor()->isVisible());
+            } else {
+                setEditorVisible(false);
+            }
+        }
+
+        void Dial::keyPressEvent(QKeyEvent* _event) {
+            if (((_event->key() == Qt::Key_Enter) ||
+                 (_event->key() == Qt::Key_Return)))
+            {
+                setEditorVisible(!editor()->hasFocus());
+            }
+
+            float _step = singleStep();
+
+            if (_event->modifiers() & Qt::ShiftModifier) {
+                _step = 1.0;
+            }
+            if (_event->modifiers() & Qt::ControlModifier) {
+                _step = pageStep();
+            }
+
+            if (_event->key() == Qt::Key_Left) {
+                setValue(value() - _step);
+            }
+            if (_event->key() == Qt::Key_Right) {
+                setValue(value() + _step);
+            }
         }
 
         double Dial::getValue(QPoint const& _point)
@@ -221,8 +290,7 @@ namespace omni {
             float _angle = atan2(_v.x(), -_v.y()) / M_PI * 0.5;
 
             _angle = (_angle + 0.5) * (maximum() - minimum()) + minimum();
-            return _angle; // snap() ? int(_angle / singleStep() +
-                           // 0.5)*singleStep()  : _angle;
+            return _angle;
         }
 
         void Dial::paintEvent(QPaintEvent *e)
@@ -273,8 +341,9 @@ namespace omni {
             paintTick(_p, mixin_range_type::value(), 0.333);
             paintTick(_p, 0.0,                       0.25);
 
-            _p.setPen(QPen(colorSet().shadow(), 2));
 
+            // Draw big letter in the middle
+            _p.setPen(QPen(QColor("#3d3d3d"), 2));
             QFont _font = font();
             _font.setPixelSize(_r);
             _p.setFont(_font);

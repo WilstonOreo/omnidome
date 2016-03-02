@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -16,48 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef OMNI_PROJ_CHANNEL_H_
+#define OMNI_PROJ_CHANNEL_H_
 
-#ifndef OMNI_UI_EXPORT_H_
-#define OMNI_UI_EXPORT_H_
-
-#include <memory>
-#include <QWidget>
-#include <omni/RenderOptions.h>
-#include <omni/ui/mixin/SessionWidget.h>
-
-namespace omni
-{
-  class Session;
-
-  namespace ui
-  {
-    namespace Ui
-    {
-      class Export;
+namespace omni {
+    namespace proj {
+        enum class Channel {
+            ALL,
+            RED,
+            GREEN,
+            BLUE
+        };
     }
-
-    class Export :
-        public QWidget,
-        public mixin::SessionWidget
-    {
-      Q_OBJECT
-    public:
-      Export(QWidget* = nullptr);
-      ~Export();
-
-
-    public slots:
-      void exportToFile();
-      void renderPreview();
-
-    private:
-      void sessionParameters();
-      void setup();
-      omni::RenderOptions getRenderOptions() const;
-
-      std::unique_ptr<Ui::Export> ui_;
-    };
-  }
+    using proj::Channel;
 }
 
-#endif /* OMNI_UI_EXPORT_H_ */
+#endif /* OMNI_PROJ_CHANNEL_H_ */

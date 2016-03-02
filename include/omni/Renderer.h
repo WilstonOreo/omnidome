@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -25,6 +25,7 @@
 #include <QImage>
 #include <omni/RenderOptions.h>
 #include <omni/RenderBuffer.h>
+#include <omni/proj/ColorCorrection.h>
 
 namespace omni
 {
@@ -53,10 +54,13 @@ namespace omni
     std::map<QScreen const*,QImage>
       stitchScreens(std::vector<const proj::Tuning*> const&) const;
 
+
   private:
     void getUpper8bit(RenderBuffer const& _buffer, QImage& _image) const;
     void getLower8bit(RenderBuffer const& _buffer, QImage& _image) const;
     void getAlphaMask(RenderBuffer const& _buffer, QImage& _image) const;
+    void encodeColorCorrection(ColorCorrection const&, Channel, QImage&) const;
+
     void bufferToRGBImage(RenderBuffer const& _buffer, QImage& _image);
 
     template<typename PROJECTION, typename MODELVIEW>

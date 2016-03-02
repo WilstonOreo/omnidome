@@ -1,5 +1,6 @@
 <RCC>
   <qresource>
+    <file>stylesheet.qss</file>
     <file>icons/logo.png</file>
     <file>icons/warp.png</file>
     <file>icons/screens.png</file>
@@ -7,6 +8,7 @@
     <file>icons/live.png</file>
     <file>icons/export.png</file>
     <file>icons/blend.png</file>
+    <file>icons/color_correction.png</file>
     <file>shaders/slow_fractal.frag</file>
     <file>shaders/frustum.frag</file>
     <file>shaders/frustum.vert</file>

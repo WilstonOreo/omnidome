@@ -20,17 +20,11 @@
 #define OMNI_PROJ_COLORCORRECTION_H_
 
 #include <omni/proj/ChannelCorrection.h>
+#include <omni/proj/Channel.h>
 #include <QColor>
 
 namespace omni {
     namespace proj {
-        enum class Channel {
-            ALL,
-            RED,
-            GREEN,
-            BLUE
-        };
-
         /// Color correction for RGB color space
         class ColorCorrection {
         public:
@@ -89,6 +83,8 @@ namespace omni {
             ChannelCorrection all_, red_, green_, blue_;
         };
     }
+
+    using proj::ColorCorrection;
 }
 
 #endif /* OMNI_PROJ_COLORCORRECTION_H_ */

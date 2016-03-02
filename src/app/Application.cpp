@@ -50,8 +50,7 @@ namespace omni {
 #endif
             }
 
-            setStyleSheetFile(":/qss_icons/stylesheet.qss");
-
+            setStyleSheetFile(":/stylesheet.qss");
             installEventFilter(this);
         }
 
