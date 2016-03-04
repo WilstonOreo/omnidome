@@ -91,9 +91,22 @@ namespace omni
       /// Returns height of screen
       int height() const;
 
+      /// Return flag if output is disabled, projector output is black
+      bool outputDisabled() const;
+
+      /// Return flag if output is enabled
+      bool outputEnabled() const;
+
+      /// Disable output if _disabled is true, enable otherwise
+      void setOutputDisabled(bool _disabled = true);
+
+      /// Enable output if _enabled is true, disable otherwise
+      void setOutputEnabled(bool _enabled = true);
+
       friend bool operator==(Tuning const&,Tuning const&);
 
     private:
+      bool outputDisabled_ = false;
       QColor color_;
       Projector projector_;
       std::unique_ptr<ProjectorSetup> projectorSetup_;

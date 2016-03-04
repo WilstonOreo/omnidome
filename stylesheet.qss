@@ -32,6 +32,20 @@ QGroupBox::title {
     padding-right: 10px;
 }
 
+QSplitter::handle {
+    image: url(":/HandleHorz.png");
+}
+
+QSplitter::handle:horizontal {
+    width: 5px;
+    image: url(":/HandleHorz.png");
+}
+
+QSplitter::handle:vertical {
+    height: 5px;
+    image: url(":/HandleVert.png");
+}
+
 
 QHeaderView::section
 {
@@ -222,8 +236,8 @@ QComboBox::down-arrow {
 QScrollBar:vertical
 {
     background-color: #0e0e0e;
-    width: 15px;
-    margin: 11px 0 11px 0;
+    width: 17px;
+    margin: 15px 2 15px 2;
     border: none;
     border-radius: 1px;
 }
@@ -238,59 +252,69 @@ QScrollBar::handle:vertical
 
 QScrollBar::handle:vertical:hover
 {
-    background-color: #5e5e5e;
+    background-color: #808080;
     min-height: 5px;
     border: 1px solid #0e0e0e;
     border-radius: 1px;
 }
 
-
 QScrollBar::sub-line:vertical
 {
-    border-image: url(:/qss_icons/up_arrow_disabled.png);
-    height: 10px;
-    width: 10px;
+    border-image: url(:/arrows/808080_270.png);
+    height: 15px;
+    width: 15px;
+    margin: 0px 0px 2px 2px;
     subcontrol-position: top;
     subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical:hover {
+    border-image: url(:/arrows/f8f8f8_270.png);
 }
 
 QScrollBar::add-line:vertical
 {
-    border-image: url(:/qss_icons/down_arrow_disabled.png);
-    height: 10px;
-    width: 10px;
+    border-image: url(:/arrows/808080_90.png);
+    height: 15px;
+    width: 15px;
+    margin: 0px 0px 2px 2px;
     subcontrol-position: bottom;
     subcontrol-origin: margin;
 }
 
-QScrollBar::sub-line:vertical:hover,QScrollBar::sub-line:vertical:on
+QScrollBar::add-line:vertical:hover {
+    border-image: url(:/arrows/f8f8f8_90.png);
+}
+
+QScrollBar::sub-line:horizontal
 {
-    border-image: url(:/qss_icons/up_arrow.png);
-    height: 10px;
-    width: 10px;
-    subcontrol-position: top;
+    border-image: url(:/arrows/808080_180.png);
+    height: 15px;
+    width: 15px;
+    margin: 0px 0px 2px 2px;
+    subcontrol-position: left;
     subcontrol-origin: margin;
 }
 
-
-QScrollBar::add-line:vertical:hover, QScrollBar::add-line:vertical:on
-{
-    border-image: url(:/qss_icons/down_arrow.png);
-    height: 10px;
-    width: 10px;
-    subcontrol-position: bottom;
-    subcontrol-origin: margin;
+QScrollBar::sub-line:vertical:hover {
+    border-image: url(:/arrows/f8f8f8_270.png);
 }
 
-QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical
+QScrollBar:horizontal
 {
-    background: none;
+    background-color: #0e0e0e;
+    height: 17px;
+    margin:  2 15px 2 15px;
+    border: none;
+    border-radius: 1px;
 }
 
-
-QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
+QScrollBar::handle:horizontal
 {
-    background: none;
+    background-color: #3d3d3d;
+    min-width: 5px;
+    border: 1px solid #0e0e0e;
+    border-radius: 1px;
 }
 
 /* Slider */

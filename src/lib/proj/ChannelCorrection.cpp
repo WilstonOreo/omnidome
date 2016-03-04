@@ -19,6 +19,7 @@
 
 #include <cmath>
 #include <omni/proj/ChannelCorrection.h>
+#include <omni/util.h>
 
 namespace omni {
     namespace proj {
@@ -77,6 +78,15 @@ namespace omni {
 
         double ChannelCorrection::corrected(double _value) const {
             return brightness(contrast(gamma(_value)));
+        }
+
+        /// Test for equality
+        bool operator==(ChannelCorrection const& _lhs, ChannelCorrection const& _rhs) {
+            return
+                OMNI_TEST_MEMBER_EQUAL(gamma_) &&
+                OMNI_TEST_MEMBER_EQUAL(brightness_) &&
+                OMNI_TEST_MEMBER_EQUAL(contrast_) &&
+                OMNI_TEST_MEMBER_EQUAL(multiplier_);
         }
     }
 }

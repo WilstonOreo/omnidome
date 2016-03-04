@@ -19,6 +19,8 @@
 
 #include <omni/proj/ColorCorrection.h>
 
+#include <omni/util.h>
+
 namespace omni {
     namespace proj {
         bool ColorCorrection::isUsed() const {
@@ -119,6 +121,15 @@ namespace omni {
                 case Channel::BLUE: return Qt::blue; break;
             }
             return Qt::transparent;
+        }
+
+        bool operator==(ColorCorrection const& _lhs, ColorCorrection const& _rhs) {
+            return
+                OMNI_TEST_MEMBER_EQUAL(isUsed_) &&
+                OMNI_TEST_MEMBER_EQUAL(all_) &&
+                OMNI_TEST_MEMBER_EQUAL(red_) &&
+                OMNI_TEST_MEMBER_EQUAL(green_) &&
+                OMNI_TEST_MEMBER_EQUAL(blue_);
         }
     }
 }

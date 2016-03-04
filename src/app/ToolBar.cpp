@@ -20,11 +20,13 @@
 #include "ToolBar.h"
 
 #include <QIcon>
-#include <QPushButton>
+#include <QPixmap>
+#include <QToolButton>
 #include <QSizePolicy>
 #include <QDebug>
 
 #include <omni/util.h>
+#include "About.h"
 
 namespace omni {
     namespace ui {
@@ -35,92 +37,102 @@ namespace omni {
               "border-bottom: 0px solid #080808 ;"
               "}"
             );
+
             setFloatable(false);
             setMovable(false);
-            setIconSize(QSize(32,32));
+            setIconSize(QSize(28,28));
 
-            auto _addButton = [&](
-                Session::Mode _mode)
-                -> QAction* {
+            auto _makeButton = [&](QString const& _iconId,
+                    QString const& _caption = QString(), int _iconSize = 24 ) ->
+                QToolButton* {
 
-                auto* _button = new QPushButton();
-                _button->setCheckable(true);
+                auto* _button = new QToolButton();
                 _button->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
                 _button->setMinimumSize(QSize(120,40));
+                _button->setCheckable(true);
+                _button->setText(_caption);
+                _button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+                _button->setIconSize(QSize(_iconSize,_iconSize));
+
+                auto _makeIconFile = [&](QString const& _s, QString const& _suffix = QString()) {
+
+                    return QString(":/icons/") + _s + _suffix + ".png";
+                };
+
+                QIcon _icon(_makeIconFile(_iconId));
+                _icon.addPixmap(QPixmap(_makeIconFile(_iconId,"_disabled")),QIcon::Disabled,QIcon::On);
+                _icon.addPixmap(QPixmap(_makeIconFile(_iconId,"_disabled")),QIcon::Disabled,QIcon::Off);
+                _button->setIcon(_icon);
 
                 _button->setStyleSheet(
-                    "QPushButton {"
+                    "QToolButton {"
                     " border: 0px solid #080808; "
                     " margin: 4px 4px 4px 0px; "
                     "}"
-                    "QPushButton:checked {"
+                    "QToolButton:checked {"
                     " border: 2.5px solid #5e5e5e ;"
                     " background-color: #5e5e5e ;"
                     " color : #f8f8f8 ; "
                     "}"
                 );
-                QString  _iconFile;
-                QString  _caption;
 
-                switch (_mode) {
-                    default:
-                    case Session::Mode::SCREENSETUP:
-                    btnScreenSetup_ = _button;
-                    _iconFile = ":/icons/screens.png";
-                    _caption = "SCREEN SETUP";
-                    connect(_button,SIGNAL(clicked()),this,SLOT(setScreenSetupMode()));
-                    break;
-                    case Session::Mode::ARRANGE:
-                    btnArrange_ = _button;
-                    _iconFile = ":/icons/arrange.png";
-                    _caption = "ARRANGE";
-                    connect(_button,SIGNAL(clicked()),this,SLOT(setArrangeMode()));
-                    break;
-                    case Session::Mode::WARP:
-                    btnWarp_ = _button;
-                    _iconFile = ":/icons/warp.png";
-                    _caption = "WARP";
-                    connect(_button,SIGNAL(clicked()),this,SLOT(setWarpMode()));
-                    break;
-                    case Session::Mode::BLEND:
-                    btnBlend_ = _button;
-                    _iconFile = ":/icons/blend.png";
-                    _caption = "BLEND";
-                    connect(_button,SIGNAL(clicked()),this,SLOT(setBlendMode()));
-                    break;
-                    case Session::Mode::COLORCORRECTION:
-                    btnColorCorrection_ = _button;
-                    _iconFile = ":/icons/color_correction.png";
-                    _caption = "COLOR CORRECTION";
-                    connect(_button,SIGNAL(clicked()),this,SLOT(setColorCorrectionMode()));
-                    break;
-                    case Session::Mode::EXPORT:
-                    btnExport_ = _button;
-                    _iconFile = ":/icons/export.png";
-                    _caption = "EXPORT";
-                    connect(_button,SIGNAL(clicked()),this,SLOT(setExportMode()));
-                    break;
-                    case Session::Mode::LIVE:
-                    btnLive_ = _button;
-                    _iconFile = ":/icons/live.png";
-                    _caption = "LIVE";
-                    connect(_button,SIGNAL(clicked()),this,SLOT(setLiveMode()));
-                    break;
-                }
-
-                addSeparator();
-                _button->setText(_caption);
-                _button->setIcon(QIcon(_iconFile));
-
-                return this->addWidget(_button);
+                return _button;
             };
+
+            auto _makeAction = [&](QToolButton* _btn) {
+                addSeparator();
+                return this->addWidget(_btn);
+            };
+
+            btnSettings_ = _makeButton("logo","O M N I D O M E",40);
+                btnSettings_->setStyleSheet(
+                    "QToolButton {"
+                    " border: 0px solid #080808; "
+                    " margin: 4px 4px 4px 0px; "
+                    " font-size: 16px; "
+                    "}"
+                    "QToolButton:checked {"
+                    " border: 2.5px solid #5e5e5e ;"
+                    " background-color: #5e5e5e ;"
+                    " color : #f8f8f8 ; "
+                    "}");
+            btnSettings_->setMinimumSize(QSize(160,40));
+            btnSettings_->setCheckable(false);
+            btnSettings_->setIconSize(QSize(48,48));
+            connect(btnSettings_,SIGNAL(clicked()),this,SLOT(showSettings()));
+            addWidget(btnSettings_);
+
             QWidget* empty = new QWidget();
             empty->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
             addWidget(empty);
 
-            for (int i = 0; i < util::enumToInt(Session::Mode::NUM_MODES); ++i) {
-                _addButton(util::intToEnum<Session::Mode>(i));
-            }
+            btnScreenSetup_ = _makeButton("screens","SCREEN SETUP");
+            connect(btnScreenSetup_,SIGNAL(clicked()),this,SLOT(setScreenSetupMode()));
+            _makeAction(btnScreenSetup_);
+
+            btnArrange_ = _makeButton("arrange","ARRANGE");
+            connect(btnArrange_,SIGNAL(clicked()),this,SLOT(setArrangeMode()));
+            _makeAction(btnArrange_);
+
+            btnWarp_ = _makeButton("warp","WARP");
+            connect(btnWarp_,SIGNAL(clicked()),this,SLOT(setWarpMode()));
+            _makeAction(btnWarp_);
+
+            btnBlend_ = _makeButton("blend","BLEND");
+            connect(btnBlend_,SIGNAL(clicked()),this,SLOT(setBlendMode()));
+            _makeAction(btnBlend_);
+
+            btnColorCorrection_ = _makeButton("color_correction","COLOR CORRECTION");
+            connect(btnColorCorrection_,SIGNAL(clicked()),this,SLOT(setColorCorrectionMode()));
+            _makeAction(btnColorCorrection_);
+
+            btnExport_ = _makeButton("export","EXPORT");
+            connect(btnExport_,SIGNAL(clicked()),this,SLOT(setExportMode()));
+            _makeAction(btnExport_);
+
+            btnLive_ = _makeButton("live","LIVE");
+            connect(btnLive_,SIGNAL(clicked()),this,SLOT(setLiveMode()));
+            _makeAction(btnLive_);
         }
 
         ToolBar::~ToolBar() {
@@ -167,12 +179,33 @@ namespace omni {
                 btnExport_->setChecked(_mode == Session::Mode::EXPORT);
                 btnLive_->setChecked(_mode == Session::Mode::LIVE);
             });
+            buttonState();
 
             emit sessionModeChanged(_mode);
+        }
+
+        void ToolBar::buttonState() {
+
+            bool _hasTunings = session()->tunings().size() > 0;
+            bool _hasInput = session()->inputs().current() != nullptr;
+
+            this->locked([&]{
+                btnWarp_->setEnabled(_hasTunings && _hasInput);
+                btnBlend_->setEnabled(_hasTunings && _hasInput);
+                btnColorCorrection_->setEnabled(_hasTunings && _hasInput);
+                btnExport_->setEnabled(_hasTunings && _hasInput);
+                btnLive_->setEnabled(_hasTunings && _hasInput);
+            });
         }
 
         void ToolBar::sessionParameters() {
             setMode(session()->mode());
         }
+
+        void ToolBar::showSettings()
+{
+    std::unique_ptr<About> _about(new About());
+    _about->exec();
+}
     }
 }

@@ -34,8 +34,6 @@
 #include <omni/ui/GLView3D.h>
 #include <omni/ui/TuningGLView.h>
 
-#include "About.h"
-
 #include "proj/Tuning.h"
 #include "proj/TuningList.h"
 #include "proj/MultiSetupDialog.h"
@@ -104,7 +102,6 @@ MainWindow::MainWindow(QMainWindow *parent) :
     ui_->statusbar->showMessage(QString("Omnidome v") +
                                 QString(OMNIDOME_VERSION_STRING));
 
-
     // Setup add projector template menu
     {
         QMenu *_menu = new QMenu();
@@ -142,6 +139,12 @@ MainWindow::MainWindow(QMainWindow *parent) :
                 SLOT(modified()));
         connect(ui_->tuningList, SIGNAL(currentIndexChanged(int)), this,
                 SLOT(modified()));
+        connect(ui_->tuningList, SIGNAL(tuningRemoved()), toolBar_.get(),
+                SLOT(buttonState()));
+        connect(ui_->tuningList, SIGNAL(tuningAdded()), toolBar_.get(),
+                SLOT(buttonState()));
+        connect(ui_->dockInputsWidget, SIGNAL(inputIndexChanged()), toolBar_.get(),
+                SLOT(buttonState()));
 
         // Detach tuning from screen setup when it was removed
         connect(ui_->tuningList,
@@ -210,6 +213,12 @@ MainWindow::MainWindow(QMainWindow *parent) :
                     clicked()),                           this,
                 SLOT(buttonState()));
     }
+
+    // Set slider sizes
+    QList<int> _list;
+    int _width = width();
+    _list << _width*1.2 << 100;
+    ui_->splitter->setSizes(_list);
 
     setupSession();
     raise();
@@ -338,12 +347,6 @@ void MainWindow::editAsNew()
     buttonState();
 }
 
-void MainWindow::showSettings()
-{
-    std::unique_ptr<About> _about(new About());
-
-    _about->exec();
-}
 
 void MainWindow::updateAllViews()
 {
@@ -381,7 +384,6 @@ void MainWindow::closeEvent(QCloseEvent *_event)
         _event->ignore();
         return;
     }
-
 
       // Delete screen setup manually, so all fullscreen widgets are free'd too
       screenSetup_->hide();

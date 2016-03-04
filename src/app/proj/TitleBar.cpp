@@ -100,6 +100,11 @@ namespace omni
       void TitleBar::setup()
       {
         this->label_->setAlignment(Qt::AlignCenter);
+        this->label_->setStyleSheet("QLabel {"
+        "  background: transparent; "
+        "  color : #0e0e0e; "
+        "  font-size : 10pt; "
+        "}");
 
         layout()->removeWidget(this->label_);
 
@@ -108,7 +113,10 @@ namespace omni
         {
           _btn.reset(new QToolButton());
           _btn->setAutoRaise(true);
-          _btn->setStyleSheet("background : transparent");
+          _btn->setStyleSheet("QToolButton { "
+          "     background : transparent; "
+          "     border: 0px; "
+          " } ");
           _btn->installEventFilter(this->parent());
           _btn->installEventFilter(this);
         };

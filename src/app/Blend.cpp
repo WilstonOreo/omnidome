@@ -39,6 +39,7 @@ namespace omni
           _slider->setRange(0.0,0.5);
           _slider->setSingleStep(0.01);
           _slider->setPageStep(0.05);
+          _slider->setGripSize(0);
           connect(_slider,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
         };
 
@@ -62,6 +63,7 @@ namespace omni
         ui_->sliderGamma->setRange(0.0,3.0);
         ui_->sliderGamma->setSingleStep(0.05);
         ui_->sliderGamma->setPageStep(0.3);
+        ui_->sliderGamma->setGripSize(0);
         connect(ui_->sliderGamma,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
       }
 
@@ -70,6 +72,7 @@ namespace omni
         ui_->sliderSize->setRange(5.0,500.0);
         ui_->sliderSize->setSingleStep(5.0);
         ui_->sliderSize->setPageStep(50.0);
+        ui_->sliderSize->setGripSize(0);
         ui_->sliderSize->setLabel("Brush size");
         connect(ui_->sliderSize,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
 
@@ -77,12 +80,14 @@ namespace omni
         ui_->sliderFeather->setSingleStep(0.1);
         ui_->sliderFeather->setPageStep(0.5);
         ui_->sliderFeather->setLabel("Feather");
+        ui_->sliderFeather->setGripSize(0);
         connect(ui_->sliderFeather,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
 
         ui_->sliderOpacity->setRange(0.0,1.0);
         ui_->sliderOpacity->setSingleStep(0.01);
         ui_->sliderOpacity->setPageStep(0.1);
         ui_->sliderOpacity->setLabel("Opacity");
+        ui_->sliderOpacity->setGripSize(0);
         connect(ui_->sliderOpacity,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
 
         connect(ui_->chkInvert,SIGNAL(clicked(bool)),this,SLOT(changeBlendMask()));

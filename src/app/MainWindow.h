@@ -71,9 +71,6 @@ namespace omni
       /// Edit current session with a new filename
       void editAsNew();
 
-      /// Show About dialog
-      void showSettings();
-
       /// Update all OpenGL views
       void updateAllViews();
 

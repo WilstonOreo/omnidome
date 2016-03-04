@@ -22,7 +22,7 @@
 #include <QToolBar>
 #include <omni/ui/mixin/SessionWidget.h>
 
-class QPushButton;
+class QToolButton;
 
 namespace omni {
     namespace ui {
@@ -44,6 +44,10 @@ namespace omni {
             void setExportMode();
             void setLiveMode();
             void setMode(Session::Mode);
+            void buttonState();
+
+            /// Show About dialog
+            void showSettings();
 
         signals:
             void sessionModeChanged(Session::Mode);
@@ -51,13 +55,14 @@ namespace omni {
         private:
             void sessionParameters();
 
-            QPushButton* btnScreenSetup_ = nullptr;
-            QPushButton* btnArrange_ = nullptr;
-            QPushButton* btnWarp_ = nullptr;
-            QPushButton* btnBlend_ = nullptr;
-            QPushButton* btnColorCorrection_ = nullptr;
-            QPushButton* btnExport_ = nullptr;
-            QPushButton* btnLive_ = nullptr;
+            QToolButton* btnSettings_ = nullptr;
+            QToolButton* btnScreenSetup_ = nullptr;
+            QToolButton* btnArrange_ = nullptr;
+            QToolButton* btnWarp_ = nullptr;
+            QToolButton* btnBlend_ = nullptr;
+            QToolButton* btnColorCorrection_ = nullptr;
+            QToolButton* btnExport_ = nullptr;
+            QToolButton* btnLive_ = nullptr;
 
         };
     }

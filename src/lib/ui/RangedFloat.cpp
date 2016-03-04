@@ -252,7 +252,7 @@ namespace omni {
         {
             AbstractInputWidget::mousePressEvent(e);
 
-            if (std::abs(e->pos().x() - valueToPos()) <= 7)
+            if (std::abs(e->pos().x() - valueToPos()) <= gripSize_ || !gripSize_)
             {
                 moving_ = true;
                 setValue(valueFromPos(e->pos().x()));
@@ -306,6 +306,14 @@ namespace omni {
             _editor->setButtonSymbols(QAbstractSpinBox::PlusMinus);
             mixin_range_type::apply(_editor);
             valueChangedEvent();
+        }
+
+        int RangedFloat::gripSize() const {
+            return gripSize_;
+        }
+
+        void RangedFloat::setGripSize(int _gripSize) {
+            gripSize_ = _gripSize;
         }
     }
 }

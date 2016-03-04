@@ -61,6 +61,9 @@ namespace omni
                         /// Return precision
                         int precision() const;
 
+                        /// Return grip size
+                        int gripSize() const;
+
                         /// Return flag if default value is used
                         bool useDefaultValue() const;
 
@@ -84,6 +87,8 @@ namespace omni
 
                         /// Toggle value snap on/off
                         void setSnap(bool);
+
+                        void setGripSize(int);
 
                         /// Use Default Value and show it
                         void setUseDefaultValue(bool);
@@ -124,7 +129,7 @@ namespace omni
                     private:
                         void init();
                         void editorSetup();
-                        
+
                         /// Get value from x mouse position
                         double valueFromPos(double) const;
 
@@ -138,6 +143,7 @@ namespace omni
                         bool drawTicks_ = false;
                         bool useDefaultValue_ = false;
                         QString suffix_;
+                        int gripSize_ = 10;
                         int precision_ = 2;
                 };
         }

@@ -104,7 +104,7 @@ namespace omni {
 
         void Canvas::canvasTypeSelected(QString _id)
         {
-            if (!session() || this->isLocked()) return;
+            if (!session() || this->isLocked()) return;
 
             session()->setCanvas(_id);
             if (paramWidget_) {

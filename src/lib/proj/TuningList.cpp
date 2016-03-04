@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -86,13 +86,13 @@ namespace omni
 
     Tuning* TuningList::operator[](int _index)
     {
-      return validIndex(_index) ? 
+      return validIndex(_index) ?
         container_type::at(_index).get() : nullptr;
     }
 
     Tuning const* TuningList::operator[](int _index) const
     {
-      return validIndex(_index) ? 
+      return validIndex(_index) ?
         container_type::at(_index).get() : nullptr;
     }
 
@@ -128,16 +128,16 @@ namespace omni
       // Lambda for testing if pointers of two tunings are equal
       auto _tuningsEqual = [](Tuning const* _a, Tuning const* _b) -> bool
       {
-        return _a && _b // Test if pointer have same address 
-          ? 
+        return _a && _b // Test if pointer have same address
+          ?
           // Derefence pointers and use equality operator to test equality
-          ((*_a) == (*_b)) 
-          : 
-          // Compare pointers and if test of pointer are not nullptrs 
+          ((*_a) == (*_b))
+          :
+          // Compare pointers and if test of pointer are not nullptrs
           (_a == _b);
       };
 
-      return 
+      return
         OMNI_TEST_MEMBER_EQUAL(currentIdx_) &&
         util::testPtrVectorEqual(_lhs,_rhs,_tuningsEqual);
     }

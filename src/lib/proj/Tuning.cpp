@@ -135,6 +135,26 @@ namespace omni {
                    projector_.screen()->size().height();
         }
 
+        /// Return flag if output is disabled, projector output is black
+        bool Tuning::outputDisabled() const {
+            return outputDisabled_;
+        }
+
+        /// Return flag if output is enabled
+        bool Tuning::outputEnabled() const {
+            return !outputDisabled();
+        }
+
+        /// Disable output if _disabled is true, enable otherwise
+        void Tuning::setOutputDisabled(bool _disabled) {
+            outputDisabled_ = _disabled;
+        }
+
+        /// Enable output if _enabled is true, disable otherwise
+        void Tuning::setOutputEnabled(bool _enabled) {
+            setOutputDisabled(!_enabled);
+        }
+
         bool operator==(Tuning const& _lhs, Tuning const& _rhs)
         {
             return
@@ -142,7 +162,9 @@ namespace omni {
                 OMNI_TEST_MEMBER_EQUAL(projector_) &&
                 OMNI_TEST_PTR_MEMBER_EQUAL(projectorSetup_) &&
                 OMNI_TEST_MEMBER_EQUAL(warpGrid_) &&
-                OMNI_TEST_MEMBER_EQUAL(blendMask_);
+                OMNI_TEST_MEMBER_EQUAL(blendMask_) &&
+                OMNI_TEST_MEMBER_EQUAL(outputDisabled_) &&
+                OMNI_TEST_MEMBER_EQUAL(colorCorrection_);
         }
     }
 }

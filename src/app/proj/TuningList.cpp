@@ -43,7 +43,7 @@ namespace omni
         // QScrollArea funcionality
         layout_->setSizeConstraint(QLayout::SetMinAndMaxSize);
         layout_->setSpacing(3);
-        layout_->setContentsMargins(0,0,0,0);
+        layout_->setContentsMargins(0,0,16,0);
 
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
@@ -181,6 +181,8 @@ namespace omni
         _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
         _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(projectorSetupChanged()));
         _widget->sessionModeChange();
+
+        emit tuningAdded();
       }
 
       QColor TuningList::getTuningColor()
@@ -256,6 +258,7 @@ namespace omni
 
         setTuningIndex(std::max(_index-1,0));
 
+        emit tuningRemoved();
         emit projectorSetupChanged();
       }
 

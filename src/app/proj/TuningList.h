@@ -100,6 +100,12 @@ namespace omni
         /// Signal which is returned after a tuning is to be removed
         void tuningToBeRemoved(omni::ui::proj::Tuning*);
 
+        /// Signal is emitted when a tuning was added
+        void tuningAdded();
+
+        /// Signal is emitted when a tuning was removed
+        void tuningRemoved();
+
       private:
         void sessionParameters();
 

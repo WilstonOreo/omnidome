@@ -101,7 +101,7 @@ namespace omni
           {
           case Role::PARAMETER:
           case Role::TITLE:
-            _height += 24 / _parent->devicePixelRatio();
+            _height += 36 / _parent->devicePixelRatio();
             break;
           case Role::PREVIEW:
             if (!tuning()) continue;
@@ -170,13 +170,19 @@ namespace omni
 
           /// Widget height is constant except for preview
           int _widgetHeight = _item.role_ == Role::PREVIEW ? _parent->width() /
-                              float(tuning()->width()) * tuning()->height() : 24 / _parent->devicePixelRatio();
+                              float(tuning()->width()) * tuning()->height() :
+                              36 / _parent->devicePixelRatio();
           _widget->setGeometry(_border,_height,_parent->width()-_border*2,_widgetHeight);
           _widget->show();
 
           /// Increase height
           _height += _widgetHeight;
         }
+      }
+      QRect TuningLayout::geometry() const {
+          auto _rect = QLayout::geometry();
+          _rect.setWidth(_rect.width() - 16);
+          return _rect;
       }
 
       void TuningLayout::add(QLayoutItem* _item, Role _role)

@@ -78,6 +78,9 @@ namespace omni {
 
             static QColor channelColor(Channel);
 
+            // Test if two color corrections are equal
+            friend bool operator==(ColorCorrection const&,ColorCorrection const&);
+
         private:
             bool isUsed_ = true;
             ChannelCorrection all_, red_, green_, blue_;
