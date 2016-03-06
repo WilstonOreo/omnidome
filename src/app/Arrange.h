@@ -23,6 +23,8 @@
 
 namespace omni {
     namespace ui {
+        class GLView3D;
+        
         namespace Ui {
             class Arrange;
         }
@@ -36,6 +38,9 @@ namespace omni {
             ~Arrange();
 
             void setSession(Session* _session);
+
+            GLView3D* view();
+            GLView3D const* view() const;
 
         public slots:
 

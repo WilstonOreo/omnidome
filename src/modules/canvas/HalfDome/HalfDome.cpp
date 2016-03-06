@@ -26,6 +26,7 @@ namespace omni
   {
     HalfDome::HalfDome(qreal _diameter)
     {
+      this->sphere_.setTexCoordsMode(visual::Sphere::FISHEYE);
       this->sphere_.setBottom(0.0);
       setDiameter(_diameter);
     }

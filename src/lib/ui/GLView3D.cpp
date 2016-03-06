@@ -20,6 +20,7 @@
 #include <omni/ui/GLView3D.h>
 
 #include <QMouseEvent>
+#include <omni/util.h>
 #include <omni/visual/util.h>
 
 namespace omni
@@ -78,7 +79,7 @@ namespace omni
 
     void GLView3D::paintGL()
     {
-      if (!session() || this->isLocked()) return;
+      if (!session() || this->isLocked()) return;
 
       this->session_->update();
       glEnable(GL_DEPTH_TEST);
@@ -93,13 +94,22 @@ namespace omni
       updateLight();
 
       this->session_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,displayInput_);
-      this->session_->drawProjectors();
-      this->session_->drawCanvasWithFrustumIntersections(projectorViewMode_);
-      this->session_->drawProjectorHalos();
+      if (displayProjectors()) {
+          this->session_->drawProjectors();
+      }
 
-      grid_.draw(0.5);
-      glDisable(GL_DEPTH_TEST);
-      grid_.draw(0.5);
+      if (displayProjectedAreas()) {
+          this->session_->drawCanvasWithFrustumIntersections(projectorViewMode_);
+      }
+      if (displayProjectors()) {
+          this->session_->drawProjectorHalos();
+      }
+
+      if (displayGrid()) {
+        grid_.draw(0.5);
+        glDisable(GL_DEPTH_TEST);
+        grid_.draw(0.5);
+      }
     }
 
     void GLView3D::wheelEvent(QWheelEvent* event)
@@ -170,6 +180,11 @@ namespace omni
       return displayProjectors_;
     }
 
+    bool GLView3D::displayProjectedAreas() const
+    {
+      return displayProjectedAreas_;
+    }
+
     EditMode GLView3D::editMode() const {
         return editMode_;
     }
@@ -203,6 +218,11 @@ namespace omni
         update();
     }
 
+    void GLView3D::setDisplayProjectedAreas(bool _displayProjectedAreas) {
+        displayProjectedAreas_ = _displayProjectedAreas;
+        update();
+    }
+
     void GLView3D::setEditMode(EditMode _editMode) {
         editMode_ = _editMode;
         update();
@@ -227,6 +247,10 @@ namespace omni
     {
       projectorViewMode_ = _projectorViewMode;
       update();
+    }
+
+    void GLView3D::setProjectorViewMode(int _proj) {
+       setProjectorViewMode(util::intToEnum<ProjectorViewMode>(_proj));
     }
 
     void GLView3D::changeZoom(int _value)

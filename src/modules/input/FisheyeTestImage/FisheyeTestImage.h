@@ -29,6 +29,7 @@ namespace omni
     class FisheyeTestImage : public QObject, public TestImage
     {
       OMNI_INPUT_PLUGIN_DECL
+      OMNI_PLUGIN_CR8TR("Fisheye test image","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,FisheyeTestImage)
 

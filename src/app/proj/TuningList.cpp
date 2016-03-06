@@ -177,7 +177,7 @@ namespace omni
         auto _widget = widgets_.back().get();
         contents_->layout()->addWidget(_widget);
 
-        _widget->connect(_widget,SIGNAL(selected()),this,SLOT(setCurrentTuning()));
+        _widget->connect(_widget,SIGNAL(selected(int)),this,SLOT(setTuningIndex(int)));
         _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
         _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(projectorSetupChanged()));
         _widget->sessionModeChange();
@@ -264,9 +264,16 @@ namespace omni
 
       void TuningList::sessionModeChange()
       {
-        for (auto& _widget : widgets_)
-          _widget->sessionModeChange();
+          if (!session()) return;
 
+          auto _currentIndex = session()->tunings().currentIndex();
+          for (auto& _widget : widgets_) {
+              _widget->sessionModeChange();
+          }
+
+          if (_currentIndex >= 0 && _currentIndex < widgets_.size()) {
+              widgets_[_currentIndex]->setFocus();
+          }
       }
 
       void TuningList::clear()
@@ -333,8 +340,9 @@ namespace omni
           if (_widget->isSelected())
           {
             setTuningIndex(_index);
-            break;
-          }
+        } else {
+            _widget->setSelected(false);
+        }
           ++_index;
         }
       }
@@ -343,6 +351,12 @@ namespace omni
       {
         int _oldIndex = session()->tunings().currentIndex();
         session()->tunings().setCurrentIndex(_index);
+        for (auto& _widget : widgets_) {
+            if (_widget->index() != _index && _widget->isSelected()) {
+                _widget->setSelected(false);
+            }
+        }
+
         if (_index != _oldIndex)
           emit currentIndexChanged(_index);
       }

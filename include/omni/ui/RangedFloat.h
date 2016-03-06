@@ -37,6 +37,10 @@ namespace omni
                     public:
                         typedef mixin::RangedValue<RangedFloat,double> mixin_range_type;
                         typedef QDoubleSpinBox editor_type;
+                        using mixin_range_type::minimum;
+                        using mixin_range_type::maximum;
+                        using mixin_range_type::pageStep;
+                        using mixin_range_type::singleStep;
 
                         /// Construct from parent widget
                         RangedFloat(QWidget* = nullptr);

@@ -29,6 +29,7 @@ namespace omni
     class CubeMapTestImage : public QObject, public TestImage
     {
       OMNI_INPUT_PLUGIN_DECL
+      OMNI_PLUGIN_CR8TR("CubeMap test image","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,CubeMapTestImage)
 

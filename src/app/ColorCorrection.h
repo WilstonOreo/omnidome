@@ -46,6 +46,7 @@ namespace omni {
             void setGreenChannel();
             void setBlueChannel();
             void setChannel(Channel _channel);
+            void setUsed(bool);
 
         signals:
             void colorCorrectionChanged();

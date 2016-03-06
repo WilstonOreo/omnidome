@@ -158,16 +158,6 @@ MainWindow::MainWindow(QMainWindow *parent) :
                 SLOT(modified()));
         connect(ui_->dockCanvasWidget, SIGNAL(canvasTypeChanged()),
                 ui_->dockMappingWidget, SLOT(setDefaultMappingForCanvas()));
-        connect(ui_->dockCanvasWidget, SIGNAL(displayInputToggled(
-                                                  bool)), arrange_.get(),
-                SLOT(setDisplayInput(bool)));
-        connect(ui_->dockCanvasWidget, SIGNAL(displayInputToggled(
-                                                  bool)), arrange_.get(),
-                SLOT(setDisplayInput(bool)));
-        connect(ui_->dockCanvasWidget,
-                SIGNAL(projectorViewModeChanged(
-                           ProjectorViewMode)),           arrange_.get(),
-                SLOT(setProjectorViewMode(ProjectorViewMode)));
 
         // Update all views when input has changed
         connect(ui_->dockInputsWidget, SIGNAL(
@@ -212,6 +202,10 @@ MainWindow::MainWindow(QMainWindow *parent) :
         connect(ui_->btnAddTuning, SIGNAL(
                     clicked()),                           this,
                 SLOT(buttonState()));
+
+        /// Dock scene
+        ui_->dockSceneWidget->registerView(live_.get());
+        ui_->dockSceneWidget->registerView(arrange_->view());
     }
 
     // Set slider sizes
@@ -524,7 +518,6 @@ void MainWindow::setMode(Session::Mode _mode)
     }
 
     ui_->tuningList->sessionModeChange();
-    ui_->tuningList->setCurrentTuning();
     updateAllViews();
     buttonState();
 }

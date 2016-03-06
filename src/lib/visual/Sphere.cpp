@@ -101,6 +101,14 @@ namespace omni
       update();
     }
 
+    Sphere::TexCoordsMode Sphere::texCoordsMode() const {
+        return texCoordsMode_;
+    }
+
+    void Sphere::setTexCoordsMode(TexCoordsMode _texCoordsMode) {
+        texCoordsMode_ = _texCoordsMode;
+    }
+
     void Sphere::draw() const
     {
       glPushMatrix();
@@ -160,12 +168,24 @@ namespace omni
         QVector3D _normalTop(_topPoint.normalized());
         QVector3D _normalBottom(_bottomPoint.normalized());
 
-        auto getTexCoord = [&](QVector3D const& _v) -> QVector2D {
+        auto getTexCoord = [this,&i](QVector3D const& _v) -> QVector2D {
             QVector2D texCoords;
             QVector3D uvw = _v.normalized();
 
-            texCoords.setX(i / float(slices_));
-            texCoords.setY(1.0 - acos(uvw.z()) / M_PI);
+            switch (this->texCoordsMode_) {
+                default: case EQUIRECTANGULAR:
+                    texCoords.setX(i / float(slices_));
+                    texCoords.setY(1.0 - acos(uvw.z()) / M_PI);
+                    break;
+                case FISHEYE: {
+                    float _phi = i / float(slices_) * M_PI * 2.0;
+                    float _r = atan2(QVector2D(uvw.x(),uvw.y()).length(),uvw.z()) / M_PI;
+                    texCoords.setX( _r * cos(_phi) + 0.5 );
+                    texCoords.setY( _r * sin(_phi) + 0.5 );
+                    break;
+                }
+            };
+
             return texCoords;
         };
 

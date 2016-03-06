@@ -38,7 +38,7 @@ namespace omni
     {
       static QString _fragmentSrc;
       if (_fragmentSrc.isEmpty())
-        _fragmentSrc = util::fileToStr(":/shaders/test_image.frag");
+        _fragmentSrc = util::fileToStr(":/shaders/EquirectangularTestImage.frag");
       return _fragmentSrc;
     }
     QString EquirectangularTestImage::vertexShaderSource() const

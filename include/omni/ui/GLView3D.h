@@ -70,6 +70,9 @@ namespace omni
       /// Display projector frustra (selected projector is always shown)
       bool displayProjectors() const;
 
+      /// Display projected areas
+      bool displayProjectedAreas() const;
+
       /// Set edit mode (CAMERA, ROTATE or MOVE)
       EditMode editMode() const;
 
@@ -81,16 +84,19 @@ namespace omni
 
       /// Set projector view mode (INSIDE, OUTSIDE or BOTH)
       ProjectorViewMode projectorViewMode() const;
+      void setProjectorViewMode(ProjectorViewMode);
 
     public slots:
       void setDisplayInput(bool);
       void setDisplayMeasures(bool);
       void setDisplayGrid(bool);
       void setDisplayProjectors(bool);
+      void setDisplayProjectedAreas(bool);
       void setEditMode(EditMode);
       void setRotateMode(RotateMode);
       void setMoveMode(MoveMode);
-      void setProjectorViewMode(ProjectorViewMode);
+
+      void setProjectorViewMode(int);
       void changeZoom(int _value);
 
     protected:
@@ -113,11 +119,12 @@ namespace omni
       bool displayMeasures_ = true;
       bool displayGrid_ = true;
       bool displayProjectors_ = true;
+      bool displayProjectedAreas_ = true;
 
       EditMode editMode_ = EditMode::CAMERA;
       RotateMode rotateMode_ = RotateMode::YAW;
       MoveMode moveMode_ = MoveMode::MOVE_XY;
-      
+
       ProjectorViewMode projectorViewMode_ = ProjectorViewMode::INSIDE;
     };
   }

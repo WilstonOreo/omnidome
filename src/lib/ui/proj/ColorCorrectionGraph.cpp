@@ -65,6 +65,8 @@ namespace omni {
                 _painter.drawRect(_rect);
                 drawGridLines(_painter);
 
+                if (!isEnabled()) return;
+
                 // Draw not selected graphs first
                 drawGraphs(_painter,false);
 
@@ -95,6 +97,7 @@ namespace omni {
                 QRectF _rect = QRectF(rect()).adjusted(2,2,-2,-2);
 
                 _p.setBrush(Qt::NoBrush);
+
 
                 QPen _pen(_color,_selected ? 1.5 : 1,Qt::SolidLine);
                 _p.setPen(_pen);

@@ -10,6 +10,8 @@
 #include <QDebug>
 
 namespace omni {
+    std::vector<PluginInfo> PluginLoader::loadedPlugins_;
+
     PluginLoader::PluginLoader(
         std::vector<QDir> const& _paths,
         bool _defaultPaths) {
@@ -44,6 +46,8 @@ namespace omni {
         qDebug() << "Loading plugin: " << _path;
         QObject *plugin = _pluginLoader.instance();
         if (plugin) {
+            loadedPlugins_.push_back(PluginInfo::make(_path,plugin));
+
             auto* _inputInterface = qobject_cast<input::Interface*>(plugin);
             if (_inputInterface) {
                 qDebug() << "Loaded input plugin: " << _inputInterface->getTypeId();
@@ -65,6 +69,10 @@ namespace omni {
         } else {
             qDebug() << "Error loading plugin: " << _pluginLoader.errorString();
         }
+    }
+
+    std::vector<PluginInfo> const& PluginLoader::loadedPlugins() {
+        return loadedPlugins_;
     }
 
     std::vector<QDir> PluginLoader::defaultPaths() {

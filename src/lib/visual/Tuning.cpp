@@ -256,6 +256,12 @@ namespace omni
                 _cC.green().multiplier(),
                 _cC.blue().multiplier(),
                 _cC.all().multiplier()));
+          } else {
+              QVector4D _null(0.0,0.0,0.0,0.0);
+              blendShader_->setUniformValue("cc_multiplier",_null);
+              blendShader_->setUniformValue("cc_contrast",_null);
+              blendShader_->setUniformValue("cc_brightness",_null);
+              blendShader_->setUniformValue("cc_gamma",_null);
           }
 
 

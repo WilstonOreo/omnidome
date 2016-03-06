@@ -131,6 +131,10 @@ namespace omni
       return _ids;
     }
 
+    QMatrix4x4 Interface::matrix() const {
+        return transform_.matrix();
+    }
+
     QString Interface::vertexShaderSourceCode() const
     {
       return util::fileToStr(":/shaders/mapping/common.vert");

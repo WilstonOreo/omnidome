@@ -22,7 +22,9 @@
 
 #include <map>
 #include <memory>
-#include <omni/SerializationInterface.h>
+#include <omni/PluginInfo.h>
+#include <omni/AffineTransform.h>
+#include <omni/serialization/Interface.h>
 #include <omni/visual/Interface.h>
 
 class QOpenGLShaderProgram;
@@ -95,6 +97,8 @@ namespace omni
       inline virtual void draw() const {}
       inline virtual void update() {}
 
+      virtual QMatrix4x4 matrix() const;
+
     protected:
       std::unique_ptr<QOpenGLShaderProgram> shader_;
 
@@ -109,6 +113,7 @@ namespace omni
       **/
       virtual QString fragmentShaderSourceCode() const;
 
+      AffineTransform transform_;
       bool flipHorizontal_ = false;
       bool flipVertical_ = false;
     };
@@ -129,7 +134,8 @@ Q_DECLARE_INTERFACE(omni::mapping::Interface, OMNI_MAPPING_INTERFACE_IID)
 #define OMNI_MAPPING_PLUGIN_DECL \
     Q_OBJECT \
     Q_PLUGIN_METADATA(IID OMNI_MAPPING_INTERFACE_IID) \
-    Q_INTERFACES(omni::mapping::Interface)
+    Q_INTERFACES(omni::mapping::Interface) \
+    OMNI_PLUGIN_TYPE("Mapping")
 
 
 #endif /* OMNI_MAPPING_INTERFACE_H_ */

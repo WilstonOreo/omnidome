@@ -19,7 +19,10 @@
 
 #include "Scene.h"
 
+#include <omni/ui/GLView3D.h>
+
 #include "ui_omni_ui_Scene.h"
+
 
 namespace omni {
     namespace ui {
@@ -32,6 +35,33 @@ namespace omni {
 
         Scene::~Scene() {
 
+        }
+
+        void Scene::registerView(GLView3D* _glView) {
+            if (views_.count(_glView) != 0) {
+                return;
+            }
+
+            connect(ui_->chkInput,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayInput(bool)));
+            connect(ui_->chkGrid,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayGrid(bool)));
+            connect(ui_->chkProjectors,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayProjectors(bool)));
+            connect(ui_->chkProjectedAreas,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayProjectedAreas(bool)));
+            connect(ui_->boxFrustumViewMode,SIGNAL(currentIndexChanged(int)),_glView,SLOT(setProjectorViewMode(int)));
+
+            views_.insert(_glView);
+        }
+        void Scene::unregisterView(GLView3D* _glView) {
+            if (views_.count(_glView) == 0) {
+                return;
+            }
+
+            disconnect(ui_->chkInput,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayInput(bool)));
+            disconnect(ui_->chkGrid,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayGrid(bool)));
+            disconnect(ui_->chkProjectors,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayProjectors(bool)));
+            disconnect(ui_->chkProjectedAreas,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayProjectedAreas(bool)));
+            disconnect(ui_->boxFrustumViewMode,SIGNAL(currentIndexChanged(int)),_glView,SLOT(setProjectorViewMode(int)));
+
+            views_.erase(_glView);
         }
     }
 }

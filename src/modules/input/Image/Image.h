@@ -30,6 +30,7 @@ namespace omni
     class Image : public QObject, public Interface
     {
       OMNI_INPUT_PLUGIN_DECL
+      OMNI_PLUGIN_CR8TR("Input image","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,Image)
 

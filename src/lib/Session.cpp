@@ -25,6 +25,7 @@
 
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
+#include <omni/proj/RingArray.h>
 
 #include <omni/Renderer.h>
 
@@ -37,6 +38,8 @@ namespace omni
       using namespace proj;
       SetupFactory::reg<FreeSetup>();
       SetupFactory::reg<PeripheralSetup>();
+
+      MultiSetupFactory::reg<RingArray>();
     }
     // END Register Projector Setups
   }
@@ -130,6 +133,14 @@ namespace omni
   float Session::blendMaskInputOpacity() const
   {
     return blendMaskInputOpacity_;
+  }
+
+  float Session::sceneSize() const {
+      return sceneSize_;
+  }
+
+  void Session::setSceneSize(float _size) {
+      sceneSize_ = _size;
   }
 
   void Session::setBlendMaskInputOpacity(float _blendMaskInputOpacity)

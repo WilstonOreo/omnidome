@@ -21,6 +21,7 @@
 
 #include <QIcon>
 #include <QPixmap>
+#include <QAction>
 #include <QToolButton>
 #include <QSizePolicy>
 #include <QDebug>
@@ -79,9 +80,12 @@ namespace omni {
                 return _button;
             };
 
-            auto _makeAction = [&](QToolButton* _btn) {
+            auto _makeAction = [&](QToolButton* _btn, QString const& _shortCut = QString()) {
                 addSeparator();
-                return this->addWidget(_btn);
+                auto* _action = this->addWidget(_btn);
+                this->connect(_action,SIGNAL(triggered()),_btn,SIGNAL(clicked()));
+                _action->setShortcut(QKeySequence(_shortCut));
+                return _action;
             };
 
             btnSettings_ = _makeButton("logo","O M N I D O M E",40);
@@ -99,40 +103,50 @@ namespace omni {
             btnSettings_->setMinimumSize(QSize(160,40));
             btnSettings_->setCheckable(false);
             btnSettings_->setIconSize(QSize(48,48));
+            btnSettings_->setToolTip("About Omnidome");
             connect(btnSettings_,SIGNAL(clicked()),this,SLOT(showSettings()));
-            addWidget(btnSettings_);
+            auto* _actionSettings = addWidget(btnSettings_);
+            this->connect(_actionSettings,SIGNAL(triggered()),btnSettings_,SIGNAL(clicked()));
+            _actionSettings->setShortcut(QKeySequence("Ctrl+F1"));
 
             QWidget* empty = new QWidget();
             empty->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
             addWidget(empty);
 
             btnScreenSetup_ = _makeButton("screens","SCREEN SETUP");
+            btnScreenSetup_->setToolTip("Setup projector screens (Ctrl + 1)");
             connect(btnScreenSetup_,SIGNAL(clicked()),this,SLOT(setScreenSetupMode()));
-            _makeAction(btnScreenSetup_);
+            _makeAction(btnScreenSetup_,"Ctrl+1");
 
             btnArrange_ = _makeButton("arrange","ARRANGE");
+            btnArrange_->setToolTip("Arrange projectors, mapping and canvas (Ctrl + 2)");
             connect(btnArrange_,SIGNAL(clicked()),this,SLOT(setArrangeMode()));
-            _makeAction(btnArrange_);
+            _makeAction(btnArrange_,"Ctrl+2");
 
             btnWarp_ = _makeButton("warp","WARP");
+            btnWarp_->setToolTip("Edit warp grid (Ctrl + 3)");
             connect(btnWarp_,SIGNAL(clicked()),this,SLOT(setWarpMode()));
-            _makeAction(btnWarp_);
+            _makeAction(btnWarp_,"Ctrl+3");
 
             btnBlend_ = _makeButton("blend","BLEND");
+            btnBlend_->setToolTip("Edit blend mask with blend brush (Ctrl + 4)");
             connect(btnBlend_,SIGNAL(clicked()),this,SLOT(setBlendMode()));
-            _makeAction(btnBlend_);
+            _makeAction(btnBlend_,"Ctrl+4");
 
             btnColorCorrection_ = _makeButton("color_correction","COLOR CORRECTION");
+            btnColorCorrection_->setToolTip("Color Correction with brightness, gamma and contrast (Ctrl + 5)");
             connect(btnColorCorrection_,SIGNAL(clicked()),this,SLOT(setColorCorrectionMode()));
-            _makeAction(btnColorCorrection_);
+            _makeAction(btnColorCorrection_,"Ctrl+5");
 
             btnExport_ = _makeButton("export","EXPORT");
+            btnExport_->setToolTip("Export calibration data (Ctrl + 6)");
             connect(btnExport_,SIGNAL(clicked()),this,SLOT(setExportMode()));
-            _makeAction(btnExport_);
+            _makeAction(btnExport_,"Ctrl+6");
 
             btnLive_ = _makeButton("live","LIVE");
+            btnLive_->setToolTip("Play input live (Ctrl + 7)");
             connect(btnLive_,SIGNAL(clicked()),this,SLOT(setLiveMode()));
-            _makeAction(btnLive_);
+            _makeAction(btnLive_,"Ctrl+7");
         }
 
         ToolBar::~ToolBar() {

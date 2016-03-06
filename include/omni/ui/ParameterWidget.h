@@ -24,6 +24,7 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <omni/ui/mixin/Locked.h>
+#include <omni/ui/mixin/Scale.h>
 #include <omni/ui/RangedFloat.h>
 #include <omni/ui/RangedInt.h>
 #include <omni/ui/Rotation.h>
@@ -37,6 +38,7 @@ namespace omni
     **/
     class ParameterWidget :
         public QWidget,
+        public mixin::Scale<omni::ui::RangedFloat>,
         protected mixin::Locked
     {
       Q_OBJECT

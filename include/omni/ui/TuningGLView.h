@@ -157,6 +157,9 @@ namespace omni
       /// Cursor position (is not mouse position when widget is view only)
       QPointF cursorPosition_;
 
+      /// Last stroke position
+      QPointF lastStrokePos_;
+
       /// Show cursor flag (cursor is also shown when widget is view only)
       bool showCursor_ = true;
 

@@ -15,36 +15,17 @@
  * GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+**/
+#ifndef OMNI_SERIALIZATION_TRAITS_H_
+#define OMNI_SERIALIZATION_TRAITS_H_
 
-#ifndef OMNI_INPUT_EQUIRECTANGULAR_TESTIMAGE_H_
-#define OMNI_INPUT_EQUIRECTANGULAR_TESTIMAGE_H_
+namespace omni {
+    namespace serialization {
+        template<typename T>
+        struct Traits {
 
-#include <omni/input/TestImage.h>
-
-namespace omni
-{
-  namespace input
-  {
-    class EquirectangularTestImage : public QObject, public TestImage
-    {
-      OMNI_INPUT_PLUGIN_DECL
-      OMNI_PLUGIN_CR8TR("Equirectangular test image","Copyright (C) 2016")
-    public:
-      OMNI_REGISTER_CLASS(Factory,EquirectangularTestImage)
-
-      EquirectangularTestImage();
-      ~EquirectangularTestImage();
-
-      QSize size() const;
-
-      QWidget* widget();
-
-    private:
-      QString fragmentShaderSource() const;
-      QString vertexShaderSource() const;
-    };
-  }
+        };
+    }
 }
 
-#endif /* OMNI_INPUT_EQUIRECTANGULAR_TESTIMAGE_H_ */
+#endif /* OMNI_SERIALIZATION_TRAITS_H_ */

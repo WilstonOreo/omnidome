@@ -30,6 +30,7 @@ namespace omni
     class Equirectangular : public QObject, public Rotatable
     {
       OMNI_MAPPING_PLUGIN_DECL
+      OMNI_PLUGIN_CR8TR("Equirectangular mapping","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,Equirectangular)
 

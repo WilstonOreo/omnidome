@@ -17,32 +17,45 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef OMNI_UI_AFFINETRANSFORM_H_
+#define OMNI_UI_AFFINETRANSFORM_H_
+
 #include <memory>
-#include <unordered_set>
-#include "DockWidget.h"
+#include <QWidget>
+#include <omni/AffineTransform.h>
+#include <omni/ui/RangedFloat.h>
+#include <omni/ui/mixin/Locked.h>
+#include <omni/ui/mixin/Scale.h>
 
 namespace omni {
     namespace ui {
-        class GLView3D;
-
         namespace Ui {
-            class Scene;
+            class AffineTransform;
         }
 
-        /// Dock widget that contains view settings for the scene
-        class Scene : public DockWidget {
+        /// A widget for editing an affine transformation
+        class AffineTransform :
+            public QWidget,
+            private mixin::Locked,
+            private mixin::Scale<RangedFloat> {
             Q_OBJECT
         public:
-            Scene(QWidget* _parent = nullptr);
-            ~Scene();
+            AffineTransform(QWidget* = nullptr);
+            ~AffineTransform();
 
-            void registerView(GLView3D*);
-            void unregisterView(GLView3D*);
+            omni::AffineTransform const* transform() const;
+            void setTransform(omni::AffineTransform*);
 
+        public slots:
+            void updateTransform();
+            
         private:
-            std::unique_ptr<Ui::Scene> ui_;
 
-            std::unordered_set<GLView3D*> views_;
+
+            std::unique_ptr<Ui::AffineTransform> ui_;
+            omni::AffineTransform* transform_ = nullptr;
         };
     }
 }
+
+#endif /* OMNI_UI_AFFINETRANSFORM_H_ */

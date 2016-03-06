@@ -384,6 +384,8 @@ namespace omni
 
       void Tuning::setGroup(QString const& _groupName)
       {
+        this->locked([&]() {
+
         /// Hide all widgets temporarily
         setParametersVisible(false);
         glView_->setVisible(false);
@@ -398,6 +400,7 @@ namespace omni
         {
           layout_->setWidgets(groups_[_groupName]);
         }
+    });
       }
 
       Tuning::WindowState Tuning::windowState() const
@@ -439,7 +442,7 @@ namespace omni
       void Tuning::setSelected(bool _isSelected)
       {
         isSelected_ = _isSelected;
-        if (isSelected_) emit selected();
+        if (isSelected_ && !this->isLocked()) emit selected(index_);
 
         updateColor();
       }
@@ -468,6 +471,7 @@ namespace omni
       {
         if (!session()) return;
 
+        this->locked([&]() {
         if (windowState_ == NO_DISPLAY)
         {
           setGroup("Minimized");
@@ -507,6 +511,7 @@ namespace omni
         default:
           break;
         }
+    });
 
         fullscreen_->update();
       }
@@ -587,6 +592,8 @@ namespace omni
 
       bool Tuning::eventFilter(QObject* _obj, QEvent* _event)
       {
+        if (this->isLocked()) return QObject::eventFilter(_obj,_event);
+
         if (_event->type() == QEvent::MouseMove && (_obj == glView_ || _obj == titleBar_))
         {
           startDrag();
@@ -615,13 +622,15 @@ namespace omni
       /// Focus event used by TuningList to set current tuning for session
       void Tuning::focusInEvent(QFocusEvent* event)
       {
-        setSelected(true);
+          if (!this->isLocked())
+            setSelected(true);
         QWidget::focusInEvent(event);
       }
 
       void Tuning::focusOutEvent(QFocusEvent* event)
       {
-        setSelected(false);
+          if (!this->isLocked())
+            setSelected(false);
         QWidget::focusOutEvent(event);
       }
 

@@ -22,7 +22,9 @@
 
 #include <set>
 #include <QMatrix4x4>
-#include <omni/SerializationInterface.h>
+#include <omni/PluginInfo.h>
+#include <omni/AffineTransform.h>
+#include <omni/serialization/Interface.h>
 #include <omni/mapping/Interface.h>
 #include <omni/visual/Interface.h>
 #include <omni/Box.h>
@@ -93,6 +95,8 @@ namespace omni
 
     protected:
       bool needsUpdate_ = true;
+    private:
+      AffineTransform transform_;
     };
 
     /// Our canvas factory
@@ -110,6 +114,7 @@ Q_DECLARE_INTERFACE(omni::canvas::Interface, OMNI_CANVAS_INTERFACE_IID)
 #define OMNI_CANVAS_PLUGIN_DECL \
     Q_OBJECT \
     Q_PLUGIN_METADATA(IID OMNI_CANVAS_INTERFACE_IID) \
-    Q_INTERFACES(omni::canvas::Interface)
+    Q_INTERFACES(omni::canvas::Interface) \
+    OMNI_PLUGIN_TYPE("Canvas")
 
 #endif /* OMNI_CANVAS_INTERFACE_H_ */

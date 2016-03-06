@@ -29,6 +29,7 @@ namespace omni
     class CubeMap : public QObject, public Rotatable
     {
         OMNI_MAPPING_PLUGIN_DECL
+      OMNI_PLUGIN_CR8TR("Cube mapping","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,CubeMap)
 

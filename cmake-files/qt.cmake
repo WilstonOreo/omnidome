@@ -20,8 +20,8 @@ function(QT5_GENERATE_UI outfiles )
           COMMAND ${Qt5Widgets_UIC_EXECUTABLE}
           ARGS ${ui_options} -o ${outfile} ${infile}
          MAIN_DEPENDENCY ${infile} VERBATIM)
-       #execute_process(COMMAND ${QT_UIC_EXECUTABLE} ${ui_options} -o ${outfile} ${infile}
-       #  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+       execute_process(COMMAND ${QT_UIC_EXECUTABLE} ${ui_options} -o ${outfile} ${infile}
+         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
         list(APPEND ${outfiles} ${outfile})
     endforeach()

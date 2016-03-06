@@ -37,6 +37,8 @@ namespace omni {
             connect(ui_->btnRed,SIGNAL(clicked()),this,SLOT(setRedChannel()));
             connect(ui_->btnGreen,SIGNAL(clicked()),this,SLOT(setGreenChannel()));
             connect(ui_->btnBlue,SIGNAL(clicked()),this,SLOT(setBlueChannel()));
+
+            connect(ui_->chkIsUsed,SIGNAL(clicked(bool)),this,SLOT(setUsed(bool)));
         }
 
         ColorCorrection::~ColorCorrection() {
@@ -58,6 +60,25 @@ namespace omni {
             setChannel(Channel::BLUE);
         }
 
+        void ColorCorrection::setUsed(bool _isUsed) {
+            if (!tuning()) return;
+
+            this->locked([&]{
+                auto& _colorCorrection = tuning()->colorCorrection();
+                _colorCorrection.setUsed(_isUsed);
+
+                ui_->chkIsUsed->setChecked(_isUsed);
+
+                ui_->btnAll->setEnabled(_isUsed);
+                ui_->btnRed->setEnabled(_isUsed);
+                ui_->btnGreen->setEnabled(_isUsed);
+                ui_->btnBlue->setEnabled(_isUsed);
+                ui_->graph->setEnabled(_isUsed);
+                ui_->params->setEnabled(_isUsed);
+                emit colorCorrectionChanged();
+            });
+        }
+
         void ColorCorrection::setChannel(proj::Channel _channel) {
             if (!tuning()) return;
 
@@ -76,6 +97,7 @@ namespace omni {
 
         void ColorCorrection::tuningParameters() {
             setAllChannels();
+            setUsed(tuning()->colorCorrection().isUsed());
         }
     }
 }

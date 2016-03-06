@@ -127,7 +127,7 @@ namespace omni
         void fullscreenToggle(bool);
 
       signals:
-        void selected();
+        void selected(int);
         void closed(int);
         void projectorSetupChanged();
 

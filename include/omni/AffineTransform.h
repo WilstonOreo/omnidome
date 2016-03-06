@@ -16,13 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef OMNI_AFFINETRANSFORM_H_
+#define OMNI_AFFINETRANSFORM_H_
 
 #include <QVector3D>
 #include <QMatrix4x4>
 #include "EulerAngles.h"
 
 namespace omni {
-    /**@brief An affine linear transfor with rotation, scale and translation
+    /**@brief An affine linear transform with rotation, scale and translation
      **/
     class AffineTransform {
     public:
@@ -60,9 +62,34 @@ namespace omni {
         /// Calculate matrix for transformation around a center point
         QMatrix4x4 matrix(QVector3D const& _center) const;
 
+        /// Return true if rotation is enabled
+        bool rotationEnabled() const;
+
+        /// Enable or disable rotation
+        void setRotationEnabled(bool);
+
+        /// Return true if scaling is enabled
+        bool scaleEnabled() const;
+
+        /// Enable or disable scale
+        void setScaleEnabled(bool);
+
+        /// Return true if translation is enabled
+        bool translationEnabled() const;
+
+        /// Enable or disable translation
+        void setTranslationEnabled(bool);
+
     private:
+        bool rotationEnabled_ = true;
         EulerAngles rotation_;
+
+        bool scaleEnabled_ = true;
         QVector3D scale_;
+
+        bool translationEnabled_ = true;
         QVector3D translation_;
     };
 }
+
+#endif /* OMNI_AFFINETRANSFORM_H_ */

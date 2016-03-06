@@ -45,6 +45,7 @@ namespace omni {
                         }
                         _w->setStyleSheet("selection-background-color  : "+_color.name());
                         _w->setValue(_value);
+                        _w->setGripSize(0);
                     };
 
                     _setSlider(brightness_,channelCorrection_->brightness());
@@ -67,7 +68,7 @@ namespace omni {
             }
 
             void ChannelCorrectionParameters::updateParameters() {
-                if (!channelCorrection_ || this->isLocked()) return;
+                if (!channelCorrection_ || this->isLocked()) return;
 
                 channelCorrection_->setBrightness(brightness_->value());
                 channelCorrection_->setContrast(contrast_->value());

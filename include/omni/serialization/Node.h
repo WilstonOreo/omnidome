@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -16,35 +16,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef OMNI_SERIALIZATION_NODE_H_
+#define OMNI_SERIALIZATION_NODE_H_
 
-#ifndef OMNI_INPUT_EQUIRECTANGULAR_TESTIMAGE_H_
-#define OMNI_INPUT_EQUIRECTANGULAR_TESTIMAGE_H_
+#include <memory>
+#include <map>
+#include <QString>
+#include <QByteArray>
+#include <QDataStream>
+#include <QVariant>
 
-#include <omni/input/TestImage.h>
+namespace omni {
+    namespace serialization {
+        class Node {
+        public:
 
-namespace omni
-{
-  namespace input
-  {
-    class EquirectangularTestImage : public QObject, public TestImage
-    {
-      OMNI_INPUT_PLUGIN_DECL
-      OMNI_PLUGIN_CR8TR("Equirectangular test image","Copyright (C) 2016")
-    public:
-      OMNI_REGISTER_CLASS(Factory,EquirectangularTestImage)
-
-      EquirectangularTestImage();
-      ~EquirectangularTestImage();
-
-      QSize size() const;
-
-      QWidget* widget();
-
-    private:
-      QString fragmentShaderSource() const;
-      QString vertexShaderSource() const;
-    };
-  }
+        private:
+            QByteArray data_;
+            std::map<QString,std::unique_ptr<Node>> children_;
+        }
+    }
 }
 
-#endif /* OMNI_INPUT_EQUIRECTANGULAR_TESTIMAGE_H_ */
+#endif /* OMNI_SERIALIZATION_NODE_H_ */

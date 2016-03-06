@@ -32,6 +32,7 @@ namespace omni
     class Planar : public QObject, public Canvas
     {
         OMNI_CANVAS_PLUGIN_DECL
+        OMNI_PLUGIN_CR8TR("Planar canvas","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,Planar)
 

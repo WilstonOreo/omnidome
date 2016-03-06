@@ -21,9 +21,8 @@
 
 namespace omni {
     AffineTransform::AffineTransform() :
-        scale_(1.0,1.0,1.0),
-        translation_(0.0,0.0,0.0) {
-    }
+        scale_(1.0, 1.0, 1.0),
+        translation_(0.0, 0.0, 0.0) {}
 
     EulerAngles const& AffineTransform::rotation() const {
         return rotation_;
@@ -62,16 +61,47 @@ namespace omni {
     }
 
     QMatrix4x4 AffineTransform::matrix() const {
-        return matrix(QVector3D(0.0,0.0,0.0));
+        return matrix(QVector3D(0.0, 0.0, 0.0));
     }
 
     QMatrix4x4 AffineTransform::matrix(QVector3D const& _center) const {
         QMatrix4x4 _m;
+
         _m.translate(_center);
-        _m.translate(translation_);
-        _m *= rotation_.matrix();
-        _m.scale(scale_);
+        if (translationEnabled()) _m.translate(translation_);
+        if (rotationEnabled()) _m *= rotation_.matrix();
+        if (scaleEnabled()) _m.scale(scale_);
         _m.translate(-_center);
         return _m;
+    }
+
+    /// Return true if rotation is enabled
+    bool AffineTransform::rotationEnabled() const {
+        return rotationEnabled_;
+    }
+
+    /// Enable or disable rotation
+    void AffineTransform::setRotationEnabled(bool _enabled) {
+        rotationEnabled_ = _enabled;
+    }
+
+    /// Return true if scaling is enabled
+    bool AffineTransform::scaleEnabled() const {
+        return scaleEnabled_;
+    }
+
+    /// Enable or disable scale
+    void AffineTransform::setScaleEnabled(bool _enabled) {
+        scaleEnabled_ = _enabled;
+    }
+
+    /// Return true if translation is enabled
+    bool AffineTransform::translationEnabled() const {
+        return translationEnabled_;
+    }
+
+    /// Enable or disable translation
+    void AffineTransform::setTranslationEnabled(bool _enabled) {
+        translationEnabled_ = _enabled;
     }
 }

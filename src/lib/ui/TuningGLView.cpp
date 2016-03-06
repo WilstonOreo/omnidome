@@ -209,9 +209,11 @@ namespace omni
         {
           auto _from = pixelPos(mousePosition_).toPoint();
           auto _to = pixelPos(event->pos()).toPoint();
-          leftOverDistance_ = tuning()->blendMask().drawLine(_from,_to,leftOverDistance_);
-          mousePosition_ = event->pos();
-          cursorPosition_ = screenPos(mousePosition_);
+          if (!(event->modifiers() & Qt::ShiftModifier)) {
+              leftOverDistance_ = tuning()->blendMask().drawLine(_from,_to,leftOverDistance_);
+              lastStrokePos_ = _from;
+          }
+
           for (auto& _childView : childViews_)
           {
             _childView->cursorPosition_ = cursorPosition_;
@@ -267,6 +269,7 @@ namespace omni
       else if (_mode == Session::Mode::BLEND)
       {
         bool _inv = tuning()->blendMask().brush().invert();
+        lastStrokePos_ = pixelPos(mousePosition_).toPoint();
 
         // Invert brush on right click
         if (event->button() == Qt::RightButton)
@@ -299,6 +302,11 @@ namespace omni
 
       if (_mode == Session::Mode::BLEND)
       {
+        if (event->modifiers() & Qt::ShiftModifier) {
+              auto _from = lastStrokePos_;
+              auto _to = pixelPos(event->pos()).toPoint();
+              tuning()->blendMask().drawLine(_from,_to,leftOverDistance_);
+        }
         leftOverDistance_ = 0.0;
 
         // Invert brush on right click
@@ -309,6 +317,8 @@ namespace omni
         }
       }
       this->mousePosition_ = event->pos();
+      this->cursorPosition_ = screenPos(this->mousePosition_);
+
       updateWithChildViews();
     }
 
@@ -606,7 +616,7 @@ namespace omni
 
     void TuningGLView::paintGL()
     {
-      if (!isVisible() || this->isLocked( )|| !context() || aboutToBeDestroyed_) return;
+      if (!isVisible() || this->isLocked( )|| !context() || aboutToBeDestroyed_) return;
 
       if (!vizTuning_ || !session_) return;
 

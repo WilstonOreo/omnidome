@@ -30,6 +30,7 @@ namespace omni
     class TexCoords : public QObject, public Interface
     {
       OMNI_MAPPING_PLUGIN_DECL
+      OMNI_PLUGIN_CR8TR("TexCoords mapping","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,TexCoords)
 

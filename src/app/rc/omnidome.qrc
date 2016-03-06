@@ -19,29 +19,6 @@
     <file>icons/color_correction.png</file>
     <file>icons/color_correction_disabled.png</file>
     <file>shaders/slow_fractal.frag</file>
-    <file>shaders/frustum.frag</file>
-    <file>shaders/frustum.vert</file>
-    <file>shaders/blend.frag</file>
-    <file>shaders/blend.vert</file>
-    <file>shaders/halo.frag</file>
-    <file>shaders/halo.vert</file>
-    <file>shaders/grid.frag</file>
-    <file>shaders/grid.vert</file>
-    <file>shaders/testcard.frag</file>
-    <file>shaders/testcard.vert</file>
-    <file>shaders/canvas.frag</file>
-    <file>shaders/test_image.frag</file>
-    <file>shaders/test_image.vert</file>
-    <file>shaders/CubeMapTestImage.frag</file>
-    <file>shaders/FisheyeTestImage.frag</file>
-    <file>shaders/normals.frag</file>
-    <file>shaders/normals.vert</file>
-    <file>shaders/mapping/Template.frag</file>
-    <file>shaders/mapping/TexCoords.frag</file>
-    <file>shaders/mapping/Equirectangular.frag</file>
-    <file>shaders/mapping/Fisheye.frag</file>
-    <file>shaders/mapping/CubeMap.frag</file>
-    <file>shaders/mapping/common.vert</file>
     <file>fonts/SourceSansPro-Bold.ttf</file>
     <file>fonts/SourceSansPro-Light.ttf</file>
     <file>fonts/SourceSansPro-Regular.ttf</file>

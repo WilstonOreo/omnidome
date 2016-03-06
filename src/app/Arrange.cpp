@@ -38,6 +38,14 @@ namespace omni {
             SessionWidget::setSession(_session);
         }
 
+        GLView3D* Arrange::view() {
+            return ui_->view;
+        }
+
+        GLView3D const* Arrange::view() const {
+            return ui_->view;
+        }
+
         void Arrange::sessionParameters() {
 
         }

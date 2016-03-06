@@ -21,9 +21,9 @@
 #define OMNI_INPUT_INTERFACE_H_
 
 #include <set>
-#include <QObject>
 #include <QOpenGLTexture>
-#include <omni/SerializationInterface.h>
+#include <omni/PluginInfo.h>
+#include <omni/serialization/Interface.h>
 #include <omni/mapping/Interface.h>
 
 namespace omni
@@ -110,6 +110,7 @@ Q_DECLARE_INTERFACE(omni::input::Interface, OMNI_INPUT_INTERFACE_IID)
 #define OMNI_INPUT_PLUGIN_DECL \
     Q_OBJECT \
     Q_PLUGIN_METADATA(IID OMNI_INPUT_INTERFACE_IID) \
-    Q_INTERFACES(omni::input::Interface)
+    Q_INTERFACES(omni::input::Interface) \
+    OMNI_PLUGIN_TYPE("Input")
 
 #endif /* OMNI_INPUT_INTERFACE_H_ */

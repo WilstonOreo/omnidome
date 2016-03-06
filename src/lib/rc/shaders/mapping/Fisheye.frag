@@ -8,7 +8,7 @@ float intersection(out vec3 uvw) {
 
 float mapping(in vec3 uvw, out vec2 texCoords)
 {
-  float phi = atan(sqrt(uvw.x*uvw.x + uvw.y*uvw.y),uvw.z);
+  float phi = atan(length(uvw.xy),uvw.z);
   float r =  phi / PI * 2.0 / (stretch + 1.0);
   if ((r > 1.0) || (r <= 0.0)) return -1.0;
   float theta = atan(uvw.x,uvw.y);

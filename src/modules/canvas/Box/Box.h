@@ -35,6 +35,7 @@ namespace omni
     class Box : public QObject, public Envelope
     {
         OMNI_CANVAS_PLUGIN_DECL
+        OMNI_PLUGIN_CR8TR("Box canvas","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,Box)
 

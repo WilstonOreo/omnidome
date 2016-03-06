@@ -43,7 +43,7 @@ namespace omni
       WARP, // Mode for adjusting warp grid
       BLEND, // Mode for editing the blend mask
       COLORCORRECTION, // Mode for color correction for each projector
-      EXPORT, // Export mode. Output is locked for faster display
+      EXPORT, // Export mode
       LIVE, // Live mode. Output is locked for faster display
       NUM_MODES
     };
@@ -113,6 +113,12 @@ namespace omni
     /// Opacity of input when in blend mask mode
     void setBlendMaskInputOpacity(float _input);
 
+    /// Size of scene (affects canvas sizes and projector offsets)
+    float sceneSize() const;
+
+    /// Set size of scene
+    void setSceneSize(float _size);
+
     /// A session has an output when there is an input, a canvas and a mapping
     bool hasOutput() const;
 
@@ -149,6 +155,7 @@ namespace omni
 
     BlendMode blendMode_ = BlendMode::COLOR;
     float blendMaskInputOpacity_ = 0.0;
+    float sceneSize_ = 10.0;
   };
 }
 

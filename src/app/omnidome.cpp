@@ -23,7 +23,6 @@
 #include "Application.h"
 #include <QDir>
 #include <QFile>
-#include <omni/PluginLoader.h>
 
 #include <QCommandLineParser>
 
@@ -67,11 +66,10 @@ private:
 
 int main(int ac, char *av[])
 {
-            QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+    // This line is absolutely mandatory for being able to have multiple
+    // QOpenGLWidgets in different windows!!!
+    QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-            QCoreApplication::setApplicationName("Omnidome");
-            QCoreApplication::setApplicationVersion(OMNIDOME_VERSION_STRING);
-    std::vector<QDir> _pluginDirs;
     omni::ui::Application _a(ac, av);
 
 /// Command line parser is only available in debug mode
@@ -82,7 +80,6 @@ int main(int ac, char *av[])
 
 /*
     parser.setApplicationDescription("Omnidome");
-
 
     QCommandLineOption _pluginDirOption({"p", "plugin-directory"},
             QCoreApplication::translate("main", "Plugin directory <directory>."),
@@ -110,9 +107,6 @@ int main(int ac, char *av[])
         _a.setStyleSheetFile(parser.value("stylesheet"));
     }
 #endif
-
-    // Load plugins
-    PluginLoader _pluginLoader(_pluginDirs);
 
     ui::MainWindow _w;
     _w.setWindowState(Qt::WindowMaximized);
