@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -17,37 +17,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <memory>
-#include <QWidget>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/BlendSettings.h>
 
 namespace omni {
-    namespace ui {
-        class GLView3D;
+    BlendSettings::ColorMode BlendSettings::colorMode() const
+    {
+        return colorMode_;
+    }
 
-        namespace Ui {
-            class Arrange;
-        }
-        class Arrange :
-            public QWidget,
-            public mixin::SessionWidget
-        {
-            Q_OBJECT
-        public:
-            Arrange(QWidget* = nullptr);
-            ~Arrange();
+    void BlendSettings::setColorMode(ColorMode _colorMode)
+    {
+        colorMode_ = _colorMode;
+    }
 
-            void setSession(Session* _session);
+    float BlendSettings::inputOpacity() const
+    {
+        return inputOpacity_;
+    }
 
-            GLView3D* view();
-            GLView3D const* view() const;
+    void BlendSettings::setInputOpacity(float _inputOpacity)
+    {
+        inputOpacity_ = _inputOpacity;
+    }
 
-        public slots:
+    /// Show blend mask in warp colorMode
+    bool BlendSettings::showInWarpMode() const {
+        return showInWarpMode_;
+    }
 
-        private:
-            void sessionParameters();
-
-            std::unique_ptr<Ui::Arrange> ui_;
-        };
+    /// Set flag if blend mask is visible in warp colorMode
+    void BlendSettings::setShowInWarpMode(bool _showInWarpMode) {
+        showInWarpMode_ = _showInWarpMode;
     }
 }

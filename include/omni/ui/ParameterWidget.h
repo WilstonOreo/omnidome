@@ -115,10 +115,20 @@ namespace omni
       /// Focus item in layout with index
       void focus(int _index);
 
+      /// Set focus on first widget in parameter list
+      void focusFirst();
+
+      /// Set focus on last widget in parameter list
+      void focusLast();
+
     signals:
       void parametersUpdated();
 
     protected:
+      /// Id of first focussed widget
+      inline virtual int firstFocusId() const {
+          return 0;
+      }
       void keyPressEvent(QKeyEvent* _event);
 
       /// Slider parameter widgets

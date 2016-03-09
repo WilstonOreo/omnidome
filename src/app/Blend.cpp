@@ -20,168 +20,153 @@
 #include "Blend.h"
 #include "ui_omni_ui_Blend.h"
 
+#include <QDebug>
+#include <QVBoxLayout>
+
 #include <omni/Session.h>
 #include <omni/BlendMask.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    Blend::Blend(QWidget* _parent) :
-      DockWidget(_parent)
-    {
-      this->setup(ui_);
-
-      /// Setup top, left, right and bottom sliders
-      {
-        auto setupSlider = [&](RangedFloat* _slider)
+namespace omni {
+    namespace ui {
+        Blend::Blend(QWidget *_parent) :
+            DockWidget(_parent)
         {
-          _slider->setRange(0.0,0.5);
-          _slider->setSingleStep(0.01);
-          _slider->setPageStep(0.05);
-          _slider->setGripSize(0);
-          connect(_slider,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
-        };
+            this->setup(ui_);
 
-        setupSlider(ui_->sliderTop);
-        ui_->sliderTop->setLabel("Top");
-        setupSlider(ui_->sliderLeft);
-        ui_->sliderLeft->setLabel("Left");
-        setupSlider(ui_->sliderRight);
-        ui_->sliderRight->setLabel("Right");
-        setupSlider(ui_->sliderBottom);
-        ui_->sliderBottom->setLabel("Bottom");
+            auto setupSlider = [&](RangedFloat *_slider, QString _label)
+                               {
+                                   _slider->setLabel(_label);
+                                   _slider->setRange(0.0, 0.5);
+                                   _slider->setSingleStep(0.01);
+                                   _slider->setPageStep(0.05);
+                                   _slider->setGripSize(0);
+                                   connect(_slider,
+                                                       &RangedFloat::valueChanged,
+                                                       this,
+                                                       &Blend::updateDataModel);
+                               };
 
-        setupSlider(ui_->sliderInputOpacity);
-        ui_->sliderInputOpacity->setLabel("Input Opacity");
-        ui_->sliderInputOpacity->setRange(0.0,1.0);
-      }
+            /// Setup top, left, right and bottom sliders
+            {
+                setupSlider(ui_->sliderTop,          "Top");
+                setupSlider(ui_->sliderLeft,         "Left");
+                setupSlider(ui_->sliderRight,        "Right");
+                setupSlider(ui_->sliderBottom,       "Bottom");
+                setupSlider(ui_->sliderInputOpacity, "Input Opacity");
+                ui_->sliderInputOpacity->setRange(0.0, 1.0);
+            }
 
-      /// Setup gamma
-      {
-        ui_->sliderGamma->setLabel("Gamma");
-        ui_->sliderGamma->setRange(0.0,3.0);
-        ui_->sliderGamma->setSingleStep(0.05);
-        ui_->sliderGamma->setPageStep(0.3);
-        ui_->sliderGamma->setGripSize(0);
-        connect(ui_->sliderGamma,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
-      }
+            /// Setup gamma
+            {
+                setupSlider(ui_->sliderGamma, "Gamma");
+                ui_->sliderGamma->setRange(0.0, 3.0);
+                ui_->sliderGamma->setSingleStep(0.05);
+                ui_->sliderGamma->setPageStep(0.3);
+            }
 
-      /// Setup brush widgets
-      {
-        ui_->sliderSize->setRange(5.0,500.0);
-        ui_->sliderSize->setSingleStep(5.0);
-        ui_->sliderSize->setPageStep(50.0);
-        ui_->sliderSize->setGripSize(0);
-        ui_->sliderSize->setLabel("Brush size");
-        connect(ui_->sliderSize,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
+            /// Setup brush widgets
+            {
+                setupSlider(ui_->sliderSize, "Brush size");
+                ui_->sliderSize->setRange(5.0, 500.0);
+                ui_->sliderSize->setSingleStep(5.0);
+                ui_->sliderSize->setPageStep(50.0);
 
-        ui_->sliderFeather->setRange(0.1,4.0);
-        ui_->sliderFeather->setSingleStep(0.1);
-        ui_->sliderFeather->setPageStep(0.5);
-        ui_->sliderFeather->setLabel("Feather");
-        ui_->sliderFeather->setGripSize(0);
-        connect(ui_->sliderFeather,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
+                setupSlider(ui_->sliderFeather, "Feather");
+                ui_->sliderFeather->setRange(0.1, 4.0);
+                ui_->sliderFeather->setSingleStep(0.1);
+                ui_->sliderFeather->setPageStep(0.5);
 
-        ui_->sliderOpacity->setRange(0.0,1.0);
-        ui_->sliderOpacity->setSingleStep(0.01);
-        ui_->sliderOpacity->setPageStep(0.1);
-        ui_->sliderOpacity->setLabel("Opacity");
-        ui_->sliderOpacity->setGripSize(0);
-        connect(ui_->sliderOpacity,SIGNAL(valueChanged()),this,SLOT(changeBlendMask()));
+                setupSlider(ui_->sliderOpacity, "Opacity");
+                ui_->sliderOpacity->setRange(0.0, 1.0);
+                ui_->sliderOpacity->setSingleStep(0.01);
+                ui_->sliderOpacity->setPageStep(0.1);
 
-        connect(ui_->chkInvert,SIGNAL(clicked(bool)),this,SLOT(changeBlendMask()));
-      }
+                connect(ui_->chkInvert,&QCheckBox::clicked,this,&Blend::updateDataModel);
+            }
 
-      /// Blend mode combobox
-      {
-        connect(ui_->boxMaskColor,SIGNAL(currentIndexChanged(int)),this,SLOT(changeBlendMask()));
-      }
+            /// Blend mode combobox
+            {
+                connect(ui_->boxMaskColor,
+                    static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),this,
+                    &Blend::updateDataModel);
+            }
+        }
+
+        Blend::~Blend()
+        {}
+
+        void Blend::dataToFrontend()
+        {
+            if (!blendMask()) return;
+
+            ui_->sliderLeft->setValue(blendMask()->leftWidth());
+            ui_->sliderRight->setValue(blendMask()->rightWidth());
+            ui_->sliderTop->setValue(blendMask()->topWidth());
+            ui_->sliderBottom->setValue(blendMask()->bottomWidth());
+            ui_->sliderGamma->setValue(blendMask()->gamma());
+            ui_->sliderInputOpacity->setValue(
+                dataModel()->blendSettings().inputOpacity());
+
+            auto& _brush = blendMask()->brush();
+            ui_->sliderSize->setValue(_brush.size());
+            ui_->sliderFeather->setValue(_brush.feather());
+            ui_->sliderOpacity->setValue(_brush.opacity());
+            ui_->chkInvert->setChecked(_brush.invert());
+            ui_->brushPreview->update(_brush.feather(),
+                                      _brush.opacity(), _brush.invert());
+        }
+
+        bool Blend::frontendToData()
+        {
+            if (!blendMask()) return false;
+
+            float _left   = ui_->sliderLeft->value();
+            float _right  = ui_->sliderRight->value();
+            float _top    = ui_->sliderTop->value();
+            float _bottom = ui_->sliderBottom->value();
+
+            blendMask()->setRect(
+                QRectF(_left, _top, 1.0 - _right - _left, 1.0 - _top - _bottom));
+
+            blendMask()->setGamma(ui_->sliderGamma->value());
+
+            float _feather = ui_->sliderFeather->value();
+            float _opacity = ui_->sliderOpacity->value();
+            bool  _invert  = ui_->chkInvert->isChecked();
+
+            blendMask()->brush().setBrush(
+                ui_->sliderSize->value(), // Size
+                _feather, _opacity, _invert);
+            ui_->brushPreview->update(_feather, _opacity, _invert);
+
+            int   _blendModeIndex = ui_->boxMaskColor->currentIndex();
+            auto& _blendSettings  = dataModel()->blendSettings();
+
+            if (_blendModeIndex == 0) _blendSettings.setColorMode(
+                    BlendSettings::ColorMode::COLORED);
+
+            if (_blendModeIndex == 1) _blendSettings.setColorMode(
+                    BlendSettings::ColorMode::WHITE);
+
+            _blendSettings.setInputOpacity(ui_->sliderInputOpacity->value());
+
+            return true;
+        }
+
+        omni::BlendMask const * Blend::blendMask() const
+        {
+            if (!dataModel()) return nullptr;
+
+            return dataModel()->tunings().current() ? &dataModel()->tunings().
+                   current()->blendMask() : nullptr;
+        }
+
+        omni::BlendMask * Blend::blendMask()
+        {
+            if (!dataModel()) return nullptr;
+
+            return dataModel()->tunings().current() ? &dataModel()->tunings().
+                   current()->blendMask() : nullptr;
+        }
     }
-
-    Blend::~Blend()
-    {
-    }
-
-    Session const* Blend::session() const
-    {
-      return session_;
-    }
-
-    void Blend::setSession(Session* _session)
-    {
-      session_=_session;
-      updateBlendMask();
-    }
-
-    void Blend::updateBlendMask()
-    {
-      if (blendMask())
-      {
-        locked_ = true;
-        ui_->sliderLeft->setValue(blendMask()->leftWidth());
-        ui_->sliderRight->setValue(blendMask()->rightWidth());
-        ui_->sliderTop->setValue(blendMask()->topWidth());
-        ui_->sliderBottom->setValue(blendMask()->bottomWidth());
-        ui_->sliderGamma->setValue(blendMask()->gamma());
-        ui_->sliderInputOpacity->setValue(session_->blendMaskInputOpacity());
-
-        auto& _brush = blendMask()->brush();
-        ui_->sliderSize->setValue(_brush.size());
-        ui_->sliderFeather->setValue(_brush.feather());
-        ui_->sliderOpacity->setValue(_brush.opacity());
-        ui_->chkInvert->setChecked(_brush.invert());
-        ui_->brushPreview->update(_brush.feather(),_brush.opacity(),_brush.invert());
-        locked_ = false;
-      }
-    }
-
-    void Blend::changeBlendMask()
-    {
-      if (!blendMask() || locked_) return;
-
-      float _left = ui_->sliderLeft->value();
-      float _right = ui_->sliderRight->value();
-      float _top = ui_->sliderTop->value();
-      float _bottom = ui_->sliderBottom->value();
-
-      blendMask()->setRect(
-        QRectF(_left,_top,1.0 - _right - _left,1.0 - _top - _bottom));
-
-      blendMask()->setGamma(ui_->sliderGamma->value());
-
-      float _feather = ui_->sliderFeather->value();
-      float _opacity = ui_->sliderOpacity->value();
-      bool _invert = ui_->chkInvert->isChecked();
-
-      blendMask()->brush().setBrush(
-        ui_->sliderSize->value(), // Size
-        _feather,_opacity,_invert);
-      ui_->brushPreview->update(_feather,_opacity,_invert);
-
-      int _blendModeIndex = ui_->boxMaskColor->currentIndex();
-      if (_blendModeIndex == 0)
-        session_->setBlendMode(Session::BlendMode::COLOR);
-      if (_blendModeIndex == 1)
-        session_->setBlendMode(Session::BlendMode::WHITE);
-
-      session_->setBlendMaskInputOpacity(ui_->sliderInputOpacity->value());
-
-      emit blendMaskChanged();
-    }
-
-    omni::BlendMask const* Blend::blendMask() const
-    {
-      if (!session_) return nullptr;
-
-      return session_->tunings().current() ? &session_->tunings().current()->blendMask() : nullptr;
-    }
-
-    omni::BlendMask* Blend::blendMask()
-    {
-      if (!session_) return nullptr;
-
-      return session_->tunings().current() ? &session_->tunings().current()->blendMask() : nullptr;
-    }
-  }
 }

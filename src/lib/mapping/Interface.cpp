@@ -46,8 +46,8 @@ namespace omni
       shader_->link();
     }
 
-    void Interface::bind(OutputMode _outputMode)
-    {
+    void Interface::bind() {
+
       if (!shader_) initialize();
 
       if (shader_)
@@ -55,19 +55,16 @@ namespace omni
         shader_->bind();
         shader_->setUniformValue("flip_horizontal",flipHorizontal_);
         shader_->setUniformValue("flip_vertical",flipVertical_);
+      }
+    }
 
-        switch (_outputMode)
-        {
-          case OutputMode::MAPPED_INPUT:
-          shader_->setUniformValue("output_mode",0);
-          break;
-          case OutputMode::TEXCOORDS:
-          shader_->setUniformValue("output_mode",1);
-          break;
-          case OutputMode::UVW:
-          shader_->setUniformValue("output_mode",2);
-          break;
-        };
+    void Interface::bind(OutputMode _outputMode, bool _grayscale)
+    {
+      bind();
+      if (shader_)
+      {
+        shader_->setUniformValue("output_mode",util::enumToInt(_outputMode));
+        shader_->setUniformValue("gray_output",_grayscale);
       }
     }
 

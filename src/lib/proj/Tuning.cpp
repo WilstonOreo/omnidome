@@ -154,6 +154,15 @@ namespace omni {
         void Tuning::setOutputEnabled(bool _enabled) {
             setOutputDisabled(!_enabled);
         }
+        /// Return opacity of overlapped blend mask
+        float Tuning::overlapOpacity() const {
+            return overlapOpacity_;
+        }
+
+        /// Set opacity of overlap mask in blend mode
+        void Tuning::setOverlapOpacity(float _overlapOpacity) {
+            overlapOpacity_ = _overlapOpacity;
+        }
 
         bool operator==(Tuning const& _lhs, Tuning const& _rhs)
         {

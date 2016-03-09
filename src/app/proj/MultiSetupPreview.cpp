@@ -89,11 +89,11 @@ namespace omni
           auto* _canvas = session()->canvas();
 
           _.glEnable(GL_LIGHTING);
+          _.glEnable(GL_COLOR_MATERIAL);
           _.glEnable(GL_DEPTH_TEST);
           if (_canvas)
           {
-            glColor4f(1.0,1.0,1.0,1.0);
-            _canvas->draw();
+            this->session_->drawCanvas(mapping::OutputMode::LIGHTING_ONLY);
           }
 
           _.glDisable(GL_DEPTH_TEST);
@@ -105,7 +105,7 @@ namespace omni
           }
 
           for (auto& _projector : projectors_)
-            session_->drawFrustumIntersection(_projector,"#00ccff",ProjectorViewMode::BOTH);
+            session_->drawFrustumIntersection(_projector,"#0088cc",ProjectorViewMode::BOTH);
 
           _.glEnable(GL_DEPTH_TEST);
 

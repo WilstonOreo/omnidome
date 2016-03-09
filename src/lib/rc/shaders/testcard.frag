@@ -5,6 +5,7 @@ varying vec2 vTexCoord;
 uniform vec2 resolution;
 uniform vec3 test_color;
 uniform int projector_id;
+uniform bool gray_output;
 const float soft = 0.002;
 
 const float PI = 3.14159265358979323846264;
@@ -106,18 +107,23 @@ vec4 ch_tid = vec4(0x0073DA,0xCE0000,0x000000,0x000000);
 vec4 ch_lar = vec4(0x000000,0x10386C,0xC6C6FE,0x000000);
 
 
+vec3 grayscale(vec3 c)
+{
+  float v = c.r*0.299 + c.g*0.587 + c.b*0.114;
+  return vec3(v);
+}
 
 float circle(vec2 pos, float r)
 {
 float _distance = length(pos);
 float _v = (_distance ) / r;
-return 1.0 - smoothstep(1.0 - soft / r,1.0,_v); 
+return 1.0 - smoothstep(1.0 - soft / r,1.0,_v);
 }
 
 float checkboard(vec2 pos)
-{ 
-float id = 0.5 + 0.5*cos(time + sin(dot(floor(pos+0.5),vec2(113.1,17.81)))*43758.545);  
-vec2  pa = smoothstep( 0.0, 0.2, id*(0.5 + 0.5*cos(6.2831*pos)) );   
+{
+float id = 0.5 + 0.5*cos(time + sin(dot(floor(pos+0.5),vec2(113.1,17.81)))*43758.545);
+vec2  pa = smoothstep( 0.0, 0.2, id*(0.5 + 0.5*cos(6.2831*pos)) );
 return pa.x * pa.y;
 }
 
@@ -127,8 +133,8 @@ float grid(vec2 pos)
 float width = soft * 25.0;
 pos += width * 0.5;
 
-float id = 0.5 + 0.5*cos(time + sin(dot(floor(pos+0.5),vec2(113.1,17.81)))*43758.545);  
-return clamp(4.0 * 
+float id = 0.5 + 0.5*cos(time + sin(dot(floor(pos+0.5),vec2(113.1,17.81)))*43758.545);
+return clamp(4.0 *
     (min(smoothstep(0.0,width, mod(pos.x + 0.5,1.0)),
     smoothstep(1.0 - width,1.0, mod(1.0 - pos.x - 0.5,1.0))) +
     min(smoothstep(0.0,width, mod(pos.y + 0.5,1.0)),
@@ -147,7 +153,7 @@ int index = int(clamp(pos.x*8.0,0.0,8.0));
  if (index == 5) return vec3(1.0,0.0,0.0);
  if (index == 6) return vec3(0.0,0.0,1.0);
  if (index == 7) return vec3(0.0,0.0,0.0);
-    
+
 return vec3(0.0);
 }
 
@@ -170,20 +176,20 @@ return (clamp(p - 1.0, 0.0, 1.0));
 
 vec3 complementGradient(float t, vec3 color)
 {
-vec3 p = t <= 0.5 ?  
+vec3 p = t <= 0.5 ?
   mix( vec3(0.0),color,t) :
   mix( color,1.0 - color,t);
-return p; 
+return p;
 }
 
 vec3 complementGradient(vec2 pos)
 {
   float oneThird = 1.0 / 3.0;
-    
+
   if (pos.y <= oneThird) return complementGradient(pos.x,vec3(1.0,0.0,0.0));
   if (pos.y <= 2.0 * oneThird) return complementGradient(pos.x,vec3(0.0,1.0,0.0));
   if (pos.y <= 1.0) return complementGradient(pos.x,vec3(0.0,0.0,1.0));
-    
+
   return vec3(1.0,1.0,1.0);
 }
 
@@ -194,26 +200,26 @@ vec3 complementGradient(vec2 pos)
 float extract_bit(float n, float b)
 {
   b = clamp(b,-1.0,24.0);
-return floor(mod(floor(n / pow(2.0,floor(b))),2.0));   
+return floor(mod(floor(n / pow(2.0,floor(b))),2.0));
 }
 
 //Returns the pixel at uv in the given bit-packed sprite.
 float sprite(vec4 spr, vec2 size, vec2 uv)
 {
   uv = floor(uv);
-  
+
   //Calculate the bit to extract (x + y * width) (flipped on x-axis)
   float bit = (size.x-uv.x-1.0) + uv.y * size.x;
-  
+
   //Clipping bound to remove garbage outside the sprite's boundaries.
   bool bounds = all(greaterThanEqual(uv,vec2(0))) && all(lessThan(uv,size));
-  
+
   float pixels = 0.0;
   pixels += extract_bit(spr.x, bit - 72.0);
   pixels += extract_bit(spr.y, bit - 48.0);
   pixels += extract_bit(spr.z, bit - 24.0);
   pixels += extract_bit(spr.w, bit - 00.0);
-  
+
   return bounds ? pixels : 0.0;
 }
 
@@ -237,7 +243,7 @@ float print_char(vec4 ch, vec2 uv)
 vec4 get_digit(float d)
 {
   d = floor(d);
-  
+
   if(d == 0.0) return ch_0;
   if(d == 1.0) return ch_1;
   if(d == 2.0) return ch_2;
@@ -254,7 +260,7 @@ vec4 get_digit(float d)
 float print_integer(float number, int zeros, vec2 uv)
 {
   float result = 0.0;
-  
+
 for(int i = MAX_INT_DIGITS;i >= 0;i--)
   {
       float digit = mod( number / pow(10.0, float(i)) , 10.0);
@@ -263,12 +269,12 @@ for(int i = MAX_INT_DIGITS;i >= 0;i--)
       {
         result += print_char(get_digit(digit),uv);
       }
-  }   
+  }
   return result;
 }
 
 
-vec3 text(vec2 pos) 
+vec3 text(vec2 pos)
 {
   pos *= CHAR_SIZE;
 pos.x *= CHAR_SIZE.x * 2.0;
@@ -299,26 +305,30 @@ if (abs(gridPos.x + 0.5) <= 5.99)
   float x = (gridPos.x + 0.5) / 12.0 + 0.5;
   float y = gridPos.y + 0.5;
   vec2 v = vec2(x,y);
-  if (y <= 4.99 && y >= 2.01) 
+  if (y <= 4.99 && y >= 2.01)
     g = palette(v);
-  if (y <= 1.99 && y >= 0.01) 
+  if (y <= 1.99 && y >= 0.01)
     g = grayscale(v,5.0);
-  if (y <= -0.01 && y >= -1.99) 
+  if (y <= -0.01 && y >= -1.99)
     g = text(v);
 
   if (y <= -1.01 && y >= -1.99)
     g = interference(v,10.0);
   if (y <= -2.01 && y >= -2.99)
     g = hueGradient(v.x);
-  if (y <= -3.01 && y >= -4.99) // Red complement 
+  if (y <= -3.01 && y >= -4.99) // Red complement
     g = complementGradient((v + vec2(0.0,5.0))/vec2(1.0,2.0));
   }
 
 g += clamp(circle(pos,10.0 / 12.0) - circle(pos,10.0 / 12.0 - 0.005),0.0,1.0);
 
+if (gray_output) {    
+    g = grayscale(g);
+}
 
 return g;
 }
+
 
 void main(void)
 {

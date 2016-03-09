@@ -37,7 +37,7 @@ namespace omni
       Equirectangular();
       ~Equirectangular();
 
-      void bind(OutputMode = OutputMode::MAPPED_INPUT);
+      void bind();
 
       /// Value between 0.0 and 1.0 for top strip position
       qreal stripTop() const;

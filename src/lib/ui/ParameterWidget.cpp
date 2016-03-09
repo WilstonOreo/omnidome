@@ -120,6 +120,7 @@ namespace omni
       _offset->setSingleStep(0.01);
       _offset->setPageStep(0.1);
       _offset->setPivot(0.0);
+      this->registerScaledSlider(_offset);
       return _offset;
     }
 
@@ -208,19 +209,25 @@ namespace omni
     }
 
     void ParameterWidget::focus(int _index) {
+        if (!layout()->itemAt(_index)) return;
+
         layout()->itemAt(_index)->widget()->setFocus();
     }
 
+    void ParameterWidget::focusFirst() {
+        focus(firstFocusId());
+    }
+
+    void ParameterWidget::focusLast() {
+        focus(layout()->count()-1);
+    }
+
     void ParameterWidget::keyPressEvent(QKeyEvent* _event) {
-          //if (hasFocus()) return;
-
-          qDebug() << _event->key();
-
           if (_event->key() == Qt::Key_Up) {
-              focusPrev(true);
+              focusPrev(false);
           }
           if (_event->key() == Qt::Key_Down) {
-              focusNext(true);
+              focusNext(false);
           }
       }
 
@@ -228,13 +235,13 @@ namespace omni
         int _focusId = focusId();
 
         if (_focusId != -1) {
-            int _nextFocus = _focusId + 1;
-            if (_nextFocus >= layout()->count()) {
-                _nextFocus = _circular ? 0 : layout()->count() - 1;
+            int _nextFocusId = _focusId + 1;
+            if (_nextFocusId >= layout()->count()) {
+                _nextFocusId = _circular ? firstFocusId() : layout()->count() - 1;
             }
-            auto _param = layout()->itemAt(_nextFocus)->widget();
+            auto _param = layout()->itemAt(_nextFocusId)->widget();
             _param->setFocus();
-            return _focusId != _nextFocus;
+            return _focusId != _nextFocusId;
         }
         return false;
     }
@@ -244,8 +251,8 @@ namespace omni
 
         if (_focusId != -1) {
             int _prevFocus = _focusId - 1;
-            if (_prevFocus < 0) {
-                _prevFocus = !_circular ? layout()->count() - 1 : 0;
+            if (_prevFocus < firstFocusId()) {
+                _prevFocus = _circular ? layout()->count() - 1 : firstFocusId();
             }
             auto _param = layout()->itemAt(_prevFocus)->widget();
             _param->setFocus();

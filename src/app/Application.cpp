@@ -25,13 +25,15 @@
 
 namespace omni {
     namespace ui {
-        QSettings Application::settings_;
+        QSettings Application::settings_("omnidome.settings");
 
         Application::Application(int& ac, char **av) :
             QApplication(ac, av)
         {
             QCoreApplication::setApplicationName("Omnidome");
             QCoreApplication::setApplicationVersion(OMNIDOME_VERSION_STRING);
+            QCoreApplication::setOrganizationName("cr8tr");
+            QCoreApplication::setOrganizationDomain("cr8tr.org / omnido.me");
 
             loadPlugins();
 
@@ -50,6 +52,7 @@ namespace omni {
             }
 
             setStyleSheetFile(":/stylesheet.qss");
+
             installEventFilter(this);
         }
 

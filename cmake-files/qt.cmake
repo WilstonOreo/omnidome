@@ -89,7 +89,7 @@ ENDMACRO()
 
 # Qt5 Setup
 MACRO(setup_qt VERSION FOLDER)
-  SET(_moc ${CMAKE_SOURCE_DIR}/moc )
+    SET(_moc ${CMAKE_SOURCE_DIR}/moc )
 
   SET(QT_FOUND FALSE)
   SET(QT_VERSION ${VERSION})
@@ -104,7 +104,12 @@ MACRO(setup_qt VERSION FOLDER)
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   set(QT_QMAKE_EXECUTABLE "${QT5_LOCATION}/bin/qmake" )
-  set(QT_MOC_EXECUTABLE "${QT5_LOCATION}/bin/moc" )
+  set(QT_MOC_EXECUTABLE "${QT5_LOCATION}/bin/moc -DOMNI_UI_DATAMODEL="
+        "public slots: inline void frontendToDataSlot() {"
+        "if (this->isLocked()) { return; }"
+        "this->locked([&]() { if (frontendToData()) {"
+        "emit dataModelChanged();  updateFrontend();}; });}"
+        "signals: void dataModelChanged(); public:" )
   set(QT_RCC_EXECUTABLE "${QT5_LOCATION}/bin/rcc" )
   set(QT_UIC_EXECUTABLE "${QT5_LOCATION}/bin/uic" )
   set(QT_INCLUDE_DIR "${QT5_LOCATION}/include" )

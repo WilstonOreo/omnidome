@@ -28,6 +28,7 @@
 #include <QMessageBox>
 #include <omni/util.h>
 #include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
@@ -44,7 +45,8 @@ namespace omni
     class GLView3D;
     class ToolBar;
 
-    class MainWindow : public QMainWindow
+    class MainWindow :
+        public QMainWindow
     {
       Q_OBJECT
     public:
@@ -94,6 +96,7 @@ namespace omni
       void setMode(Session::Mode _mode);
 
     private:
+      void readSettings();
 
       /// Makes a new session
       void setupSession();
@@ -105,7 +108,7 @@ namespace omni
       QString filename_;
 
       /// Current projection session
-      std::unique_ptr<Session> session_;
+      std::shared_ptr<Session> session_;
 
       /// Modified flag
       bool modified_ = false;

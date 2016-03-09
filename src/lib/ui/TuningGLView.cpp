@@ -432,7 +432,7 @@ namespace omni
           _.glDisable(GL_LIGHTING);
           _.glDisable(GL_CULL_FACE);
           _.glEnable(GL_DEPTH_TEST);
-          session_->drawCanvas();
+          session_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,tuning()->outputDisabled() && viewOnly());
           _.glDisable(GL_DEPTH_TEST);
       });
     }
@@ -517,26 +517,56 @@ namespace omni
 
     void TuningGLView::drawWarpGrid()
     {
-      updateWarpBuffer();
+      drawOutput(session()->blendSettings().showInWarpMode() ? 1.0 : 0.0 /* zero blend mask opacity */);
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
-        _.glDisable(GL_LIGHTING);
-        _.glEnable(GL_BLEND);
-
         vizTuning_->drawWarpGrid();
-
-        _.glBindTexture(GL_TEXTURE_2D, 0);
-
-        drawScreenBorder();
       });
     }
 
     void TuningGLView::drawBlendMask()
     {
-      auto _blendMode = session()->blendMode();
-      float _inputOpacity = session()->blendMaskInputOpacity();
+      auto& _blendSettings = session()->blendSettings();
+      auto _colorMode = _blendSettings.colorMode();
+      float _inputOpacity = _blendSettings.inputOpacity();
+      QColor _color = tuning()->color();
+        if (_colorMode == BlendSettings::ColorMode::WHITE) {
+            _color = Qt::white;
+        }
+        drawOutput(1.0,_inputOpacity,_color);
+
+        glDisable(GL_DEPTH_TEST);
+/*
+        ///@todo draw overlaps
+      for (auto& _tuning : session()->tunings())
+      {
+        if (_tuning.get() == tuning()) continue;
+
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      glMultMatrixf(tuning()->projector().projectionMatrix().constData());
+      glMatrixMode(GL_MODELVIEW);
+
+      glLoadIdentity();
+
+      visual::with_current_context([&](QOpenGLFunctions& _)
+      {
+          _.glDisable(GL_LIGHTING);
+          _.glDisable(GL_CULL_FACE);
+          _.glDisable(GL_DEPTH_TEST);
+          session_->drawFrustumIntersection(_tuning->projector(),_tuning->color(),ProjectorViewMode::BOTH);
+          _.glDisable(GL_DEPTH_TEST);
+      });
+
+      }
+      */
+
+      if (showCursor_ || !viewOnly_)
+         vizTuning_->drawCursor(cursorPosition_);
+    }
+
+    void TuningGLView::drawOutput(float _blendMaskOpacity, float _inputOpacity, QColor _color) {
 
       updateWarpBuffer();
 
@@ -544,51 +574,26 @@ namespace omni
       {
         _.glDisable(GL_LIGHTING);
         _.glEnable(GL_BLEND);
-        QColor _color = tuning()->color();
-        if (_blendMode == Session::BlendMode::WHITE) {
-            _color = Qt::white;
-        }
-        vizTuning_->drawBlendMask(warpGridBuffer_->texture(),_inputOpacity,_color);
-
+        vizTuning_->drawOutput(
+            warpGridBuffer_->texture(),
+            _inputOpacity,_color,_blendMaskOpacity,
+            tuning()->outputDisabled() && viewOnly());
         drawScreenBorder();
-
-        if (showCursor_ || !viewOnly_)
-          vizTuning_->drawCursor(cursorPosition_);
       });
     }
 
     void TuningGLView::drawColorCorrected()
     {
-      if (!session()->hasOutput())
-      {
-        drawTestCard();
-        return;
-      }
-      updateWarpBuffer();
-
-      drawOnSurface([&](QOpenGLFunctions& _)
-      {
-        _.glDisable(GL_LIGHTING);
-        _.glEnable(GL_BLEND);
-        vizTuning_->drawBlendMask(warpGridBuffer_->texture(),1.0);
-      });
+      drawOutput(
+          1.0 /* draw blend mask with alpha = 1.0 */,
+          1.0 /* draw input */ );
     }
 
     void TuningGLView::drawExportView()
     {
-      if (!session()->hasOutput())
-      {
-        drawTestCard();
-        return;
-      }
-      updateWarpBuffer();
-
-      drawOnSurface([&](QOpenGLFunctions& _)
-      {
-        _.glDisable(GL_LIGHTING);
-        _.glEnable(GL_BLEND);
-        vizTuning_->drawBlendMask(warpGridBuffer_->texture(),1.0);
-      });
+      drawOutput(
+          1.0 /* draw blend mask with alpha = 1.0 */,
+          1.0 /* draw input */ );
     }
 
     void TuningGLView::drawScreenBorder()
@@ -610,7 +615,7 @@ namespace omni
     {
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        vizTuning_->drawTestCard(index_+1);
+        vizTuning_->drawTestCard(index_+1,tuning()->outputDisabled() && viewOnly());
       });
     }
 
@@ -618,7 +623,9 @@ namespace omni
     {
       if (!isVisible() || this->isLocked( )|| !context() || aboutToBeDestroyed_) return;
 
-      if (!vizTuning_ || !session_) return;
+      if (!vizTuning_ || !session_ || !tuning()) return;
+
+      if (tuning()->outputDisabled() && this->isFullScreen()) return;
 
       session_->update();
 

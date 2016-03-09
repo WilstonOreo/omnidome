@@ -60,7 +60,7 @@ namespace omni
 
     }
 
-    void Session::drawCanvas(mapping::OutputMode _mode, bool _displayInput) const
+    void Session::drawCanvas(mapping::OutputMode _mode, bool _grayscale) const
     {
       auto _canvas = session_.canvas();
 
@@ -71,27 +71,16 @@ namespace omni
         auto* _input = session_.inputs().current();
         auto* _mapping = session_.mapping();
 
-        if (session_.hasOutput() && _displayInput)
-        {
           GLuint _texId = _input ? _input->textureId() : 0;
           _.glEnable(GL_TEXTURE_2D);
 
-          _mapping->bind(_mode);
           _.glBindTexture(GL_TEXTURE_2D, _texId);
+          _mapping->bind(_mode,_grayscale);
           drawCanvasWithMatrix();
 
           _.glBindTexture(GL_TEXTURE_2D, 0);
 
           _mapping->release();
-        }
-        else
-        {
-          // Render canvas with lighting when there is no input
-          glColor4f(1.0,1.0,1.0,1.0);
-          _.glEnable(GL_LIGHTING);
-          drawCanvasWithMatrix();
-          _.glDisable(GL_LIGHTING);
-        }
       });
     }
 
@@ -138,6 +127,7 @@ namespace omni
       frustumShader_->setUniformValue("bottom_right",_bottomRight);
       frustumShader_->setUniformValue("matrix",_rot);
       frustumShader_->setUniformValue("scale",GLfloat(_canvas->bounds().radius()));
+      frustumShader_->setUniformValue("opacity",GLfloat(0.8));
       frustumShader_->setUniformValue("view_mode",int(_projectorViewMode));
 
       glDisable(GL_DEPTH_TEST);

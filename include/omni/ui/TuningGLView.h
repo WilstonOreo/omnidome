@@ -99,6 +99,11 @@ namespace omni
       omni::proj::Tuning* tuning();
       omni::proj::Tuning const* tuning() const;
 
+      void drawOutput(
+        float _blendMaskOpacity,
+        float _inputOpacity = 1.0,
+        QColor _color = Qt::white);
+
       /// Draw Canvas from Projector's perspective
       void drawCanvas();
 

@@ -29,6 +29,7 @@
 #include <QMenu>
 #include <QIcon>
 
+#include "Application.h"
 #include <omni/Session.h>
 #include <omni/proj/MultiSetup.h>
 #include <omni/ui/GLView3D.h>
@@ -51,9 +52,9 @@ using namespace omni::ui;
 MainWindow::MainWindow(QMainWindow *parent) :
     QMainWindow(parent),
     modified_(false),
+    session_(new Session()),
     ui_(new Ui::MainWindow)
 {
-    session_.reset(new Session());
     ui_->setupUi(this);
 
     // Setup toolbar
@@ -181,9 +182,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
                 SLOT(modified()));
 
         // Update all views when blend mask has changed
-        connect(ui_->dockBlendWidget, SIGNAL(
-                    blendMaskChanged()),                  this,
-                SLOT(modified()));
+        connect(ui_->dockBlendWidget, &Blend::dataModelChanged, this, &MainWindow::modified);
 
         // Update all views when color correction has changed
         connect(ui_->dockColorCorrectionWidget, SIGNAL(
@@ -214,6 +213,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
     _list << _width*1.2 << 100;
     ui_->splitter->setSizes(_list);
 
+    readSettings();
     setupSession();
     raise();
     show();
@@ -221,6 +221,18 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
 MainWindow::~MainWindow()
 {}
+
+void MainWindow::readSettings()
+{
+    restoreGeometry(Application::settings().value("geometry").toByteArray());
+
+    auto _windowState = Application::settings().value("windowState").toByteArray();
+    if (_windowState.isEmpty()) {
+        setWindowState(Qt::WindowMaximized);
+    } else {
+        restoreState(_windowState);
+    }
+}
 
 void MainWindow::setupSession()
 {
@@ -244,14 +256,12 @@ void MainWindow::setupSession()
         ui_->dockCanvasWidget->setSession(session_.get());
         ui_->dockInputsWidget->setSession(session_.get());
         ui_->dockWarpWidget->setSession(session_.get());
-        ui_->dockBlendWidget->setSession(session_.get());
+        ui_->dockBlendWidget->setDataModel(session_);
         ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
     }
     locked_ = false;
 
-    qDebug() << "setupSession: " << enumToInt(session_->mode());
     setMode(session_->mode());
-    qDebug() << "setupSession: " << enumToInt(session_->mode());
 }
 
 void MainWindow::newProjection()
@@ -379,10 +389,14 @@ void MainWindow::closeEvent(QCloseEvent *_event)
         return;
     }
 
-      // Delete screen setup manually, so all fullscreen widgets are free'd too
-      screenSetup_->hide();
-      screenSetup_->setParent(nullptr);
-      screenSetup_.reset();
+    // Delete screen setup manually, so all fullscreen widgets are free'd too
+    screenSetup_->hide();
+    screenSetup_->setParent(nullptr);
+    screenSetup_.reset();
+
+    Application::settings().setValue("geometry", saveGeometry());
+    Application::settings().setValue("windowState", saveState());
+    QMainWindow::closeEvent(_event);
 }
 
 void MainWindow::buttonState()
@@ -413,7 +427,7 @@ void MainWindow::setTuningIndex(int _index)
     colorCorrection_->setChildViews(ui_->tuningList->getViews(_index));
 
     ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
-    ui_->dockBlendWidget->updateBlendMask();
+    ui_->dockBlendWidget->setDataModel(session_);
     ui_->dockWarpWidget->updateWarpGrid();
 }
 

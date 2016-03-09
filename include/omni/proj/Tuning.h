@@ -103,10 +103,17 @@ namespace omni
       /// Enable output if _enabled is true, disable otherwise
       void setOutputEnabled(bool _enabled = true);
 
+      /// Return opacity of overlapped blend mask
+      float overlapOpacity() const;
+
+      /// Set opacity of overlap mask in blend mode
+      void setOverlapOpacity(float);
+
       friend bool operator==(Tuning const&,Tuning const&);
 
     private:
       bool outputDisabled_ = false;
+      bool overlapOpacity_ = 0.0;
       QColor color_;
       Projector projector_;
       std::unique_ptr<ProjectorSetup> projectorSetup_;

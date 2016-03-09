@@ -110,6 +110,16 @@ namespace omni
     return screenSetup_;
   }
 
+  /// Return reference to blend settings
+  BlendSettings& Session::blendSettings() {
+      return blendSettings_;
+  }
+
+  /// Return reference to blend settings
+  BlendSettings const& Session::blendSettings() const {
+      return blendSettings_;
+  }
+
   Session::Mode Session::mode() const
   {
     return mode_;
@@ -120,21 +130,6 @@ namespace omni
     mode_=_mode;
   }
 
-  Session::BlendMode Session::blendMode() const
-  {
-    return blendMode_;
-  }
-
-  void Session::setBlendMode(BlendMode _blendMode)
-  {
-    blendMode_ = _blendMode;
-  }
-
-  float Session::blendMaskInputOpacity() const
-  {
-    return blendMaskInputOpacity_;
-  }
-
   float Session::sceneSize() const {
       return sceneSize_;
   }
@@ -143,10 +138,6 @@ namespace omni
       sceneSize_ = _size;
   }
 
-  void Session::setBlendMaskInputOpacity(float _blendMaskInputOpacity)
-  {
-    blendMaskInputOpacity_ = _blendMaskInputOpacity;
-  }
 
   bool Session::hasOutput() const
   {

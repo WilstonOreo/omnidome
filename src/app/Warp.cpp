@@ -41,6 +41,7 @@ namespace omni
 
       connect(ui_->boxInterpolation,SIGNAL(currentIndexChanged(int)),this,
               SLOT(changeInterpolation(int)));
+      connect(ui_->chkShowBlendMask,SIGNAL(clicked(bool)),this,SLOT(setShowBlendMask(bool)));
 
       auto setupSlider = [&](RangedInt* _slider)
       {
@@ -58,34 +59,36 @@ namespace omni
 
       setupSlider(ui_->sliderVert);
       ui_->sliderVert->setLabel("Vertical");
+
     }
 
     Warp::~Warp()
     {
     }
 
-    Session const* Warp::session() const
-    {
-      return session_;
-    }
+    void Warp::sessionParameters() {
 
-    void Warp::setSession(Session* _session)
-    {
-      session_=_session;
+        ui_->chkShowBlendMask->setChecked(session()->blendSettings().showInWarpMode());
       updateWarpGrid();
     }
 
     void Warp::updateWarpGrid()
     {
-      if (warpGrid())
-      {
-        locked_ = true;
-        ui_->sliderHorz->setValue(warpGrid()->horizontal());
-        ui_->sliderVert->setValue(warpGrid()->vertical());
-        locked_ = false;
+      if (!warpGrid()) return;
+
+      this->locked([&]() {
+            ui_->sliderHorz->setValue(warpGrid()->horizontal());
+            ui_->sliderVert->setValue(warpGrid()->vertical());
+        });
         emit warpGridChanged();
-      }
     }
+    void Warp::setShowBlendMask(bool _show) {
+        if (!session() || this->isLocked()) return;
+
+        session()->blendSettings().setShowInWarpMode(_show);
+        emit warpGridChanged();
+    }
+
     void Warp::changeInterpolation(int _index) {
         if (!warpGrid()) return;
 
@@ -96,7 +99,7 @@ namespace omni
 
     void Warp::resetWarpGrid()
     {
-      if (!warpGrid() || locked_) return;
+      if (!warpGrid() || this->isLocked()) return;
 
       warpGrid()->reset();
 
@@ -105,7 +108,7 @@ namespace omni
 
     void Warp::resizeWarpGrid(bool _enabled)
     {
-      if (!warpGrid() || locked_) return;
+      if (!warpGrid() || this->isLocked()) return;
 
       if (_enabled && !warpGrid()->isReset())
       {
@@ -126,7 +129,7 @@ namespace omni
 
     void Warp::resizeWarpGrid()
     {
-      if (!warpGrid() || locked_) return;
+      if (!warpGrid() || this->isLocked()) return;
 
       warpGrid()->resize(ui_->sliderHorz->value(),ui_->sliderVert->value());
       emit warpGridChanged();
@@ -134,16 +137,16 @@ namespace omni
 
     omni::WarpGrid const* Warp::warpGrid() const
     {
-      if (!session_) return nullptr;
+      if (!session()) return nullptr;
 
-      return session_->tunings().current() ? &session_->tunings().current()->warpGrid() : nullptr;
+      return session()->tunings().current() ? &session()->tunings().current()->warpGrid() : nullptr;
     }
 
     omni::WarpGrid* Warp::warpGrid()
     {
-      if (!session_) return nullptr;
+      if (!session()) return nullptr;
 
-      return session_->tunings().current() ? &session_->tunings().current()->warpGrid() : nullptr;
+      return session()->tunings().current() ? &session()->tunings().current()->warpGrid() : nullptr;
     }
   }
 }

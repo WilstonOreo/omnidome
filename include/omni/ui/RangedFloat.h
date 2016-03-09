@@ -35,6 +35,11 @@ namespace omni
                 {
                         Q_OBJECT
                     public:
+                        enum class Scale {
+                            LINEAR,
+                            RECIPROCAL
+                        };
+
                         typedef mixin::RangedValue<RangedFloat,double> mixin_range_type;
                         typedef QDoubleSpinBox editor_type;
                         using mixin_range_type::minimum;
@@ -72,6 +77,8 @@ namespace omni
                         bool useDefaultValue() const;
 
                         bool drawTicks() const;
+
+                        Scale scale() const;
 
                     public slots:
                         /// Set value, valueChanged() signal will be emitted
@@ -114,6 +121,9 @@ namespace omni
 
                         void setPageStep(double);
 
+                        void setScale(Scale);
+
+
                     signals:
                         void valueChanged();
                         void rangeChanged();
@@ -143,6 +153,7 @@ namespace omni
                         /// Calculate position from value
                         double valueToPos(double) const;
 
+                        Scale scale_ = Scale::LINEAR;
                         bool moving_ = false;
                         bool drawTicks_ = false;
                         bool useDefaultValue_ = false;

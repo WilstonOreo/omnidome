@@ -59,12 +59,12 @@ namespace omni
       {
       }
 
-      QWidget* TuningList::widget(int _index) {
+      Tuning* TuningList::widget(int _index) {
          return (_index >= 0) && (_index < widgets_.size()) ?
             widgets_[_index].get() : nullptr;
       }
 
-      QWidget const* TuningList::widget(int _index) const {
+      Tuning const* TuningList::widget(int _index) const {
          return (_index >= 0) && (_index < widgets_.size()) ?
             widgets_[_index].get() : nullptr;
       }
@@ -308,17 +308,22 @@ namespace omni
       }
 
       void TuningList::keyPressEvent(QKeyEvent* _event) {
+          int _tuningIndex = session()->tunings().currentIndex();
+          auto* _widget = widget(_tuningIndex);
+          if (!_widget) return;
+          if (_widget->hasFocus() && !_widget->isSelected()) return;
+
           if (_event->key() == Qt::Key_Up) {
-              for (auto& _widget : widgets_) {
-                  if (_widget->hasFocus()) continue;
-                  _widget->focusPrev(false);
-              }
+                  if (!_widget->focusPrev(false) && (_tuningIndex > 0)) {
+                      setTuningIndex(_tuningIndex - 1);
+                      widget(_tuningIndex - 1)->focusLast();
+                  }
           }
           if (_event->key() == Qt::Key_Down) {
-              for (auto& _widget : widgets_) {
-                  if (_widget->hasFocus()) continue;
-                  _widget->focusNext(false);
-              }
+                  if (!_widget->focusNext(false) && (_tuningIndex < session()->tunings().size() - 1)) {
+                      setTuningIndex(_tuningIndex + 1);
+                      widget(_tuningIndex + 1)->focusFirst();
+                  }
           }
       }
 

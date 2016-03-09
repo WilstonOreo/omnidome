@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -17,37 +17,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <memory>
-#include <QWidget>
-#include <omni/ui/mixin/SessionWidget.h>
+#ifndef OMNI_LENGTHUNIT_H_
+#define OMNI_LENGTHUNIT_H_
+
+#include <omnic/calibration.h>
 
 namespace omni {
-    namespace ui {
-        class GLView3D;
+    class CalibratedProjector {
+    private:
+        CalibratedProjector(proj::Tuning const*);
 
-        namespace Ui {
-            class Arrange;
-        }
-        class Arrange :
-            public QWidget,
-            public mixin::SessionWidget
-        {
-            Q_OBJECT
-        public:
-            Arrange(QWidget* = nullptr);
-            ~Arrange();
 
-            void setSession(Session* _session);
+    public:
+        bool virtualScreen_;
+        QRect screenGeometry_;
+        ColorCorrection colorCorrection_;
+        RenderBuffer buffer_;
+    };
 
-            GLView3D* view();
-            GLView3D const* view() const;
+    class Calibration {
+    public:
 
-        public slots:
 
-        private:
-            void sessionParameters();
 
-            std::unique_ptr<Ui::Arrange> ui_;
-        };
-    }
+
+    private:
+        mapping::OutputType type_;
+        std::vector<CalibratedProjector> projectors_;
+    };
+
 }

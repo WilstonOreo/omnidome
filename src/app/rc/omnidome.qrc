@@ -6,12 +6,18 @@
     <file>icons/logo.png</file>
     <file>icons/warp.png</file>
     <file>icons/warp_disabled.png</file>
+    <file>icons/eye.png</file>
+    <file>icons/eye_hover.png</file>
+    <file>icons/close.png</file>
+    <file>icons/close_hover.png</file>
     <file>icons/screens.png</file>
     <file>icons/screens_disabled.png</file>
     <file>icons/arrange.png</file>
     <file>icons/arrange_disabled.png</file>
     <file>icons/live.png</file>
     <file>icons/live_disabled.png</file>
+    <file>icons/maximize.png</file>
+    <file>icons/maximize_hover.png</file>
     <file>icons/export.png</file>
     <file>icons/export_disabled.png</file>
     <file>icons/blend.png</file>

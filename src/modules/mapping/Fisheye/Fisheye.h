@@ -36,7 +36,7 @@ namespace omni
       Fisheye();
       ~Fisheye();
 
-      void bind(OutputMode = OutputMode::MAPPED_INPUT);
+      void bind();
 
       qreal stretch() const;
       void setStretch(qreal _stretch);

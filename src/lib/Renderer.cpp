@@ -254,11 +254,11 @@ namespace omni {
             glMultMatrixf(_m.constData());
         },
 
-// Model view operation
+        // Model view operation
                        [&](QOpenGLFunctions& _)
         {
             _.glDisable(GL_TEXTURE_2D);
-            _tuningViz.drawBlendMask();
+            _tuningViz.drawOutput();
         });
 
         // 5th step: Merge blend and warp buffer

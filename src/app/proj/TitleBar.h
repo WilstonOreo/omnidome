@@ -73,7 +73,6 @@ namespace omni
         void closeButtonClicked();
         void maximizeButtonClicked();
         void colorChanged(QColor const&);
-
         void freeSetupSelected();
         void peripheralSetupSelected();
 

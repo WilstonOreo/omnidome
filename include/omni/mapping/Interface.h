@@ -43,7 +43,9 @@ namespace omni
     {
       MAPPED_INPUT, // Draws actual input texture on mapping
       TEXCOORDS, // Draw texture coordinates of mapping
-      UVW // Draws uvw coordinates of mapping
+      UVW, // Draws uvw coordinates of mapping
+      LIGHTING_ONLY, // Draw plain canvas with lighting
+      LIGHTING_TEX // Draw canvas with
     };
 
     /**@brief Mapping interface with one or several inputs and shader
@@ -62,7 +64,8 @@ namespace omni
       void initialize();
 
       /// Bind shaders and set uniforms
-      virtual void bind(OutputMode = OutputMode::MAPPED_INPUT);
+      virtual void bind();
+      void bind(OutputMode, bool _grayscale);
 
       /// Release shader
       void release();

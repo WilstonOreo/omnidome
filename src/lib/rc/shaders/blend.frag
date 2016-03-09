@@ -9,6 +9,7 @@ uniform float edge_gamma;
 uniform vec3 color;
 uniform sampler2D input_tex;
 uniform float input_opacity;
+uniform bool gray_output;
 
 /// Color Correction parameters
 uniform vec4 cc_gamma;
@@ -99,19 +100,28 @@ float edgeblend_border(in vec2 coord)
 vec4 edgeblend_color(in float value)
 {
   float v = clamp(value,0.0,1.0);
-  if (mask < 0.0)
-  {
-  	return vec4(0.0,0.0,0.0,v);
-  }
-  float mv = 1.0 - v;
+  float mv = 1.0 - v * mask;
   return vec4(mv,mv,mv,1.0);
+}
+
+vec3 grayscale(vec3 c)
+{
+  float v = c.r*0.299 + c.g*0.587 + c.b*0.114;
+  return vec3(v);
 }
 
 void main()
 {
   vec2 texCoords = gl_TexCoord[0].st;
 
-  gl_FragColor = mix(
-      vec4(color,1.0),
-    vec4(color_correction(texture2D(input_tex,texCoords).rgb),1.0),input_opacity)*edgeblend_color(edgeblend_border(texCoords));
+  vec3 output_color = mix(
+    color,
+    color_correction(texture2D(input_tex,texCoords).rgb),
+    input_opacity);
+
+  if (gray_output) {
+      output_color = grayscale(output_color);
+  }
+
+  gl_FragColor = vec4(output_color,1.0)*edgeblend_color(edgeblend_border(texCoords));
 }

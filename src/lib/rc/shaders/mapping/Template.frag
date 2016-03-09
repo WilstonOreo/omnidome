@@ -19,6 +19,14 @@ uniform bool flip_horizontal;
 /// 2: Output uvw coordinates
 uniform int output_mode;
 
+uniform bool gray_output;
+
+vec3 grayscale(vec3 c)
+{
+  float v = c.r*0.299 + c.g*0.587 + c.b*0.114;
+  return vec3(v);
+}
+
 /// Convert degrees to radians
 float deg2rad(in float deg)
 {
@@ -108,7 +116,36 @@ float sphereIntersection(out vec3 uvw, in vec3 center) {
     return 1.0;
 }
 
+#define MAX_LIGHTS 3
 
+vec3 light_color(vec3 color)
+{
+   vec3 N = uvw_normal;
+   vec3 v = uvw_vertex_position;
+   vec3 finalColor = vec3(0.0, 0.0, 0.0);
+
+   for (int i=0;i<MAX_LIGHTS;i++)
+   {
+      vec3 L = normalize((gl_LightSource[i].position * gl_TextureMatrix[0]).xyz - v);
+      vec3 E = normalize(-v); // we are in Eye Coordinates, so EyePos is (0,0,0)
+      vec3 R = normalize(-reflect(L,N));
+
+      //calculate Ambient Term:
+      vec3 Iamb = vec3(0.0);
+
+      //calculate Diffuse Term:
+      vec3 Idiff = vec3(max(dot(N,L), 0.0));
+
+      // calculate Specular Term:
+      vec3 Ispec = vec3(1.0)
+             * pow(max(dot(R,E),0.0),gl_FrontMaterial.shininess);
+      Ispec = clamp(Ispec, 0.0, 1.0);
+
+      finalColor += Iamb + Idiff + Ispec;
+   }
+
+   return color*finalColor;
+}
 
 float intersection(out vec3 uvw);
 
@@ -124,26 +161,41 @@ void main()
 
   uvw = uvw * rotationMatrix(yaw_angle,pitch_angle,roll_angle);
 
+
   if (output_mode == 2) // Output UVW map only
   {
     gl_FragColor = vec4(0.5*(normalize(uvw.xyz) + vec3(1.0)),1.0);
     return;
   }
 
+
   vec2 texCoords;
   if (mapping(uvw,texCoords) > 0.0)
   {
     if (flip_horizontal) texCoords.x = 1.0 - texCoords.x;
     if (flip_vertical) texCoords.y = 1.0 - texCoords.y;
-    if (output_mode == 0)
-    {
-      gl_FragColor = texture2D(texture, texCoords);
-    } else if (output_mode == 1) // Output texture coordinates
+
+    if (output_mode == 1) // Output texture coordinates
     {
       gl_FragColor = vec4(texCoords.xy,0.0,1.0);
+      return;
     }
+    vec3 color;
+
+    if (output_mode == 0) {
+       color = texture2D(texture, texCoords).rgb;
+    } else if (output_mode == 3) { // Output lighting only
+        color = light_color(vec3(0.5));
+    } else if (output_mode == 4) { // Output texture with lighting
+        color = light_color(texture2D(texture,texCoords).rgb);
+    }
+
+    if (gray_output) {
+      color = grayscale(color);
+    }
+    gl_FragColor = vec4(color,1.0);
+
   } else {
       discard;
   }
-
 }

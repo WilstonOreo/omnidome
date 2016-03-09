@@ -52,10 +52,10 @@ namespace omni
         std::set<TuningGLView*> getViews(int _index) const;
 
         /// Return tuning widget at index, nullptr if index is not valid
-        QWidget* widget(int _index);
+        Tuning* widget(int _index);
 
         /// Return tuning widget at index, nullptr if index is not valid (const)
-        QWidget const* widget(int _index) const;
+        Tuning const* widget(int _index) const;
 
       public slots:
         /// Change current mode for all tuning widgets

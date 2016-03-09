@@ -109,7 +109,6 @@ int main(int ac, char *av[])
 #endif
 
     ui::MainWindow _w;
-    _w.setWindowState(Qt::WindowMaximized);
     _w.move(QApplication::primaryScreen()->geometry().topLeft());
 
 // Load mapping session from given commandline argument when in release mode

@@ -25,6 +25,7 @@
 #include <omni/canvas/Interface.h>
 #include <omni/proj/ScreenSetup.h>
 #include <omni/RenderOptions.h>
+#include <omni/BlendSettings.h>
 
 namespace omni
 {
@@ -48,12 +49,6 @@ namespace omni
       NUM_MODES
     };
 
-    /// Blend Mask display mode
-    enum class BlendMode
-    {
-      COLOR, // Displays blend mask with color of tuning
-      WHITE  // Displays white blend mask
-    };
 
     /// Default constructor
     Session();
@@ -95,23 +90,17 @@ namespace omni
     /// Return const reference to current screen setup
     ScreenSetup const& screenSetup() const;
 
+    /// Return reference to blend settings
+    BlendSettings& blendSettings();
+
+    /// Return reference to blend settings
+    BlendSettings const& blendSettings() const;
+
     /// Return current mode
     Mode mode() const;
 
     /// Set mode of this session
     void setMode(Mode);
-
-    /// Return mode of blend mask mode
-    BlendMode blendMode() const;
-
-    /// Set blend mask mode
-    void setBlendMode(BlendMode);
-
-    /// Return input opacity of blend mask
-    float blendMaskInputOpacity() const;
-
-    /// Opacity of input when in blend mask mode
-    void setBlendMaskInputOpacity(float _input);
 
     /// Size of scene (affects canvas sizes and projector offsets)
     float sceneSize() const;
@@ -133,7 +122,6 @@ namespace omni
 
     /// Test for equality. ScreenSetup is ignored
     friend bool operator==(Session const&,Session const&);
-
   private:
     /// List with all projector tunings
     proj::TuningList tunings_;
@@ -153,9 +141,10 @@ namespace omni
     /// Current session mode
     Mode mode_ = Mode::SCREENSETUP;
 
-    BlendMode blendMode_ = BlendMode::COLOR;
-    float blendMaskInputOpacity_ = 0.0;
+    /// Scene size
     float sceneSize_ = 10.0;
+
+    BlendSettings blendSettings_;
   };
 }
 

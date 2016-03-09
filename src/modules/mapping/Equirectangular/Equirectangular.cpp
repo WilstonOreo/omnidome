@@ -37,9 +37,9 @@ namespace omni
     {
     }
 
-    void Equirectangular::bind(OutputMode _outputMode)
+    void Equirectangular::bind()
     {
-      Rotatable::bind(_outputMode);
+      Rotatable::bind();
       this->shader_->setUniformValue("strip_top",GLfloat(stripTop_));
       this->shader_->setUniformValue("strip_bottom",GLfloat(stripBottom_));
     }

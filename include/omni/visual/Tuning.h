@@ -50,7 +50,7 @@ namespace omni
       void setBlendTextureUpdateRect(QRect const&);
 
       /// Draw Test card image for screen setup
-      void drawTestCard(int _id) const;
+      void drawTestCard(int _id, bool _grayscale = false) const;
 
       /**@brief Draws warp grid with lines and handles
          @param _rect Screen Rectangle of input
@@ -61,7 +61,12 @@ namespace omni
       void drawWarpPatch() const;
 
       /// Draws Blendmask with warp grid and brush stroke layer
-      void drawBlendMask(int _inputTexId = 0, float _inputOpacity = 0.0, QColor const& _color = Qt::white) const;
+      void drawOutput(
+          int _inputTexId = 0,
+          float _inputOpacity = 0.0,
+          QColor const& _color = Qt::white,
+          float _blendMaskOpacity = 1.0,
+          bool _grayscale = true) const;
 
       /// Draw cursor for blend brush
       void drawCursor(QPointF const& _pos);

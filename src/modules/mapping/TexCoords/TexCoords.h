@@ -38,7 +38,7 @@ namespace omni
 
       ~TexCoords();
 
-      void bind(OutputMode);
+      void bind();
 
       QVector2D& offset();
       QVector2D const& offset() const;

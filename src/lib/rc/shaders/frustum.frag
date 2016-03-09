@@ -3,6 +3,7 @@
  varying vec3 vVertexNormal;
 
 uniform float scale;
+uniform float opacity;
 uniform vec3 eye;
 uniform vec3 look_at;
 uniform vec3 top_left;
@@ -55,13 +56,13 @@ void main()
       angle = 0.1;
   }
 
-  float alpha = d < 0.05 ? 0.8 : 0.2;
+  float alpha = d < 0.05 ? 1.0 : 0.1;
 
   if (d > 0.0 && angle > 0.0)
   {
-    gl_FragColor = vec4(color,alpha);
+    gl_FragColor = vec4(color,alpha * opacity);
   } else
   {
-    gl_FragColor = vec4(0.0,0.0,0.0,0.0);
+    discard;
   }
 }

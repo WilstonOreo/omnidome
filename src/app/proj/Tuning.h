@@ -126,6 +126,12 @@ namespace omni
         /// Enable or disable fullscreen display
         void fullscreenToggle(bool);
 
+        /// Reset to free projector setup (discards previous projector setup)
+        void resetToFreeSetup();
+
+        /// Reset to peripheral projector setup (discards previous projector setup)
+        void resetToPeripheralSetup();
+
       signals:
         void selected(int);
         void closed(int);
@@ -175,6 +181,11 @@ namespace omni
       private:
         /// Setup (only called in constructor)
         void setup();
+
+        /// Id of first focussed widget
+        inline virtual int firstFocusId() const {
+          return 2; // Title bar and view cannot be focussed
+        }
 
         /// The index of the tuning
         int index_ = -1;

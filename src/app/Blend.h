@@ -21,6 +21,10 @@
 #define OMNI_UI_BLEND_H_
 
 #include <memory>
+#include <vector>
+#include <omni/ui/mixin/DataModel.h>
+#include <omni/proj/Tuning.h>
+#include <omni/ui/RangedFloat.h>
 #include "DockWidget.h"
 
 namespace omni
@@ -35,34 +39,29 @@ namespace omni
       class Blend;
     }
 
-    class Blend : public DockWidget
+    class Blend :
+        public DockWidget,
+        public mixin::DataModel<Session>
     {
       Q_OBJECT
+      OMNI_UI_DATAMODEL(Session)
     public:
       Blend(QWidget* = nullptr);
       ~Blend();
 
-      Session const* session() const;
-      void setSession(Session* _session);
-
-    public slots:
-      /// Update sliders from given blend mask
-      void updateBlendMask();
-
-      /// Set slider values to blend mask
-      void changeBlendMask();
-
-
-
     signals:
-      void blendMaskChanged();
+        void dataModelChanged();
 
     private:
+      /// Update sliders from given blend mask
+      void dataToFrontend();
+
+      /// Assign slider values to blend mask
+      bool frontendToData();
+
       omni::BlendMask const* blendMask() const;
       omni::BlendMask* blendMask();
 
-      bool locked_ = false;
-      Session* session_ = nullptr;
       std::unique_ptr<Ui::Blend> ui_;
     };
   }

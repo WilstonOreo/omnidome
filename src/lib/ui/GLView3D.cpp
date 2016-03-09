@@ -93,7 +93,8 @@ namespace omni
       glLoadIdentity();
       updateLight();
 
-      this->session_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,displayInput_);
+      this->session_->drawCanvas(displayInput_ && session()->hasOutput() ?
+          mapping::OutputMode::LIGHTING_TEX : mapping::OutputMode::LIGHTING_ONLY);
       if (displayProjectors()) {
           this->session_->drawProjectors();
       }

@@ -22,10 +22,10 @@
 
 #include <memory>
 #include "DockWidget.h"
+#include <omni/ui/mixin/SessionWidget.h>
 
 namespace omni
 {
-  class Session;
   class WarpGrid;
 
   namespace ui
@@ -35,32 +35,32 @@ namespace omni
       class Warp;
     }
 
-    class Warp : public DockWidget
+    class Warp :
+        public DockWidget,
+        public mixin::SessionWidget
     {
       Q_OBJECT
     public:
       Warp(QWidget* = nullptr);
       ~Warp();
 
-      Session const* session() const;
-      void setSession(Session* _session);
-
     public slots:
       void resetWarpGrid();
       void resizeWarpGrid(bool);
       void resizeWarpGrid();
       void updateWarpGrid();
+      void setShowBlendMask(bool);
       void changeInterpolation(int);
 
     signals:
       void warpGridChanged();
 
     private:
+      void sessionParameters();
+
       omni::WarpGrid const* warpGrid() const;
       omni::WarpGrid* warpGrid();
 
-      bool locked_ = false;
-      Session* session_ = nullptr;
       std::unique_ptr<Ui::Warp> ui_;
     };
   }

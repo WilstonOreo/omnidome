@@ -39,7 +39,7 @@ namespace omni
       omni::Session const& session() const;
       omni::Session& session();
 
-      void drawCanvas(mapping::OutputMode = mapping::OutputMode::MAPPED_INPUT, bool _displayInput = true) const;
+      void drawCanvas(mapping::OutputMode = mapping::OutputMode::MAPPED_INPUT, bool _grayscale = false) const;
       void drawCanvasWithFrustumIntersections(ProjectorViewMode) const;
 
       void drawFrustumIntersection(proj::Projector const&, QColor const&, ProjectorViewMode) const;
