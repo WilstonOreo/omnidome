@@ -58,15 +58,67 @@ float intersection(out vec3 uvw) {
    return 1.0;
 }
 
+void transform_to_cubemap(inout vec2 texCoords, float offset) {
+  float eps =  -0.000;
 
+  texCoords = vec2(texCoords.s/(12.0 - eps) + (0.5 + offset) / 6.0,0.5 + texCoords.t/(2.0 - eps));
+}
+
+#define X_AXIS 0
+#define Y_AXIS 1
+#define Z_AXIS 2
+#define NO_AXIS 3
+
+int dominant_axis(vec3 uvw) {
+    vec3 v = abs(uvw);
+    if (v.x >= v.y && (v.x >= v.z)) return X_AXIS;
+    if (v.y >= v.x && (v.y >= v.z)) return Y_AXIS;
+    if (v.z >= v.x && (v.z >= v.y)) return Z_AXIS;
+    return NO_AXIS;
+}
 
 float mapping(in vec3 uvw, out vec2 texCoords)
 {
-  float sc, tc, ma;
-  float eps =  -0.001;
   float _off = 0.0;
-  //n = n.yzx;
+  vec3 v = abs(uvw);
+  int axis = dominant_axis(uvw);
 
+  if (axis == X_AXIS) {
+    _off = (uvw.x > 0.0) ? 2.0 : 3.0; // EAST / WEST
+    texCoords = uvw.yz / abs(uvw.x);
+    if (uvw.x > 0.0) {
+        _off = 2.0; // EAST
+    } else {
+        texCoords.s = -texCoords.s;
+        _off = 3.0; // WEST
+    }
+  }
+
+  if (axis == Y_AXIS)
+  {
+    texCoords = uvw.xz / abs(uvw.y);
+    if (uvw.y > 0.0) {
+        _off = 0.0; // NORTH
+        texCoords.s = - texCoords.s;
+    } else {
+        _off = 1.0; // SOUTH
+    }
+  }
+
+  if (axis == Z_AXIS)
+  {
+    texCoords = uvw.xy / abs(uvw.z);
+    if (uvw.z > 0.0) {
+        _off = 4.0; // TOP
+    } else {
+        _off = 5.0; // BOTTOM
+        texCoords.t = - texCoords.t;
+    }
+  }
+  transform_to_cubemap(texCoords,_off);
+
+  return 1.0;
+/*
   if ((abs(uvw.x) >= abs(uvw.y)) && (abs(uvw.x) >= abs(uvw.z)))
   {
     sc = uvw.y;
@@ -75,14 +127,6 @@ float mapping(in vec3 uvw, out vec2 texCoords)
     ma = uvw.x;
     _off += (uvw.x > 0.0) ? 3.0/6.0 : 2.0/6.0; // EAST / WEST
   } else
-  if ((abs(uvw.y) >= abs(uvw.z)))
-  {
-    sc = uvw.z;
-    tc = uvw.x;
-    if (uvw.y < 0.0) { sc = -uvw.z; }
-    ma = uvw.y;
-    _off += (uvw.y > 0.0) ? 1.0/6.0 : 0.0/6.0; // NORTH / SOUTH
-  } else
   {
     sc = (uvw.z > 0.0) ? uvw.y : -uvw.y;
     tc = (uvw.z > 0.0) ? -uvw.x : -uvw.x;
@@ -90,5 +134,5 @@ float mapping(in vec3 uvw, out vec2 texCoords)
     _off = (uvw.z > 0.0) ? 4.0/6.0 : 5.0 / 6.0;  // TOP / BOTTOM
   }
   texCoords = vec2(sc/(12.0 - eps)/abs(ma) + 0.5/6.0 + _off,0.5+tc/(2.0 - eps)/abs(ma)) ;
-  return 1.0;
+  return 1.0;*/
 }

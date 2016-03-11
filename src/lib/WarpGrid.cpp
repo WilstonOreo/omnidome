@@ -28,7 +28,7 @@ namespace omni {
         horizontal_(4),
         vertical_(4)
     {
-        resize(horizontal_, vertical_);
+        reset();
     }
 
     QVector2D WarpGrid::getTexCoord(int _x, int _y) const
@@ -51,7 +51,8 @@ namespace omni {
 
     void WarpGrid::resize(int _horz, int _vert)
     {
-        if ((_horz < 2) || (_vert < 2)) return;
+        if ((_horz < 2) || (_vert < 2) ||
+            ((_horz == horizontal_) && (_vert == vertical_))) return;
 
         horizontal_ = _horz;
         vertical_   = _vert;

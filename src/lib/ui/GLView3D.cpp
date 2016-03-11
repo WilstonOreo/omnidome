@@ -94,7 +94,7 @@ namespace omni
       updateLight();
 
       this->session_->drawCanvas(displayInput_ && session()->hasOutput() ?
-          mapping::OutputMode::LIGHTING_TEX : mapping::OutputMode::LIGHTING_ONLY);
+          mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
       if (displayProjectors()) {
           this->session_->drawProjectors();
       }

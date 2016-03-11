@@ -41,10 +41,10 @@ namespace omni
 
     class Blend :
         public DockWidget,
-        public mixin::DataModel<Session>
+        public mixin::SharedDataModel<Session>
     {
       Q_OBJECT
-      OMNI_UI_DATAMODEL(Session)
+      OMNI_UI_SHARED_DATAMODEL(Session)
     public:
       Blend(QWidget* = nullptr);
       ~Blend();

@@ -19,7 +19,6 @@
 #ifndef OMNI_UI_MIXIN_DATAMODEL_H_
 #define OMNI_UI_MIXIN_DATAMODEL_H_
 
-#ifndef Q_MOC_RUN
 #include <set>
 #include <memory>
 #include <QObject>
@@ -28,16 +27,63 @@
 namespace omni {
     namespace ui {
         namespace mixin {
+            namespace detail {
+                template<typename T, bool SHARED>
+                struct PointerType {};
+
+                /// Use shared pointer when shared
+                template<typename T>
+                struct PointerType<T,true> {
+                    typedef T data_type;
+                    typedef std::shared_ptr<T> type;
+
+                    static T* raw_pointer(type _t) {
+                        return _t.get();
+                    }
+
+                    static T const* raw_pointer_const(type _t) {
+                        return _t.get();
+                    }
+                };
+
+                /// Use raw pointer when not shared
+                template<typename T>
+                struct PointerType<T,false> {
+                    typedef T* type;
+
+                    static T* raw_pointer(type _t) {
+                        return _t;
+                    }
+
+                    static T const* raw_pointer_const(const type _t) {
+                        return _t;
+                    }
+                };
+            }
+
+
+            class DataModelInterface {
+            public:
+
+                virtual void updateDataModel() = 0;
+                virtual void updateFrontend() = 0;
+            };
+
+
             /// Holds a specific data model with frontend update mechanism
-            template<typename DATAMODEL>
-            class DataModel : public Locked {
+            template<typename DATAMODEL, bool SHARED = true>
+            class DataModel :
+                public DataModelInterface,
+                protected Locked {
             public:
                 /// Data type
                 typedef DATAMODEL data_model_type;
-                typedef DataModel<data_model_type> type;
+                typedef DataModel<data_model_type,SHARED> type;
+                typedef detail::PointerType<data_model_type,SHARED> pointer_type_handler;
+                typedef typename pointer_type_handler::type pointer_type;
 
                 /// Set new data model
-                void setDataModel(std::shared_ptr<data_model_type> _dataModel) {
+                void setDataModel(pointer_type _dataModel) {
                     this->locked([&]() {
                         dataModel_ = _dataModel;
                         updateFrontend();
@@ -46,17 +92,17 @@ namespace omni {
 
                 /// Return pointer to data model
                 data_model_type* dataModel() {
-                    return dataModel_.get();
+                    return pointer_type_handler::raw_pointer(dataModel_);
                 }
 
                 /// Return pointer to data model (const version)
                 data_model_type const* dataModel() const {
-                    return dataModel_.get();
+                    return pointer_type_handler::raw_pointer_const(dataModel_);
                 }
 
                 /// Push data to frontend widgets and all child widgets
                 virtual void updateFrontend() {
-                    if (dataModel_) {
+                    if (dataModel_ && this->isLocked()) {
                         dataToFrontend();
                         for (auto& _child : children_) {
                             _child->setDataModel(dataModel_);
@@ -94,7 +140,6 @@ namespace omni {
                         }
                     });
                 }
-                //virtual inline void dataModelChanged() {}
 
             private:
                 virtual void dataToFrontend() = 0;
@@ -106,19 +151,34 @@ namespace omni {
                 }
                 std::set<type*> children_;
 
-                std::shared_ptr<data_model_type> dataModel_ = nullptr;
+                pointer_type dataModel_ = nullptr;
             };
+
+            template<typename T>
+            using SharedDataModel = DataModel<T,true>;
+
+            template<typename T>
+            using UnsharedDataModel = DataModel<T,false>;
         }
 
         using mixin::DataModel;
+        using mixin::SharedDataModel;
+        using mixin::UnsharedDataModel;
     }
 }
 
-#define OMNI_UI_DATAMODEL(MODEL) \
+/// This macro needs to be inserted for every widget that uses DataModel
+#define OMNI_UI_DATAMODEL(MODEL,SHARED) \
     public:\
-        typedef omni::ui::mixin::DataModel<MODEL> mixin_data_model_type; \
+        typedef omni::ui::mixin::DataModel<MODEL,SHARED> mixin_data_model_type; \
         inline void updateDataModel() {\
             mixin_data_model_type::updateDataModel();\
+        }\
+        inline void updateFrontend() {\
+            this->locked([&]() {\
+                mixin_data_model_type::updateFrontend();\
+                update(); \
+            });\
         }\
     private:\
         void emitDataModelChangedSignal() {\
@@ -126,6 +186,10 @@ namespace omni {
         }\
     public:
 
-#endif
+#define OMNI_UI_SHARED_DATAMODEL(MODEL) \
+    OMNI_UI_DATAMODEL(MODEL,true)
+
+#define OMNI_UI_UNSHARED_DATAMODEL(MODEL) \
+    OMNI_UI_DATAMODEL(MODEL,false)
 
 #endif /* OMNI_UI_MIXIN_DATAMODEL_H_ */

@@ -178,7 +178,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
         // Update all views when warp grid has changed
         connect(ui_->dockWarpWidget, SIGNAL(
-                    warpGridChanged()),                   this,
+                    dataModelChanged()),                   this,
                 SLOT(modified()));
 
         // Update all views when blend mask has changed
@@ -186,7 +186,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
         // Update all views when color correction has changed
         connect(ui_->dockColorCorrectionWidget, SIGNAL(
-                    colorCorrectionChanged()),                  this,
+                    dataModelChanged()),                  this,
                 SLOT(modified()));
 
         // Connect tuning index of tuning list for warp, blend and color correction
@@ -255,9 +255,9 @@ void MainWindow::setupSession()
         ui_->dockMappingWidget->setSession(session_.get());
         ui_->dockCanvasWidget->setSession(session_.get());
         ui_->dockInputsWidget->setSession(session_.get());
-        ui_->dockWarpWidget->setSession(session_.get());
+        ui_->dockWarpWidget->setDataModel(session_);
         ui_->dockBlendWidget->setDataModel(session_);
-        ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
+        ui_->dockColorCorrectionWidget->setDataModel(session_->tunings().current());
     }
     locked_ = false;
 
@@ -426,9 +426,9 @@ void MainWindow::setTuningIndex(int _index)
     blend_->setChildViews(ui_->tuningList->getViews(_index));
     colorCorrection_->setChildViews(ui_->tuningList->getViews(_index));
 
-    ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
-    ui_->dockBlendWidget->setDataModel(session_);
-    ui_->dockWarpWidget->updateWarpGrid();
+    ui_->dockColorCorrectionWidget->setDataModel(session_->tunings().current());
+    ui_->dockBlendWidget->updateFrontend();
+    ui_->dockWarpWidget->updateFrontend();
 }
 
 void MainWindow::addProjector(QAction *_action)
