@@ -71,7 +71,7 @@ namespace omni {
 
 
             /// Holds a specific data model with frontend update mechanism
-            template<typename DATAMODEL, bool SHARED = true>
+            template<typename DATAMODEL, bool SHARED>
             class DataModel :
                 public DataModelInterface,
                 protected Locked {
@@ -91,13 +91,13 @@ namespace omni {
                 }
 
                 /// Return pointer to data model
-                data_model_type* dataModel() {
-                    return pointer_type_handler::raw_pointer(dataModel_);
+                pointer_type dataModel() {
+                    return dataModel_;
                 }
 
                 /// Return pointer to data model (const version)
-                data_model_type const* dataModel() const {
-                    return pointer_type_handler::raw_pointer_const(dataModel_);
+                const pointer_type dataModel() const {
+                    return dataModel_;
                 }
 
                 /// Push data to frontend widgets and all child widgets
@@ -136,7 +136,6 @@ namespace omni {
                     this->locked([&]() {
                         if (frontendToData()) {
                             emitDataModelChangedSignal();
-                            updateFrontend();
                         }
                     });
                 }

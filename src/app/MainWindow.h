@@ -88,12 +88,12 @@ namespace omni
       void buttonState();
 
       /// Set current tuning index
-      void setTuningIndex(int);
+      void setTuningIndex();
 
       void addProjector(QAction* _action);
 
       /// Sets session mode
-      void setMode(Session::Mode _mode);
+      void setMode();
 
     private:
       void readSettings();
@@ -123,13 +123,7 @@ namespace omni
             QUniquePtr<Arrange> arrange_;
 
             /// Page for current warp grid
-            QUniquePtr<TuningGLView> warp_;
-
-            /// Page for current blend mask
-            QUniquePtr<TuningGLView> blend_;
-
-            /// Page for color correction
-            QUniquePtr<TuningGLView> colorCorrection_;
+            QUniquePtr<TuningGLView> tuningView_;
 
             /// Page for exporting projection
             QUniquePtr<Export> export_;

@@ -29,7 +29,9 @@ namespace omni
   {
     /**@brief Parameter widget for getting and setting mapping parameters
      **/
-    class MappingParameters : public ParameterWidget
+    class MappingParameters :
+        public ParameterWidget,
+        protected mixin::Locked
     {
       Q_OBJECT
     public:

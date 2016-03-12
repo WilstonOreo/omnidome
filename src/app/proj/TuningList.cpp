@@ -69,9 +69,9 @@ namespace omni
             widgets_[_index].get() : nullptr;
       }
 
-      void TuningList::sessionParameters() {
+      void TuningList::dataToFrontend() {
         removeWidgets();
-        for (auto& _tuning : session()->tunings())
+        for (auto& _tuning : dataModel()->tunings())
           addTuning(_tuning.get());
 
         sessionModeChange();
@@ -95,10 +95,10 @@ namespace omni
       void TuningList::addTuning()
       {
         QString _setupId = "PeripheralSetup";
-        if (!session()->tunings().empty())
+        if (!dataModel()->tunings().empty())
         {
           // Set setup id from last tuning
-          auto* _setup = session()->tunings()[session()->tunings().size()-1]->projector().setup();
+          auto* _setup = dataModel()->tunings()[dataModel()->tunings().size()-1]->projector().setup();
           if (_setup)
             _setupId = _setup->getTypeId();
         }
@@ -108,7 +108,7 @@ namespace omni
       /// Add tuning with specific projector setup
       void TuningList::addTuning(QString const& _projSetupId)
       {
-        auto* _tuning = session()->tunings().add(false);
+        auto* _tuning = dataModel()->tunings().add(false);
 
         if (!_tuning) return;
 
@@ -117,7 +117,7 @@ namespace omni
         addTuning(_tuning);
 
         // Select this tuning index
-        setTuningIndex(session()->tunings().size()-1);
+        setTuningIndex(dataModel()->tunings().size()-1);
       }
 
       /// Opens multi setup dialog and appends/replaces new projections when dialogs was accepted
@@ -127,10 +127,10 @@ namespace omni
         _multiSetup.reset(omni::proj::MultiSetupFactory::create(_multiSetupId));
         if (!_multiSetup) return;
 
-        auto _result = proj::MultiSetupDialog::open(_multiSetup.get(),session());
+        auto _result = proj::MultiSetupDialog::open(_multiSetup.get(),dataModel().get());
         auto&& _projectors = _multiSetup->projectors();
 
-        int _numTunings = session()->tunings().size();
+        int _numTunings = dataModel()->tunings().size();
 
         switch (_result)
         {
@@ -140,7 +140,7 @@ namespace omni
         case MultiSetupDialog::Result::APPEND:
           for (auto& _projector : _projectors)
           {
-            auto* _tuning = session()->tunings().add();
+            auto* _tuning = dataModel()->tunings().add();
             if (!_tuning) return;
             _tuning->setColor(getTuningColor());
             _tuning->projector() = std::move(_projector);
@@ -164,7 +164,7 @@ namespace omni
         }
 
         int _index = 0;
-        for (auto& _sessionTuning : session()->tunings())
+        for (auto& _sessionTuning : dataModel()->tunings())
         {
           if (_sessionTuning.get() == _tuning)
           {
@@ -173,13 +173,13 @@ namespace omni
           ++_index;
         }
 
-        widgets_.emplace_back(new ui::proj::Tuning(_index,session(),this));
+        widgets_.emplace_back(new ui::proj::Tuning(_index,dataModel().get(),this));
         auto _widget = widgets_.back().get();
         contents_->layout()->addWidget(_widget);
 
         _widget->connect(_widget,SIGNAL(selected(int)),this,SLOT(setTuningIndex(int)));
         _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
-        _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(projectorSetupChanged()));
+        _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(dataModelChanged()));
         _widget->sessionModeChange();
 
         emit tuningAdded();
@@ -210,9 +210,9 @@ namespace omni
             }
           }
         }
-        int _numTunings = session()->tunings().size();
+        int _numTunings = dataModel()->tunings().size();
 
-        if (session()->tunings().size() > maxNumberTunings()) return QColor("#000000");
+        if (dataModel()->tunings().size() > maxNumberTunings()) return QColor("#000000");
 
         /// Find first color in spectrum that is not already used
         for (int j = 0; j < maxNumberTunings(); ++j)
@@ -222,7 +222,7 @@ namespace omni
 
           for (int i = 0; i < _numTunings; ++i)
           {
-            auto _tuningColor = session()->tunings()[i]->color();
+            auto _tuningColor = dataModel()->tunings()[i]->color();
 
             /// Compare R,G,B channels for both colors, alpha can be ignored
             _colorsEqual |= _color.red() == _tuningColor.red() &&
@@ -248,25 +248,24 @@ namespace omni
         _widget.reset();
 
         widgets_.erase(widgets_.begin() + _index);
-        session()->tunings().remove(_index);
+        dataModel()->tunings().remove(_index);
 
         // Re assign tuning indices to remaining widgets
-        for (int i = 0; i < session()->tunings().size(); ++i)
+        for (int i = 0; i < dataModel()->tunings().size(); ++i)
         {
-          widgets_[i]->setTuning(i,session());
+          widgets_[i]->setTuning(i,dataModel().get());
         }
 
         setTuningIndex(std::max(_index-1,0));
 
-        emit tuningRemoved();
-        emit projectorSetupChanged();
+        emit dataModelChanged();
       }
 
       void TuningList::sessionModeChange()
       {
-          if (!session()) return;
+          if (!dataModel()) return;
 
-          auto _currentIndex = session()->tunings().currentIndex();
+          auto _currentIndex = dataModel()->tunings().currentIndex();
           for (auto& _widget : widgets_) {
               _widget->sessionModeChange();
           }
@@ -279,7 +278,7 @@ namespace omni
       void TuningList::clear()
       {
         removeWidgets();
-        session()->tunings().clear();
+        dataModel()->tunings().clear();
       }
 
       void TuningList::removeWidgets()
@@ -308,7 +307,7 @@ namespace omni
       }
 
       void TuningList::keyPressEvent(QKeyEvent* _event) {
-          int _tuningIndex = session()->tunings().currentIndex();
+          int _tuningIndex = dataModel()->tunings().currentIndex();
           auto* _widget = widget(_tuningIndex);
           if (!_widget) return;
           if (_widget->hasFocus() && !_widget->isSelected()) return;
@@ -320,7 +319,7 @@ namespace omni
                   }
           }
           if (_event->key() == Qt::Key_Down) {
-                  if (!_widget->focusNext(false) && (_tuningIndex < session()->tunings().size() - 1)) {
+                  if (!_widget->focusNext(false) && (_tuningIndex < dataModel()->tunings().size() - 1)) {
                       setTuningIndex(_tuningIndex + 1);
                       widget(_tuningIndex + 1)->focusFirst();
                   }
@@ -337,7 +336,7 @@ namespace omni
 
       void TuningList::setCurrentTuning()
       {
-        if (!session()) return;
+        if (!dataModel()) return;
 
         int _index = 0;
         for (auto& _widget : widgets_)
@@ -354,8 +353,8 @@ namespace omni
 
       void TuningList::setTuningIndex(int _index)
       {
-        int _oldIndex = session()->tunings().currentIndex();
-        session()->tunings().setCurrentIndex(_index);
+        int _oldIndex = dataModel()->tunings().currentIndex();
+        dataModel()->tunings().setCurrentIndex(_index);
         for (auto& _widget : widgets_) {
             if (_widget->index() != _index && _widget->isSelected()) {
                 _widget->setSelected(false);
@@ -364,6 +363,8 @@ namespace omni
 
         if (_index != _oldIndex)
           emit currentIndexChanged(_index);
+
+        emit dataModelChanged();
       }
     }
   }

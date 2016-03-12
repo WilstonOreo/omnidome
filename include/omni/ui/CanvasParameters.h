@@ -29,7 +29,9 @@ namespace omni
   {
     /**@brief Parameter widget for getting and setting canvas parameters
      **/
-    class CanvasParameters : public ParameterWidget
+    class CanvasParameters :
+        public ParameterWidget,
+        protected mixin::Locked 
     {
       Q_OBJECT
     public:

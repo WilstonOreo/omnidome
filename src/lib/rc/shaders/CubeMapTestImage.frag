@@ -234,22 +234,18 @@ void main(void)
     uv *= vec2(6.0,1.0);
 
     float t = floor(uv.x);
+    vec2 st = fract(uv);
 
     if (t == 0.0) {
     	color += cubeSide(vec3(1.0,0.0,0.0),uv);
-        vec2 st = fract(uv.yx);
-        st.y = 1.0 - st.y;
         color += vec3(text_front(st));
     } else
     if (t == 1.0) {
     	color += cubeSide(vec3(0.0,1.0,1.0),uv);
-        vec2 st = fract(uv.yx);
-        st.x = 1.0 - st.x;
         color += vec3(text_back(st));
     } else
     if (t == 2.0) {
     	color += cubeSide(vec3(0.0,1.0,0.0),uv);
-        vec2 st = 1.0 - fract(uv);
         color += vec3(text_left(st));
     } else
     if (t == 3.0) {
@@ -258,15 +254,11 @@ void main(void)
     } else
     if (t == 4.0) {
     	color += cubeSide(vec3(0.0,0.0,1.0),uv);
-        vec2 st = fract(uv.yx);
-        st.x = 1.0 - st.x;
         color += vec3(text_top(st));
 
     } else
     if (t == 5.0) {
     	color += cubeSide(vec3(1.0,1.0,0.0),uv);
-        vec2 st = fract(uv.yx);
-        st.y = 1.0 - st.y;
         color += vec3(text_bottom(st));
     }
 

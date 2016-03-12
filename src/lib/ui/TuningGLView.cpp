@@ -31,6 +31,7 @@ namespace omni
   {
     TuningGLView::TuningGLView(QWidget* _parent) :
       GLView(_parent),
+      mixin::TuningFromIndex<TuningGLView>(*this),
       cursorPosition_(0.0,0.0)
     {
       setViewOnly(false);
@@ -59,19 +60,9 @@ namespace omni
       doneCurrent();
     }
 
-    omni::proj::Tuning* TuningGLView::tuning()
-    {
-      return this->session_->session().tunings()[index_];
-    }
-
-    omni::proj::Tuning const* TuningGLView::tuning() const
-    {
-      return this->session_->session().tunings()[index_];
-    }
-
     void TuningGLView::setTuningIndex(int _index)
     {
-      index_=_index;
+      setIndex(_index);
       auto* _tuning = tuning();
 
       if (!_tuning) return;
@@ -173,11 +164,6 @@ namespace omni
     {
       border_ = _border;
       update();
-    }
-
-    /// Show different content for different session modes
-    void TuningGLView::sessionModeChange()
-    {
     }
 
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
@@ -615,7 +601,7 @@ namespace omni
     {
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        vizTuning_->drawTestCard(index_+1,tuning()->outputDisabled() && viewOnly());
+        vizTuning_->drawTestCard(index()+1,tuning()->outputDisabled() && viewOnly());
       });
     }
 

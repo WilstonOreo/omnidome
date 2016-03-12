@@ -20,8 +20,7 @@
 #define OMNI_UI_COLORCORRECTION_H_
 
 #include <memory>
-#include <omni/proj/Tuning.h>
-#include <omni/ui/mixin/DataModel.h>
+#include <omni/ui/mixin/TuningWidget.h>
 #include "DockWidget.h"
 
 namespace omni {
@@ -32,10 +31,9 @@ namespace omni {
 
         class ColorCorrection :
             public DockWidget,
-            public mixin::UnsharedDataModel<omni::proj::Tuning>
+            public mixin::TuningWidget
         {
             Q_OBJECT
-            OMNI_UI_UNSHARED_DATAMODEL(omni::proj::Tuning)
         public:
             typedef omni::proj::Channel Channel;
 
@@ -51,14 +49,10 @@ namespace omni {
             void setUsed(bool);
 
         signals:
-            void dataModelChanged();
+            void colorCorrectionChanged();
 
         private:
-            /// Update widget from given color correction
-            void dataToFrontend();
-
-            /// Assign input widget values to color correction
-            bool frontendToData();
+            void tuningParameters();
 
             std::unique_ptr<Ui::ColorCorrection> ui_;
         };

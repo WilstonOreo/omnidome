@@ -38,8 +38,7 @@ namespace omni
     **/
     class ParameterWidget :
         public QWidget,
-        public mixin::Scale<omni::ui::RangedFloat>,
-        protected mixin::Locked
+        public mixin::Scale<omni::ui::RangedFloat>
     {
       Q_OBJECT
     public:

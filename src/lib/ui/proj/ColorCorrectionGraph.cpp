@@ -36,21 +36,18 @@ namespace omni {
 
             }
 
-            void ColorCorrectionGraph::setSelectedChannel(Channel _selectedChannel) {
-                selectedChannel_ = _selectedChannel;
+
+
+            void ColorCorrectionGraph::setChannel(Channel _channel) {
+                channel_ = _channel;
             }
 
-            Channel ColorCorrectionGraph::selectedChannel() const {
-                return selectedChannel_;
+            Channel ColorCorrectionGraph::channel() const {
+                return channel_;
             }
 
-            void ColorCorrectionGraph::setColorCorrection(
-                omni::proj::ColorCorrection const* _colorCorrection) {
-                colorCorrection_ = _colorCorrection;
-            }
-
-            omni::proj::ColorCorrection const* ColorCorrectionGraph::colorCorrection() const {
-                return colorCorrection_;
+            void ColorCorrectionGraph::dataToFrontend() {
+                update();
             }
 
             void ColorCorrectionGraph::paintEvent(QPaintEvent* _paintEvent) {
@@ -80,7 +77,7 @@ namespace omni {
 
             void ColorCorrectionGraph::drawGraphs(QPainter& _p, bool _selected) const {
                 auto _drawGraph = [&](Channel _channel) {
-                    if ((selectedChannel() == _channel) == _selected)
+                    if ((channel() == _channel) == _selected)
                         drawGraphForChannel(_p,_channel);
                 };
                 _drawGraph(Channel::ALL);
@@ -114,16 +111,14 @@ namespace omni {
                     }
                 }
 
-
                 _p.drawPath(_path);
-
             }
 
             void ColorCorrectionGraph::drawGraphForChannel(QPainter& _p, Channel _channel) const {
-                if (!colorCorrection_) return;
+                if (!dataModel()) return;
 
-                bool _selected = selectedChannel() == _channel;
-                drawGraphForChannel(_p,*colorCorrection_->correction(_channel),
+                bool _selected = channel() == _channel;
+                drawGraphForChannel(_p,*dataModel()->correction(_channel),
                     omni::proj::ColorCorrection::channelColor(_channel),_selected);
             }
 

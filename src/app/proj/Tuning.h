@@ -22,6 +22,7 @@
 
 #include <omni/proj/Tuning.h>
 #include <omni/ui/ParameterWidget.h>
+#include <omni/ui/mixin/TuningFromIndex.h>
 #include "proj/TuningLayout.h"
 
 namespace omni
@@ -45,7 +46,10 @@ namespace omni
       /**@brief Widget for manipulating projector parameters
          @detail Also holds a preview OpenGL widget
        **/
-      class Tuning : public ParameterWidget
+      class Tuning :
+        public ParameterWidget,
+        public mixin::TuningFromIndex<Tuning>,
+        protected mixin::Locked
       {
         Q_OBJECT
       public:
@@ -70,12 +74,6 @@ namespace omni
         /// Destructor
         virtual ~Tuning();
 
-        /// Return tuning
-        omni::proj::Tuning* tuning();
-
-        /// Return tuning (const version)
-        omni::proj::Tuning const* tuning() const;
-
         /// Set tuning from session and index
         void setTuning(int _index, omni::Session*);
 
@@ -85,9 +83,9 @@ namespace omni
         TuningGLView* previewWidget();
         TuningGLView const* previewWidget() const;
 
-        /// Return index of tuning
-        int index() const;
-
+        inline Session* session() {
+            return session_;
+        }
         Session const* session() const;
 
         /// Return selected flag
@@ -186,9 +184,6 @@ namespace omni
         inline virtual int firstFocusId() const {
           return 2; // Title bar and view cannot be focussed
         }
-
-        /// The index of the tuning
-        int index_ = -1;
 
         /// Adds a new/changes a parameter group
         void addGroup(QString const& _groupName, widgetgroup_type const& _widgets);

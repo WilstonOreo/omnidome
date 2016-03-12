@@ -24,12 +24,15 @@
 
 #include <omni/ui/GLView.h>
 #include <omni/visual/Tuning.h>
+#include <omni/ui/mixin/TuningFromIndex.h>
 
 namespace omni
 {
   namespace ui
   {
-    class TuningGLView : public GLView
+    class TuningGLView :
+        public GLView,
+        public mixin::TuningFromIndex<TuningGLView>
     {
       Q_OBJECT
     public:
@@ -78,9 +81,6 @@ namespace omni
       /// Set relative border distance
       void setBorder(float);
 
-      /// Show different content for different session modes
-      void sessionModeChange();
-
       void updateWithChildViews(bool _updateContext = true);
       void updateWithChildViews(QRect const&);
 
@@ -96,8 +96,6 @@ namespace omni
       void keyPressEvent(QKeyEvent* event);
 
     private:
-      omni::proj::Tuning* tuning();
-      omni::proj::Tuning const* tuning() const;
 
       void drawOutput(
         float _blendMaskOpacity,
@@ -144,9 +142,6 @@ namespace omni
       /// Initialize OpenGL objects
       bool initialize();
 
-      /// Tuning index
-      int index_ = -1;
-
       /// Flags which determines if aspect ratio is used when drawing content
       bool keepAspectRatio_ = false;
 
@@ -185,9 +180,6 @@ namespace omni
 
       /// Frame buffer which holds a texture with current view image
       std::unique_ptr<QOpenGLFramebufferObject> warpGridBuffer_;
-
-      /// Shader for displaying disabled output in grayscale
-      std::unique_ptr<QOpenGLShaderProgram> grayscaleShader_;
 
       std::set<TuningGLView*> childViews_;
     };

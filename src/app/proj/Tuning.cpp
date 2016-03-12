@@ -45,7 +45,8 @@ namespace omni {
                 int            _index,
                 omni::Session *_session,
                 QWidget       *_parent) :
-                ParameterWidget(_parent)
+                ParameterWidget(_parent),
+                mixin::TuningFromIndex<Tuning>(*this)
             {
                 setup();
                 setTuning(_index, _session);
@@ -53,7 +54,8 @@ namespace omni {
 
             Tuning::Tuning(
                 QWidget *_parent) :
-                ParameterWidget(_parent)
+                ParameterWidget(_parent),
+                mixin::TuningFromIndex<Tuning>(*this)
             {
                 setup();
             }
@@ -64,30 +66,20 @@ namespace omni {
                 delete titleBar_;
             }
 
-            omni::proj::Tuning * Tuning::tuning()
-            {
-                return session_ ? session_->tunings()[index_] : nullptr;
-            }
-
-            omni::proj::Tuning const * Tuning::tuning() const
-            {
-                return session_ ? session_->tunings()[index_] : nullptr;
-            }
-
             void Tuning::setTuning(int _index, omni::Session *_session)
             {
-                bool _newTuning = (session_ != _session) || (index_ != _index);
+                bool _newTuning = (session_ != _session) || (index() != _index);
 
-                index_   = _index;
                 session_ = _session;
+                setIndex(_index);
 
                 if (_newTuning)
                 {
                     this->locked([&]() {
                         glView_->setSession(session_);
-                        glView_->setTuningIndex(index_);
+                        glView_->setTuningIndex(index());
                         fullscreen_->setSession(session_);
-                        fullscreen_->setTuningIndex(index_);
+                        fullscreen_->setTuningIndex(index());
                         titleBar_->setColor(tuning()->color());
 
                         setParamAsFloat("Overlap Opacity",
@@ -178,11 +170,6 @@ namespace omni {
                 tuning()->projector().setup("PeripheralSetup");
                 sessionModeChange();
                 emit projectorSetupChanged();
-            }
-
-            int Tuning::index() const
-            {
-                return index_;
             }
 
             Session const * Tuning::session() const
@@ -516,7 +503,7 @@ namespace omni {
             {
                 isSelected_ = _isSelected;
 
-                if (isSelected_ && !this->isLocked()) emit selected(index_);
+                if (isSelected_ && !this->isLocked()) emit selected(index());
 
                 updateColor();
             }
@@ -537,7 +524,7 @@ namespace omni {
             void Tuning::prepareRemove()
             {
                 glView_->destroy();
-                emit closed(index_);
+                emit closed(index());
             }
 
             void Tuning::sessionModeChange()
@@ -664,12 +651,12 @@ namespace omni {
 
                     _p.drawRect(_rect.adjusted(1, 1, -2, -2));
                     _p.drawText(_rect, Qt::AlignCenter,
-                                QString("%1").arg(index_ + 1));
+                                QString("%1").arg(index() + 1));
                     _p.end();
                 }
                 drag->setPixmap(_pixmap);
 
-                mimeData->setText(QString("%1").arg(index_));
+                mimeData->setText(QString("%1").arg(index()));
                 drag->setMimeData(mimeData);
                 drag->exec();
             }

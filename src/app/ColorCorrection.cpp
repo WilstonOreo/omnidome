@@ -61,10 +61,10 @@ namespace omni {
         }
 
         void ColorCorrection::setUsed(bool _isUsed) {
-            if (!dataModel()) return;
+            if (!tuning()) return;
 
             this->locked([&]{
-                auto& _colorCorrection = dataModel()->colorCorrection();
+                auto& _colorCorrection = tuning()->colorCorrection();
                 _colorCorrection.setUsed(_isUsed);
 
                 ui_->chkIsUsed->setChecked(_isUsed);
@@ -75,11 +75,12 @@ namespace omni {
                 ui_->btnBlue->setEnabled(_isUsed);
                 ui_->graph->setEnabled(_isUsed);
                 ui_->params->setEnabled(_isUsed);
-                emit dataModelChanged();
+                emit colorCorrectionChanged();
             });
         }
 
         void ColorCorrection::setChannel(proj::Channel _channel) {
+            if (!tuning()) return;
 
             this->locked([&]{
                 ui_->btnAll->setChecked(_channel == Channel::ALL);
@@ -87,20 +88,17 @@ namespace omni {
                 ui_->btnGreen->setChecked(_channel == Channel::GREEN);
                 ui_->btnBlue->setChecked(_channel == Channel::BLUE);
 
-                auto* _colorCorrection = &dataModel()->colorCorrection();
-                ui_->graph->setSelectedChannel(_channel);
-                ui_->graph->setColorCorrection(_colorCorrection);
-                ui_->params->setChannelCorrection(_colorCorrection->correction(_channel),_channel);
+                auto* _colorCorrection = &tuning()->colorCorrection();
+                ui_->graph->setChannel(_channel);
+                ui_->graph->setDataModel(_colorCorrection);
+                ui_->params->setChannel(_channel);
+                ui_->params->setDataModel(_colorCorrection->correction(_channel));
             });
         }
 
-        void ColorCorrection::dataToFrontend() {
+        void ColorCorrection::tuningParameters() {
             setAllChannels();
-            setUsed(dataModel()->colorCorrection().isUsed());
-        }
-
-        bool ColorCorrection::frontendToData() {
-            return true;
+            setUsed(tuning()->colorCorrection().isUsed());
         }
     }
 }

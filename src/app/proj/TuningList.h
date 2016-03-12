@@ -23,7 +23,8 @@
 #include <memory>
 #include <QScrollArea>
 #include <omni/util.h>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 #include "proj/Tuning.h"
 
 namespace omni
@@ -38,9 +39,10 @@ namespace omni
 
       class TuningList :
         public QScrollArea,
-        public mixin::SessionWidget
+        public mixin::SharedDataModel<Session>
       {
         Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
       public:
         // Maximum number of tunings one can add
         inline static constexpr int maxNumberTunings() { return 16; }
@@ -95,7 +97,7 @@ namespace omni
         void currentIndexChanged(int);
 
         /// Signal which is emitted when parameters of one tuning have changed
-        void projectorSetupChanged();
+        void dataModelChanged();
 
         /// Signal which is returned after a tuning is to be removed
         void tuningToBeRemoved(omni::ui::proj::Tuning*);
@@ -106,8 +108,15 @@ namespace omni
         /// Signal is emitted when a tuning was removed
         void tuningRemoved();
 
+
       private:
-        void sessionParameters();
+          /// Update sliders from current session
+          void dataToFrontend();
+
+          /// Assign slider values to current session
+          inline bool frontendToData() {
+              return false;
+          }
 
         /// Add widget from existing tuning
         void addTuning(omni::proj::Tuning* _tuning);

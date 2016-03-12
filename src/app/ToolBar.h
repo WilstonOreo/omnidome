@@ -20,7 +20,8 @@
 #define OMNI_UI_TOOLBAR_H_
 
 #include <QToolBar>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 
 class QToolButton;
 
@@ -28,9 +29,10 @@ namespace omni {
     namespace ui {
         class ToolBar :
             public QToolBar,
-            public mixin::SessionWidget
+            public mixin::SharedDataModel<Session>
         {
             Q_OBJECT
+            OMNI_UI_SHARED_DATAMODEL(Session)
         public:
             ToolBar(QWidget* = nullptr);
             ~ToolBar();
@@ -43,17 +45,21 @@ namespace omni {
             void setColorCorrectionMode();
             void setExportMode();
             void setLiveMode();
-            void setMode(Session::Mode);
-            void buttonState();
 
             /// Show About dialog
             void showSettings();
 
         signals:
-            void sessionModeChanged(Session::Mode);
+            void dataModelChanged();
 
         private:
-            void sessionParameters();
+            void setMode(Session::Mode);
+
+            /// Update buttons from session
+            void dataToFrontend();
+
+            /// Set session mode from buttons
+            bool frontendToData() { return false; }
 
             QToolButton* btnSettings_ = nullptr;
             QToolButton* btnScreenSetup_ = nullptr;

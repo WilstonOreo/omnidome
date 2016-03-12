@@ -35,46 +35,41 @@ namespace omni {
 
             }
 
-            void ChannelCorrectionParameters::setChannelCorrection(ChannelCorrection* _channelCorrection, Channel _channel) {
-                channelCorrection_ = _channelCorrection;
-                this->locked([&]() {
-                    auto _setSlider = [&](RangedFloat* _w, float _value) {
-                        QColor _color = omni::proj::ColorCorrection::channelColor(_channel);
-                        if (_channel == Channel::ALL) {
-                            _color = QColor("#3d3d3d");
-                        }
-                        _w->setStyleSheet("selection-background-color  : "+_color.name());
-                        _w->setValue(_value);
-                        _w->setGripSize(0);
-                    };
-
-                    _setSlider(brightness_,channelCorrection_->brightness());
-                    _setSlider(contrast_,channelCorrection_->contrast());
-                    _setSlider(gamma_,channelCorrection_->gamma());
-                    _setSlider(multiplier_,channelCorrection_->multiplier());
-
-                    reset_->setStyleSheet("QPushButton { border: 2.5px solid " +
-                        omni::proj::ColorCorrection::channelColor(_channel).name() + " }");
-                });
-                emit parametersUpdated();
+            Channel ChannelCorrectionParameters::channel() const {
+                return channel_;
             }
 
-            ChannelCorrection* ChannelCorrectionParameters::channelCorrection() {
-                return channelCorrection_;
+            void ChannelCorrectionParameters::setChannel(Channel _channel) {
+                channel_ = _channel;
             }
 
-            ChannelCorrection const* ChannelCorrectionParameters::channelCorrection() const {
-                return channelCorrection_;
+            void ChannelCorrectionParameters::dataToFrontend() {
+                QColor _color = omni::proj::ColorCorrection::channelColor(channel());
+                auto _setSlider = [&](RangedFloat* _w, float _value) {
+                    QColor _sliderColor = _color;
+                    if (channel() == Channel::ALL) {
+                        _sliderColor = QColor("#3d3d3d");
+                    }
+                    _w->setStyleSheet("selection-background-color  : "+_sliderColor.name());
+                    _w->setValue(_value);
+                    _w->setGripSize(0);
+                };
+
+                _setSlider(brightness_,dataModel()->brightness());
+                _setSlider(contrast_,dataModel()->contrast());
+                _setSlider(gamma_,dataModel()->gamma());
+                _setSlider(multiplier_,dataModel()->multiplier());
+
+                reset_->setStyleSheet("QPushButton { border: 2.5px solid " +
+                    _color.name() + " }");
             }
 
-            void ChannelCorrectionParameters::updateParameters() {
-                if (!channelCorrection_ || this->isLocked()) return;
-
-                channelCorrection_->setBrightness(brightness_->value());
-                channelCorrection_->setContrast(contrast_->value());
-                channelCorrection_->setGamma(gamma_->value());
-                channelCorrection_->setMultiplier(multiplier_->value());
-                emit parametersUpdated();
+            bool ChannelCorrectionParameters::frontendToData() {
+                dataModel()->setBrightness(brightness_->value());
+                dataModel()->setContrast(contrast_->value());
+                dataModel()->setGamma(gamma_->value());
+                dataModel()->setMultiplier(multiplier_->value());
+                return true;
              }
 
             void ChannelCorrectionParameters::reset() {
@@ -84,7 +79,7 @@ namespace omni {
                     gamma_->setValue(0.0);
                     multiplier_->setValue(0.5);
                 });
-                updateParameters();
+                updateDataModel();
             }
 
             void ChannelCorrectionParameters::setup() {
@@ -96,7 +91,8 @@ namespace omni {
                     _slider->setSingleStep(0.001);
                     _slider->setPageStep(0.01);
                     _slider->setPivot(0.0);
-                    connect(_slider,SIGNAL(valueChanged()),this,SLOT(updateParameters()));
+                    connect(_slider,&RangedFloat::valueChanged,
+                        this,&ChannelCorrectionParameters::updateDataModel);
                     return _slider;
                 };
 

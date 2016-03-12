@@ -51,8 +51,8 @@ using namespace omni::ui;
 
 MainWindow::MainWindow(QMainWindow *parent) :
     QMainWindow(parent),
-    modified_(false),
     session_(new Session()),
+    modified_(false),
     ui_(new Ui::MainWindow)
 {
     ui_->setupUi(this);
@@ -61,8 +61,8 @@ MainWindow::MainWindow(QMainWindow *parent) :
     {
         toolBar_.reset(new ToolBar(this));
         this->addToolBar(Qt::TopToolBarArea,toolBar_.get());
-        connect(toolBar_.get(),SIGNAL(sessionModeChanged(Session::Mode)),
-            this,SLOT(setMode(Session::Mode)));
+        connect(toolBar_.get(),SIGNAL(dataModelChanged()),
+            this,SLOT(setMode()));
     }
 
     // Make and setup pages
@@ -74,24 +74,13 @@ MainWindow::MainWindow(QMainWindow *parent) :
         arrange_.reset(new Arrange(this));
         _layout->addWidget(arrange_.get());
 
-        warp_.reset(new TuningGLView(this));
-        _layout->addWidget(warp_.get());
-        warp_->setBorder(0.5);
-        warp_->setKeepAspectRatio(true);
-
-        blend_.reset(new TuningGLView(this));
-        _layout->addWidget(blend_.get());
-        blend_->setBorder(0.5);
-        blend_->setKeepAspectRatio(true);
-
-        colorCorrection_.reset(new TuningGLView(this));
-        _layout->addWidget(colorCorrection_.get());
-        colorCorrection_->setBorder(0.5);
-        colorCorrection_->setKeepAspectRatio(true);
+        tuningView_.reset(new TuningGLView(this));
+        _layout->addWidget(tuningView_.get());
+        tuningView_->setBorder(0.5);
+        tuningView_->setKeepAspectRatio(true);
 
         export_.reset(new Export(this));
         _layout->addWidget(export_.get());
-        ui_->pages->setLayout(_layout);
 
         live_.reset(new GLView3D(this));
         _layout->addWidget(live_.get());
@@ -136,16 +125,10 @@ MainWindow::MainWindow(QMainWindow *parent) :
     // Connect signals and slots
     {
         // Connect projector position change with view update
-        connect(ui_->tuningList, SIGNAL(projectorSetupChanged()), this,
-                SLOT(modified()));
-        connect(ui_->tuningList, SIGNAL(currentIndexChanged(int)), this,
-                SLOT(modified()));
-        connect(ui_->tuningList, SIGNAL(tuningRemoved()), toolBar_.get(),
-                SLOT(buttonState()));
-        connect(ui_->tuningList, SIGNAL(tuningAdded()), toolBar_.get(),
-                SLOT(buttonState()));
-        connect(ui_->dockInputsWidget, SIGNAL(inputIndexChanged()), toolBar_.get(),
-                SLOT(buttonState()));
+        connect(ui_->tuningList, SIGNAL(dataModelChanged()), this,
+                SLOT(setTuningIndex()));
+        connect(ui_->tuningList, &proj::TuningList::dataModelChanged, toolBar_.get(),
+                &ToolBar::updateFrontend);
 
         // Detach tuning from screen setup when it was removed
         connect(ui_->tuningList,
@@ -186,13 +169,8 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
         // Update all views when color correction has changed
         connect(ui_->dockColorCorrectionWidget, SIGNAL(
-                    dataModelChanged()),                  this,
+                    colorCorrectionChanged()),                  this,
                 SLOT(modified()));
-
-        // Connect tuning index of tuning list for warp, blend and color correction
-        connect(ui_->tuningList, SIGNAL(currentIndexChanged(
-                                            int)),        this,
-                SLOT(setTuningIndex(int)));
 
         // Connect add tuning button with tuning list
         connect(ui_->btnAddTuning, SIGNAL(
@@ -240,28 +218,25 @@ void MainWindow::setupSession()
     qDebug() << "setupSession: " << enumToInt(session_->mode());
     locked_ = true;
     {
-        toolBar_->setSession(session_.get());
-
+        toolBar_->setDataModel(session_);
         // Set session to pages
         arrange_->setSession(session_.get());
         live_->setSession(session_.get());
-
-        warp_->setSession(session_.get());
-        blend_->setSession(session_.get());
-        colorCorrection_->setSession(session_.get());
+        tuningView_->setSession(session_.get());
         export_->setSession(session_.get());
 
-        ui_->tuningList->setSession(session_.get());
+        ui_->tuningList->setDataModel(session_);
         ui_->dockMappingWidget->setSession(session_.get());
         ui_->dockCanvasWidget->setSession(session_.get());
         ui_->dockInputsWidget->setSession(session_.get());
         ui_->dockWarpWidget->setDataModel(session_);
         ui_->dockBlendWidget->setDataModel(session_);
-        ui_->dockColorCorrectionWidget->setDataModel(session_->tunings().current());
+        ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
     }
-    locked_ = false;
 
-    setMode(session_->mode());
+    setMode();
+
+    locked_ = false;
 }
 
 void MainWindow::newProjection()
@@ -355,9 +330,7 @@ void MainWindow::editAsNew()
 void MainWindow::updateAllViews()
 {
     arrange_->update();
-    warp_->update();
-    blend_->update();
-    colorCorrection_->update();
+    tuningView_->update();
     live_->update();
     ui_->tuningList->updateViews();
 }
@@ -416,17 +389,13 @@ void MainWindow::buttonState()
 }
 
 /// Set current tuning index
-void MainWindow::setTuningIndex(int _index)
+void MainWindow::setTuningIndex()
 {
-    ui_->tuningList->setTuningIndex(_index);
-    warp_->setTuningIndex(_index);
-    blend_->setTuningIndex(_index);
-    colorCorrection_->setTuningIndex(_index);
-    warp_->setChildViews(ui_->tuningList->getViews(_index));
-    blend_->setChildViews(ui_->tuningList->getViews(_index));
-    colorCorrection_->setChildViews(ui_->tuningList->getViews(_index));
+    int _index = session_->tunings().currentIndex();
+    tuningView_->setTuningIndex(_index);
+    tuningView_->setChildViews(ui_->tuningList->getViews(_index));
 
-    ui_->dockColorCorrectionWidget->setDataModel(session_->tunings().current());
+    ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
     ui_->dockBlendWidget->updateFrontend();
     ui_->dockWarpWidget->updateFrontend();
 }
@@ -456,23 +425,16 @@ void MainWindow::addProjector(QAction *_action)
     }
 }
 
-void MainWindow::setMode(Session::Mode _mode)
+void MainWindow::setMode()
 {
-    session_->setMode(_mode);
-
-    bool _hasTunings = session_->tunings().size() > 0;
-
-    // Select first tuning if there is no tuning selected yet
-    if (_hasTunings && (session_->tunings().currentIndex() < 0))
-    {
-        setTuningIndex(0);
-    }
+    auto _mode = session_->mode();
+    bool _hasTunings = session_->hasOutput();
 
     screenSetup_->setVisible(_mode == Session::Mode::SCREENSETUP);
     arrange_->setVisible(_mode == Session::Mode::ARRANGE);
-    warp_->setVisible(_mode == Session::Mode::WARP && _hasTunings);
-    blend_->setVisible(_mode == Session::Mode::BLEND && _hasTunings);
-    colorCorrection_->setVisible(_mode == Session::Mode::COLORCORRECTION && _hasTunings);
+    tuningView_->setVisible((
+        _mode == Session::Mode::WARP || _mode == Session::Mode::BLEND ||
+        _mode == Session::Mode::COLORCORRECTION) && _hasTunings);
     export_->setVisible(_mode == Session::Mode::EXPORT && _hasTunings);
     live_->setVisible(_mode == Session::Mode::LIVE && _hasTunings);
 

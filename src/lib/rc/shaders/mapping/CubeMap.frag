@@ -93,7 +93,6 @@ float mapping(in vec3 uvw, out vec2 texCoords)
         _off = 3.0; // WEST
     }
   }
-
   if (axis == Y_AXIS)
   {
     texCoords = uvw.xz / abs(uvw.y);
@@ -118,21 +117,4 @@ float mapping(in vec3 uvw, out vec2 texCoords)
   transform_to_cubemap(texCoords,_off);
 
   return 1.0;
-/*
-  if ((abs(uvw.x) >= abs(uvw.y)) && (abs(uvw.x) >= abs(uvw.z)))
-  {
-    sc = uvw.y;
-    tc = uvw.z;
-    if (uvw.x < 0.0) { tc = -uvw.z; }
-    ma = uvw.x;
-    _off += (uvw.x > 0.0) ? 3.0/6.0 : 2.0/6.0; // EAST / WEST
-  } else
-  {
-    sc = (uvw.z > 0.0) ? uvw.y : -uvw.y;
-    tc = (uvw.z > 0.0) ? -uvw.x : -uvw.x;
-    ma = uvw.z;
-    _off = (uvw.z > 0.0) ? 4.0/6.0 : 5.0 / 6.0;  // TOP / BOTTOM
-  }
-  texCoords = vec2(sc/(12.0 - eps)/abs(ma) + 0.5/6.0 + _off,0.5+tc/(2.0 - eps)/abs(ma)) ;
-  return 1.0;*/
 }

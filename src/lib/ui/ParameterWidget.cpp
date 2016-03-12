@@ -37,8 +37,6 @@ namespace omni
 
     void ParameterWidget::clear()
     {
-      this->locked([&]()
-      {
         parameters_.clear();
         parameterMap_.clear();
 
@@ -51,13 +49,10 @@ namespace omni
             delete item;
           }
         }
-      });
     }
 
     void ParameterWidget::updateParameters()
     {
-      if (isLocked()) return;
-
       emit parametersUpdated();
     }
 
@@ -152,10 +147,7 @@ namespace omni
       auto* _widget = static_cast<RangedFloat*>(this->parameterMap_.at(_str));
       if (!_widget) return;
 
-      locked([&]()
-      {
-        _widget->setValue(_value);
-      });
+      _widget->setValue(_value);
     }
 
     int ParameterWidget::getParamAsInt(QString const& _str) const
@@ -170,10 +162,7 @@ namespace omni
       auto* _widget = static_cast<RangedInt*>(this->parameterMap_.at(_str));
       if (!_widget) return;
 
-      locked([&]()
-      {
-        _widget->setValue(_value);
-      });
+      _widget->setValue(_value);
     }
 
     bool ParameterWidget::getParamAsBool(QString const& _str) const

@@ -147,6 +147,8 @@ namespace omni {
             btnLive_->setToolTip("Play input live (Ctrl + 7)");
             connect(btnLive_,SIGNAL(clicked()),this,SLOT(setLiveMode()));
             _makeAction(btnLive_,"Ctrl+7");
+
+            connect(this,&ToolBar::dataModelChanged,this,&ToolBar::updateFrontend);
         }
 
         ToolBar::~ToolBar() {
@@ -182,44 +184,35 @@ namespace omni {
         }
 
         void ToolBar::setMode(Session::Mode _mode) {
-            if (!session()) return;
-
-            this->locked([&]{
-                btnScreenSetup_->setChecked(_mode == Session::Mode::SCREENSETUP);
-                btnArrange_->setChecked(_mode == Session::Mode::ARRANGE);
-                btnWarp_->setChecked(_mode == Session::Mode::WARP);
-                btnBlend_->setChecked(_mode == Session::Mode::BLEND);
-                btnColorCorrection_->setChecked(_mode == Session::Mode::COLORCORRECTION);
-                btnExport_->setChecked(_mode == Session::Mode::EXPORT);
-                btnLive_->setChecked(_mode == Session::Mode::LIVE);
-            });
-            buttonState();
-
-            emit sessionModeChanged(_mode);
+            if (!dataModel()) return;
+            dataModel()->setMode(_mode);
+            emit dataModelChanged();
         }
 
-        void ToolBar::buttonState() {
+        void ToolBar::dataToFrontend() {
+            auto _mode = dataModel()->mode();
 
-            bool _hasTunings = session()->tunings().size() > 0;
-            bool _hasInput = session()->inputs().current() != nullptr;
+            btnScreenSetup_->setChecked(_mode == Session::Mode::SCREENSETUP);
+            btnArrange_->setChecked(_mode == Session::Mode::ARRANGE);
+            btnWarp_->setChecked(_mode == Session::Mode::WARP);
+            btnBlend_->setChecked(_mode == Session::Mode::BLEND);
+            btnColorCorrection_->setChecked(_mode == Session::Mode::COLORCORRECTION);
+            btnExport_->setChecked(_mode == Session::Mode::EXPORT);
+            btnLive_->setChecked(_mode == Session::Mode::LIVE);
 
-            this->locked([&]{
-                btnWarp_->setEnabled(_hasTunings && _hasInput);
-                btnBlend_->setEnabled(_hasTunings && _hasInput);
-                btnColorCorrection_->setEnabled(_hasTunings && _hasInput);
-                btnExport_->setEnabled(_hasTunings && _hasInput);
-                btnLive_->setEnabled(_hasTunings && _hasInput);
-            });
-        }
+            bool _hasOutput = dataModel()->hasOutput();
 
-        void ToolBar::sessionParameters() {
-            setMode(session()->mode());
+            btnWarp_->setEnabled(_hasOutput);
+            btnBlend_->setEnabled(_hasOutput);
+            btnColorCorrection_->setEnabled(_hasOutput);
+            btnExport_->setEnabled(_hasOutput);
+            btnLive_->setEnabled(_hasOutput);
         }
 
         void ToolBar::showSettings()
-{
-    std::unique_ptr<About> _about(new About());
-    _about->exec();
-}
+        {
+            std::unique_ptr<About> _about(new About());
+            _about->exec();
+        }
     }
 }

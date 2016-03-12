@@ -89,6 +89,9 @@ namespace omni
 
       QSize TuningLayout::calculateSize(SizeType sizeType) const
       {
+        if (!tuning()) return QSize(0,0);
+
+
         int _border = 2;
         int _width = 0;
         int _height = _border;
@@ -158,6 +161,8 @@ namespace omni
 
       void TuningLayout::setGeometry(QRect const& _rect)
       {
+        if (!tuning()) return;
+
         const int _border = 2;
         int _height = _border;
 
