@@ -23,6 +23,7 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <omni/PluginInfo.h>
+#include <memory>
 
 namespace omni {
     namespace ui {
