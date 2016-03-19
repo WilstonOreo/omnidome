@@ -107,7 +107,10 @@ namespace omni {
         {
             if (!dataModel() || this->isLocked()) return;
 
+            canvasMemory_.store(dataModel()->canvas());
             dataModel()->setCanvas(_id);
+            canvasMemory_.restore(dataModel()->canvas());
+
             if (paramWidget_) {
                 widget()->layout()->removeWidget(paramWidget_);
             }

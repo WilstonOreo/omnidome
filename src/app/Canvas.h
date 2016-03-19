@@ -24,6 +24,7 @@
 #include <omni/visual/ProjectorViewMode.h>
 #include <omni/ui/mixin/DataModel.h>
 #include <omni/ui/CanvasParameters.h>
+#include <omni/TypeIdMemory.h>
 #include "DockWidget.h"
 
 namespace omni
@@ -63,6 +64,8 @@ namespace omni
                         void showParameterWidget();
                         QWidget* paramWidget_ = nullptr;
                         std::unique_ptr<Ui::Canvas> ui_;
+
+                        TypeIdMemory<canvas::Interface> canvasMemory_;
                 };
         }
 }

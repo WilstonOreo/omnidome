@@ -60,7 +60,9 @@ namespace omni
       typedef std::function<void()> callback_type;
 
       /// Virtual destructor
-      virtual ~Interface();
+      virtual ~Interface() {
+          unregisterAll();
+      }
 
       /// An input must return an OpenGL texture ID
       virtual GLuint textureId() const = 0;
@@ -135,7 +137,26 @@ namespace omni
       /// Return children
       children_type const& children() const;
 
+      void useInput(Interface* _i) {
+          if (_i != this) return;
+
+          _i->used_.insert(this);
+          this->used_.insert(_i);
+      }
+
+      void unregister(Interface* _i) {
+          _i->used_.erase(this);
+          used_.erase(_i);
+      }
+
+      void unregisterAll() {
+          for (auto& _i : used_) {
+              unregister(_i);
+          }
+      }
+
     private:
+        std::set<Interface*> used_;
         children_type children_;
         callback_type updatedCallback_;
     };

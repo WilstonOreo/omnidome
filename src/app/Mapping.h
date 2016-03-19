@@ -23,6 +23,7 @@
 #include <memory>
 #include <omni/ui/mixin/DataModel.h>
 #include <omni/ui/MappingParameters.h>
+#include <omni/TypeIdMemory.h>
 #include "DockWidget.h"
 
 namespace omni
@@ -65,6 +66,9 @@ namespace omni
 
       std::unique_ptr<Ui::Mapping> ui_;
       QWidget* paramWidget_ = nullptr;
+
+      /// Memory for storing/restoring settings of previously selected mapping types
+      TypeIdMemory<mapping::Interface> mappingMemory_;
     };
   }
 }

@@ -80,7 +80,9 @@ namespace omni
           widget()->layout()->removeWidget(paramWidget_);
       }
 
+      mappingMemory_.store(dataModel()->mapping());
       dataModel()->setMapping(_id);
+      mappingMemory_.restore(dataModel()->mapping());
 
       auto* _mapping = dataModel()->mapping();
       if (!_mapping) return;

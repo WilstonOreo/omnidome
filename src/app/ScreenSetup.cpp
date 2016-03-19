@@ -81,7 +81,7 @@ namespace omni
         //if (_screen != QGuiApplication::primaryScreen()) continue;
         screenItems_[_screen].reset(new Item(*this,_screen));
       }
-/* @todo
+/*
       for (auto& _tuning : dataModel()->tunings()) {
           auto* _tuningScreen = _tuning->projector().screen();
           if (screenItems_.count(_tuningScreen) {
