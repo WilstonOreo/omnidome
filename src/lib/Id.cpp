@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -21,19 +21,20 @@
 
 #include <QString>
 #include <QDebug>
+#include <omni/serialization/traits.h>
 
 namespace omni
-{ 
+{
   Id::Id()
   {
   }
 
-  Id::Id(QString const& _str) 
+  Id::Id(QString const& _str)
   {
     make(_str);
   }
-  
-  Id::Id(const char* _c) 
+
+  Id::Id(const char* _c)
   {
     make(QString(_c));
   }
@@ -52,12 +53,12 @@ namespace omni
   {
     return !str_.isEmpty();
   }
-    
+
   bool Id::operator<(const Id& _rhs) const
   {
     return this->str_ < _rhs.str_;
   }
-    
+
   bool Id::operator!=(const Id& _rhs) const
   {
     return *this != _rhs;
@@ -77,7 +78,7 @@ namespace omni
     // An Id must begin with a letter
     if (!_str[0].isLetter()) return;
 
-    // An id must only contain alpha numerical characters 
+    // An id must only contain alpha numerical characters
     // and underscores
     for (auto& c : _str)
     {
@@ -89,15 +90,14 @@ namespace omni
 
 QDataStream& operator<<(QDataStream& _stream, omni::Id const& _id)
 {
-  _stream << _id.str();
+  omni::serialization::serialize(_stream,_id.str());
   return _stream;
 }
 
 QDataStream& operator>>(QDataStream& _stream, omni::Id& _id)
 {
   QString _str;
-  _stream >> _str;
+  omni::serialization::deserialize(_stream,_str);
   _id = omni::Id(_str);
   return _stream;
 }
-

@@ -120,6 +120,12 @@ namespace omni
     /// Load session to file
     void load(QString const& _filename);
 
+    /// Deserialize from stream
+    void fromStream(QDataStream&);
+
+    /// Serialize to stream
+    void toStream(QDataStream&) const;
+
     /// Test for equality. ScreenSetup is ignored
     friend bool operator==(Session const&,Session const&);
   private:
@@ -148,10 +154,6 @@ namespace omni
   };
 }
 
-/// Serialize session to stream
-QDataStream& operator<<(QDataStream&, omni::Session const&);
-
-/// Deserialize session from stream
-QDataStream& operator>>(QDataStream&, omni::Session&);
+OMNI_DECL_STREAM_OPERATORS(omni::Session)
 
 #endif /* OMNI_SESSION_H_ */

@@ -36,6 +36,7 @@ namespace omni
         QLayout *_layout = new QVBoxLayout;
         _layout->setSpacing(2);
         _layout->setContentsMargins(0, 0, 0, 0);
+        _layout->setSizeConstraint(QLayout::SetMaximumSize);
         setLayout(_layout);
         setCanvas(_canvas);
     }

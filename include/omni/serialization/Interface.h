@@ -29,7 +29,7 @@ namespace omni
                 /**@brief Abstract interface for serialization
                  * @detail Holds two member functions for serialization and deserialization
                  */
-                class Interface : public TypeIdInterface
+                class Interface
                 {
                 public:
                         /// Serialize to stream
@@ -41,7 +41,7 @@ namespace omni
                         /// Optional virtual member method for testing equality of two interfaces
                         inline virtual bool equal(Interface const* _that) const
                         {
-                                return this->getTypeId() == _that->getTypeId();
+                                return true;
                         }
                 };
         }

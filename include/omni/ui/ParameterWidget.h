@@ -23,11 +23,11 @@
 #include <set>
 #include <QWidget>
 #include <QCheckBox>
-#include <omni/ui/mixin/Locked.h>
 #include <omni/ui/mixin/Scale.h>
 #include <omni/ui/RangedFloat.h>
 #include <omni/ui/RangedInt.h>
 #include <omni/ui/Rotation.h>
+#include <omni/ui/AffineTransform.h>
 #include <omni/util.h>
 
 namespace omni
@@ -62,6 +62,9 @@ namespace omni
 
       /// Adds an Rotation widget with three dials for X,Y and Z axis
       Rotation* addRotationWidget(QString const&);
+
+      /// Add a new affine transform widget with an id
+      omni::ui::AffineTransform* addAffineTransformWidget(QString const&, omni::AffineTransform*);
 
       /// Adds a checkbox
       QCheckBox* addCheckBox(QString const&, bool _checked = false);

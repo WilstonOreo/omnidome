@@ -22,7 +22,7 @@
 
 #include <memory>
 #include <omni/visual/ProjectorViewMode.h>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/ui/mixin/DataModel.h>
 #include <omni/ui/CanvasParameters.h>
 #include "DockWidget.h"
 
@@ -39,26 +39,27 @@ namespace omni
 
                 class Canvas :
                     public DockWidget,
-                    public mixin::SessionWidget
+                    public mixin::SharedDataModel<Session>
                 {
                         Q_OBJECT
+                        OMNI_UI_SHARED_DATAMODEL(Session)
                     public:
                         Canvas(QWidget* = nullptr);
                         ~Canvas();
 
                     signals:
+                        void dataModelChanged();
                         void canvasTypeChanged();
-                        void canvasChanged();
-                        void displayInputToggled(bool);
-                        void projectorViewModeChanged(ProjectorViewMode);
 
                     public slots:
-                        void canvasTypeSelected(QString);
-                        void sessionParameters();
-                    private slots:
-                        void changeProjectorViewMode(int);
+                        void selectCanvasType(QString);
 
                     private:
+                        /// Update widgets from current mapping
+                        void dataToFrontend();
+
+                        /// Assign widget values to current mapping
+                        bool frontendToData();
                         void showParameterWidget();
                         QWidget* paramWidget_ = nullptr;
                         std::unique_ptr<Ui::Canvas> ui_;

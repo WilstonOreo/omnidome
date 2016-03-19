@@ -72,7 +72,7 @@ namespace omni
 
       void MultiSetupPreview::paintGL()
       {
-        if (!session()) return;
+        if (!dataModel()) return;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         visual::viewport(this);
@@ -86,14 +86,14 @@ namespace omni
 
         visual::with_current_context([&](QOpenGLFunctions& _)
         {
-          auto* _canvas = session()->canvas();
+          auto* _canvas = dataModel()->canvas();
 
           _.glEnable(GL_LIGHTING);
           _.glEnable(GL_COLOR_MATERIAL);
           _.glEnable(GL_DEPTH_TEST);
           if (_canvas)
           {
-            this->session_->drawCanvas(mapping::OutputMode::LIGHTING_ONLY);
+            this->vizSession_->drawCanvas(mapping::OutputMode::LIGHTING_ONLY);
           }
 
           _.glDisable(GL_DEPTH_TEST);
@@ -105,7 +105,7 @@ namespace omni
           }
 
           for (auto& _projector : projectors_)
-            session_->drawFrustumIntersection(_projector,"#0088cc",ProjectorViewMode::BOTH);
+            vizSession_->drawFrustumIntersection(_projector,"#0088cc",ProjectorViewMode::BOTH);
 
           _.glEnable(GL_DEPTH_TEST);
 

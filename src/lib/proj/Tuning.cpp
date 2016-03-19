@@ -20,6 +20,7 @@
 #include <omni/proj/Tuning.h>
 
 #include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
 #include <omni/proj/Setup.h>
 #include <omni/proj/ScreenSetup.h>
 #include <QColor>
@@ -112,7 +113,6 @@ namespace omni {
 
         bool Tuning::hasScreen() const
         {
-            qDebug() << "Tuning::hasScreen " << (projector_.screen() != ScreenSetup::standardScreen());
             return projector_.screen() != ScreenSetup::standardScreen();
         }
 
@@ -123,14 +123,22 @@ namespace omni {
 
         int Tuning::width() const
         {
-            return !projector_.screen() ?
+            if (!ScreenSetup::standardScreen()) {
+                return 0;
+            }
+
+            return !hasScreen() ?
                    ScreenSetup::subScreenWidth(ScreenSetup::standardScreen()) :
                    ScreenSetup::subScreenWidth(projector_.screen());
         }
 
         int Tuning::height() const
         {
-            return !projector_.screen() ?
+            if (!ScreenSetup::standardScreen()) {
+                return 0;
+            }
+
+            return !hasScreen() ?
                    ScreenSetup::standardScreen()->size().height() :
                    projector_.screen()->size().height();
         }
@@ -164,41 +172,43 @@ namespace omni {
             overlapOpacity_ = _overlapOpacity;
         }
 
+        /// Write tuning to stream
+        void Tuning::toStream(QDataStream& _os) const {
+            PropertyMap _map;
+            _map("color",color_)
+                ("projector",projector_)
+                ("warpGrid",warpGrid_)
+                ("blendMask",blendMask_)
+                ("outputDisabled",outputDisabled_)
+                ("overlapOpacity",overlapOpacity_)
+                ("colorCorrection",colorCorrection_)
+                ;
+            _os << _map;
+        }
+
+        /// Read tuning from stream
+        void Tuning::fromStream(QDataStream& _is) {
+            PropertyMap _map;
+            _is >> _map;
+            _map.get("color",color_);
+            _map.get("projector",projector_);
+            _map.get("warpGrid",warpGrid_);
+            _map.get("blendMask",blendMask_);
+            _map.get("outputDisabled",outputDisabled_);
+            _map.get("overlapOpacity",overlapOpacity_);
+            _map.get("colorCorrection",colorCorrection_);
+        }
+
         bool operator==(Tuning const& _lhs, Tuning const& _rhs)
         {
             return
                 OMNI_TEST_MEMBER_EQUAL(color_) &&
                 OMNI_TEST_MEMBER_EQUAL(projector_) &&
-                OMNI_TEST_PTR_MEMBER_EQUAL(projectorSetup_) &&
                 OMNI_TEST_MEMBER_EQUAL(warpGrid_) &&
                 OMNI_TEST_MEMBER_EQUAL(blendMask_) &&
                 OMNI_TEST_MEMBER_EQUAL(outputDisabled_) &&
+                OMNI_TEST_MEMBER_EQUAL(overlapOpacity_) &&
                 OMNI_TEST_MEMBER_EQUAL(colorCorrection_);
         }
     }
-}
-
-QDataStream& operator>>(QDataStream& _stream, omni::proj::Tuning& _tuning)
-{
-    using namespace omni::util;
-
-    QColor _color;
-    _stream >> _color;
-    _tuning.setColor(_color);
-    _stream >> _tuning.projector();
-    _stream >> _tuning.warpGrid();
-    _stream >> _tuning.blendMask();
-
-    return _stream;
-}
-
-QDataStream& operator<<(QDataStream& _stream, omni::proj::Tuning const& _tuning)
-{
-    using namespace omni::util;
-
-    _stream << _tuning.color();
-    _stream << _tuning.projector();
-    _stream << _tuning.warpGrid();
-    _stream << _tuning.blendMask();
-    return _stream;
 }

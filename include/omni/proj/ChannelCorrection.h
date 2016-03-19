@@ -81,4 +81,7 @@ namespace omni {
     }
 }
 
+QDataStream& operator>>(QDataStream&, omni::proj::ChannelCorrection&);
+QDataStream& operator<<(QDataStream&, omni::proj::ChannelCorrection const&);
+
 #endif /* OMNI_PROJ_CHANNELCORRECTION_H_ */

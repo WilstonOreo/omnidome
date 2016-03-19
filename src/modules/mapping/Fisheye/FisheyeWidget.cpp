@@ -40,9 +40,6 @@ namespace omni {
             void Fisheye::updateMappingParameters() {
                 auto* _fisheye = static_cast<omni::mapping::Fisheye*>(mapping());
                 _fisheye->setStretch(getParamAsFloat("Stretch"));
-                _fisheye->setRoll(rotation_->x());
-                _fisheye->setPitch(rotation_->y());
-                _fisheye->setYaw(rotation_->z());
                 _fisheye->setFlipHorizontal(getParamAsBool("Flip horizontal"));
                 _fisheye->setFlipVertical(getParamAsBool("Flip vertical"));
             }
@@ -50,15 +47,13 @@ namespace omni {
             void Fisheye::setup() {
                 if (!mapping()) return;
 
-                qDebug() << mapping();
                 this->locked([&]() {
                 // Set slider values for Fisheye mapping
                 auto* _fisheye = static_cast<omni::mapping::Fisheye*>(mapping());
-                rotation_ = addRotationParameters(_fisheye);
                 auto* _stretch = addOffsetWidget("Stretch",0.0,0.0,1.0);
                 _stretch->setValue(_fisheye->stretch());
                 _stretch->setSuffix("");
-                addFlipParameters();
+                addDefaultParameters();
             });
             }
 

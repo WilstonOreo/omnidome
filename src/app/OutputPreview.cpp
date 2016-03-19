@@ -37,8 +37,8 @@ namespace omni {
         }
 
         QRect OutputPreview::desktopRect() const {
-            if (!session()) return QRect();
-            QRect _rect = session()->screenSetup().combinedDesktopRect();
+            if (!dataModel()) return QRect();
+            QRect _rect = dataModel()->screenSetup().combinedDesktopRect();
             switch(renderOptions_.mappingOutputMode()) {
                 default:
                 case mapping::OutputMode::MAPPED_INPUT:
@@ -65,20 +65,20 @@ namespace omni {
 
         void OutputPreview::render() {
             return;
-            if (!session()) return;
+            if (!dataModel()) return;
 
-            Renderer _renderer(*session(),renderOptions_);
+            Renderer _renderer(*dataModel(),renderOptions_);
 
-            QRectF _rect = this->transformedRect(session()->screenSetup().combinedDesktopRect());
+            QRectF _rect = this->transformedRect(dataModel()->screenSetup().combinedDesktopRect());
 
             image_ = QImage(_rect.width(),_rect.height(),QImage::Format_ARGB32);
 
             std::map<omni::proj::Tuning const*,QImage> _images;
 
-            for (auto& _tuning : session()->tunings()) {
+            for (auto& _tuning : dataModel()->tunings()) {
                 auto _tuningPtr = _tuning.get();
 
-                QRectF _imageRect(session()->screenSetup().tuningRect(_tuningPtr));
+                QRectF _imageRect(dataModel()->screenSetup().tuningRect(_tuningPtr));
                 _imageRect = this->transformedRect(_imageRect);
 
                 qDebug() << _tuningPtr->color() << _imageRect;
@@ -121,26 +121,22 @@ namespace omni {
 
             //_painter.drawImage(_imageRect,image_);
 
-            auto _screens = session()->screenSetup().screens();
-            _screens.push_back(session()->screenSetup().standardScreen());
+            auto _screens = dataModel()->screenSetup().screens();
+            _screens.push_back(dataModel()->screenSetup().standardScreen());
 
             _painter.setPen(QPen(QColor("#FFFFFF")));
             for (auto& _screen : _screens) {
                 _painter.drawRect(transformedRect(_screen->geometry().translated(-desktopRect().topLeft())));
             }
 
-                _painter.drawRect(transformedRect(session()->screenSetup().virtualDesktopRect().translated(-desktopRect().topLeft())));
-
-
+                _painter.drawRect(transformedRect(dataModel()->screenSetup().virtualDesktopRect().translated(-desktopRect().topLeft())));
 
 
 //            for (auto& _rect : rectangles)
 
         }
 
-        void OutputPreview::sessionParameters() {
-            qDebug() << "OutputPreview::sessionParameters(): " << session();
-//            this->render();
+        void OutputPreview::dataToFrontend() {
         }
 
 

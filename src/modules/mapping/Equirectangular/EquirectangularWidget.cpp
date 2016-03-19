@@ -43,9 +43,6 @@ namespace omni {
 
                 _equirectangular->setStripTop(getParamAsFloat("Strip Top"));
                 _equirectangular->setStripBottom(getParamAsFloat("Strip Bottom"));
-                _equirectangular->setRoll(rotation_->x());
-                _equirectangular->setPitch(rotation_->y());
-                _equirectangular->setYaw(rotation_->z());
                 _equirectangular->setFlipHorizontal(getParamAsBool(
                                                         "Flip horizontal"));
                 _equirectangular->setFlipVertical(getParamAsBool("Flip vertical"));
@@ -58,14 +55,13 @@ namespace omni {
                     // Set slider values for Equirectangular mapping
                     auto *_equirectangular =
                         static_cast<omni::mapping::Equirectangular *>(mapping());
-                    rotation_ = addRotationParameters(_equirectangular);
                     auto* _stripTop = addOffsetWidget("Strip Top", _equirectangular->stripTop(),
                                                                      0.0, 1.0);
                     _stripTop->setSuffix("");
                     auto* _stripBottom = addOffsetWidget("Strip Bottom",
                                     _equirectangular->stripBottom(), 0.0, 1.0);
                     _stripBottom->setSuffix("");
-                    addFlipParameters();
+                    addDefaultParameters();
                 });
             }
         }

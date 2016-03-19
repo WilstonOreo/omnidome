@@ -21,6 +21,7 @@
 
 #include <omni/util.h>
 #include <omni/proj/Tuning.h>
+#include <omni/serialization/PropertyMap.h>
 
 namespace omni
 {
@@ -100,11 +101,10 @@ namespace omni
     void TuningList::fromStream(QDataStream& _stream)
     {
       clear();
-      int _size = 0;
-      _stream >> _size;
-
-      int _currentIdx = -1;
-      _stream >> _currentIdx;
+      PropertyMap _map;
+      _stream >> _map;
+      uint32_t _size = _map.getValue<uint32_t>("size",0);
+      int _currentIdx = _map.getValue<int>("currentIndex",-1);
 
       for (int i = 0; i < _size; ++i)
       {
@@ -117,8 +117,11 @@ namespace omni
 
     void TuningList::toStream(QDataStream& _stream) const
     {
-      _stream << int(container_type::size());
-      _stream << currentIndex();
+      PropertyMap _map;
+      _map("size",uint32_t(container_type::size()));
+      _map("currentIndex",currentIdx_);
+      _stream << _map;
+
       for (auto& _tuning : *this)
         _stream << *_tuning;
     }
@@ -147,16 +150,4 @@ namespace omni
       return (_idx >= 0) && (_idx < container_type::size());
     }
   }
-}
-
-QDataStream& operator<<(QDataStream& _stream, omni::proj::TuningList const& _list)
-{
-  _list.toStream(_stream);
-  return _stream;
-}
-
-QDataStream& operator>>(QDataStream& _stream, omni::proj::TuningList& _list)
-{
-  _list.fromStream(_stream);
-  return _stream;
 }

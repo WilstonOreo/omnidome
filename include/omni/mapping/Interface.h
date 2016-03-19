@@ -53,6 +53,7 @@ namespace omni
      */
     class Interface :
         public SerializationInterface,
+        public TypeIdInterface,
         public visual::Interface
     {
     public:
@@ -82,7 +83,9 @@ namespace omni
       bool flipVertical() const;
       void setFlipVertical(bool);
 
-      /// Flag which tells if this mapping uses UVW texture coordinates (true by default)
+      /**@brief Flag which tells if this mapping uses UVW texture coordinates (true by default)
+         @detail
+       **/
       inline virtual bool isUVW() const
       {
         return true;
@@ -97,10 +100,30 @@ namespace omni
       /// Return pointer to parameter widget
       virtual QWidget* widget() = 0;
 
-      inline virtual void draw() const {}
+      inline void draw() const { draw(1.0); }
+
+      inline virtual void draw(float _opacity) const {}
       inline virtual void update() {}
 
+      /// Return const ref to affine transform
+      inline AffineTransform const& transform() const;
+
+      /// Return ref to affine transform
+      inline AffineTransform& transform();
+
+      /// Set new affine transform
+      inline void setTransform(AffineTransform const& _transform);
+
+      /// Return matrix of transform
       virtual QMatrix4x4 matrix() const;
+
+      /**@brief If true, mapping transform is attached to canvas transform
+         @detail Is true by default
+       **/
+      bool isBoundToCanvas() const;
+
+      /// Set whether mapping transform is attached to canvas transform
+      void setBoundToCanvas(bool);
 
     protected:
       std::unique_ptr<QOpenGLShaderProgram> shader_;
@@ -117,6 +140,7 @@ namespace omni
       virtual QString fragmentShaderSourceCode() const;
 
       AffineTransform transform_;
+      bool boundToCanvas_ = true;
       bool flipHorizontal_ = false;
       bool flipVertical_ = false;
     };

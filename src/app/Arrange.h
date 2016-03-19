@@ -19,7 +19,8 @@
 
 #include <memory>
 #include <QWidget>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni {
     namespace ui {
@@ -30,22 +31,23 @@ namespace omni {
         }
         class Arrange :
             public QWidget,
-            public mixin::SessionWidget
+            public mixin::SharedDataModel<Session>
         {
             Q_OBJECT
+            OMNI_UI_SHARED_DATAMODEL(Session)
         public:
             Arrange(QWidget* = nullptr);
             ~Arrange();
 
-            void setSession(Session* _session);
-
             GLView3D* view();
             GLView3D const* view() const;
 
-        public slots:
+        signals:
+            void dataModelChanged();
 
         private:
-            void sessionParameters();
+            void dataToFrontend();
+            bool frontendToData();
 
             std::unique_ptr<Ui::Arrange> ui_;
         };

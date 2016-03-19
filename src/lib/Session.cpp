@@ -22,6 +22,7 @@
 #include <QDataStream>
 
 #include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
 
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
@@ -167,48 +168,43 @@ namespace omni
     _stream >> *this;
   }
 
+  void Session::toStream(QDataStream& _os) const {
+      PropertyMap _map;
+      _map("tunings",tunings_)
+          ("mapping",mapping_)
+          ("inputs",inputs_)
+          ("canvas",canvas_)
+          ("sceneSize",sceneSize_)
+          ("mode",util::enumToInt(mode_))
+          ("blendSettings",blendSettings_);
+      _os << _map;
+  }
+
+  void Session::fromStream(QDataStream& _is) {
+      PropertyMap _map;
+      _is >> _map;
+      _map.get("tunings",tunings_);
+      _map.getPtr("mapping",[&](Id const& _id) {
+         return setMapping(_id);
+      });
+      _map.get("inputs",inputs_);
+      _map.getPtr("canvas",[&](Id const& _id) {
+          return setCanvas(_id);
+      });
+      _map.get("sceneSize",sceneSize_);
+      mode_ = util::intToEnum<Mode>(_map.getValue<int>("mode"));
+      _map.get("blendSettings",blendSettings_);
+  }
+
   bool operator==(Session const& _lhs,Session const& _rhs)
   {
     return
       OMNI_TEST_MEMBER_EQUAL(tunings_) &&
       OMNI_TEST_PTR_MEMBER_EQUAL(mapping_) &&
       OMNI_TEST_MEMBER_EQUAL(inputs_) &&
-      OMNI_TEST_PTR_MEMBER_EQUAL(canvas_);
+      OMNI_TEST_PTR_MEMBER_EQUAL(canvas_) &&
+      OMNI_TEST_MEMBER_EQUAL(sceneSize_) &&
+      OMNI_TEST_MEMBER_EQUAL(mode_) &&
+      OMNI_TEST_MEMBER_EQUAL(blendSettings_);
   }
-}
-
-QDataStream& operator<<(QDataStream& _stream, omni::Session const& _session)
-{
-  using namespace omni::util;
-
-  _stream << _session.tunings();
-
-  serializePtr(_stream,_session.mapping());
-
-  _stream << _session.inputs();
-
-  serializePtr(_stream,_session.canvas());
-  return _stream;
-}
-
-QDataStream& operator>>(QDataStream& _stream, omni::Session& _session)
-{
-  using namespace omni::util;
-  _stream >> _session.tunings();
-
-  deserializePtr(_stream,[&](omni::Id const& _id) ->
-      omni::mapping::Interface*
-  {
-    return _session.setMapping(_id);
-  });
-
-  _stream >> _session.inputs();
-
-  deserializePtr(_stream,[&](omni::Id const& _id) ->
-      omni::canvas::Interface*
-  {
-    return _session.setCanvas(_id);
-  });
-
-  return _stream;
 }

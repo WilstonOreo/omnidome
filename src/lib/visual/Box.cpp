@@ -101,24 +101,5 @@ namespace omni {
 
             vbo_.buffer(_vertices, _indices);
         }
-
-        size_t Box::resX() const {
-            return resX_;
-        }
-
-        size_t Box::resY() const {
-            return resY_;
-        }
-
-        size_t Box::resZ() const {
-            return resZ_;
-        }
-
-        void Box::remesh(size_t _resX, size_t _resY, size_t _resZ) {
-            resX_ = _resX;
-            resY_ = _resY;
-            resZ_ = _resZ;
-            update();
-        }
     }
 }

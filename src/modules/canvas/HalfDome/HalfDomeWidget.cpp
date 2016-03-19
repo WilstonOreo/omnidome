@@ -37,43 +37,17 @@ namespace omni {
             void HalfDome::updateCanvasParameters() {
                 auto *_halfdome = static_cast<omni::canvas::HalfDome *>(canvas());
                 _halfdome->setDiameter(getParamAsFloat("Diameter"));
-                _halfdome->setCenter(QVector3D(
-                           getParamAsFloat("X Offset"),
-                           getParamAsFloat("Y Offset"),
-                           getParamAsFloat("Z Offset")));
-                _halfdome->angles().roll().setDegrees(rotation_->x());
-                _halfdome->angles().pitch().setDegrees(rotation_->y());
-                _halfdome->angles().yaw().setDegrees(rotation_->z());
             }
 
             void HalfDome::setup() {
                 if (!canvas()) return;
 
                 this->locked([&]() {
-                    rotation_ = addRotationWidget("Rotation");
                     auto* _diameter = addOffsetWidget("Diameter",5.0,0.5,20.0);
-                    auto *_xOffset = addOffsetWidget("X Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-                    auto *_yOffset = addOffsetWidget("Y Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-                    auto *_zOffset = addOffsetWidget("Z Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
 
                     /// Retrieve parameters for HalfDome canvas
                     auto* _halfdome = static_cast<omni::canvas::HalfDome*>(canvas());
                     _diameter->setValue(_halfdome->diameter());
-                    _xOffset->setValue(_halfdome->center().x());
-                    _yOffset->setValue(_halfdome->center().y());
-                    _zOffset->setValue(_halfdome->center().z());
-                    rotation_->setX(_halfdome->angles().roll().degrees());
-                    rotation_->setY(_halfdome->angles().pitch().degrees());
-                    rotation_->setZ(_halfdome->angles().yaw().degrees());
                 });
             }
         }

@@ -59,10 +59,14 @@ namespace omni
       mapping_ = _mapping;
     }
 
-    void MappingParameters::addFlipParameters() {
+    void MappingParameters::addDefaultParameters() {
         if (!mapping()) return;
         addCheckBox("Flip horizontal",mapping()->flipHorizontal());
         addCheckBox("Flip vertical",mapping()->flipVertical());
+
+        if (mapping()->isUVW()) {
+            addCheckBox("Bound to canvas",mapping()->isBoundToCanvas());
+        }
     }
 
     void MappingParameters::updateParameters()

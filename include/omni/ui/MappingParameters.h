@@ -49,19 +49,7 @@ namespace omni
       void updateParameters();
 
     protected:
-        void addFlipParameters();
-
-        template<typename T>
-        Rotation* addRotationParameters(T* _mapping) {
-            Rotation* _rotation = nullptr;
-            this->locked([&]() {
-                _rotation = addRotationWidget("Rotation");
-                _rotation->setX(_mapping->roll().degrees());
-                _rotation->setY(_mapping->pitch().degrees());
-                _rotation->setZ(_mapping->yaw().degrees());
-            });
-            return _rotation;
-        }
+        void addDefaultParameters();
 
     private:
       virtual void updateMappingParameters() = 0;

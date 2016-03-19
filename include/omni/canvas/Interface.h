@@ -39,6 +39,7 @@ namespace omni
      **/
     class Interface :
       public SerializationInterface,
+      public TypeIdInterface,
       public visual::Interface
     {
     public:
@@ -84,10 +85,25 @@ namespace omni
         return extent() * 0.5;
       }
 
+      /// Return const ref to affine transform
+      inline AffineTransform const& transform() const {
+          return transform_;
+      }
+
+      /// Return ref to affine transform
+      inline AffineTransform& transform() {
+          return transform_;
+      }
+
+      /// Set new affine transform
+      inline void setTransform(AffineTransform const& _transform) {
+          transform_ = _transform;
+      }
+
       /// Transformation matrix for canvas
       inline virtual QMatrix4x4 matrix() const
       {
-        return QMatrix4x4();
+        return transform_.matrix();
       }
 
       /// Returns pointer to parameter widget

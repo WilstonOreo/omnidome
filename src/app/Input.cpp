@@ -61,88 +61,99 @@ namespace omni
     {
     }
 
-    Session const* Input::session() const
+    void Input::dataToFrontend()
     {
-      return session_;
-    }
-
-    void Input::setSession(Session* _session)
-    {
-      //ui_->preview->hide();
-      session_=_session;
-      //ui_->preview->setSession(_session);
-
       prepareModel();
-      for (auto& _input : session_->inputs())
-      {
-        addItem(_input.get());
+      if (!dataModel()) {
+            if (paramWidget_) {
+                paramWidget_->deleteLater();
+                paramWidget_ = nullptr;
+            }
+          return;
       }
-      //ui_->preview->setVisible(session_->inputs().current() != nullptr);
 
-      emit inputChanged();
+      for (auto& _input : dataModel()->inputs())
+      {
+        addItem(_input.first,_input.second.get());
+      }
+      setupInputWidget();
     }
 
     void Input::addInput(QAction* _action)
     {
-      if (!session_) return;
+      if (!dataModel()) return;
 
-      auto* _input = session_->inputs().add(_action->text());
+      auto _idInput = dataModel()->inputs().add(_action->text());
+      auto& _id = _idInput.first;
+      auto& _input = _idInput.second;
+
       if (!_input) return;
 
       if (_input->canAdd())
       {
-        addItem(_input);
-        session_->inputs().setCurrentIndex(session_->inputs().size()-1);
-
+        addItem(_id,_input);
+        dataModel()->inputs().setCurrentId(_id);
         paramWidget_ = _input->widget();
         setupInputWidget();
       } else
       {
-        session_->inputs().remove(session_->inputs().size()-1);
+        dataModel()->inputs().remove(_id);
       }
     }
 
     void Input::removeSelection()
     {
-      if (session_->inputs().empty()) return;
+      if (dataModel()->inputs().empty()) return;
 
-      int _row = ui_->inputList->currentIndex().row() - 1;
-      if (_row < 0 || _row >= session_->inputs().size()) return;
+      int _row = ui_->inputList->currentIndex().row();
 
-      session_->inputs().remove(_row);
-      model_->removeRows(_row+1,1);
-      changeSelection(model_->index(_row-1,0));
+      qDebug() << "removeSelection: " << _row;
+      if (_row < 1 || _row > dataModel()->inputs().size()) return;
+
+      auto* _item = model_->item(_row);
+      qDebug() << "removeSelection: " << _item;
+      if (!_item) return;
+
+      dataModel()->inputs().remove(_item->text());
+      model_->removeRows(_row,1);
+      if (paramWidget_) {
+          paramWidget_->hide();
+      }
+      changeSelection(model_->index(_row,0));
 
       emit inputChanged();
     }
 
     void Input::clear()
     {
-      session_->inputs().clear();
+      dataModel()->inputs().clear();
       prepareModel();
       setupInputWidget();
-      emit inputChanged();
+    }
+
+    QString Input::itemId(int _row) const {
+      auto* _item = model_->item(_row);
+      if (!_item) return QString();
+      return _item->text();
     }
 
     void Input::changeSelection(QModelIndex _index)
     {
-      if (!session_) return;
-      if (_index.row() == session_->inputs().currentIndex()+1) return;
+      if (!dataModel()) return;
+      int _row = _index.row();
 
-      int _row = _index.row() - 1;
-      qDebug() << _row;
-
-      if (_row < 0 || _row >= session_->inputs().size())
+      if (_row < 1 || _row > dataModel()->inputs().size())
       {
           _row = -1;
       }
+      qDebug() << "changeSelection: " << itemId(_row);
 
-      session_->inputs().setCurrentIndex(_row);
+      dataModel()->inputs().setCurrentId(itemId(_row));
       setupInputWidget();
     }
 
     void Input::setupInputWidget() {
-        auto* _input = session_->inputs().current();
+        auto* _input = dataModel()->inputs().current();
         if (!_input) {
             if (paramWidget_) {
                 paramWidget_->deleteLater();
@@ -152,7 +163,7 @@ namespace omni
             return;
         }
 
-        paramWidget_ = session_->inputs().current()->widget();
+        paramWidget_ = dataModel()->inputs().current()->widget();
         if (paramWidget_) {
             QSizePolicy _sizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
             _sizePolicy.setVerticalStretch(1);
@@ -162,10 +173,9 @@ namespace omni
             // Configure layout
             widget()->layout()->addWidget(paramWidget_);
 
-            paramWidget_->show();
             emit inputChanged();
 
-            // Update parameter when canvas has changed    
+            // Update parameter when canvas has changed
             connect(paramWidget_,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
         }
 
@@ -181,35 +191,49 @@ namespace omni
     {
       model_.reset(new QStandardItemModel());
       model_->clear();
-      model_->setColumnCount(2);
-      model_->setHeaderData(0,Qt::Horizontal,"Input Type");
-      model_->setHeaderData(1,Qt::Horizontal,"Info");
+      model_->setColumnCount(3);
+      model_->setHeaderData(0,Qt::Horizontal,"Id");
+      model_->setHeaderData(1,Qt::Horizontal,"Input Type");
+      model_->setHeaderData(2,Qt::Horizontal,"Info");
       ui_->inputList->setModel(model_.get());
 
       QList<QStandardItem*> _row;
+      QStandardItem* _hash = new QStandardItem("#");
+      _hash->setEditable(false);
       QStandardItem* _item = new QStandardItem("(no input)");
       _item->setEditable(false);
+      _row << _hash;
       _row << _item;
       model_->invisibleRootItem()->appendRow(_row);
       ui_->inputList->resizeColumnToContents(0);
       ui_->inputList->resizeColumnToContents(1);
+      ui_->inputList->resizeColumnToContents(2);
+
+      if (paramWidget_) {
+         paramWidget_->deleteLater();
+         paramWidget_ = nullptr;
+      }
     }
 
-    void Input::addItem(input::Interface const* _input)
+    void Input::addItem(QString const& _id, input::Interface const* _input)
     {
       if (!_input) return;
 
       QList<QStandardItem*> _row;
-      QStandardItem* _item = new QStandardItem(_input->getTypeId());
-      _item->setEditable(false);
-      _row << _item;
-      _item = new QStandardItem(_input->infoText());
-      _item->setEditable(false);
-      _row << _item;
+      auto _addItem = [&](QString const& _id) {
+          QStandardItem* _item = new QStandardItem(_id);
+          _item->setEditable(false);
+          _row << _item;
+      };
+
+      _addItem(_id);
+      _addItem(_input->getTypeId().str());
+      _addItem(_input->infoText());
 
       model_->invisibleRootItem()->appendRow(_row);
       ui_->inputList->resizeColumnToContents(0);
       ui_->inputList->resizeColumnToContents(1);
+      ui_->inputList->resizeColumnToContents(2);
     }
   }
 }

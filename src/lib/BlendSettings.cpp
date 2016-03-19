@@ -19,6 +19,9 @@
 
 #include <omni/BlendSettings.h>
 
+#include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
+
 namespace omni {
     BlendSettings::ColorMode BlendSettings::colorMode() const
     {
@@ -48,5 +51,31 @@ namespace omni {
     /// Set flag if blend mask is visible in warp colorMode
     void BlendSettings::setShowInWarpMode(bool _showInWarpMode) {
         showInWarpMode_ = _showInWarpMode;
+    }
+
+    /// Deserialize from stream
+    void BlendSettings::fromStream(QDataStream& _is) {
+        PropertyMap _map;
+        _is >> _map;
+
+        colorMode_ = util::intToEnum<ColorMode>(_map.getValue<int>("colorMode"));
+        _map.get("showInWarpMode",showInWarpMode_);
+        _map.get("inputOpacity",inputOpacity_);
+    }
+
+    /// Serialize to stream
+    void BlendSettings::toStream(QDataStream& _os) const {
+        PropertyMap _map;
+        _map("colorMode",util::enumToInt(colorMode_));
+        _map("showInWarpMode",showInWarpMode_);
+        _map("inputOpacity",inputOpacity_);
+        _os << _map;
+    }
+
+    bool operator==(BlendSettings const& _lhs, BlendSettings const& _rhs) {
+        return
+            OMNI_TEST_MEMBER_EQUAL(colorMode_) &&
+            OMNI_TEST_MEMBER_EQUAL(showInWarpMode_) &&
+            OMNI_TEST_MEMBER_EQUAL(inputOpacity_);
     }
 }

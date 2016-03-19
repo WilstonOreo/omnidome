@@ -1,13 +1,12 @@
 varying vec3 uvw_vertex_position;
 varying vec3 uvw_normal;
+varying vec3 v_pos;
 
 const float PI = 3.14159265358979323846264;
 
 uniform sampler2D texture; // Texture image
 
-uniform float yaw_angle; // Any value allowed
-uniform float pitch_angle; // Any value allowed
-uniform float roll_angle; // Any value allowed
+uniform mat4 matrix;
 
 uniform bool flip_vertical;
 uniform bool flip_horizontal;
@@ -26,52 +25,6 @@ vec3 grayscale(vec3 c)
   float v = c.r*0.299 + c.g*0.587 + c.b*0.114;
   return vec3(v);
 }
-
-/// Convert degrees to radians
-float deg2rad(in float deg)
-{
-  return deg * PI / 180.0;
-}
-
-/// Calculates the rotation matrix of a rotation around X axis with an angle in radians
-mat3 rotateAroundX( in float angle )
-{
-  float s = sin(angle);
-  float c = cos(angle);
-  return mat3(1.0,0.0,0.0,
-              0.0,  c, -s,
-              0.0,  s,  c);
-}
-
-/// Calculates the rotation matrix of a rotation around Y axis with an angle in radians
-mat3 rotateAroundY( in float angle )
-{
-  float s = sin(angle);
-  float c = cos(angle);
-  return mat3(  c,0.0,  s,
-              0.0,1.0,0.0,
-               -s,0.0,  c);
-}
-
-/// Calculates the rotation matrix of a rotation around Z axis with an angle in radians
-mat3 rotateAroundZ( in float angle )
-{
-  float s = sin(angle);
-  float c = cos(angle);
-  return mat3(  c, -s,0.0,
-                s,  c,0.0,
-              0.0,0.0,1.0);
-}
-
-/// Calculate rotation by given yaw and pitch angles (in degrees!)
-mat3 rotationMatrix(in float yaw, in float pitch, in float roll)
-{
-  return rotateAroundZ(deg2rad(yaw)) *
-         rotateAroundY(deg2rad(-pitch)) *
-         rotateAroundX(deg2rad(roll));
-}
-
-
 
 float sphereIntersection(out vec3 uvw, in vec3 center) {
     vec3 n = uvw_normal;
@@ -121,12 +74,12 @@ float sphereIntersection(out vec3 uvw, in vec3 center) {
 vec3 light_color(vec3 color)
 {
    vec3 N = uvw_normal;
-   vec3 v = uvw_vertex_position;
+   vec3 v = v_pos;
    vec3 finalColor = vec3(0.0, 0.0, 0.0);
 
    for (int i=0;i<MAX_LIGHTS;i++)
    {
-      vec3 L = normalize((gl_LightSource[i].position * gl_TextureMatrix[0]).xyz - v);
+      vec3 L = normalize(gl_LightSource[i].position.xyz - v);
       vec3 E = normalize(-v); // we are in Eye Coordinates, so EyePos is (0,0,0)
       vec3 R = normalize(-reflect(L,N));
 
@@ -135,6 +88,7 @@ vec3 light_color(vec3 color)
 
       //calculate Diffuse Term:
       vec3 Idiff = vec3(max(dot(N,L), 0.0));
+        Idiff = clamp(Idiff, 0.0, 1.0);
 
       // calculate Specular Term:
       vec3 Ispec = vec3(1.0)
@@ -158,9 +112,7 @@ void main()
 //      discard;
   }
 
-
-  uvw = uvw * rotationMatrix(yaw_angle,pitch_angle,roll_angle);
-
+  uvw = (vec4(uvw,0.0) * matrix).xyz;
 
   if (output_mode == 2) // Output UVW map only
   {

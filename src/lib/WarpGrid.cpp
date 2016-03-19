@@ -19,9 +19,10 @@
 
 #include <omni/WarpGrid.h>
 
-#include <iostream>
 #include <QDataStream>
 #include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
+#include <omni/serialization/container.h>
 
 namespace omni {
     WarpGrid::WarpGrid() :
@@ -267,21 +268,28 @@ namespace omni {
 
 QDataStream& operator<<(QDataStream& _os, const omni::WarpGrid& _p)
 {
-    _os << _p.horizontal() << _p.vertical();
-    _os << omni::util::enumToInt(_p.interpolation());
-
+    omni::serialization::PropertyMap _map;
+    _map
+        ("horizontal",_p.horizontal())
+        ("vertical",_p.vertical())
+        ("interpolation",omni::util::enumToInt(_p.interpolation()));
+    _os << _map;
     for (auto& _point : _p.points()) _os << _point;
+
     return _os;
 }
 
 QDataStream& operator>>(QDataStream& _is, omni::WarpGrid& _p)
 {
     using namespace omni;
-    int _horizontal, _vertical;
-    int _interpolation;
 
-    _is >> _horizontal >> _vertical;
-    _is >> _interpolation;
+    omni::serialization::PropertyMap _map;
+    _is >> _map;
+    int _horizontal = _map.getValue<int>("horizontal");
+    int _vertical = _map.getValue<int>("vertical");
+    int _interpolation = _map.getValue<int>("interpolation",
+        util::enumToInt(WarpGrid::Interpolation::BICUBIC));
+
     _p.resize(_horizontal, _vertical);
     _p.setInterpolation(util::intToEnum<WarpGrid::Interpolation>(_interpolation));
 

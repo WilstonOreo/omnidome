@@ -50,18 +50,10 @@ namespace omni
       /// Return internally cached bounding box
       Box bounds() const;
 
-      /// Return center of sphere
-      QVector3D center() const;
-
-      /// Return set center of sphere
-      void setCenter(QVector3D const&);
-
       virtual void draw() const;
       virtual void drawAux() const;
 
       virtual void update();
-
-      virtual QMatrix4x4 matrix() const;
 
       virtual void toStream(QDataStream&) const;
       virtual void fromStream(QDataStream&);

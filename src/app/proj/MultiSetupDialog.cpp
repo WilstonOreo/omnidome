@@ -27,7 +27,8 @@ namespace omni
   {
     namespace proj
     {
-      MultiSetupDialog::MultiSetupDialog(omni::proj::MultiSetup* _multiSetup, Session* _session) :
+      MultiSetupDialog::MultiSetupDialog(omni::proj::MultiSetup* _multiSetup,
+        std::shared_ptr<Session> _session) :
         QDialog(nullptr),
         session_(_session),
         multiSetup_(_multiSetup),
@@ -37,9 +38,8 @@ namespace omni
 
         ui_->btnReplace->setVisible(!session_->tunings().empty());
 
-
         this->setWindowTitle("Multi Projector Setup");
-        ui_->preview->setSession(_session);
+        ui_->preview->setDataModel(_session);
         ui_->preview->setMultiSetup(multiSetup_);
         ui_->parameters->setMultiSetup(multiSetup_);
 
@@ -56,7 +56,8 @@ namespace omni
       {
       }
 
-      MultiSetupDialog::Result MultiSetupDialog::open(omni::proj::MultiSetup* _multiSetup, Session* _session)
+      MultiSetupDialog::Result MultiSetupDialog::open(omni::proj::MultiSetup* _multiSetup,
+          std::shared_ptr<Session> _session)
       {
         MultiSetupDialog _dialog(_multiSetup,_session);
         _dialog.exec();

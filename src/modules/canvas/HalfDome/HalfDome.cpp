@@ -40,34 +40,15 @@ namespace omni
         this->sphere_.draw();
     }
 
-    EulerAngles& HalfDome::angles()
-    {
-      return angles_;
-    }
-
-    EulerAngles const& HalfDome::angles() const
-    {
-      return angles_;
-    }
-
     void HalfDome::fromStream(QDataStream& _stream)
     {
       Dome::fromStream(_stream);
-      _stream >> angles_;
       update();
     }
 
     void HalfDome::toStream(QDataStream& _stream) const
     {
       Dome::toStream(_stream);
-      _stream << angles_;
-    }
-
-    QMatrix4x4 HalfDome::matrix() const
-    {
-      QMatrix4x4 _m;
-      _m.translate(center());
-      return _m * angles_.matrix();
     }
 
     QWidget* HalfDome::widget() {

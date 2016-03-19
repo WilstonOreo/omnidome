@@ -37,7 +37,7 @@ namespace omni
 
     void Fisheye::bind()
     {
-      Rotatable::bind();
+      Interface::bind();
       this->shader_->setUniformValue("stretch",GLfloat(stretch_));
     }
 
@@ -55,14 +55,14 @@ namespace omni
 
     void Fisheye::fromStream(QDataStream& _stream)
     {
-      Rotatable::fromStream(_stream);
+      Interface::fromStream(_stream);
       _stream >> stretch_;
       setStretch(stretch_);
     }
 
     void Fisheye::toStream(QDataStream& _stream) const
     {
-      Rotatable::toStream(_stream);
+      Interface::toStream(_stream);
       _stream << stretch();
     }
 

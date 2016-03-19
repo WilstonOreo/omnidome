@@ -38,45 +38,19 @@ namespace omni {
                 auto* _planar = static_cast<omni::canvas::Planar*>(canvas());
                 _planar->setHeight( getParamAsFloat("Length") );
                 _planar->setWidth( getParamAsFloat("Width") );
-                _planar->angles().roll().setDegrees(rotation_->x());
-                _planar->angles().pitch().setDegrees(rotation_->y());
-                _planar->angles().yaw().setDegrees(rotation_->z());
-                _planar->setCenter(QVector3D(
-                           getParamAsFloat("X Offset"),
-                           getParamAsFloat("Y Offset"),
-                           getParamAsFloat("Z Offset")));
             }
 
             void Planar::setup() {
                 if (!canvas()) return;
 
                 this->locked([&]() {
-                    rotation_ = addRotationWidget("Rotation");
                     auto* _length = addOffsetWidget("Length",1.0,0.1,10.0);
                     auto* _width = addOffsetWidget("Width",1.0,0.1,10.0);
-                    auto *_xOffset = addOffsetWidget("X Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-                    auto *_yOffset = addOffsetWidget("Y Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-                    auto *_zOffset = addOffsetWidget("Z Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
 
                     /// Retrieve parameters for Planar canvas
                     auto* _planar = static_cast<omni::canvas::Planar*>(canvas());
                     _width->setValue(_planar->width());
                     _length->setValue(_planar->height());
-                    _xOffset->setValue(_planar->center().x());
-                    _yOffset->setValue(_planar->center().y());
-                    _zOffset->setValue(_planar->center().z());
-                    rotation_->setX(_planar->angles().roll().degrees());
-                    rotation_->setY(_planar->angles().pitch().degrees());
-                    rotation_->setZ(_planar->angles().yaw().degrees());
                 });
             }
         }

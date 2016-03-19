@@ -43,13 +43,14 @@ namespace omni {
         namespace proj {
             Tuning::Tuning(
                 int            _index,
-                omni::Session *_session,
+                std::shared_ptr<Session> _session,
                 QWidget       *_parent) :
                 ParameterWidget(_parent),
                 mixin::TuningFromIndex<Tuning>(*this)
             {
                 setup();
-                setTuning(_index, _session);
+                setIndex(_index);
+                setDataModel(_session);
             }
 
             Tuning::Tuning(
@@ -62,23 +63,13 @@ namespace omni {
 
             Tuning::~Tuning()
             {
-                delete glView_;
                 delete titleBar_;
             }
 
-            void Tuning::setTuning(int _index, omni::Session *_session)
-            {
-                bool _newTuning = (session_ != _session) || (index() != _index);
-
-                session_ = _session;
-                setIndex(_index);
-
-                if (_newTuning)
-                {
-                    this->locked([&]() {
-                        glView_->setSession(session_);
+            void Tuning::dataToFrontend() {
+                        glView_->setDataModel(dataModel());
                         glView_->setTuningIndex(index());
-                        fullscreen_->setSession(session_);
+                        fullscreen_->setDataModel(dataModel());
                         fullscreen_->setTuningIndex(index());
                         titleBar_->setColor(tuning()->color());
 
@@ -117,12 +108,10 @@ namespace omni {
                             setParamAsFloat("Tower Height", _p->towerHeight());
                             setParamAsFloat("Shift",        _p->shift());
                         }
-                    });
+            }
 
-
-                    sessionModeChange();
-                    updateParameters();
-                }
+            bool Tuning::frontendToData() {
+                return false;
             }
 
             TuningGLView * Tuning::fullscreenWidget()
@@ -170,11 +159,6 @@ namespace omni {
                 tuning()->projector().setup("PeripheralSetup");
                 sessionModeChange();
                 emit projectorSetupChanged();
-            }
-
-            Session const * Tuning::session() const
-            {
-                return session_;
             }
 
             void Tuning::updateParameters()
@@ -474,9 +458,9 @@ namespace omni {
             {
                 int _numStates = int(NUM_WINDOW_STATES);
 
-                if (session())
+                if (dataModel())
                 {
-                    switch (session()->mode())
+                    switch (dataModel()->mode())
                     {
                     case Session::Mode::BLEND:
                     case Session::Mode::SCREENSETUP:
@@ -529,7 +513,7 @@ namespace omni {
 
             void Tuning::sessionModeChange()
             {
-                if (!session()) return;
+                if (!dataModel()) return;
 
                 this->locked([&]() {
                     if (windowState_ == NO_DISPLAY)
@@ -544,7 +528,7 @@ namespace omni {
                         return;
                     }
 
-                    auto _mode = session()->mode();
+                    auto _mode = dataModel()->mode();
 
                     // Show close button only in screen- and projection setup
                     titleBar_->setCloseButtonVisible(
@@ -632,9 +616,9 @@ namespace omni {
 
             void Tuning::startDrag()
             {
-                if (!session()) return;
+                if (!dataModel()) return;
 
-                if (session()->mode() != Session::Mode::SCREENSETUP) return;
+                if (dataModel()->mode() != Session::Mode::SCREENSETUP) return;
 
                 QDrag *drag         = new QDrag(this);
                 QMimeData *mimeData = new QMimeData;
@@ -694,7 +678,7 @@ namespace omni {
 
             void Tuning::focusOutEvent(QFocusEvent *event)
             {
-                if (!this->isLocked()) setSelected(false);
+//                if (!this->isLocked()) setSelected(false);
                 QWidget::focusOutEvent(event);
             }
         }

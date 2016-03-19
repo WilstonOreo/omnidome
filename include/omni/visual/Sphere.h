@@ -43,9 +43,6 @@ namespace omni
       qreal radius() const;
       void setRadius(qreal);
 
-      QVector3D scale() const;
-      void setScale(QVector3D const&);
-
       /// Return number of stacks (in Z direction)
       int stacks() const;
 
@@ -82,7 +79,6 @@ namespace omni
       float bottom_ = 0.0;
 
       qreal radius_ = 1.0;
-      QVector3D scale_;
 
       VertexVBO vbo_;
       VertexVBO::vertex_buffer_type vertices_;

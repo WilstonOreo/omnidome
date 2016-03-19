@@ -23,95 +23,117 @@
 
 namespace omni {
     namespace ui {
-
-        AffineTransform::AffineTransform(QWidget* _parent) :
+        AffineTransform::AffineTransform(QWidget *_parent) :
             QWidget(_parent),
             ui_(new Ui::AffineTransform)
         {
-            ui_->setupUi(this);
-
-            connect(ui_->btnRotate,SIGNAL(clicked()),this,SLOT(updateTransform()));
-            connect(ui_->btnScale,SIGNAL(clicked()),this,SLOT(updateTransform()));
-            connect(ui_->btnTranslate,SIGNAL(clicked()),this,SLOT(updateTransform()));
-
-            connect(ui_->rotation,SIGNAL(xChanged()),this,SLOT(updateTransform()));
-            connect(ui_->rotation,SIGNAL(yChanged()),this,SLOT(updateTransform()));
-            connect(ui_->rotation,SIGNAL(zChanged()),this,SLOT(updateTransform()));
-
-            for (auto& _scale : {ui_->scaleX,ui_->scaleY,ui_->scaleZ}) {
-                connect(_scale,SIGNAL(valueChanged()),this,SLOT(updateTransform()));
-                _scale->setRange(0.1,10.0);
-                _scale->setPivot(1.0);
-                _scale->setSingleStep(0.01);
-                _scale->setPageStep(0.1);
-            }
-
-            for (auto& _offset : {ui_->offsetX,ui_->offsetY,ui_->offsetZ}) {
-
-                _offset->setRange(-1.0,1.0);
-                _offset->setPivot(0.0);
-                _offset->setSingleStep(0.001);
-                _offset->setPageStep(0.01);
-
-                connect(_offset,SIGNAL(valueChanged()),this,SLOT(updateTransform()));
-                registerScaledSlider(_offset);
-            }
+            setup();
         }
 
-        AffineTransform::~AffineTransform() {
-
+        AffineTransform::AffineTransform(
+            omni::AffineTransform* _transform,
+            QWidget* _parent) :
+            QWidget(_parent),
+            ui_(new Ui::AffineTransform)
+        {
+            setup();
+            setDataModel(_transform);
         }
 
-        omni::AffineTransform const* AffineTransform::transform() const {
-            return transform_;
-        }
+        AffineTransform::~AffineTransform() {}
 
-        void AffineTransform::setTransform(omni::AffineTransform* _transform) {
-            transform_ = _transform;
+        void AffineTransform::dataToFrontend() {
 
-            this->locked([&]{
-                ui_->btnRotate->setChecked(transform_->rotationEnabled());
-                ui_->btnScale->setChecked(transform_->scaleEnabled());
-                ui_->btnTranslate->setChecked(transform_->translationEnabled());
-
-                ui_->rotation->setX(transform_->rotation().roll().degrees());
-                ui_->rotation->setY(transform_->rotation().pitch().degrees());
-                ui_->rotation->setZ(transform_->rotation().yaw().degrees());
-
-                ui_->scaleX->setValue(transform_->scale().x());
-                ui_->scaleY->setValue(transform_->scale().y());
-                ui_->scaleZ->setValue(transform_->scale().z());
-
-                ui_->offsetX->setValue(transform_->translation().x());
-                ui_->offsetY->setValue(transform_->translation().y());
-                ui_->offsetZ->setValue(transform_->translation().z());
-            });
-
-            updateTransform();
-        }
-
-        void AffineTransform::updateTransform() {
-            if (!transform() || this->isLocked()) return;
+            ui_->btnRotate->setChecked(dataModel()->rotationEnabled());
+            ui_->btnScale->setChecked(dataModel()->scaleEnabled());
+            ui_->btnTranslate->setChecked(dataModel()->translationEnabled());
 
             ui_->rotation->setVisible(ui_->btnRotate->isChecked());
-            transform_->setRotationEnabled(ui_->btnRotate->isChecked());
-            transform_->setRotation(
-                EulerAngles(ui_->rotation->x(),ui_->rotation->y(),ui_->rotation->z()));
-
             ui_->scaleX->setVisible(ui_->btnScale->isChecked());
             ui_->scaleY->setVisible(ui_->btnScale->isChecked());
             ui_->scaleZ->setVisible(ui_->btnScale->isChecked());
-            transform_->setScaleEnabled(ui_->btnScale->isChecked());
-            transform_->setScale(QVector3D(
-                ui_->scaleX->value(),ui_->scaleY->value(),ui_->scaleZ->value()));
-
             ui_->offsetX->setVisible(ui_->btnTranslate->isChecked());
             ui_->offsetY->setVisible(ui_->btnTranslate->isChecked());
             ui_->offsetZ->setVisible(ui_->btnTranslate->isChecked());
-            transform_->setTranslationEnabled(ui_->btnTranslate->isChecked());
-            transform_->setTranslation(QVector3D(
-                ui_->offsetX->value(),ui_->offsetY->value(),ui_->offsetZ->value()));
+
+            ui_->rotation->setRotation(dataModel()->rotation());
+
+            ui_->scaleX->setValue(dataModel()->scale().x());
+            ui_->scaleY->setValue(dataModel()->scale().y());
+            ui_->scaleZ->setValue(dataModel()->scale().z());
+
+            ui_->offsetX->setValue(dataModel()->translation().x());
+            ui_->offsetY->setValue(dataModel()->translation().y());
+            ui_->offsetZ->setValue(dataModel()->translation().z());
         }
 
+        bool AffineTransform::frontendToData() {
+            dataModel()->setRotationEnabled(ui_->btnRotate->isChecked());
+            dataModel()->setRotation(
+                EulerAngles(ui_->rotation->z(), ui_->rotation->y(),
+                            ui_->rotation->x()));
+
+            dataModel()->setScaleEnabled(ui_->btnScale->isChecked());
+            dataModel()->setScale(QVector3D(
+                                     ui_->scaleX->value(), ui_->scaleY->value(),
+                                     ui_->scaleZ->value()));
+
+            dataModel()->setTranslationEnabled(ui_->btnTranslate->isChecked());
+            dataModel()->setTranslation(QVector3D(
+                                           ui_->offsetX->value(),
+                                           ui_->offsetY->value(),
+                                           ui_->offsetZ->value()));
+            return true;
+        }
+
+        void AffineTransform::setup() {
+            ui_->setupUi(this);
+
+            connect(this, &AffineTransform::dataModelChanged,
+                    this, &AffineTransform::updateFrontend);
+
+            connect(ui_->btnRotate, &QToolButton::clicked,
+                    this, &AffineTransform::updateDataModel);
+
+            connect(ui_->btnScale, &QToolButton::clicked,
+                    this, &AffineTransform::updateDataModel);
+
+            connect(ui_->btnTranslate, &QToolButton::clicked,
+                    this, &AffineTransform::updateDataModel);
+
+            connect(ui_->rotation, &Rotation::rotationChanged,
+                    this, &AffineTransform::updateDataModel);
+
+            for (auto& _scale : { ui_->scaleX, ui_->scaleY, ui_->scaleZ }) {
+                connect(_scale, &RangedFloat::valueChanged,
+                        this, &AffineTransform::updateDataModel);
+                _scale->setRange(0.1, 10.0);
+                _scale->setPivot(1.0);
+                _scale->setDefaultValue(1.0);
+                _scale->setUseDefaultValue(true);
+                _scale->setSingleStep(0.01);
+                _scale->setPageStep(0.1);
+            }
+            ui_->scaleX->setLabel("X");
+            ui_->scaleY->setLabel("Y");
+            ui_->scaleZ->setLabel("Z");
+
+            for (auto& _offset : { ui_->offsetX, ui_->offsetY, ui_->offsetZ }) {
+                _offset->setRange(-1.0, 1.0);
+                _offset->setPivot(0.0);
+                _offset->setSingleStep(0.001);
+                _offset->setPageStep(0.01);
+                _offset->setDefaultValue(0.0);
+                _offset->setUseDefaultValue(true);
+
+                connect(_offset, &RangedFloat::valueChanged,
+                        this, &AffineTransform::updateDataModel);
+                registerScaledSlider(_offset);
+            }
+
+            ui_->offsetX->setLabel("X");
+            ui_->offsetY->setLabel("Y");
+            ui_->offsetZ->setLabel("Z");
+        }
     }
 }

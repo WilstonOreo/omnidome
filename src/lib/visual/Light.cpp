@@ -55,8 +55,8 @@ namespace omni {
                 glLightModelfv(GL_LIGHT_MODEL_AMBIENT,
                                colorParam(ambient()).data());
 
-                glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0);
-                glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,     0.0);
+        //        glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0);
+        //        glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,     0.0);
 
                 // -------------------------------------------
                 // Spotlight Attenuation
@@ -79,7 +79,7 @@ namespace omni {
 
                 // -------------------------------------------
                 // Material parameters:
-                glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0f);
+                glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 10.0f);
 
                 glShadeModel(GL_SMOOTH);
                 _.glEnable(_index);

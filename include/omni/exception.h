@@ -38,7 +38,11 @@ namespace omni
 
       /// This is the method which throw the message string
       virtual QString message() const throw() = 0;
+
+      /// Return type of exception
+      virtual Type type() const = 0;
     };
+
 #define OMNI_EXCEPTION(EXCEPTION)\
     inline virtual void raise() const { \
         throw *this; \
@@ -49,13 +53,27 @@ namespace omni
 
   namespace exception
   {
+    class Warning : public Exception {
+    public:
+      inline Type type() const { return WARNING; }
+    };
+
+    class Error : public Exception {
+    public:
+      inline Type type() const { return ERROR; }
+    };
+
+    class Fatal : public Exception {
+    public:
+      inline Type type() const { return FATAL; }
+    };
 
     /// An exception that occurs during Serialization
-    class Serialization: public Exception
+    class Serialization: public Error
     {
     public:
       OMNI_EXCEPTION(Serialization)
-      
+
       Serialization(omni::Id _id) :
         id_(_id)
       {}
@@ -69,6 +87,10 @@ namespace omni
       omni::Id id_;
     };
   }
+
+  using exception::Error;
+  using exception::Warning;
+  using exception::Fatal;
 }
 
 #endif /* OMNI_EXCEPTION_H_ */

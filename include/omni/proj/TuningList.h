@@ -22,6 +22,7 @@
 
 #include <memory>
 #include <vector>
+#include <omni/serialization/Interface.h>
 #include <omni/proj/Tuning.h>
 
 namespace omni
@@ -88,7 +89,6 @@ namespace omni
       friend bool operator==(TuningList const&,TuningList const&);
 
     private:
-
       /// Test of index is between 0 and size()-1
       bool validIndex(int) const;
 
@@ -97,8 +97,6 @@ namespace omni
   }
 }
 
-
-QDataStream& operator<<(QDataStream&, omni::proj::TuningList const&);
-QDataStream& operator>>(QDataStream&, omni::proj::TuningList&);
+OMNI_DECL_STREAM_OPERATORS(omni::proj::TuningList)
 
 #endif /* OMNI_TUNINGLIST_H */

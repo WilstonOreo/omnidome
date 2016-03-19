@@ -20,8 +20,12 @@
 #ifndef OMNI_INPUT_INTERFACE_H_
 #define OMNI_INPUT_INTERFACE_H_
 
+#include <memory>
 #include <set>
+#include <map>
+#include <functional>
 #include <QOpenGLTexture>
+#include <omni/exception.h>
 #include <omni/PluginInfo.h>
 #include <omni/serialization/Interface.h>
 #include <omni/mapping/Interface.h>
@@ -30,11 +34,30 @@ namespace omni
 {
   namespace input
   {
+    namespace exception {
+        /**@brief Exception is thrown when accessing input of a children
+           @detail Is only thrown when input cannot accept children
+         **/
+        class CannotHaveChildren : public omni::exception::Error {
+        public:
+            OMNI_EXCEPTION(CannotHaveChildren)
+
+            inline QString message() const throw()
+            {
+                return QString("Input cannot have children!");
+            }
+        };
+    }
+
     /// Generic input interface
-    class Interface : public SerializationInterface
+    class Interface :
+        public SerializationInterface,
+        public TypeIdInterface
     {
     public:
       typedef Interface interface_type;
+      typedef std::map<QString,std::unique_ptr<Interface>> children_type;
+      typedef std::function<void()> callback_type;
 
       /// Virtual destructor
       virtual ~Interface();
@@ -49,12 +72,6 @@ namespace omni
        * @detail Is called before destructor, when there is still an active OpenGL context
        **/
       inline virtual void free() {}
-
-      /// Returns an optional string with some basic information about the object
-      inline virtual QString infoText() const
-      {
-        return QString();
-      };
 
       /// An input must return width and height information
       virtual QSize size() const = 0;
@@ -71,6 +88,11 @@ namespace omni
         return size().height();
       }
 
+      /// Optional info text
+      QString infoText() const {
+          return QString();
+      }
+
       /// Make new parameter widget
       virtual QWidget* widget() = 0;
 
@@ -83,16 +105,39 @@ namespace omni
           return true;
       }
 
-      /**@brief An Input may have an optional ruler position
-       * @detail Position is between (0.0,0.0) and (1.0,1.0)
-       **/
-      virtual inline QPointF rulerPos() const
-      {
-        return QPointF(-1.0,-1.0);
+      inline  virtual bool canHaveChildren() const {
+          return false;
       }
 
-      /// Set ruler position.
-      virtual inline void setRulerPos(QPointF const&) {}
+      inline void setUpdateCallBack(callback_type _updatedCallback) {
+          updatedCallback_ = _updatedCallback;
+      }
+
+      callback_type updatedCallback() {
+          return updatedCallback_;
+      }
+
+      /// Input with id and return pointer to input when successfully added
+      Interface* addInput(QString const& _id, Interface* _i);
+
+      /// Remove input with id
+      void removeInput(QString const& _id);
+
+      /// Return pointer of input with id, nullptr if input does not exist
+      Interface* getInput(QString const& _id);
+
+      /// Return pointer of input with id, nullptr if input does not exist
+      Interface const* getInput(QString const& _id) const;
+
+      /// Return children
+      children_type& children();
+
+      /// Return children
+      children_type const& children() const;
+
+    private:
+        children_type children_;
+        callback_type updatedCallback_;
     };
 
     /// Input Factory typedef

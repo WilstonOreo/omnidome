@@ -24,8 +24,8 @@
 #include <QWidget>
 #include <omni/AffineTransform.h>
 #include <omni/ui/RangedFloat.h>
-#include <omni/ui/mixin/Locked.h>
 #include <omni/ui/mixin/Scale.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni {
     namespace ui {
@@ -36,24 +36,28 @@ namespace omni {
         /// A widget for editing an affine transformation
         class AffineTransform :
             public QWidget,
-            private mixin::Locked,
+            public mixin::UnsharedDataModel<omni::AffineTransform>,
             private mixin::Scale<RangedFloat> {
             Q_OBJECT
+            OMNI_UI_UNSHARED_DATAMODEL(omni::AffineTransform)
         public:
             AffineTransform(QWidget* = nullptr);
+            AffineTransform(omni::AffineTransform*, QWidget* = nullptr);
             ~AffineTransform();
 
-            omni::AffineTransform const* transform() const;
-            void setTransform(omni::AffineTransform*);
+        signals:
+            void dataModelChanged();
 
-        public slots:
-            void updateTransform();
-            
         private:
+            void setup();
 
+            /// Update sliders from current transform
+            void dataToFrontend();
+
+            /// Assign slider values to current transform
+            bool frontendToData();
 
             std::unique_ptr<Ui::AffineTransform> ui_;
-            omni::AffineTransform* transform_ = nullptr;
         };
     }
 }

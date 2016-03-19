@@ -52,8 +52,8 @@ namespace omni
       makeCurrent();
       vizTuning_->free();
       vizTuning_.reset();
-      session_->free();
-      session_.reset();
+      vizSession_->free();
+      vizSession_.reset();
       frameBuffer_.reset();
       warpGridBuffer_.reset();
       destroy();
@@ -168,13 +168,13 @@ namespace omni
 
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
     {
-      if (!session() || !vizTuning_ || (viewOnly() && !showCursor_)) return;
+      if (!dataModel() || !vizTuning_ || (viewOnly() && !showCursor_)) return;
 
       auto&& _rect = viewRect();
       float dx = float(event->x() - mousePosition().x()) / width() * _rect.width();
       float dy = float(event->y() - mousePosition().y()) / height() * _rect.height();
 
-      auto _mode = session()->mode();
+      auto _mode = dataModel()->mode();
 
       if (mouseDown_)
       {
@@ -227,13 +227,13 @@ namespace omni
     {
       makeCurrent();
       QOpenGLWidget::mousePressEvent(event);
-      if (!session() || !vizTuning_ || viewOnly()) return;
+      if (!dataModel() || !vizTuning_ || viewOnly()) return;
 
       this->mousePosition_ = event->pos();
       auto&& _newPos = screenPos(this->mousePosition_);
       mouseDown_ = true;
 
-      auto _mode = session()->mode();
+      auto _mode = dataModel()->mode();
       if (_mode == Session::Mode::WARP)
       {
         auto& _warpGrid = tuning()->warpGrid();
@@ -280,11 +280,11 @@ namespace omni
 
     void TuningGLView::mouseReleaseEvent(QMouseEvent *event)
     {
-      if (!session() || !vizTuning_ || viewOnly()) return;
+      if (!dataModel() || !vizTuning_ || viewOnly()) return;
 
       mouseDown_ = false;
       makeCurrent();
-      auto _mode = session()->mode();
+      auto _mode = dataModel()->mode();
 
       if (_mode == Session::Mode::BLEND)
       {
@@ -310,8 +310,8 @@ namespace omni
 
     void TuningGLView::wheelEvent(QWheelEvent* event)
     {
-      if (!session()) return;
-      auto _mode = session()->mode();
+      if (!dataModel()) return;
+      auto _mode = dataModel()->mode();
 
       if (_mode == Session::Mode::BLEND)
       {
@@ -418,7 +418,7 @@ namespace omni
           _.glDisable(GL_LIGHTING);
           _.glDisable(GL_CULL_FACE);
           _.glEnable(GL_DEPTH_TEST);
-          session_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,tuning()->outputDisabled() && viewOnly());
+          vizSession_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,tuning()->outputDisabled() && viewOnly());
           _.glDisable(GL_DEPTH_TEST);
       });
     }
@@ -475,7 +475,7 @@ namespace omni
         _.glPolygonOffset(1, 1);
 
           _.glEnable(GL_DEPTH_TEST);
-          session_->drawCanvas();
+          vizSession_->drawCanvas();
         });
       });
     }
@@ -503,7 +503,7 @@ namespace omni
 
     void TuningGLView::drawWarpGrid()
     {
-      drawOutput(session()->blendSettings().showInWarpMode() ? 1.0 : 0.0 /* zero blend mask opacity */);
+      drawOutput(dataModel()->blendSettings().showInWarpMode() ? 1.0 : 0.0 /* zero blend mask opacity */);
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
@@ -513,7 +513,7 @@ namespace omni
 
     void TuningGLView::drawBlendMask()
     {
-      auto& _blendSettings = session()->blendSettings();
+      auto& _blendSettings = dataModel()->blendSettings();
       auto _colorMode = _blendSettings.colorMode();
       float _inputOpacity = _blendSettings.inputOpacity();
       QColor _color = tuning()->color();
@@ -525,7 +525,7 @@ namespace omni
         glDisable(GL_DEPTH_TEST);
 /*
         ///@todo draw overlaps
-      for (auto& _tuning : session()->tunings())
+      for (auto& _tuning : dataModel()->tunings())
       {
         if (_tuning.get() == tuning()) continue;
 
@@ -541,7 +541,7 @@ namespace omni
           _.glDisable(GL_LIGHTING);
           _.glDisable(GL_CULL_FACE);
           _.glDisable(GL_DEPTH_TEST);
-          session_->drawFrustumIntersection(_tuning->projector(),_tuning->color(),ProjectorViewMode::BOTH);
+          vizSession_->drawFrustumIntersection(_tuning->projector(),_tuning->color(),ProjectorViewMode::BOTH);
           _.glDisable(GL_DEPTH_TEST);
       });
 
@@ -609,11 +609,11 @@ namespace omni
     {
       if (!isVisible() || this->isLocked( )|| !context() || aboutToBeDestroyed_) return;
 
-      if (!vizTuning_ || !session_ || !tuning()) return;
+      if (!vizTuning_ || !vizSession_ || !tuning()) return;
 
       if (tuning()->outputDisabled() && this->isFullScreen()) return;
 
-      session_->update();
+      vizSession_->update();
 
       if (!vizTuning_->initialized())
         vizTuning_->update();
@@ -627,13 +627,13 @@ namespace omni
         _.glClearColor(0.0,0.0,0.0,1.0);
       });
 
-      if (!session()->hasOutput())
+      if (!dataModel()->hasOutput())
       {
         drawTestCard();
         return;
       }
 
-      switch (session()->mode())
+      switch (dataModel()->mode())
       {
       case Session::Mode::SCREENSETUP:
         drawTestCard();

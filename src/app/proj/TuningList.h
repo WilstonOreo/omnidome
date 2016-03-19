@@ -108,6 +108,8 @@ namespace omni
         /// Signal is emitted when a tuning was removed
         void tuningRemoved();
 
+        /// Emitted when a single tuning has changed
+        void tuningChanged();
 
       private:
           /// Update sliders from current session

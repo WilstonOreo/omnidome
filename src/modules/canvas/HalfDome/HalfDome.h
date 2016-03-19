@@ -41,19 +41,11 @@ namespace omni
 
       void draw() const;
 
-      EulerAngles& angles();
-      EulerAngles const& angles() const;
-
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
 
-      QMatrix4x4 matrix() const;
-
       /// Make new box parameter widget
       QWidget* widget();
-
-    private:
-      EulerAngles angles_;
     };
   }
 }

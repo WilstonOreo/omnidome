@@ -36,7 +36,12 @@ namespace omni
 
     void Planar::draw() const
     {
-      plane_.draw();
+        glPushMatrix();
+        {
+            glScalef(GLfloat(width()),GLfloat(height()),1.0f);
+            plane_.draw();
+        }
+        glPopMatrix();
     }
 
     void Planar::update() {
@@ -67,26 +72,6 @@ namespace omni
       height_=_height;
     }
 
-    EulerAngles& Planar::angles()
-    {
-      return angles_;
-    }
-
-    EulerAngles const& Planar::angles() const
-    {
-      return angles_;
-    }
-
-    QVector3D Planar::center() const
-    {
-      return center_;
-    }
-
-    void Planar::setCenter(QVector3D const& _center)
-    {
-      center_=_center;
-    }
-
     omni::Box Planar::bounds() const
     {
       QVector2D _vec(width_,height_);
@@ -98,21 +83,12 @@ namespace omni
 
     void Planar::fromStream(QDataStream& _stream)
     {
-      _stream >> width_ >> height_ >> center_ >> angles_;
+      _stream >> width_ >> height_;
     }
 
     void Planar::toStream(QDataStream& _stream) const
     {
-      _stream << width_ << height_ << center_ << angles_;
-    }
-
-    QMatrix4x4 Planar::matrix() const
-    {
-      QMatrix4x4 _m;
-      _m.translate(center());
-      _m *= angles_.matrix();
-      _m.scale(QVector3D(width(),height(),1.0));
-      return _m;
+      _stream << width_ << height_;
     }
 
     QWidget* Planar::widget() {

@@ -27,8 +27,7 @@ namespace omni
   namespace visual
   {
     Sphere::Sphere(qreal _radius) :
-      radius_(_radius),
-      scale_(1.0,1.0,1.0)
+      radius_(_radius)
     {
       update();
     }
@@ -45,16 +44,6 @@ namespace omni
     void Sphere::setRadius(qreal _radius)
     {
       radius_=_radius;
-    }
-
-    QVector3D Sphere::scale() const
-    {
-      return scale_;
-    }
-
-    void Sphere::setScale(QVector3D const& _scale)
-    {
-      scale_ = _scale;
     }
 
     int Sphere::stacks() const
@@ -115,8 +104,7 @@ namespace omni
       with_current_context([this](QOpenGLFunctions& _)
       {
         // Scale offset
-        glScalef(radius_ * scale_.x(),radius_ * scale_.y(),radius_ * scale_.z());
-
+        glScalef(radius_, radius_, radius_);
         vbo_.bindAndDraw();
       });
       glPopMatrix();

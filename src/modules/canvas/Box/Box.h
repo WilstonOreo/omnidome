@@ -54,13 +54,6 @@ namespace omni
       /// Return size of the box
       QVector3D size() const;
 
-      /// Center is on the center of the bottom of the box
-      QVector3D center() const;
-
-      /// Return set center of sphere
-      void setCenter(QVector3D const&);
-
-
       /// Set size of the box
       void setSize(QVector3D const&);
 
@@ -74,9 +67,6 @@ namespace omni
       QWidget* widget();
 
       QMatrix4x4 matrix() const;
-
-      EulerAngles& angles();
-      EulerAngles const& angles() const;
 
     private:
       visual::Box vizBox_;

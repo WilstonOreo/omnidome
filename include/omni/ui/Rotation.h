@@ -20,13 +20,17 @@
 #ifndef OMNI_UI_ROTATION_H_
 #define OMNI_UI_ROTATION_H_
 
+#include <omni/EulerAngles.h>
+#include <omni/ui/mixin/Locked.h>
 #include "Dial.h"
 
 namespace omni
 {
         namespace ui {
 
-                class Rotation : public QWidget
+                class Rotation :
+                    public QWidget,
+                    protected mixin::Locked
                 {
                         Q_OBJECT
                     public:
@@ -37,18 +41,26 @@ namespace omni
                         double x() const;
                         double y() const;
                         double z() const;
+                        EulerAngles angles() const;
 
                     public slots:
                         void setX(double);
                         void setY(double);
                         void setZ(double);
 
+                        void setRotation(EulerAngles const&);
+
                     signals:
                         void xChanged();
                         void yChanged();
                         void zChanged();
+                        void rotationChanged();
 
                     private:
+                        void updateX();
+                        void updateY();
+                        void updateZ();
+
                         void init(double,double,double);
                         Dial* x_;
                         Dial* y_;

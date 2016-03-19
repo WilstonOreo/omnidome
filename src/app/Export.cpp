@@ -40,7 +40,7 @@ namespace omni {
 
         void Export::exportToFile()
         {
-            if (!session()) return;
+            if (!dataModel()) return;
             RenderOptions _options = getRenderOptions();
 
             QString _filename = QFileDialog::getSaveFileName(this,
@@ -50,7 +50,7 @@ namespace omni {
 
             if (_filename.isEmpty()) return;
 
-            session()->renderToFile(_filename, _options);
+            dataModel()->renderToFile(_filename, _options);
             ui_->editExportFilename->setText(_filename);
             QMessageBox::information(this, "Session exported.",
                                      QString(
@@ -99,9 +99,8 @@ namespace omni {
             return _renderOptions;
         }
 
-        void Export::sessionParameters() {
-            qDebug() << "Export::sessionParameters(): " << session();
-            ui_->outputPreview->setSession(session());
+        void Export::dataToFrontend() {
+            ui_->outputPreview->setDataModel(dataModel());
             renderPreview();
         }
 

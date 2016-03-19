@@ -33,7 +33,7 @@ namespace omni
     {
         this->setup(ui_);
 
-      connect(ui_->boxMappingSelect,SIGNAL(currentIndexChanged(QString)),this,SLOT(mappingTypeSelected(QString)));
+      connect(ui_->boxMappingSelect,SIGNAL(currentIndexChanged(QString)),this,SLOT(selectMappingType(QString)));
        for (auto& _idMappingClass : omni::mapping::Factory::classes()) {
             QString _id = _idMappingClass.first.str();
             ui_->boxMappingSelect->addItem(QIcon(QString(":/mapping/")+ _id + QString(".png")),_id);
@@ -45,11 +45,11 @@ namespace omni
     {
     }
 
-    void Mapping::sessionParameters()
+    void Mapping::dataToFrontend()
     {
-      if (!session()->mapping())
+      if (!dataModel()->mapping())
       {
-        session()->setMapping("Equirectangular");
+        dataModel()->setMapping("Equirectangular");
         setDefaultMappingForCanvas();
       }
 
@@ -58,50 +58,55 @@ namespace omni
       for (int i = 0; i < ui_->boxMappingSelect->count(); ++i)
       {
         QString _id = ui_->boxMappingSelect->itemData(i).toString();
-        if (_id == session()->mapping()->getTypeId().str())
+        if (_id == dataModel()->mapping()->getTypeId().str())
         {
           _index = i;
         }
       }
 
       ui_->boxMappingSelect->setCurrentIndex(_index);
-      emit mappingChanged();
     }
 
-    void Mapping::mappingTypeSelected(QString const& _id)
-    {
-      if (!session() || this->isLocked()) return;
+    /// Assign widget values to current mapping
+    bool Mapping::frontendToData() {
+        return false;
+    }
 
-      session()->setMapping(_id);
+    void Mapping::selectMappingType(QString const& _id)
+    {
+      if (!dataModel() || this->isLocked()) return;
 
       if (paramWidget_) {
           widget()->layout()->removeWidget(paramWidget_);
       }
 
-      auto* _mapping = session()->mapping();
+      dataModel()->setMapping(_id);
+
+      auto* _mapping = dataModel()->mapping();
       if (!_mapping) return;
 
-      paramWidget_ = _mapping->widget();//qobject_cast<MappingParameters*>(_mapping->widget());
+      paramWidget_ = _mapping->widget();
+
       if (paramWidget_) {
           // Configure layout
           widget()->layout()->addWidget(paramWidget_);
 
           // Update parameter when canvas has changed
-          connect(paramWidget_,SIGNAL(parametersUpdated()),this,SIGNAL(mappingChanged()));
+          connect(paramWidget_,SIGNAL(parametersUpdated()),this,SIGNAL(dataModelChanged()));
           paramWidget_->show();
       }
-      emit mappingTypeChanged();
+      emit dataModelChanged();
 
       /// Remove widget on next mapping type change
       if (paramWidget_) {
-          connect(this,SIGNAL(mappingTypeChanged()),paramWidget_,SLOT(deleteLater()));
+          connect(this,SIGNAL(dataModelChanged()),paramWidget_,SLOT(deleteLater()));
       }
     }
 
      void Mapping::setDefaultMappingForCanvas() {
-         if (!session() || this->isLocked()) return;
+         if (!dataModel() || this->isLocked()) return;
 
-         auto* _canvas = session()->canvas();
+         auto* _canvas = dataModel()->canvas();
          if (!_canvas) return;
 
          std::map<Id,int> _idToIndex;
@@ -127,7 +132,7 @@ namespace omni
              // Get type id of mapping and select it
              if (_mapping->getTypeId() == _canvas->defaultMappingMode()) {
                  ui_->boxMappingSelect->setCurrentIndex(_idToIndex[_id]);
-                 mappingTypeSelected(_mapping->getTypeId());
+                 selectMappingType(_mapping->getTypeId());
                  return;
              }
          }

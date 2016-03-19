@@ -269,5 +269,23 @@ namespace omni
       parameters_.emplace_back(_widget);
       return _widget;
     }
+
+    omni::ui::AffineTransform* ParameterWidget::addAffineTransformWidget(
+        QString const& _id, omni::AffineTransform* _transform) {
+
+        auto* _widget = new omni::ui::AffineTransform(_transform);
+        if (layout())
+            layout()->addWidget(_widget);
+
+        /// Install event filter to pipe through focus event to parent widget
+        _widget->installEventFilter(this);
+
+        /// Signal-slot connection for updating the data model
+        connect(_widget,SIGNAL(dataModelChanged()),this,SLOT(updateParameters()));
+
+        parameterMap_[_id] = _widget;
+        parameters_.emplace_back(_widget);
+        return _widget;
+    }
   }
 }

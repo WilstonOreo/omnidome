@@ -37,10 +37,6 @@ namespace omni {
             void FullSphere::updateCanvasParameters() {
                 auto *_fullsphere = static_cast<omni::canvas::FullSphere *>(canvas());
                 _fullsphere->setDiameter(getParamAsFloat("Diameter"));
-                _fullsphere->setCenter(QVector3D(
-                           getParamAsFloat("X Offset"),
-                           getParamAsFloat("Y Offset"),
-                           getParamAsFloat("Z Offset")));
             }
 
             void FullSphere::setup() {
@@ -48,25 +44,9 @@ namespace omni {
 
                 this->locked([&]() {
                     auto* _diameter = addOffsetWidget("Diameter",5.0,0.5,20.0);
-                    auto *_xOffset = addOffsetWidget("X Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-                    auto *_yOffset = addOffsetWidget("Y Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-                    auto *_zOffset = addOffsetWidget("Z Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-
                     /// Retrieve parameters for FullSphere canvas
                     auto* _fullsphere = static_cast<omni::canvas::FullSphere*>(canvas());
                     _diameter->setValue(_fullsphere->diameter());
-                    _xOffset->setValue(_fullsphere->center().x());
-                    _yOffset->setValue(_fullsphere->center().y());
-                    _zOffset->setValue(_fullsphere->center().z());
                 });
             }
         }

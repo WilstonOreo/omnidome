@@ -34,9 +34,9 @@ namespace omni {
 
                 int index() const {
                     if (index_ >= 0) return index_;
-                    if (!widget_.session()) return -1;
+                    if (!widget_.dataModel()) return -1;
 
-                    return widget_.session()->tunings().currentIndex();
+                    return widget_.dataModel()->tunings().currentIndex();
                 }
 
                 void setIndex(int _index) {
@@ -48,11 +48,13 @@ namespace omni {
                 }
 
                 omni::proj::Tuning* tuning() {
-                    return widget_.session() ? widget_.session()->tunings()[index()] : nullptr;
+                    return widget_.dataModel() ?
+                        widget_.dataModel()->tunings()[index()] : nullptr;
                 }
 
                 omni::proj::Tuning const* tuning() const {
-                    return widget_.session() ? widget_.session()->tunings()[index()] : nullptr;
+                    return widget_.dataModel() ?
+                        widget_.dataModel()->tunings()[index()] : nullptr;
                 }
 
                 omni::BlendMask* blendMask()

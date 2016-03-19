@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>308</width>
-    <height>337</height>
+    <width>350</width>
+    <height>324</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
     <number>4</number>
+   </property>
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMaximumSize</enum>
    </property>
    <property name="leftMargin">
     <number>4</number>
@@ -29,6 +32,148 @@
    <property name="bottomMargin">
     <number>4</number>
    </property>
+   <item>
+    <widget class="QToolButton" name="btnRotate">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Rotate</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="omni::ui::Rotation" name="rotation" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>72</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>96</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="btnTranslate">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Translate</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="omni::ui::RangedFloat" name="offsetX" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="omni::ui::RangedFloat" name="offsetY" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="omni::ui::RangedFloat" name="offsetZ" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="btnScale">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Scale</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="omni::ui::RangedFloat" name="scaleX" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="omni::ui::RangedFloat" name="scaleY" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="omni::ui::RangedFloat" name="scaleZ" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QWidget" name="toggles" native="true">
      <property name="sizePolicy">
@@ -50,95 +195,8 @@
       <property name="bottomMargin">
        <number>2</number>
       </property>
-      <item>
-       <widget class="QToolButton" name="btnRotate">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Rotate</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btnTranslate">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Translate</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btnScale">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Scale</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <widget class="omni::ui::Rotation" name="rotation" native="true"/>
-   </item>
-   <item>
-    <widget class="omni::ui::RangedFloat" name="offsetX" native="true"/>
-   </item>
-   <item>
-    <widget class="omni::ui::RangedFloat" name="offsetY" native="true"/>
-   </item>
-   <item>
-    <widget class="omni::ui::RangedFloat" name="offsetZ" native="true"/>
-   </item>
-   <item>
-    <widget class="omni::ui::RangedFloat" name="scaleX" native="true"/>
-   </item>
-   <item>
-    <widget class="omni::ui::RangedFloat" name="scaleY" native="true"/>
-   </item>
-   <item>
-    <widget class="omni::ui::RangedFloat" name="scaleZ" native="true"/>
    </item>
   </layout>
  </widget>

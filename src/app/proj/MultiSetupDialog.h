@@ -22,6 +22,8 @@
 
 #include <QDialog>
 #include <omni/proj/MultiSetup.h>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
@@ -34,7 +36,8 @@ namespace omni
         class MultiSetupDialog;
       };
 
-      class MultiSetupDialog : public QDialog
+      class MultiSetupDialog :
+        public QDialog
       {
         Q_OBJECT
       public:
@@ -45,10 +48,12 @@ namespace omni
           REPLACE
         };
 
-        MultiSetupDialog(omni::proj::MultiSetup* _multiSetup, Session* _session);
+        MultiSetupDialog(omni::proj::MultiSetup* _multiSetup,
+            std::shared_ptr<Session> _session);
         ~MultiSetupDialog();
 
-        static Result open(omni::proj::MultiSetup* _multiSetup, Session* _session);
+        static Result open(omni::proj::MultiSetup* _multiSetup,
+            std::shared_ptr<Session> _session);
 
       public slots:
         void replace();
@@ -56,7 +61,7 @@ namespace omni
         void cancel();
 
       private:
-        Session* session_ = nullptr;
+        std::shared_ptr<Session> session_;
         omni::proj::MultiSetup* multiSetup_ = nullptr;
         std::unique_ptr<Ui::MultiSetupDialog> ui_;
         Result result_ = Result::CANCELLED;

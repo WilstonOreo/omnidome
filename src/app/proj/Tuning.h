@@ -22,6 +22,7 @@
 
 #include <omni/proj/Tuning.h>
 #include <omni/ui/ParameterWidget.h>
+#include <omni/ui/mixin/DataModel.h>
 #include <omni/ui/mixin/TuningFromIndex.h>
 #include "proj/TuningLayout.h"
 
@@ -48,10 +49,11 @@ namespace omni
        **/
       class Tuning :
         public ParameterWidget,
-        public mixin::TuningFromIndex<Tuning>,
-        protected mixin::Locked
+        public mixin::SharedDataModel<Session>,
+        public mixin::TuningFromIndex<Tuning>
       {
         Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
       public:
         /// View mode (determines which elements are to be displayed)
         enum WindowState
@@ -69,24 +71,16 @@ namespace omni
         Tuning(QWidget* _parent = nullptr);
 
         /// Constructs with a given tuning (called by default from TuningList)
-        Tuning(int _index, omni::Session* _session, QWidget* _parent = nullptr);
+        Tuning(int _index, std::shared_ptr<omni::Session> _session, QWidget* _parent = nullptr);
 
         /// Destructor
         virtual ~Tuning();
-
-        /// Set tuning from session and index
-        void setTuning(int _index, omni::Session*);
 
         TuningGLView* fullscreenWidget();
         TuningGLView const* fullscreenWidget() const;
 
         TuningGLView* previewWidget();
         TuningGLView const* previewWidget() const;
-
-        inline Session* session() {
-            return session_;
-        }
-        Session const* session() const;
 
         /// Return selected flag
         bool isSelected() const;
@@ -134,6 +128,7 @@ namespace omni
         void selected(int);
         void closed(int);
         void projectorSetupChanged();
+        void dataModelChanged();
 
       protected:
         /// Handles resizing of sliders and preview
@@ -177,6 +172,9 @@ namespace omni
         void prepareRemove();
 
       private:
+        void dataToFrontend();
+        bool frontendToData();
+
         /// Setup (only called in constructor)
         void setup();
 
@@ -189,9 +187,6 @@ namespace omni
         void addGroup(QString const& _groupName, widgetgroup_type const& _widgets);
 
         void setGroup(QString const& _groupName);
-
-        // The associated session
-        omni::Session* session_ = nullptr;
 
         /// Title bar widget
         TitleBar* titleBar_ = nullptr;

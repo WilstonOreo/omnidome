@@ -37,6 +37,8 @@ namespace omni {
                 void updateCanvasParameters();
 
                 void setup();
+
+                omni::ui::AffineTransform* transform_;
             };
         }
     }

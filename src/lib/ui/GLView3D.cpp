@@ -39,10 +39,10 @@ namespace omni
 
     bool GLView3D::initialize()
     {
-      if (!session() || initialized() || !context()) return false;
+      if (!dataModel() || initialized() || !context()) return false;
 
       using namespace visual;
-      float _radius = session()->canvas() ? session()->canvas()->radius() : 5.0;
+      float _radius = dataModel()->canvas() ? dataModel()->canvas()->radius() : 5.0;
 
       camera_ = Camera(
                   Tracker(QVector3D(0,0,0), PolarVec(-45.0,45.0,_radius * 5.0)));
@@ -61,7 +61,7 @@ namespace omni
 
       updateLight();
       grid_.update();
-      this->session_->update();
+      this->vizSession_->update();
       return true;
     }
 
@@ -79,9 +79,9 @@ namespace omni
 
     void GLView3D::paintGL()
     {
-      if (!session() || this->isLocked()) return;
+      if (!dataModel() || this->isLocked()) return;
 
-      this->session_->update();
+      this->vizSession_->update();
       glEnable(GL_DEPTH_TEST);
 
       makeCurrent();
@@ -93,17 +93,17 @@ namespace omni
       glLoadIdentity();
       updateLight();
 
-      this->session_->drawCanvas(displayInput_ && session()->hasOutput() ?
+      this->vizSession_->drawCanvas(displayInput_ && dataModel()->hasOutput() ?
           mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
       if (displayProjectors()) {
-          this->session_->drawProjectors();
+          this->vizSession_->drawProjectors();
       }
 
       if (displayProjectedAreas()) {
-          this->session_->drawCanvasWithFrustumIntersections(projectorViewMode_);
+          this->vizSession_->drawCanvasWithFrustumIntersections(projectorViewMode_);
       }
       if (displayProjectors()) {
-          this->session_->drawProjectorHalos();
+          this->vizSession_->drawProjectorHalos();
       }
 
       if (displayGrid()) {
@@ -115,14 +115,14 @@ namespace omni
 
     void GLView3D::wheelEvent(QWheelEvent* event)
     {
-      if (!session()) return;
+      if (!dataModel()) return;
 
       float _r = event->delta()/100.0;
       camera_.track( 0, 0, _r );
 
-      if (session()->canvas())
+      if (dataModel()->canvas())
       {
-        auto _r = session()->canvas()->radius();
+        auto _r = dataModel()->canvas()->radius();
         camera_.limitDistance(_r*0.1,_r*10.0);
       }
 

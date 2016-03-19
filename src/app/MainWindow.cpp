@@ -127,6 +127,8 @@ MainWindow::MainWindow(QMainWindow *parent) :
         // Connect projector position change with view update
         connect(ui_->tuningList, SIGNAL(dataModelChanged()), this,
                 SLOT(setTuningIndex()));
+        connect(ui_->tuningList, SIGNAL(tuningChanged()), this,
+                SLOT(updateAllViews()));
         connect(ui_->tuningList, &proj::TuningList::dataModelChanged, toolBar_.get(),
                 &ToolBar::updateFrontend);
 
@@ -138,7 +140,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
         // Connect canvas parameter change with view update
         connect(ui_->dockCanvasWidget, SIGNAL(
-                    canvasChanged()),                     this,
+                    dataModelChanged()),                     this,
                 SLOT(modified()));
         connect(ui_->dockCanvasWidget, SIGNAL(canvasTypeChanged()),
                 ui_->dockMappingWidget, SLOT(setDefaultMappingForCanvas()));
@@ -153,10 +155,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
         // Update all views when mapping mode has changed
         connect(ui_->dockMappingWidget, SIGNAL(
-                    mappingChanged()),                    this,
-                SLOT(modified()));
-        connect(ui_->dockMappingWidget, SIGNAL(
-                    mappingTypeChanged()),                this,
+                    dataModelChanged()),                    this,
                 SLOT(modified()));
 
         // Update all views when warp grid has changed
@@ -169,7 +168,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
         // Update all views when color correction has changed
         connect(ui_->dockColorCorrectionWidget, SIGNAL(
-                    colorCorrectionChanged()),                  this,
+                    dataModelChanged()),                  this,
                 SLOT(modified()));
 
         // Connect add tuning button with tuning list
@@ -215,25 +214,25 @@ void MainWindow::readSettings()
 void MainWindow::setupSession()
 {
     using util::enumToInt;
-    qDebug() << "setupSession: " << enumToInt(session_->mode());
+    qDebug() << "setupSession: " << enumToInt(session_->mode()) << " " << session_.use_count();
     locked_ = true;
     {
         toolBar_->setDataModel(session_);
         // Set session to pages
-        arrange_->setSession(session_.get());
-        live_->setSession(session_.get());
-        tuningView_->setSession(session_.get());
-        export_->setSession(session_.get());
+        arrange_->setDataModel(session_);
+        live_->setDataModel(session_);
+        tuningView_->setDataModel(session_);
+        export_->setDataModel(session_);
 
         ui_->tuningList->setDataModel(session_);
-        ui_->dockMappingWidget->setSession(session_.get());
-        ui_->dockCanvasWidget->setSession(session_.get());
-        ui_->dockInputsWidget->setSession(session_.get());
+        ui_->dockInputsWidget->setDataModel(session_);
+        ui_->dockMappingWidget->setDataModel(session_);
+        ui_->dockCanvasWidget->setDataModel(session_);
         ui_->dockWarpWidget->setDataModel(session_);
         ui_->dockBlendWidget->setDataModel(session_);
-        ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
+        ui_->dockColorCorrectionWidget->setDataModel(session_);
     }
-
+    qDebug() << "setupSession: " << enumToInt(session_->mode()) << " " << session_.use_count();
     setMode();
 
     locked_ = false;
@@ -395,7 +394,7 @@ void MainWindow::setTuningIndex()
     tuningView_->setTuningIndex(_index);
     tuningView_->setChildViews(ui_->tuningList->getViews(_index));
 
-    ui_->dockColorCorrectionWidget->setTuning(session_->tunings().current());
+    ui_->dockColorCorrectionWidget->updateFrontend();
     ui_->dockBlendWidget->updateFrontend();
     ui_->dockWarpWidget->updateFrontend();
 }

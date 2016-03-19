@@ -40,9 +40,6 @@ namespace omni {
             void CubeMap::updateMappingParameters() {
                 auto *_cubemap =
                     static_cast<omni::mapping::CubeMap *>(mapping());
-                _cubemap->setRoll(rotation_->x());
-                _cubemap->setPitch(rotation_->y());
-                _cubemap->setYaw(rotation_->z());
                 _cubemap->setFlipHorizontal(getParamAsBool(
                                                         "Flip horizontal"));
                 _cubemap->setFlipVertical(getParamAsBool("Flip vertical"));
@@ -55,8 +52,7 @@ namespace omni {
                     // Set slider values for CubeMap mapping
                     auto *_cubemap =
                         static_cast<omni::mapping::CubeMap *>(mapping());
-                    rotation_ = addRotationParameters(_cubemap);
-                    addFlipParameters();
+                    addDefaultParameters();
                 });
             }
         }

@@ -16,26 +16,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef OMNI_SERIALIZATION_NODE_H_
-#define OMNI_SERIALIZATION_NODE_H_
 
-#include <memory>
-#include <map>
-#include <QString>
-#include <QByteArray>
-#include <QDataStream>
-#include <QVariant>
+#ifndef OMNI_UI_TESTINPUTPREVIEW_H_
+#define OMNI_UI_TESTINPUTPREVIEW_H_
+
+#include <omni/input/TestImage.h>
+#include <omni/ui/InputPreview.h>
 
 namespace omni {
-    namespace serialization {
-        class Node {
+    namespace ui {
+        class TestInputPreview : public InputPreview {
+            Q_OBJECT
         public:
+            TestInputPreview(QWidget* = nullptr);
+            TestInputPreview(input::TestImage*, QWidget* = nullptr);
+            ~TestInputPreview();
+
+        protected:
+            void mouseMoveEvent(QMouseEvent *event);
+            void mousePressEvent(QMouseEvent *event);
+            void mouseReleaseEvent(QMouseEvent *event);
 
         private:
-            QByteArray data_;
-            std::map<QString,std::unique_ptr<Node>> children_;
-        }
+            /// Set ruler position of input from widget coordinates
+            void setRulerPos(QPointF const&);
+        };
     }
 }
 
-#endif /* OMNI_SERIALIZATION_NODE_H_ */
+#endif /* OMNI_UI_TESTINPUTPREVIEW_H_ */

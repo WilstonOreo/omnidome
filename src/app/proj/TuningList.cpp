@@ -77,8 +77,6 @@ namespace omni
         sessionModeChange();
       }
 
-
-
       /// Return fullscreen and preview widget from index
       std::set<TuningGLView*> TuningList::getViews(int _index) const
       {
@@ -127,7 +125,7 @@ namespace omni
         _multiSetup.reset(omni::proj::MultiSetupFactory::create(_multiSetupId));
         if (!_multiSetup) return;
 
-        auto _result = proj::MultiSetupDialog::open(_multiSetup.get(),dataModel().get());
+        auto _result = proj::MultiSetupDialog::open(_multiSetup.get(),dataModel());
         auto&& _projectors = _multiSetup->projectors();
 
         int _numTunings = dataModel()->tunings().size();
@@ -173,13 +171,13 @@ namespace omni
           ++_index;
         }
 
-        widgets_.emplace_back(new ui::proj::Tuning(_index,dataModel().get(),this));
+        widgets_.emplace_back(new ui::proj::Tuning(_index,dataModel(),this));
         auto _widget = widgets_.back().get();
         contents_->layout()->addWidget(_widget);
 
         _widget->connect(_widget,SIGNAL(selected(int)),this,SLOT(setTuningIndex(int)));
         _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
-        _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(dataModelChanged()));
+        _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(tuningChanged()));
         _widget->sessionModeChange();
 
         emit tuningAdded();
@@ -253,7 +251,7 @@ namespace omni
         // Re assign tuning indices to remaining widgets
         for (int i = 0; i < dataModel()->tunings().size(); ++i)
         {
-          widgets_[i]->setTuning(i,dataModel().get());
+          widgets_[i]->setIndex(i);
         }
 
         setTuningIndex(std::max(_index-1,0));

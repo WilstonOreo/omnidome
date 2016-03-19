@@ -24,124 +24,157 @@
 
 #include <QOpenGLShaderProgram>
 
+namespace omni {
+    namespace mapping {
+        Interface::Interface()
+        {}
 
-namespace omni
-{
-  namespace mapping
-  {
-    Interface::Interface()
-    {
+        Interface::~Interface()
+        {}
+
+        void Interface::initialize()
+        {
+            /// Make shader
+            shader_.reset(new QOpenGLShaderProgram());
+            shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,
+                                             vertexShaderSourceCode());
+            shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,
+                                             fragmentShaderSourceCode());
+            shader_->link();
+        }
+
+        void Interface::bind() {
+            if (!shader_) initialize();
+
+            if (shader_)
+            {
+                shader_->bind();
+                shader_->setUniformValue("flip_horizontal", flipHorizontal_);
+                shader_->setUniformValue("flip_vertical",   flipVertical_);
+
+                if (isUVW()) {
+                    shader_->setUniformValue("bound_to_canvas", boundToCanvas_);
+                    shader_->setUniformValue("matrix",          matrix());
+                }
+            }
+        }
+
+        void Interface::bind(OutputMode _outputMode, bool _grayscale)
+        {
+            bind();
+
+            if (shader_)
+            {
+                shader_->setUniformValue("output_mode",
+                                                        util::enumToInt(
+                                             _outputMode));
+                shader_->setUniformValue("gray_output", _grayscale);
+            }
+        }
+
+        void Interface::release()
+        {
+            if (shader_) shader_->release();
+        }
+
+        void Interface::fromStream(QDataStream&)
+        {}
+
+        void Interface::toStream(QDataStream&) const
+        {}
+
+        bool Interface::flipHorizontal() const
+        {
+            return flipHorizontal_;
+        }
+
+        void Interface::setFlipHorizontal(bool _flipHorizontal)
+        {
+            flipHorizontal_ = _flipHorizontal;
+        }
+
+        bool Interface::flipVertical() const
+        {
+            return flipVertical_;
+        }
+
+        void Interface::setFlipVertical(bool _flipVertical)
+        {
+            flipVertical_ = _flipVertical;
+        }
+
+        IdSet Interface::getUVWMappings()
+        {
+            IdSet _ids;
+
+            for (auto& _mappingId : Factory::classes())
+            {
+                auto& _id = _mappingId.first;
+                std::unique_ptr<Mapping> _mapping(Factory::create(_id));
+
+                if (_mapping->isUVW()) _ids.insert(_id);
+            }
+            return _ids;
+        }
+
+        IdSet Interface::getPlanarMappings()
+        {
+            IdSet _ids;
+
+            for (auto& _mappingId : Factory::classes())
+            {
+                auto& _id = _mappingId.first;
+                std::unique_ptr<Mapping> _mapping(Factory::create(_id));
+
+                if (!_mapping->isUVW()) _ids.insert(_id);
+            }
+            return _ids;
+        }
+
+        /// Return const ref to affine transform
+        inline AffineTransform const& Interface::transform() const {
+            return transform_;
+        }
+
+        /// Return ref to affine transform
+        inline AffineTransform& Interface::transform() {
+            return transform_;
+        }
+
+        /// Set new affine transform
+        inline void Interface::setTransform(AffineTransform const& _transform) {
+            transform_ = _transform;
+        }
+
+        /**@brief If true, mapping transform is attached to canvas transform
+           @detail Is true by default
+         **/
+        bool Interface::isBoundToCanvas() const {
+            return boundToCanvas_;
+        }
+
+        /// Set whether mapping transform is attached to canvas transform
+        void Interface::setBoundToCanvas(bool _boundToCanvas) {
+            boundToCanvas_ = _boundToCanvas;
+        }
+
+
+        QMatrix4x4 Interface::matrix() const {
+            return transform_.matrix();
+        }
+
+        QString Interface::vertexShaderSourceCode() const
+        {
+            return util::fileToStr(":/shaders/mapping/common.vert");
+        }
+
+        QString Interface::fragmentShaderSourceCode() const
+        {
+            return
+                util::fileToStr(":/shaders/mapping/Template.frag") +
+                util::fileToStr(QString(
+                                    ":/shaders/mapping/") + getTypeId().str() +
+                                ".frag");
+        }
     }
-
-    Interface::~Interface()
-    {
-    }
-
-    void Interface::initialize()
-    {
-      /// Make shader
-      shader_.reset(new QOpenGLShaderProgram());
-      shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,vertexShaderSourceCode());
-      shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,fragmentShaderSourceCode());
-      shader_->link();
-    }
-
-    void Interface::bind() {
-
-      if (!shader_) initialize();
-
-      if (shader_)
-      {
-        shader_->bind();
-        shader_->setUniformValue("flip_horizontal",flipHorizontal_);
-        shader_->setUniformValue("flip_vertical",flipVertical_);
-      }
-    }
-
-    void Interface::bind(OutputMode _outputMode, bool _grayscale)
-    {
-      bind();
-      if (shader_)
-      {
-        shader_->setUniformValue("output_mode",util::enumToInt(_outputMode));
-        shader_->setUniformValue("gray_output",_grayscale);
-      }
-    }
-
-    void Interface::release()
-    {
-      if (shader_)
-        shader_->release();
-    }
-
-    void Interface::fromStream(QDataStream&)
-    {
-    }
-
-    void Interface::toStream(QDataStream&) const
-    {
-    }
-
-    bool Interface::flipHorizontal() const
-    {
-      return flipHorizontal_;
-    }
-
-    void Interface::setFlipHorizontal(bool _flipHorizontal)
-    {
-      flipHorizontal_ = _flipHorizontal;
-    }
-
-    bool Interface::flipVertical() const
-    {
-      return flipVertical_;
-    }
-
-    void Interface::setFlipVertical(bool _flipVertical)
-    {
-      flipVertical_ = _flipVertical;
-    }
-
-    IdSet Interface::getUVWMappings()
-    {
-      IdSet _ids;
-      for (auto& _mappingId : Factory::classes())
-      {
-        auto& _id = _mappingId.first;
-        std::unique_ptr<Mapping> _mapping(Factory::create(_id));
-        if (_mapping->isUVW())
-          _ids.insert(_id);
-      }
-      return _ids;
-    }
-
-    IdSet Interface::getPlanarMappings()
-    {
-      IdSet _ids;
-      for (auto& _mappingId : Factory::classes())
-      {
-        auto& _id = _mappingId.first;
-        std::unique_ptr<Mapping> _mapping(Factory::create(_id));
-        if (!_mapping->isUVW())
-          _ids.insert(_id);
-      }
-      return _ids;
-    }
-
-    QMatrix4x4 Interface::matrix() const {
-        return transform_.matrix();
-    }
-
-    QString Interface::vertexShaderSourceCode() const
-    {
-      return util::fileToStr(":/shaders/mapping/common.vert");
-    }
-
-    QString Interface::fragmentShaderSourceCode() const
-    {
-      return
-        util::fileToStr(":/shaders/mapping/Template.frag") +
-        util::fileToStr(QString(":/shaders/mapping/") + getTypeId().str() + ".frag");
-    }
-  }
 }

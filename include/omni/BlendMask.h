@@ -92,6 +92,12 @@ namespace omni
     /// Return void* pointer to strokebuffer data, used for OpenGL Texture
     void* strokeBufferData() const;
 
+    /// Write blend mask to stream
+    void toStream(QDataStream&) const;
+
+    /// Read blend mask from stream
+    void fromStream(QDataStream&);
+
     /// Test for equality, buffers are ignored
     friend bool operator==(BlendMask const&,BlendMask const&);
 
@@ -109,10 +115,6 @@ namespace omni
   };
 }
 
-/// Deserialize from stream
-QDataStream& operator>>(QDataStream&, omni::BlendMask&);
-
-/// Serialize to stream
-QDataStream& operator<<(QDataStream&, omni::BlendMask const&);
+OMNI_DECL_STREAM_OPERATORS(omni::BlendMask)
 
 #endif /* OMNI_BLEND_MASK_H_ */

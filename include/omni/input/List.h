@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -20,6 +20,7 @@
 #ifndef OMNI_INPUT_LIST_H
 #define OMNI_INPUT_LIST_H
 
+#include <algorithm>
 #include <memory>
 #include <map>
 #include <omni/Id.h>
@@ -32,11 +33,11 @@ namespace omni
     /**@brief Input List contains a list of inputs. A TestImage input is always present at index 0
       *@detail Input List is serializable via QDataStream
      **/
-    class List : private std::vector<std::unique_ptr<Input>>
+    class List : private std::map<QString,std::unique_ptr<Input>>
     {
-    public: 
-      typedef std::vector<std::unique_ptr<Input>> container_type;
-      
+    public:
+      typedef std::map<QString,std::unique_ptr<Input>> container_type;
+
       using container_type::size;
       using container_type::empty;
       using container_type::begin;
@@ -44,73 +45,68 @@ namespace omni
 
       List();
 
-      /**@brief Add new input with given type id. Returns nullptr if input with typeid does not exist 
+      /**@brief Add new input with given type id. Returns nullptr if input with typeid does not exist
+         @param _id Id for the input
         *@param _typeId Type id of input to determine which kind of input is created
        **/
-      Input* add(Id const& _typeId);
- 
-      /**@brief Add new input with id and type id. Returns nullptr if mapping already exists 
-         @tparam TYPE Type of input
-         @tparam ...ARGS Type of arguments passed to constructor of input of TYPE
-        *@param _id Id for input
-        *@param ..._args Arguments passed to constructor 
-       **/
-      template<typename TYPE, typename...ARGS>
-      TYPE* add(ARGS&&..._args)
-      {  
-        container_type::emplace_back(new TYPE(_args...));
-        return static_cast<TYPE*>(container_type::back().get());
-      }
+      Input* add(QString const& _id, Id const& _typeId);
 
-      /// Return input at index 
-      Input* operator[](int);
-      
+      /**@brief Add new input with given type id. Returns nullptr if input with typeid does not exist
+         @detail Id is automatically generated
+        *@param _typeId Type id of input to determine which kind of input is created
+        *@return Pair with input id and pointer to added input
+       **/
+      std::pair<QString,Input*> add(Id const& _typeId);
+
+      /// Return input at index
+      Input* operator[](QString const& _id);
+
       /// Returns input at index (const version)
-      Input const* operator[](int) const;
+      Input const* operator[](QString const& _id) const;
 
       /// Removes input at index
-      void remove(int);
+      void remove(QString const& _id);
 
       /// Delete all inputs
       void clear();
-      
+
+      /**@brief Returns pointer to current input
+       * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
+       **/
+      Input* current();
+
+      /**@brief Returns pointer to current input (const version)
+       * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
+       **/
+      Input const* current() const;
+
+      /// Return ID of current input
+      QString currentId() const;
+
+      /// Set current input by ID
+      void setCurrentId(QString const&);
+
       /// Deserialize from stream
       void fromStream(QDataStream&);
 
       /// Serialize to stream
       void toStream(QDataStream&) const;
 
-      /**@brief Returns pointer to current input
-       * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
-       **/
-      Input* current();
-      
-      /**@brief Returns pointer to current input (const version)
-       * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
-       **/
-      Input const* current() const;
-      
-      /// Return ID of current input
-      int currentIndex() const; 
-
-      /// Set current input by ID
-      void setCurrentIndex(int);
-
       /// Test for equality
       friend bool operator==(List const&,List const&);
 
     private:
-      bool validIndex(int) const;
+      QString generateId() const;
 
-      int currentIndex_ = 0;
+      QString currentId_;
     };
   }
 
   typedef input::List InputList;
 }
 
-QDataStream& operator<<(QDataStream&, omni::input::List const&);
-QDataStream& operator>>(QDataStream&, omni::input::List&);
+OMNI_DECL_STREAM_OPERATORS(omni::input::List)
+
 
 
 #endif /* OMNI_INPUT_LIST_H */

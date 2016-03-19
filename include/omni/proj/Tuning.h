@@ -109,6 +109,12 @@ namespace omni
       /// Set opacity of overlap mask in blend mode
       void setOverlapOpacity(float);
 
+      /// Write tuning to stream
+      void toStream(QDataStream&) const;
+
+      /// Read tuning from stream
+      void fromStream(QDataStream&);
+
       friend bool operator==(Tuning const&,Tuning const&);
 
     private:
@@ -116,8 +122,6 @@ namespace omni
       bool overlapOpacity_ = 0.0;
       QColor color_;
       Projector projector_;
-      std::unique_ptr<ProjectorSetup> projectorSetup_;
-
       WarpGrid warpGrid_;
       BlendMask blendMask_;
       ColorCorrection colorCorrection_;
@@ -125,7 +129,6 @@ namespace omni
   }
 }
 
-QDataStream& operator>>(QDataStream&, omni::proj::Tuning&);
-QDataStream& operator<<(QDataStream&, omni::proj::Tuning const&);
+OMNI_DECL_STREAM_OPERATORS(omni::proj::Tuning)
 
 #endif /* OMNI_MAPPING_H_ */

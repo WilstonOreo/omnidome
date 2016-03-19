@@ -20,6 +20,8 @@
 #ifndef OMNI_BLENDSETTINGS_H_
 #define OMNI_BLENDSETTINGS_H_
 
+#include <omni/serialization/Interface.h>
+
 namespace omni
 {
     /// Common blend mask settings for the all tunings in a session
@@ -50,13 +52,22 @@ namespace omni
         /// Set flag if blend mask is visible in warp colorColorMode
         void setShowInWarpMode(bool);
 
+        /// Deserialize from stream
+        void fromStream(QDataStream&);
+
+        /// Serialize to stream
+        void toStream(QDataStream&) const;
+
+        /// Test for equality.
+        friend bool operator==(BlendSettings const&,BlendSettings const&);
+
     private:
         ColorMode colorMode_ = ColorMode::COLORED;
         bool showInWarpMode_ = false;
         float inputOpacity_ = 0.0;
     };
-
-
 }
+
+OMNI_DECL_STREAM_OPERATORS(omni::BlendSettings)
 
 #endif /* OMNI_BLENDSETTINGS_H_ */

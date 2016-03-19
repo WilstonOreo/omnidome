@@ -67,6 +67,9 @@ namespace omni
       /// Return vector, optionally excluded standard screen
       static std::vector<QScreen const*> screens(bool _excludeStandardScreen = true);
 
+      /// Return pointer to screen for rectangle, nullptr if no screen with rectangle exists
+      static QScreen const* screenFromRect(QRect const&);
+
       /**@brief Return screen rectangle for tuning, in combined desktop rect
          @param _tuning Tuning
          œparam _shrink Removes empty space from rect

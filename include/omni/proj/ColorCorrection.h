@@ -90,4 +90,7 @@ namespace omni {
     using proj::ColorCorrection;
 }
 
+QDataStream& operator>>(QDataStream&, omni::proj::ColorCorrection&);
+QDataStream& operator<<(QDataStream&, omni::proj::ColorCorrection const&);
+
 #endif /* OMNI_PROJ_COLORCORRECTION_H_ */

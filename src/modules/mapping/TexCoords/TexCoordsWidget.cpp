@@ -50,7 +50,7 @@ namespace omni {
                 this->locked([&]() {
                     // Set slider values for TexCoords mapping
                     auto *_planar = static_cast<omni::mapping::TexCoords *>(mapping());
-                    addFlipParameters();
+                    addDefaultParameters();
                 });
             }
         }

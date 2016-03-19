@@ -91,6 +91,8 @@ namespace omni {
 
         int ScreenSetup::subScreenCount(QScreen const *_screen)
         {
+            if (!_screen) { return 0; }
+
             // Go through list of screen resolutions and see if the
             // current screen has subscreens
             for (auto& _screenSize :screenResolutions())
@@ -108,6 +110,8 @@ namespace omni {
 
         int ScreenSetup::subScreenWidth(QScreen const *_screen)
         {
+            if (!_screen) { return 0; }
+
             return _screen->size().width() / ScreenSetup::subScreenCount(_screen);
         }
 
@@ -183,6 +187,16 @@ namespace omni {
                 _rect |= tuningRect(_tuning.get());
             }
             return _rect;
+        }
+
+        QScreen const* ScreenSetup::screenFromRect(QRect const& _rect) {
+            std::vector<QScreen const *> _screens;
+            auto _allScreens = QGuiApplication::screens();
+
+            for (auto& _screen : _allScreens) {
+                if (_screen->geometry() == _rect) return _screen;
+            }
+            return nullptr;
         }
 
         bool ScreenSetup::operator==(const ScreenSetup& _rhs) const

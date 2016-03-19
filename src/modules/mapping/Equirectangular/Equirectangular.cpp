@@ -39,7 +39,7 @@ namespace omni
 
     void Equirectangular::bind()
     {
-      Rotatable::bind();
+      Interface::bind();
       this->shader_->setUniformValue("strip_top",GLfloat(stripTop_));
       this->shader_->setUniformValue("strip_bottom",GLfloat(stripBottom_));
     }
@@ -73,22 +73,20 @@ namespace omni
 
     void Equirectangular::fromStream(QDataStream& _stream)
     {
-      Rotatable::fromStream(_stream);
       _stream >> stripBottom_ >> stripTop_;
       validate();
     }
 
     void Equirectangular::toStream(QDataStream& _stream) const
     {
-      Rotatable::toStream(_stream);
       _stream << stripBottom_ << stripTop_;
     }
 
     bool operator==(Equirectangular const& _lhs, Equirectangular const& _rhs)
     {
-      const Rotatable& _blhs(_lhs);
-      const Rotatable& _brhs(_rhs);
-      return (_blhs == _brhs) &&
+    //  const Rotatable& _blhs(_lhs);
+    //  const Rotatable& _brhs(_rhs);
+      return //(_blhs == _brhs) &&
         OMNI_TEST_MEMBER_EQUAL(stripTop_) &&
         OMNI_TEST_MEMBER_EQUAL(stripBottom_);
     }

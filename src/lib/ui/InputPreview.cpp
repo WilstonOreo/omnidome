@@ -32,7 +32,6 @@ namespace omni
     InputPreview::InputPreview(QWidget* _parent) :
       GLView(_parent)
     {
-      setMinimumSize(128 / devicePixelRatio(),128 / devicePixelRatio());
     }
 
     InputPreview::InputPreview(input::Interface* _input, QWidget* _parent) :
@@ -52,42 +51,6 @@ namespace omni
     void InputPreview::setBorder(float _border)
     {
       border_ = _border;
-      update();
-    }
-
-    void InputPreview::mouseMoveEvent(QMouseEvent *event)
-    {
-      if (!input()) return;
-      if (event->buttons() & Qt::LeftButton)
-      {
-        setRulerPos(event->pos());
-      }
-    }
-
-    void InputPreview::mousePressEvent(QMouseEvent *event)
-    {
-      GLView::mousePressEvent(event);
-      if (!input()) return;
-
-      setRulerPos(event->pos());
-    }
-
-    void InputPreview::mouseReleaseEvent(QMouseEvent *event)
-    {
-      if (!input()) return;
-      if (event->buttons() & Qt::LeftButton)
-      {
-        setRulerPos(event->pos());
-      }
-    }
-
-    void InputPreview::setRulerPos(QPointF const& _eventPos)
-    {
-      if (!input()) return;
-
-      QPointF _pos = screenPos(_eventPos);
-      input()->setRulerPos(_pos);
-      emit inputChanged();
       update();
     }
 
@@ -112,6 +75,8 @@ namespace omni
 
     QRectF InputPreview::viewRect() const
     {
+      if (!input_ || this->isLocked()) return QRectF();
+
       auto* _input = input();
       if (!_input) return QRectF(0.0,0.0,1.0,1.0);
 
@@ -144,13 +109,13 @@ namespace omni
 
     void InputPreview::paintGL()
     {
+      if (!input_ || this->isLocked()) return;
+
       visual::with_current_context([this](QOpenGLFunctions& _)
       {
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         _.glDisable(GL_BLEND);
       });
-
-      if (!input_ || this->isLocked()) return;
 
       auto _rect = viewRect();
 
