@@ -67,7 +67,14 @@
  "LABEL": "Mirror vertical",
  "TYPE": "bool",
  "DEFAULT": 0
+ },
+ {
+ "NAME": "enable_color_calibration",
+ "LABEL": "Color Calibration",
+ "TYPE": "bool",
+ "DEFAULT": 1
  }
+
  ]
  }
  */
@@ -149,7 +156,7 @@ void getChannelCorrectionFromImage(
     in vec2 s,
     in vec2 uv,
     out ChannelCorrection c) {
-    vec2 _shift = vec2(0.0,1.0 / 16.0 * s.y);
+    vec2 _shift = vec2(0.0,s.y / 16.0 );
     c.gamma = (texture2DRect(image,uv).g - 0.5)*2.0;
     c.brightness = (texture2DRect(image,uv + 1.0*_shift).g - 0.5)*2.0;
     c.contrast = (texture2DRect(image,uv + 2.0*_shift).g - 0.5)*2.0;
@@ -157,6 +164,7 @@ void getChannelCorrectionFromImage(
 }
 
 vec3 colorCorrection(vec3 color) {
+	if (!enable_color_calibration) return color; 
     if (cc_all.multiplier == 0.0) {
         return color;
     }
@@ -332,10 +340,14 @@ void main()
     }
 
     float _shift = s.y/3.0/4.0;
-    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 2.0*_shift),cc_all);
-    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 3.0*_shift),cc_red);
-    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 0.0*_shift),cc_green);
-    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 1.0*_shift),cc_blue);
+    cc_red.multiplier = 0.0;
+    cc_green.multiplier = 0.0;
+    cc_blue.multiplier = 0.0;
+    
+    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 0.0*_shift),cc_all);
+//    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 3.0*_shift),cc_red);
+//    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 1.0*_shift),cc_green);
+//    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 0.0*_shift),cc_blue);
 
     float alpha =  texture2DRect(uvw_map,blendmask).r;
     vec3 color = colorCorrection(texture2DRect(image, texCoords * _image_imgSize).rgb);
