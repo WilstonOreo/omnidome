@@ -514,9 +514,20 @@ namespace omni
     {
       drawOutput(dataModel()->blendSettings().showInWarpMode() ? 1.0 : 0.0 /* zero blend mask opacity */);
 
+
       drawOnSurface([&](QOpenGLFunctions& _)
       {
+        _.glDisable(GL_LIGHTING);
+        _.glBindTexture(GL_TEXTURE_2D, 0);
+        _.glDisable(GL_COLOR_MATERIAL);
+        _.glEnable(GL_BLEND);
+        _.glDisable(GL_LIGHT0);
+
+        _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         vizTuning_->drawWarpGrid();
+        _.glEnable(GL_LIGHTING);
+        _.glEnable(GL_COLOR_MATERIAL);
+        _.glEnable(GL_LIGHT0);
       });
     }
 

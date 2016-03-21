@@ -68,6 +68,7 @@ namespace omni {
             {
                 _.glEnable(GL_BLEND);
                 _.glDepthFunc(GL_LEQUAL);
+
                 _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 _.glDisable(GL_LIGHTING);
                 glColor4f(1.0, 1.0, 1.0, 0.2);
