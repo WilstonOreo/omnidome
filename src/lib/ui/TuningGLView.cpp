@@ -631,6 +631,12 @@ namespace omni
 
       if (!vizTuning_ || !vizSession_ || !tuning()) return;
 
+      visual::with_current_context([&](QOpenGLFunctions& _)
+      {
+        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        _.glClearColor(0.0,0.0,0.0,1.0);
+      });
+
       if (tuning()->outputDisabled() && this->fullscreenMode()) return;
 
       vizSession_->update();
@@ -641,11 +647,6 @@ namespace omni
       makeCurrent();
       glPushAttrib(GL_ALL_ATTRIB_BITS);
       visual::viewport(this);
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
-        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        _.glClearColor(0.0,0.0,0.0,1.0);
-      });
 
       if (!dataModel()->hasOutput())
       {

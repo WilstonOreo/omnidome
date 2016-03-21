@@ -74,7 +74,6 @@
  "TYPE": "bool",
  "DEFAULT": 1
  }
-
  ]
  }
  */
@@ -151,16 +150,30 @@ float corrected(in ChannelCorrection c, in float v) {
         c.brightness * c.multiplier);
 }
 
+#define ALL_CHANNEL_SHIFT 3.0
+#define RED_CHANNEL_SHIFT 2.0
+#define GREEN_CHANNEL_SHIFT 1.0
+#define BLUE_CHANNEL_SHIFT 0.0
+
+
+
+
 void getChannelCorrectionFromImage(
     in sampler2DRect image,
-    in vec2 s,
-    in vec2 uv,
+    in vec2 s, // Size
+    in vec2 uv, // Pixel pos
+    in float _channelShift,
     out ChannelCorrection c) {
-    vec2 _shift = vec2(0.0,s.y / 16.0 );
-    c.gamma = (texture2DRect(image,uv).g - 0.5)*2.0;
-    c.brightness = (texture2DRect(image,uv + 1.0*_shift).g - 0.5)*2.0;
-    c.contrast = (texture2DRect(image,uv + 2.0*_shift).g - 0.5)*2.0;
-    c.multiplier = (texture2DRect(image,uv + 3.0*_shift).g - 0.5)*2.0;
+        
+	vec2 multiplier_pos = vec2(uv.x*s.x,s.y / 3.0 * (0.5 + 4.0*_channelShift) / 16.0); 
+	vec2 contrast_pos = vec2(uv.x*s.x,s.y / 3.0 * (1.5 + 4.0*_channelShift) / 16.0); 
+	vec2 brightness_pos = vec2(uv.x*s.x,s.y / 3.0 * (2.5 + 4.0*_channelShift) / 16.0); 
+	vec2 gamma_pos = vec2(uv.x*s.x,s.y / 3.0 * (3.5 + 4.0*_channelShift) / 16.0);   
+    
+    c.gamma = (texture2DRect(image,gamma_pos).g - 0.5)*2.0;
+    c.brightness = (texture2DRect(image,brightness_pos).g - 0.5)*2.0;
+    c.contrast = (texture2DRect(image,contrast_pos).g - 0.5)*2.0;
+    c.multiplier = (texture2DRect(image,multiplier_pos).g - 0.5)*2.0;
 }
 
 vec3 colorCorrection(vec3 color) {
@@ -305,11 +318,13 @@ float mapping(out vec2 texCoords)
     return -1.0;
 }
 
+
 void main()
 {
     gl_FragColor = vec4(0.0,0.0,0.0,1.0);
 
     vec2 s = _uvw_map_imgSize;
+    
     vec2 uv = vv_FragNormCoord + vec2(0.0,1.0/_uvw_map_imgSize.y);
 
     vec2 uvw_upper = vec2(uv.x*s.x,(uv.y*s.y + 2.0*s.y)/3.0);
@@ -340,14 +355,15 @@ void main()
     }
 
     float _shift = s.y/3.0/4.0;
-    cc_red.multiplier = 0.0;
+    cc_all.multiplier = 0.0;
     cc_green.multiplier = 0.0;
     cc_blue.multiplier = 0.0;
-    
-    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 0.0*_shift),cc_all);
-//    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 3.0*_shift),cc_red);
-//    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 1.0*_shift),cc_green);
-//    getChannelCorrectionFromImage(uvw_map,s,vec2(0.0,0.0 + 0.0*_shift),cc_blue);
+    float _off = s.y;
+	
+     getChannelCorrectionFromImage(uvw_map,s,uv,ALL_CHANNEL_SHIFT,cc_all);
+     getChannelCorrectionFromImage(uvw_map,s,uv,RED_CHANNEL_SHIFT,cc_red);
+     getChannelCorrectionFromImage(uvw_map,s,uv,GREEN_CHANNEL_SHIFT,cc_green);
+     getChannelCorrectionFromImage(uvw_map,s,uv,BLUE_CHANNEL_SHIFT,cc_blue);
 
     float alpha =  texture2DRect(uvw_map,blendmask).r;
     vec3 color = colorCorrection(texture2DRect(image, texCoords * _image_imgSize).rgb);
