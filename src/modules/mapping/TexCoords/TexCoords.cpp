@@ -111,7 +111,7 @@ namespace omni
     }
 
     QWidget* TexCoords::widget() {
-        return new ui::mapping::TexCoords(this);
+        return ui::makeWidget<ui::mapping::TexCoords>(this);
     }
   }
 }

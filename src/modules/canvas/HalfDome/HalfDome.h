@@ -41,9 +41,6 @@ namespace omni
 
       void draw() const;
 
-      void fromStream(QDataStream&);
-      void toStream(QDataStream&) const;
-
       /// Make new box parameter widget
       QWidget* widget();
     };

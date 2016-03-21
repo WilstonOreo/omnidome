@@ -273,7 +273,8 @@ namespace omni
     omni::ui::AffineTransform* ParameterWidget::addAffineTransformWidget(
         QString const& _id, omni::AffineTransform* _transform) {
 
-        auto* _widget = new omni::ui::AffineTransform(_transform);
+        auto* _widget = ui::makeWidget<omni::ui::AffineTransform>(_transform);
+            
         if (layout())
             layout()->addWidget(_widget);
 

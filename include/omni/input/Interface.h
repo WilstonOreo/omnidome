@@ -52,17 +52,23 @@ namespace omni
     /// Generic input interface
     class Interface :
         public SerializationInterface,
-        public TypeIdInterface
+        public TypeIdInterface,
+        private std::map<QString,std::unique_ptr<Interface>>
     {
     public:
       typedef Interface interface_type;
-      typedef std::map<QString,std::unique_ptr<Interface>> children_type;
+      typedef std::map<QString,std::unique_ptr<Interface>> container_type;
       typedef std::function<void()> callback_type;
 
+      using container_type::empty;
+      using container_type::begin;
+      using container_type::end;
+      using container_type::clear;
+
+      Interface(Interface* _parent = nullptr);
+
       /// Virtual destructor
-      virtual ~Interface() {
-          unregisterAll();
-      }
+      virtual ~Interface();
 
       /// An input must return an OpenGL texture ID
       virtual GLuint textureId() const = 0;
@@ -77,6 +83,10 @@ namespace omni
 
       /// An input must return width and height information
       virtual QSize size() const = 0;
+
+      inline size_t numberOfChildren() const {
+          return container_type::size();
+      }
 
       /// Return width from size
       inline int width() const
@@ -132,32 +142,41 @@ namespace omni
       Interface const* getInput(QString const& _id) const;
 
       /// Return children
-      children_type& children();
+      container_type& children();
 
       /// Return children
-      children_type const& children() const;
+      container_type const& children() const;
 
-      void useInput(Interface* _i) {
-          if (_i != this) return;
+      /// Return true if this input and input i are connected
+      bool isConnected(Interface* _i) const;
 
-          _i->used_.insert(this);
-          this->used_.insert(_i);
-      }
+      /// Connect this input and input i
+      void connect(Interface* _i);
 
-      void unregister(Interface* _i) {
-          _i->used_.erase(this);
-          used_.erase(_i);
-      }
+      /// Disconnect this input and input i
+      void disconnect(Interface* _i);
 
-      void unregisterAll() {
-          for (auto& _i : used_) {
-              unregister(_i);
-          }
-      }
+      /// Disconnect all inputs
+      void disconnectAll();
 
-    private:
+      /// Return parent interface
+      Interface* parent();
+
+      /// Return parent interface (const version)
+      Interface const* parent() const;
+
+      /// Set new parent
+      void setParent(Interface*);
+
+      virtual void toStream(QDataStream&) const;
+
+      virtual void fromStream(QDataStream&);
+
+  private:
+
+        Interface* parent_ = nullptr;
         std::set<Interface*> used_;
-        children_type children_;
+        container_type children_;
         callback_type updatedCallback_;
     };
 

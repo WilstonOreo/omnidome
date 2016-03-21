@@ -23,38 +23,10 @@
 namespace omni {
     namespace ui {
         namespace mapping {
-            CubeMap::CubeMap(QWidget *_widget) : ui::
-                MappingParameters(_widget) {
-                setup();
-            }
-
-            CubeMap::CubeMap(
-                omni::mapping::Interface *_mapping,
-                QWidget                  *_parent) :
-                ui::MappingParameters(_mapping, _parent) {
-                setup();
+            CubeMap::CubeMap(QWidget *_widget) : ui::MappingParameters(_widget) {
             }
 
             CubeMap::~CubeMap() {}
-
-            void CubeMap::updateMappingParameters() {
-                auto *_cubemap =
-                    static_cast<omni::mapping::CubeMap *>(mapping());
-                _cubemap->setFlipHorizontal(getParamAsBool(
-                                                        "Flip horizontal"));
-                _cubemap->setFlipVertical(getParamAsBool("Flip vertical"));
-            }
-
-            void CubeMap::setup() {
-                if (!mapping()) return;
-
-                this->locked([&]() {
-                    // Set slider values for CubeMap mapping
-                    auto *_cubemap =
-                        static_cast<omni::mapping::CubeMap *>(mapping());
-                    addDefaultParameters();
-                });
-            }
         }
     }
 }

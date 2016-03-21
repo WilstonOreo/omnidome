@@ -30,15 +30,13 @@ namespace omni {
                 Q_OBJECT
             public:
                 Box(QWidget* _parent = nullptr);
-                Box(omni::canvas::Interface*, QWidget* _parent = nullptr);
                 ~Box();
 
             private:
-                void updateCanvasParameters();
+                void dataToFrontend();
 
-                void setup();
-
-                omni::ui::AffineTransform* transform_;
+                /// Return true if data has changed by front end
+                bool frontendToData();
             };
         }
     }

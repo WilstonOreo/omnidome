@@ -22,6 +22,7 @@
 
 #include <omni/canvas/Interface.h>
 #include <omni/ui/ParameterWidget.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
@@ -31,28 +32,23 @@ namespace omni
      **/
     class CanvasParameters :
         public ParameterWidget,
-        protected mixin::Locked 
+        public mixin::UnsharedDataModel<canvas::Interface>
     {
       Q_OBJECT
+      OMNI_UI_UNSHARED_DATAMODEL(canvas::Interface)
     public:
       CanvasParameters(QWidget* _parent = nullptr);
-      CanvasParameters(canvas::Interface*, QWidget* _parent = nullptr);
       virtual ~CanvasParameters();
 
-      canvas::Interface* canvas();
-      canvas::Interface const* canvas() const;
-      void setCanvas(canvas::Interface* _canvas);
+    signals:
+        void dataModelChanged();
+  protected:
+      virtual void dataToFrontend();
 
-      /// Set parameters from sliders to canvas
-      void updateParameters();
+                /// Return true if data has changed by front end
+      virtual bool frontendToData();
     private:
-      virtual void updateCanvasParameters() = 0;
-
-      /// Show widgets parameter according to given canvas type
-      void widgetVisibility();
-
-
-      canvas::Interface* canvas_ = nullptr;
+      omni::ui::AffineTransform* transform_ = nullptr;
     };
   }
 }

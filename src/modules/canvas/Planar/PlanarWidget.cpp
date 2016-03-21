@@ -24,34 +24,26 @@ namespace omni {
     namespace ui {
         namespace canvas {
             Planar::Planar(QWidget *_parent) : CanvasParameters(_parent) {
-                setup();
-            }
-
-            Planar::Planar(omni::canvas::Interface *_canvas, QWidget *_parent) :
-                CanvasParameters(_canvas, _parent) {
-                setup();
             }
 
             Planar::~Planar() {}
 
-            void Planar::updateCanvasParameters() {
-                auto* _planar = static_cast<omni::canvas::Planar*>(canvas());
+            bool Planar::frontendToData() {
+                auto* _planar = static_cast<omni::canvas::Planar*>(dataModel());
                 _planar->setHeight( getParamAsFloat("Length") );
                 _planar->setWidth( getParamAsFloat("Width") );
+                return CanvasParameters::frontendToData();
             }
 
-            void Planar::setup() {
-                if (!canvas()) return;
+            void Planar::dataToFrontend() {
+                auto* _length = addOffsetWidget("Length",1.0,0.1,10.0);
+                auto* _width = addOffsetWidget("Width",1.0,0.1,10.0);
 
-                this->locked([&]() {
-                    auto* _length = addOffsetWidget("Length",1.0,0.1,10.0);
-                    auto* _width = addOffsetWidget("Width",1.0,0.1,10.0);
-
-                    /// Retrieve parameters for Planar canvas
-                    auto* _planar = static_cast<omni::canvas::Planar*>(canvas());
-                    _width->setValue(_planar->width());
-                    _length->setValue(_planar->height());
-                });
+                /// Retrieve parameters for Planar canvas
+                auto* _planar = static_cast<omni::canvas::Planar*>(dataModel());
+                _width->setValue(_planar->width());
+                _length->setValue(_planar->height());
+                return CanvasParameters::dataToFrontend();
             }
         }
     }

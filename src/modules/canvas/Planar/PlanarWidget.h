@@ -31,15 +31,13 @@ namespace omni {
                 Q_OBJECT
             public:
                 Planar(QWidget* _parent = nullptr);
-                Planar(omni::canvas::Interface*, QWidget* _parent = nullptr);
                 ~Planar();
 
             private:
-                void updateCanvasParameters();
+                void dataToFrontend();
 
-                void setup();
-
-                Rotation* rotation_ = nullptr;
+                /// Return true if data has changed by front end
+                bool frontendToData();
             };
         }
     }

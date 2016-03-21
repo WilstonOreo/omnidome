@@ -50,6 +50,10 @@ namespace omni
     public slots:
       void exportToFile();
       void renderPreview();
+
+      void selectPlainImage(bool);
+      void selectOmniCalibration(bool);
+
     signals:
       void dataModelChanged();
 

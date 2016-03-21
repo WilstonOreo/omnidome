@@ -290,6 +290,7 @@ namespace omni {
                 fullscreen_.reset(new TuningGLView());
                 fullscreen_->setViewOnly(true);
                 fullscreen_->setShowCursor(true);
+                fullscreen_->setFullScreenMode(true);
                 fullscreen_->hide();
 
                 /// FOV view slider
@@ -302,10 +303,10 @@ namespace omni {
 
                 /// Throw ratio slider
                 /// @todo Connect this with FOV slider
-                auto *_throwRatio = addWidget("Throw Ratio", 1.0, 0.1, 1.0);
+                auto *_throwRatio = addWidget("Throw Ratio", 1.0, 0.2, 5.0);
                 _throwRatio->setSingleStep(0.01);
                 _throwRatio->setPageStep(0.05);
-                _throwRatio->setScale(RangedFloat::Scale::RECIPROCAL);
+            //    _throwRatio->setScale(RangedFloat::Scale::RECIPROCAL);
                 connect(_throwRatio, SIGNAL(valueChanged()), this,
                         SLOT(setThrowRatio()));
 

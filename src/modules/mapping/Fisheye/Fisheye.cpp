@@ -22,6 +22,7 @@
 
 #include <QDataStream>
 #include <QOpenGLShaderProgram>
+#include <omni/serialization/PropertyMap.h>
 
 namespace omni
 {
@@ -56,18 +57,22 @@ namespace omni
     void Fisheye::fromStream(QDataStream& _stream)
     {
       Interface::fromStream(_stream);
-      _stream >> stretch_;
+      PropertyMap _map;
+      _stream >> _map;
+      _map.get("stretch",stretch_);
       setStretch(stretch_);
     }
 
     void Fisheye::toStream(QDataStream& _stream) const
     {
       Interface::toStream(_stream);
-      _stream << stretch();
+      PropertyMap _map;
+      _map("stretch",stretch_);
+      _stream << _map;
     }
 
     QWidget* Fisheye::widget() {
-        return new ui::mapping::Fisheye(this);
+        return ui::makeWidget<ui::mapping::Fisheye>(this);
     }
   }
 }

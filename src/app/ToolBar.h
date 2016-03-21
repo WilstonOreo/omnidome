@@ -27,6 +27,7 @@ class QToolButton;
 
 namespace omni {
     namespace ui {
+        /// Omnidome main window toolbar
         class ToolBar :
             public QToolBar,
             public mixin::SharedDataModel<Session>
@@ -48,6 +49,8 @@ namespace omni {
 
             /// Show About dialog
             void showSettings();
+
+            void buttonStates();
 
         signals:
             void dataModelChanged();

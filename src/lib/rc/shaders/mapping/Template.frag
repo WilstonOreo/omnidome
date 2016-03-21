@@ -1,6 +1,5 @@
 varying vec3 uvw_vertex_position;
 varying vec3 uvw_normal;
-varying vec3 v_pos;
 
 const float PI = 3.14159265358979323846264;
 
@@ -74,7 +73,7 @@ float sphereIntersection(out vec3 uvw, in vec3 center) {
 vec3 light_color(vec3 color)
 {
    vec3 N = uvw_normal;
-   vec3 v = v_pos;
+   vec3 v = uvw_vertex_position;
    vec3 finalColor = vec3(0.0, 0.0, 0.0);
 
    for (int i=0;i<MAX_LIGHTS;i++)
@@ -107,7 +106,7 @@ float mapping(in vec3 uvw, out vec2 texCoords);
 
 void main()
 {
-  vec3 uvw = uvw_vertex_position;
+  vec3 uvw = (vec4(uvw_vertex_position,0.0) * matrix).xyz;
   if (intersection(uvw) < 0.0) {
 //      discard;
   }

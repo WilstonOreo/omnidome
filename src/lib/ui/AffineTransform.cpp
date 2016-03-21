@@ -30,17 +30,55 @@ namespace omni {
             setup();
         }
 
-        AffineTransform::AffineTransform(
-            omni::AffineTransform* _transform,
-            QWidget* _parent) :
-            QWidget(_parent),
-            ui_(new Ui::AffineTransform)
-        {
-            setup();
-            setDataModel(_transform);
+        AffineTransform::~AffineTransform() {}
+
+        bool AffineTransform::isTranslationVisible() const {
+            return ui_->btnTranslate->isVisible();
         }
 
-        AffineTransform::~AffineTransform() {}
+        bool AffineTransform::isRotationVisible() const {
+            return ui_->btnRotate->isVisible();
+        }
+
+        bool AffineTransform::isScaleVisible () const {
+            return ui_->btnScale->isVisible();
+        }
+
+        float AffineTransform::scaleRange() const {
+            return scaleRange_;
+        }
+
+        void AffineTransform::setTranslationVisible(bool _visible) {
+            ui_->btnTranslate->setVisible(_visible);
+            ui_->offsetX->setVisible(_visible);
+            ui_->offsetY->setVisible(_visible);
+            ui_->offsetZ->setVisible(_visible);
+        }
+
+        void AffineTransform::setRotationVisible(bool _visible) {
+            ui_->btnRotate->setVisible(_visible);
+            ui_->rotation->setVisible(_visible);
+        }
+
+        void AffineTransform::setScaleVisible(bool _visible) {
+            ui_->btnScale->setVisible(_visible);
+            ui_->scaleX->setVisible(_visible);
+            ui_->scaleY->setVisible(_visible);
+            ui_->scaleZ->setVisible(_visible);
+        }
+
+        void AffineTransform::setScaleRange(float _range) {
+            if (_range <= 0.0) scaleRange_ = 1.0;
+
+            scaleRange_ = _range;
+            this->locked([&] {
+                for (auto& _scale : { ui_->scaleX, ui_->scaleY, ui_->scaleZ }) {
+                    _scale->setRange(1.0 / scaleRange_, scaleRange_);
+                    _scale->setSingleStep(0.05 / scaleRange_);
+                    _scale->setPageStep(0.5 / scaleRange_);
+                }
+            });
+        }
 
         void AffineTransform::dataToFrontend() {
 
@@ -49,12 +87,16 @@ namespace omni {
             ui_->btnTranslate->setChecked(dataModel()->translationEnabled());
 
             ui_->rotation->setVisible(ui_->btnRotate->isChecked());
-            ui_->scaleX->setVisible(ui_->btnScale->isChecked());
-            ui_->scaleY->setVisible(ui_->btnScale->isChecked());
-            ui_->scaleZ->setVisible(ui_->btnScale->isChecked());
-            ui_->offsetX->setVisible(ui_->btnTranslate->isChecked());
-            ui_->offsetY->setVisible(ui_->btnTranslate->isChecked());
-            ui_->offsetZ->setVisible(ui_->btnTranslate->isChecked());
+
+            bool _scaleVisible = isScaleVisible() && ui_->btnScale->isChecked();
+            ui_->scaleX->setVisible(_scaleVisible);
+            ui_->scaleY->setVisible(_scaleVisible);
+            ui_->scaleZ->setVisible(_scaleVisible);
+
+            bool _offsetVisible = isTranslationVisible() && ui_->btnTranslate->isChecked();
+            ui_->offsetX->setVisible(_offsetVisible);
+            ui_->offsetY->setVisible(_offsetVisible);
+            ui_->offsetZ->setVisible(_offsetVisible);
 
             ui_->rotation->setRotation(dataModel()->rotation());
 
@@ -107,13 +149,12 @@ namespace omni {
             for (auto& _scale : { ui_->scaleX, ui_->scaleY, ui_->scaleZ }) {
                 connect(_scale, &RangedFloat::valueChanged,
                         this, &AffineTransform::updateDataModel);
-                _scale->setRange(0.1, 10.0);
                 _scale->setPivot(1.0);
                 _scale->setDefaultValue(1.0);
                 _scale->setUseDefaultValue(true);
-                _scale->setSingleStep(0.01);
-                _scale->setPageStep(0.1);
             }
+            setScaleRange(5.0);
+
             ui_->scaleX->setLabel("X");
             ui_->scaleY->setLabel("Y");
             ui_->scaleZ->setLabel("Z");

@@ -23,6 +23,7 @@
 #include <QDataStream>
 #include <QOpenGLShaderProgram>
 #include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
 #include "EquirectangularWidget.h"
 
 namespace omni
@@ -73,13 +74,21 @@ namespace omni
 
     void Equirectangular::fromStream(QDataStream& _stream)
     {
-      _stream >> stripBottom_ >> stripTop_;
+      mapping::Interface::fromStream(_stream);
+      PropertyMap _map;
+      _stream >> _map;
+      _map.get("stripBottom",stripBottom_)
+          .get("stripTop",stripTop_);
       validate();
     }
 
     void Equirectangular::toStream(QDataStream& _stream) const
     {
-      _stream << stripBottom_ << stripTop_;
+      mapping::Interface::toStream(_stream);
+      PropertyMap _map;
+      _map("stripBottom",stripBottom_)
+          ("stripTop",stripTop_);
+      _stream << _map;
     }
 
     bool operator==(Equirectangular const& _lhs, Equirectangular const& _rhs)
@@ -92,7 +101,7 @@ namespace omni
     }
 
     QWidget* Equirectangular::widget() {
-        return new ui::mapping::Equirectangular(this);
+        return ui::makeWidget<ui::mapping::Equirectangular>(this);
     }
   }
 }

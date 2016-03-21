@@ -51,6 +51,8 @@ namespace omni
       /// Returns true if cursor is visible
       bool showCursor() const;
 
+      bool fullscreenMode() const;
+
       /// Return relative border value
       float border() const;
 
@@ -80,6 +82,9 @@ namespace omni
 
       /// Set relative border distance
       void setBorder(float);
+
+      /// Set fullscreen mode
+      void setFullScreenMode(bool);
 
       void updateWithChildViews(bool _updateContext = true);
       void updateWithChildViews(QRect const&);
@@ -171,6 +176,9 @@ namespace omni
 
       /// Relative border
       float border_ = 0.0;
+
+      /// True if this widget is shown in fullscreen mode
+      bool fullscreenMode_ = false;
 
       /// Tuning visualizer
       std::shared_ptr<visual::Tuning> vizTuning_;

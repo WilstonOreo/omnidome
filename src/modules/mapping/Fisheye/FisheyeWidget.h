@@ -29,14 +29,11 @@ namespace omni {
                 Q_OBJECT
             public:
                 Fisheye(QWidget* = nullptr);
-                Fisheye(omni::mapping::Interface*, QWidget* = nullptr);
                 ~Fisheye();
 
             private:
-                void updateMappingParameters();
-                void setup();
-
-                Rotation* rotation_ = nullptr;
+                bool frontendToData();
+                void dataToFrontend();
             };
         }
     }

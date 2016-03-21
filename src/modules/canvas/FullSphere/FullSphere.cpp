@@ -36,7 +36,7 @@ namespace omni
     }
 
     QWidget* FullSphere::widget() {
-        return new ui::canvas::FullSphere(this);
+        return ui::makeWidget<ui::canvas::FullSphere>(this);
     }
   }
 }

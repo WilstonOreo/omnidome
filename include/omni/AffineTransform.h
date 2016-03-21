@@ -21,6 +21,7 @@
 
 #include <QVector3D>
 #include <QMatrix4x4>
+#include <omni/serialization/Interface.h>
 #include "EulerAngles.h"
 
 namespace omni {
@@ -80,6 +81,15 @@ namespace omni {
         /// Enable or disable translation
         void setTranslationEnabled(bool);
 
+        /// Write transformation to stream
+        void toStream(QDataStream&) const;
+
+        /// Read transformation from stream
+        void fromStream(QDataStream&);
+
+
+        friend bool operator==(AffineTransform const&,AffineTransform const&);
+
     private:
         bool rotationEnabled_ = true;
         EulerAngles rotation_;
@@ -91,5 +101,7 @@ namespace omni {
         QVector3D translation_;
     };
 }
+
+OMNI_DECL_STREAM_OPERATORS(omni::AffineTransform)
 
 #endif /* OMNI_AFFINETRANSFORM_H_ */

@@ -34,29 +34,18 @@ namespace omni
       Envelope();
       ~Envelope();
 
-      /// Projector mode flag determine if projectors are placed in- or outside
-      enum ProjectionMode
-      {
-        PROJECT_INSIDE,
-        PROJECT_OUTSIDE,
-        PROJECT_BOTH_SIDES
-      };
-
-      ProjectionMode projectionMode() const;
-      void setProjectionMode(ProjectionMode);
-
       /// Returns copy of cached bounding box
       Box bounds() const;
 
       virtual void draw() const;
 
+      virtual void toStream(QDataStream&) const;
+      virtual void fromStream(QDataStream&);
+
     protected:
 
       /// Protected bounding box member
       omni::Box bounds_;
-
-    private:
-      ProjectionMode projectionMode_ = PROJECT_INSIDE;
     };
   }
 }

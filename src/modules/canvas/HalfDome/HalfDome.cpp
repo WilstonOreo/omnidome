@@ -40,19 +40,8 @@ namespace omni
         this->sphere_.draw();
     }
 
-    void HalfDome::fromStream(QDataStream& _stream)
-    {
-      Dome::fromStream(_stream);
-      update();
-    }
-
-    void HalfDome::toStream(QDataStream& _stream) const
-    {
-      Dome::toStream(_stream);
-    }
-
     QWidget* HalfDome::widget() {
-        return new ui::canvas::HalfDome(this);
+        return ui::makeWidget<ui::canvas::HalfDome>(this);
     }
   }
 }

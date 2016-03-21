@@ -28,14 +28,13 @@ namespace omni
 {
   namespace input
   {
-    List::List()
+    List::List(Interface* _parent) : Interface(_parent)
     {
-      clear();
     }
 
     void List::clear()
     {
-      container_type::clear();
+      children().clear();
     }
 
     std::pair<QString,Input*> List::add(Id const& _typeId) {
@@ -48,32 +47,32 @@ namespace omni
       std::unique_ptr<Input> _input(Factory::create(_typeId));
       if (!_input) return nullptr;
 
-      container_type::operator[](_id) = std::move(_input);
-      return container_type::at(_id).get();
+      children()[_id] = std::move(_input);
+      return children().at(_id).get();
     }
 
     Input* List::operator[](QString const& _id)
     {
-      return (container_type::count(_id) != 0) ?
-        container_type::operator[](_id).get() :
+      return (children().count(_id) != 0) ?
+        children().operator[](_id).get() :
         nullptr;
     }
 
     Input const* List::operator[](QString const& _id) const
     {
-      return (container_type::count(_id) != 0) ?
-        container_type::at(_id).get() :
+      return (children().count(_id) != 0) ?
+        children().at(_id).get() :
         nullptr;
     }
 
     void List::remove(QString const& _id)
     {
-      if (container_type::count(_id) == 0) return;
+      if (children().count(_id) == 0) return;
 
       this->operator[](_id)->free();
-      container_type::erase(_id);
+      children().erase(_id);
 
-      if (container_type::empty())
+      if (children().empty())
         setCurrentId("");
     }
 
@@ -104,7 +103,7 @@ namespace omni
 
       serialize(_stream,currentId_);
       // serialize map of inputs
-      serialize(_stream,int(size()));
+      serialize(_stream,int(children().size()));
       for (auto& _idInput : (*this))
       {
         auto& _id = _idInput.first;
@@ -117,15 +116,15 @@ namespace omni
     Input const* List::current() const
     {
       return
-        container_type::count(currentId_) > 0 ?
-        container_type::at(currentId_).get() : nullptr;
+        children().count(currentId_) > 0 ?
+        children().at(currentId_).get() : nullptr;
     }
 
     Input* List::current()
     {
       return
-        container_type::count(currentId_) > 0 ?
-        container_type::at(currentId_).get() : nullptr;
+        children().count(currentId_) > 0 ?
+        children().at(currentId_).get() : nullptr;
     }
 
     QString List::currentId() const
@@ -135,7 +134,7 @@ namespace omni
 
     void List::setCurrentId(QString const& _id)
     {
-      if (container_type::count(_id) == 0) {
+      if (children().count(_id) == 0) {
         currentId_ = "";
         return;
       }
@@ -161,9 +160,9 @@ namespace omni
 
     QString List::generateId() const {
         QString _id("0");
-        for (size_t i = 0; i <= size(); ++i) {
+        for (size_t i = 0; i <= children().size(); ++i) {
             _id = QString("%1").arg(i);
-            if (container_type::count(_id) == 0)
+            if (children().count(_id) == 0)
             {
                 return _id;
             }

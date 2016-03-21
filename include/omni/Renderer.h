@@ -58,7 +58,7 @@ namespace omni
   private:
     void getUpper8bit(RenderBuffer const& _buffer, QImage& _image) const;
     void getLower8bit(RenderBuffer const& _buffer, QImage& _image) const;
-    void getAlphaMask(RenderBuffer const& _buffer, QImage& _image) const;
+    void getAlphaMask(RenderBuffer const& _buffer, QImage& _image, Channel = Channel::ALL) const;
     void encodeColorCorrection(ColorCorrection const&, Channel, QImage&) const;
 
     void bufferToRGBImage(RenderBuffer const& _buffer, QImage& _image);

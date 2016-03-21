@@ -143,7 +143,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
                     dataModelChanged()),                     this,
                 SLOT(modified()));
         connect(ui_->dockCanvasWidget, SIGNAL(canvasTypeChanged()),
-                ui_->dockMappingWidget, SLOT(setDefaultMappingForCanvas()));
+                this, SLOT(modified()));
 
         // Update all views when input has changed
         connect(ui_->dockInputsWidget, SIGNAL(
@@ -152,11 +152,19 @@ MainWindow::MainWindow(QMainWindow *parent) :
         connect(ui_->dockInputsWidget, SIGNAL(
                     inputIndexChanged()),                 this,
                 SLOT(modified()));
+        connect(ui_->dockInputsWidget, SIGNAL(
+                    inputChanged()),                      toolBar_.get(),
+                SLOT(buttonStates()));
 
         // Update all views when mapping mode has changed
         connect(ui_->dockMappingWidget, SIGNAL(
                     dataModelChanged()),                    this,
                 SLOT(modified()));
+        connect(ui_->dockMappingWidget, SIGNAL(
+                    dataModelChanged()),                      toolBar_.get(),
+                SLOT(buttonStates()));
+        connect(ui_->dockMappingWidget, &Mapping::dataModelChanged,
+                export_.get(),&Export::updateFrontend);
 
         // Update all views when warp grid has changed
         connect(ui_->dockWarpWidget, SIGNAL(
@@ -385,6 +393,7 @@ void MainWindow::buttonState()
 
     ui_->actionEditAsNew->setEnabled(!filename_.isEmpty());
     ui_->actionSave->setEnabled(modified_);
+    toolBar_->buttonStates();
 }
 
 /// Set current tuning index

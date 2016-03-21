@@ -29,14 +29,11 @@ namespace omni {
                 Q_OBJECT
             public:
                 Equirectangular(QWidget* = nullptr);
-                Equirectangular(omni::mapping::Interface*, QWidget* = nullptr);
                 ~Equirectangular();
 
             private:
-                void updateMappingParameters();
-                void setup();
-
-                Rotation* rotation_ = nullptr;
+                bool frontendToData();
+                void dataToFrontend();
             };
         }
     }

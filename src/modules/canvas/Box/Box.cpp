@@ -21,6 +21,7 @@
 #include "BoxWidget.h"
 
 #include <omni/visual/Box.h>
+#include <omni/serialization/PropertyMap.h>
 
 namespace omni
 {
@@ -63,18 +64,23 @@ namespace omni
 
     void Box::fromStream(QDataStream& _stream)
     {
-      QVector3D _size;
-      _stream >> _size;
+      Envelope::fromStream(_stream);
+      PropertyMap _map;
+      _stream >> _map;
+      auto _size = _map.getValue<QVector3D>("size",QVector3D(5,5,5));
       setSize(_size);
     }
 
     void Box::toStream(QDataStream& _stream) const
     {
-      _stream << size();
+      Envelope::toStream(_stream);
+      PropertyMap _map;
+      _map("size",size());
+      _stream << _map;
     }
 
     QWidget* Box::widget() {
-        return new ui::canvas::Box(this);
+        return ui::makeWidget<ui::canvas::Box>(this);
     }
 
     QMatrix4x4 Box::matrix() const {

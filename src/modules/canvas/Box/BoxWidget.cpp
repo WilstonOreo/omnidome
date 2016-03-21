@@ -24,43 +24,32 @@ namespace omni {
     namespace ui {
         namespace canvas {
             Box::Box(QWidget *_parent) : CanvasParameters(_parent) {
-                setup();
-            }
-
-            Box::Box(omni::canvas::Interface *_canvas, QWidget *_parent) :
-                CanvasParameters(_canvas, _parent) {
-                setup();
             }
 
             Box::~Box() {}
 
-            void Box::updateCanvasParameters() {
-                auto *_box = static_cast<omni::canvas::Box *>(canvas());
-
+            bool Box::frontendToData() {
+                auto *_box = static_cast<omni::canvas::Box *>(dataModel());
                 _box->setSize(QVector3D(
                                   getParamAsFloat("Width"),
                                   getParamAsFloat("Length"),
                                   getParamAsFloat("Height")
                                   ));
-                transform_->updateDataModel();
+                return CanvasParameters::frontendToData();
             }
 
-            void Box::setup() {
-                if (!canvas()) return;
-
-                this->locked([&]() {
+            void Box::dataToFrontend() {
                     auto *_height = addOffsetWidget("Height", 1.0, 0.1, 10.0);
                     auto *_length = addOffsetWidget("Length", 1.0, 0.1, 10.0);
                     auto *_width = addOffsetWidget("Width", 1.0, 0.1, 10.0);
 
                     /// Retrieve parameters for Box canvas
-                    auto *_box = static_cast<omni::canvas::Box *>(canvas());
+                    auto *_box = static_cast<omni::canvas::Box *>(dataModel());
                     _width->setValue(_box->size().x());
                     _length->setValue(_box->size().y());
                     _height->setValue(_box->size().z());
 
-                    transform_ = addAffineTransformWidget("Transform", &canvas()->transform());
-                });
+                    CanvasParameters::dataToFrontend();
             }
         }
     }

@@ -199,6 +199,10 @@ namespace omni {
             btnColorCorrection_->setChecked(_mode == Session::Mode::COLORCORRECTION);
             btnExport_->setChecked(_mode == Session::Mode::EXPORT);
             btnLive_->setChecked(_mode == Session::Mode::LIVE);
+            buttonStates();
+        }
+
+        void ToolBar::buttonStates() {
 
             bool _hasOutput = dataModel()->hasOutput();
 

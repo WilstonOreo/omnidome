@@ -20,6 +20,7 @@
 #ifndef OMNI_PROJ_SCREENSETUP_H_
 #define OMNI_PROJ_SCREENSETUP_H_
 
+#include <set>
 #include <vector>
 #include <QScreen>
 
@@ -46,6 +47,7 @@ namespace omni
       /// Return const pointer to session
       Session const* session() const;
 
+      /// True if this widget is shown in fullscreen mode
       /// Returns the number of subscreens for a single screen
       static int subScreenCount(QScreen const*);
 
@@ -64,8 +66,12 @@ namespace omni
       /// Returns true if no tuning is assigned to a screen
       bool noTuningsAssigned() const;
 
+      bool noTuningsAssigned(QScreen const*) const;
+
       /// Return vector, optionally excluded standard screen
       static std::vector<QScreen const*> screens(bool _excludeStandardScreen = true);
+
+      std::set<proj::Tuning const*> tunings(bool _excludeNonAssigned) const;
 
       /// Return pointer to screen for rectangle, nullptr if no screen with rectangle exists
       static QScreen const* screenFromRect(QRect const&);

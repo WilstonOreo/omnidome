@@ -42,8 +42,18 @@ namespace omni {
             OMNI_UI_UNSHARED_DATAMODEL(omni::AffineTransform)
         public:
             AffineTransform(QWidget* = nullptr);
-            AffineTransform(omni::AffineTransform*, QWidget* = nullptr);
             ~AffineTransform();
+
+            bool isTranslationVisible() const;
+            bool isRotationVisible() const;
+            bool isScaleVisible() const;
+            float scaleRange() const;
+
+        public slots:
+            void setTranslationVisible(bool);
+            void setRotationVisible(bool);
+            void setScaleVisible(bool);
+            void setScaleRange(float);
 
         signals:
             void dataModelChanged();
@@ -57,6 +67,7 @@ namespace omni {
             /// Assign slider values to current transform
             bool frontendToData();
 
+            float scaleRange_ = 5.0;
             std::unique_ptr<Ui::AffineTransform> ui_;
         };
     }

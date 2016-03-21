@@ -24,45 +24,35 @@ namespace omni {
     namespace ui {
         namespace mapping {
             Equirectangular::Equirectangular(QWidget *_widget) : ui::
-                MappingParameters(_widget) {
-                setup();
-            }
-
-            Equirectangular::Equirectangular(
-                omni::mapping::Interface *_mapping,
-                QWidget                  *_parent) :
-                ui::MappingParameters(_mapping, _parent) {
-                setup();
-            }
+                MappingParameters(_widget) {}
 
             Equirectangular::~Equirectangular() {}
 
-            void Equirectangular::updateMappingParameters() {
+            bool Equirectangular::frontendToData() {
                 auto *_equirectangular =
-                    static_cast<omni::mapping::Equirectangular *>(mapping());
+                    static_cast<omni::mapping::Equirectangular *>(dataModel());
 
                 _equirectangular->setStripTop(getParamAsFloat("Strip Top"));
                 _equirectangular->setStripBottom(getParamAsFloat("Strip Bottom"));
-                _equirectangular->setFlipHorizontal(getParamAsBool(
-                                                        "Flip horizontal"));
-                _equirectangular->setFlipVertical(getParamAsBool("Flip vertical"));
+                return MappingParameters::frontendToData();
             }
 
-            void Equirectangular::setup() {
-                if (!mapping()) return;
+            void Equirectangular::dataToFrontend() {
+                // Set slider values for Equirectangular mapping
+                auto *_equirectangular =
+                    static_cast<omni::mapping::Equirectangular *>(dataModel());
+                auto *_stripTop = addOffsetWidget("Strip Top",
+                                                  _equirectangular->stripTop(),
+                                                  0.0,
+                                                  1.0);
 
-                this->locked([&]() {
-                    // Set slider values for Equirectangular mapping
-                    auto *_equirectangular =
-                        static_cast<omni::mapping::Equirectangular *>(mapping());
-                    auto* _stripTop = addOffsetWidget("Strip Top", _equirectangular->stripTop(),
-                                                                     0.0, 1.0);
-                    _stripTop->setSuffix("");
-                    auto* _stripBottom = addOffsetWidget("Strip Bottom",
-                                    _equirectangular->stripBottom(), 0.0, 1.0);
-                    _stripBottom->setSuffix("");
-                    addDefaultParameters();
-                });
+                _stripTop->setSuffix("");
+                auto *_stripBottom = addOffsetWidget("Strip Bottom",
+                                                     _equirectangular->stripBottom(),
+                                                     0.0,
+                                                     1.0);
+                _stripBottom->setSuffix("");
+                MappingParameters::dataToFrontend();
             }
         }
     }

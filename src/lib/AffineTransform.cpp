@@ -19,6 +19,9 @@
 
 #include <omni/AffineTransform.h>
 
+#include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
+
 namespace omni {
     AffineTransform::AffineTransform() :
         scale_(1.0, 1.0, 1.0),
@@ -103,5 +106,39 @@ namespace omni {
     /// Enable or disable translation
     void AffineTransform::setTranslationEnabled(bool _enabled) {
         translationEnabled_ = _enabled;
+    }
+
+    /// Write transformation to stream
+    void AffineTransform::toStream(QDataStream& _os) const {
+        PropertyMap _map;
+        _map("rotationEnabled",rotationEnabled_)
+            ("rotation",rotation_)
+            ("scaleEnabled",scaleEnabled_)
+            ("scale",scale_)
+            ("translationEnabled",translationEnabled_)
+            ("translation",translation_);
+        _os << _map;
+    }
+
+    /// Read transformation from stream
+    void AffineTransform::fromStream(QDataStream& _is) {
+        PropertyMap _map;
+        _is >> _map;
+        _map.get("rotationEnabled",rotationEnabled_);
+        _map.get("rotation",rotation_);
+        _map.get("scaleEnabled",scaleEnabled_);
+        _map.get("scale",scale_);
+        _map.get("translationEnabled",translationEnabled_);
+        _map.get("translation",translation_);
+    }
+
+    bool operator==(AffineTransform const& _lhs, AffineTransform const& _rhs) {
+        return
+            OMNI_TEST_MEMBER_EQUAL(rotationEnabled_) &&
+            OMNI_TEST_MEMBER_EQUAL(rotation_) &&
+            OMNI_TEST_MEMBER_EQUAL(scaleEnabled_) &&
+            OMNI_TEST_MEMBER_EQUAL(scale_) &&
+            OMNI_TEST_MEMBER_EQUAL(translationEnabled_) &&
+            OMNI_TEST_MEMBER_EQUAL(translation_);
     }
 }

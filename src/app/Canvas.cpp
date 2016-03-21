@@ -75,30 +75,6 @@ namespace omni {
             showParameterWidget();
         }
 
-        void Canvas::showParameterWidget() {
-            if (!dataModel()) return;
-
-            auto* _canvas = dataModel()->canvas();
-            if (!_canvas) return;
-
-            paramWidget_ = _canvas->widget();
-            if (paramWidget_) {
-                // Configure layout
-                widget()->layout()->addWidget(paramWidget_);
-
-                // Update parameter when canvas has changed
-                connect(paramWidget_,SIGNAL(parametersUpdated()),this,SIGNAL(dataModelChanged()));
-                paramWidget_->show();
-            }
-            emit canvasTypeChanged();
-            emit dataModelChanged();
-
-            ///   Remove widget on next mapping type change
-            if (paramWidget_) {
-                connect(this,SIGNAL(canvasTypeChanged()),paramWidget_,SLOT(deleteLater()));
-            }
-        }
-
         bool Canvas::frontendToData() {
             return false;
         }
@@ -108,14 +84,26 @@ namespace omni {
             if (!dataModel() || this->isLocked()) return;
 
             canvasMemory_.store(dataModel()->canvas());
+
+            /// Dont do anything if type id has not changed
+            if (dataModel()->canvas()->getTypeId().str() == _id) {
+                return;
+            }
+
             dataModel()->setCanvas(_id);
             canvasMemory_.restore(dataModel()->canvas());
 
-            if (paramWidget_) {
-                widget()->layout()->removeWidget(paramWidget_);
-            }
-
             showParameterWidget();
+            emit canvasTypeChanged();
+        }
+
+        void Canvas::showParameterWidget() {
+            this->setupParameterWidget(widget(),dataModel()->canvas());
+            if (this->parameterWidget()) {
+                // Update parameter when canvas has changed
+                connect(this->parameterWidget(),SIGNAL(dataModelChanged()),
+                        this,SIGNAL(dataModelChanged()));
+            }
         }
     }
 }

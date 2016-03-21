@@ -24,31 +24,23 @@ namespace omni {
     namespace ui {
         namespace canvas {
             HalfDome::HalfDome(QWidget *_parent) : CanvasParameters(_parent) {
-                setup();
-            }
-
-            HalfDome::HalfDome(omni::canvas::Interface *_canvas, QWidget *_parent) :
-                CanvasParameters(_canvas, _parent) {
-                setup();
             }
 
             HalfDome::~HalfDome() {}
 
-            void HalfDome::updateCanvasParameters() {
-                auto *_halfdome = static_cast<omni::canvas::HalfDome *>(canvas());
+            bool HalfDome::frontendToData() {
+                auto *_halfdome = static_cast<omni::canvas::HalfDome *>(dataModel());
                 _halfdome->setDiameter(getParamAsFloat("Diameter"));
+                return CanvasParameters::frontendToData();
             }
 
-            void HalfDome::setup() {
-                if (!canvas()) return;
+            void HalfDome::dataToFrontend() {
+                auto* _diameter = addOffsetWidget("Diameter",5.0,0.5,20.0);
 
-                this->locked([&]() {
-                    auto* _diameter = addOffsetWidget("Diameter",5.0,0.5,20.0);
-
-                    /// Retrieve parameters for HalfDome canvas
-                    auto* _halfdome = static_cast<omni::canvas::HalfDome*>(canvas());
-                    _diameter->setValue(_halfdome->diameter());
-                });
+                /// Retrieve parameters for HalfDome canvas
+                auto* _halfdome = static_cast<omni::canvas::HalfDome*>(dataModel());
+                _diameter->setValue(_halfdome->diameter());
+                CanvasParameters::dataToFrontend();
             }
         }
     }

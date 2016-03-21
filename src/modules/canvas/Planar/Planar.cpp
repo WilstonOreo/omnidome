@@ -21,6 +21,7 @@
 #include "PlanarWidget.h"
 
 #include <QVector2D>
+#include <omni/serialization/PropertyMap.h>
 
 namespace omni
 {
@@ -83,16 +84,24 @@ namespace omni
 
     void Planar::fromStream(QDataStream& _stream)
     {
-      _stream >> width_ >> height_;
+      canvas::Interface::fromStream(_stream);
+      PropertyMap _map;
+      _stream >> _map;
+      _map.get("width",width_)
+          .get("height",height_);
     }
 
     void Planar::toStream(QDataStream& _stream) const
     {
-      _stream << width_ << height_;
+      canvas::Interface::toStream(_stream);
+      PropertyMap _map;
+      _map("width",width_)
+          ("height",height_);
+      _stream << _map;
     }
 
     QWidget* Planar::widget() {
-        return new ui::canvas::Planar(this);
+        return ui::makeWidget<ui::canvas::Planar>(this);
     }
   }
 }

@@ -21,13 +21,18 @@
 
 #include <omni/input/List.h>
 #include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
 
 #include <QOpenGLShaderProgram>
 
 namespace omni {
     namespace mapping {
         Interface::Interface()
-        {}
+        {
+            // Disable scaling and translation by default
+            transform_.setTranslationEnabled(false);
+            transform_.setScaleEnabled(false);
+        }
 
         Interface::~Interface()
         {}
@@ -76,12 +81,6 @@ namespace omni {
         {
             if (shader_) shader_->release();
         }
-
-        void Interface::fromStream(QDataStream&)
-        {}
-
-        void Interface::toStream(QDataStream&) const
-        {}
 
         bool Interface::flipHorizontal() const
         {
@@ -132,17 +131,17 @@ namespace omni {
         }
 
         /// Return const ref to affine transform
-        inline AffineTransform const& Interface::transform() const {
+        AffineTransform const& Interface::transform() const {
             return transform_;
         }
 
         /// Return ref to affine transform
-        inline AffineTransform& Interface::transform() {
+        AffineTransform& Interface::transform() {
             return transform_;
         }
 
         /// Set new affine transform
-        inline void Interface::setTransform(AffineTransform const& _transform) {
+        void Interface::setTransform(AffineTransform const& _transform) {
             transform_ = _transform;
         }
 
@@ -157,7 +156,6 @@ namespace omni {
         void Interface::setBoundToCanvas(bool _boundToCanvas) {
             boundToCanvas_ = _boundToCanvas;
         }
-
 
         QMatrix4x4 Interface::matrix() const {
             return transform_.matrix();
@@ -175,6 +173,26 @@ namespace omni {
                 util::fileToStr(QString(
                                     ":/shaders/mapping/") + getTypeId().str() +
                                 ".frag");
+        }
+
+        /// Write mapping to stream
+        void Interface::toStream(QDataStream& _os) const {
+            PropertyMap _map;
+            _map("transform",transform_)
+                ("boundToCanvas",boundToCanvas_)
+                ("flipHorizontal",flipHorizontal_)
+                ("flipVertical",flipVertical_);
+            _os << _map;
+        }
+
+        /// Read mapping from stream
+        void Interface::fromStream(QDataStream& _is) {
+            PropertyMap _map;
+            _is >> _map;
+            _map.get("transform",transform_)
+                .get("boundToCanvas",boundToCanvas_)
+                .get("flipHorizontal",flipHorizontal_)
+                .get("flipVertical",flipVertical_);
         }
     }
 }

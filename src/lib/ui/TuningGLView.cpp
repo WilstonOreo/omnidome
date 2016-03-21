@@ -100,9 +100,18 @@ namespace omni
       setMouseTracking(showCursor_ && !viewOnly_);
     }
 
+    void TuningGLView::setFullScreenMode(bool _fullscreenMode) {
+       fullscreenMode_ = _fullscreenMode;
+       update();
+    }
+
     bool TuningGLView::showCursor() const
     {
       return showCursor_;
+    }
+
+    bool TuningGLView::fullscreenMode() const {
+        return fullscreenMode_;
     }
 
     bool TuningGLView::isDrawingEnabled() const
@@ -611,7 +620,7 @@ namespace omni
 
       if (!vizTuning_ || !vizSession_ || !tuning()) return;
 
-      if (tuning()->outputDisabled() && this->isFullScreen()) return;
+      if (tuning()->outputDisabled() && this->fullscreenMode()) return;
 
       vizSession_->update();
 

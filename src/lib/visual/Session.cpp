@@ -25,192 +25,215 @@
 #include <omni/util.h>
 #include <omni/visual/util.h>
 
-namespace omni
-{
-  namespace visual
-  {
-    std::unique_ptr<QOpenGLShaderProgram> Session::frustumShader_;
+namespace omni {
+    namespace visual {
+        std::unique_ptr<QOpenGLShaderProgram> Session::frustumShader_;
 
-    Session::Session(omni::Session& _session) :
-      session_(_session)
-    {
+        Session::Session(omni::Session& _session) :
+            session_(_session)
+        {}
+
+        omni::Session& Session::session()
+        {
+            return session_;
+        }
+
+        omni::Session const& Session::session() const
+        {
+            return session_;
+        }
+
+        void Session::drawCanvasWithMatrix() const {
+            auto _canvas = session_.canvas();
+            if (!_canvas) return;
+
+            glPushMatrix();
+            {
+                glLoadIdentity();
+                glMultMatrixf(_canvas->matrix().constData());
+                _canvas->draw();
+            }
+            glPopMatrix();
+        }
+
+        void Session::drawCanvas(mapping::OutputMode _mode, bool _grayscale) const
+        {
+            auto _canvas = session_.canvas();
+
+            if (!_canvas) return;
+
+            with_current_context([&](QOpenGLFunctions& _)
+            {
+                auto *_input = session_.inputs().current();
+                auto *_mapping = session_.mapping();
+
+                if (session_.hasOutput() && _mode != mapping::OutputMode::LIGHTING_ONLY)
+                {
+                    GLuint _texId = _input ? _input->textureId() : 0;
+                    _.glEnable(GL_TEXTURE_2D);
+
+                    _.glBindTexture(GL_TEXTURE_2D, _texId);
+                    _mapping->bind(_mode, _grayscale);
+                    drawCanvasWithMatrix();
+
+                    _.glBindTexture(GL_TEXTURE_2D, 0);
+                    _mapping->release();
+                }
+                else
+                {
+                    // Render canvas with lighting when there is no input
+                    _.glEnable(GL_LIGHTING);
+                    _.glDisable(GL_TEXTURE_2D);
+                    glColor4f(1.0, 1.0, 1.0, 1.0);
+                    drawCanvasWithMatrix();
+                    _.glDisable(GL_LIGHTING);
+                    _.glEnable(GL_TEXTURE_2D);
+                }
+            });
+        }
+
+        void Session::drawCanvasWithFrustumIntersections(
+            ProjectorViewMode _projectorViewMode) const
+        {
+            for (auto& _tuning : session_.tunings())
+            {
+                drawFrustumIntersection(_tuning->projector(),
+                                        _tuning->color(), _projectorViewMode);
+            }
+        }
+
+        void Session::drawFrustumIntersection(
+            proj::Projector const& _proj,
+            QColor const         & _color,
+            ProjectorViewMode      _projectorViewMode) const
+        {
+            auto _canvas = session_.canvas();
+
+            if (!frustumShader_ || !_canvas) return;
+
+            frustumShader_->bind();
+            auto _invMatrix = _canvas->matrix().inverted();
+            auto _m         = _invMatrix * _proj.matrix();
+            auto _rot       = _invMatrix;
+            _rot.setColumn(3, QVector4D(0, 0, 0, 1));
+
+            frustumShader_->setUniformValue("color", _color.redF(),
+                                            _color.greenF(), _color.blueF());
+
+            /// Construct frustum
+            qreal _a              = _proj.fov().radians() * 0.5;
+            qreal _width          = tan(_a);
+            qreal _height         = _width / _proj.aspectRatio();
+            QVector3D _eye        = _m.column(3).toVector3D();
+            QVector3D _topLeft    = _m * QVector3D(1.0, -_width, _height) - _eye;
+            QVector3D _topRight   = _m * QVector3D(1.0, _width, _height) - _eye;
+            QVector3D _bottomLeft = _m *
+                                    QVector3D(1.0, -_width, -_height) - _eye;
+            QVector3D _bottomRight = _m * QVector3D(1.0, _width, -_height) - _eye;
+            QVector3D _lookAt      = _m * QVector3D(1.0, 0.0, 0.0) - _eye;
+
+            // Setup frustum uniforms for intersection test
+            frustumShader_->setUniformValue("eye",          _eye);
+            frustumShader_->setUniformValue("look_at",      _lookAt);
+            frustumShader_->setUniformValue("top_left",     _topLeft);
+            frustumShader_->setUniformValue("top_right",    _topRight);
+            frustumShader_->setUniformValue("bottom_left",  _bottomLeft);
+            frustumShader_->setUniformValue("bottom_right", _bottomRight);
+            frustumShader_->setUniformValue("matrix",       _rot);
+            frustumShader_->setUniformValue("scale",
+                                            GLfloat(_canvas->bounds().radius()));
+            frustumShader_->setUniformValue("opacity", GLfloat(0.8));
+            frustumShader_->setUniformValue("view_mode",
+                                            int(_projectorViewMode));
+
+            glDisable(GL_DEPTH_TEST);
+            drawCanvasWithMatrix();
+            glEnable(GL_DEPTH_TEST);
+
+            frustumShader_->release();
+        }
+
+        bool Session::needsUpdate() const
+        {
+            return session_.tunings().size() != projectors_.size();
+        }
+
+        void Session::drawProjectors() const
+        {
+            if (needsUpdate()) return;
+
+            glDisable(GL_DEPTH_TEST);
+
+            for (auto& _proj : projectors_)
+            {
+                _proj.draw();
+            }
+
+            if (session_.canvas())
+            {
+                for (auto& _proj : projectors_) _proj.drawPositioning(
+                        session_.canvas()->center());
+            }
+            glEnable(GL_DEPTH_TEST);
+        }
+
+        void Session::drawProjectorHalos() const
+        {
+            if (needsUpdate()) return;
+
+            for (auto& _proj : projectors_)
+            {
+                _proj.drawHalo();
+            }
+        }
+
+        void Session::update()
+        {
+            if (!QOpenGLContext::currentContext()) return;
+
+            auto *_canvas = session_.canvas();
+
+            if (!_canvas) return;
+
+            _canvas->update();
+
+            auto *_input = session_.inputs().current();
+
+            if (_input) _input->update();
+
+            // Update projector visualizers
+            projectors_.clear();
+
+            for (int i = 0; i < session_.tunings().size(); ++i)
+            {
+                projectors_.emplace_back(session_.tunings()[i]->projector());
+                projectors_.back().setColor(session_.tunings()[i]->color());
+                projectors_.back().setSelected(
+                    i == session_.tunings().currentIndex());
+                projectors_.back().update();
+            }
+
+            // Setup frustum/canvas intersection shader
+            if (!frustumShader_)
+            {
+                using omni::util::fileToStr;
+                static QString _vertSrc     = fileToStr(":/shaders/frustum.vert");
+                static QString _fragmentSrc = fileToStr(":/shaders/frustum.frag");
+
+                frustumShader_.reset(new QOpenGLShaderProgram());
+                frustumShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,
+                                                        _vertSrc);
+                frustumShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,
+                                                        _fragmentSrc);
+                frustumShader_->link();
+            }
+        }
+
+        void Session::free()
+        {
+            auto *_input = session_.inputs().current();
+
+            if (_input) _input->free();
+        }
     }
-
-    omni::Session& Session::session()
-    {
-      return session_;
-    }
-
-    omni::Session const& Session::session() const
-    {
-      return session_;
-    }
-
-    void Session::drawCanvasWithMatrix() const {
-
-        auto _canvas = session_.canvas();
-      if (!_canvas) return;
-          glPushMatrix();
-          {
-              glLoadIdentity();
-              glMultMatrixf(_canvas->matrix().constData());
-              _canvas->draw();
-          }
-          glPopMatrix();
-
-    }
-
-    void Session::drawCanvas(mapping::OutputMode _mode, bool _grayscale) const
-    {
-      auto _canvas = session_.canvas();
-
-      if (!_canvas) return;
-
-      with_current_context([&](QOpenGLFunctions& _)
-      {
-        auto* _input = session_.inputs().current();
-        auto* _mapping = session_.mapping();
-
-          GLuint _texId = _input ? _input->textureId() : 0;
-          _.glEnable(GL_TEXTURE_2D);
-
-          _.glBindTexture(GL_TEXTURE_2D, _texId);
-          _mapping->bind(_mode,_grayscale);
-          drawCanvasWithMatrix();
-
-          _.glBindTexture(GL_TEXTURE_2D, 0);
-
-          _mapping->release();
-      });
-    }
-
-    void Session::drawCanvasWithFrustumIntersections(ProjectorViewMode _projectorViewMode) const
-    {
-      for (auto& _tuning : session_.tunings())
-      {
-        drawFrustumIntersection(_tuning->projector(),_tuning->color(),_projectorViewMode);
-      }
-    }
-
-    void Session::drawFrustumIntersection(
-        proj::Projector const& _proj,
-        QColor const& _color,
-        ProjectorViewMode _projectorViewMode) const
-    {
-      auto _canvas = session_.canvas();
-      if (!frustumShader_ || !_canvas) return;
-      frustumShader_->bind();
-      auto _invMatrix = _canvas->matrix().inverted();
-      auto _m = _invMatrix * _proj.matrix();
-      auto _rot = _invMatrix;
-      _rot.setColumn(3,QVector4D(0,0,0,1));
-
-      frustumShader_->setUniformValue("color",_color.redF(),_color.greenF(),_color.blueF());
-
-      /// Construct frustum
-      qreal _a = _proj.fov().radians() *0.5;
-      qreal _width = tan(_a);
-      qreal _height = _width / _proj.aspectRatio();
-      QVector3D _eye = _m.column(3).toVector3D();
-      QVector3D _topLeft = _m * QVector3D(1.0,-_width,_height) - _eye;
-      QVector3D _topRight = _m * QVector3D(1.0,_width,_height) - _eye;
-      QVector3D _bottomLeft = _m * QVector3D(1.0,-_width,-_height) - _eye;
-      QVector3D _bottomRight = _m * QVector3D(1.0,_width,-_height) - _eye;
-      QVector3D _lookAt = _m * QVector3D(1.0,0.0,0.0) - _eye;
-
-      // Setup frustum uniforms for intersection test
-      frustumShader_->setUniformValue("eye",_eye);
-      frustumShader_->setUniformValue("look_at",_lookAt);
-      frustumShader_->setUniformValue("top_left",_topLeft);
-      frustumShader_->setUniformValue("top_right",_topRight);
-      frustumShader_->setUniformValue("bottom_left",_bottomLeft);
-      frustumShader_->setUniformValue("bottom_right",_bottomRight);
-      frustumShader_->setUniformValue("matrix",_rot);
-      frustumShader_->setUniformValue("scale",GLfloat(_canvas->bounds().radius()));
-      frustumShader_->setUniformValue("opacity",GLfloat(0.8));
-      frustumShader_->setUniformValue("view_mode",int(_projectorViewMode));
-
-      glDisable(GL_DEPTH_TEST);
-      drawCanvasWithMatrix();
-      glEnable(GL_DEPTH_TEST);
-
-      frustumShader_->release();
-    }
-
-    bool Session::needsUpdate() const
-    {
-      return session_.tunings().size() != projectors_.size();
-    }
-
-
-    void Session::drawProjectors() const
-    {
-      if (needsUpdate()) return;
-
-      glDisable(GL_DEPTH_TEST);
-      for (auto& _proj : projectors_)
-      {
-        _proj.draw();
-      }
-
-      if (session_.canvas())
-      {
-        for (auto& _proj : projectors_)
-          _proj.drawPositioning(session_.canvas()->center());
-      }
-      glEnable(GL_DEPTH_TEST);
-    }
-
-    void Session::drawProjectorHalos() const
-    {
-      if (needsUpdate()) return;
-
-      for (auto& _proj : projectors_)
-      {
-        _proj.drawHalo();
-      }
-    }
-
-    void Session::update()
-    {
-      if (!QOpenGLContext::currentContext()) return;
-
-      auto* _canvas = session_.canvas();
-      if (!_canvas) return;
-
-      _canvas->update();
-
-      auto* _input = session_.inputs().current();
-      if (_input) _input->update();
-
-      // Update projector visualizers
-      projectors_.clear();
-      for (int i = 0; i < session_.tunings().size(); ++i)
-      {
-        projectors_.emplace_back(session_.tunings()[i]->projector());
-        projectors_.back().setColor(session_.tunings()[i]->color());
-        projectors_.back().setSelected(i == session_.tunings().currentIndex());
-        projectors_.back().update();
-      }
-
-      // Setup frustum/canvas intersection shader
-      if (!frustumShader_)
-      {
-        using omni::util::fileToStr;
-        static QString _vertSrc = fileToStr(":/shaders/frustum.vert");
-        static QString _fragmentSrc = fileToStr(":/shaders/frustum.frag");
-
-        frustumShader_.reset(new QOpenGLShaderProgram());
-        frustumShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
-        frustumShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
-        frustumShader_->link();
-      }
-    }
-
-    void Session::free()
-    {
-      auto* _input = session_.inputs().current();
-      if (_input) _input->free();
-    }
-  }
 }

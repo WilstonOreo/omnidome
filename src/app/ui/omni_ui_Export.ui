@@ -195,7 +195,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="lbSeperateOutput">
+       <widget class="QLabel" name="lbSeparateOutput">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -291,7 +291,7 @@
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QFrame" name="frameImageType">
+       <widget class="QFrame" name="frameCalibrationDataType">
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <property name="spacing">
           <number>4</number>
@@ -309,9 +309,12 @@
           <number>4</number>
          </property>
          <item>
-          <widget class="QRadioButton" name="rbUVWMap">
+          <widget class="QRadioButton" name="rbTextureCoordinates">
            <property name="text">
-            <string>UVW Map</string>
+            <string>Texture Coordinates</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -319,9 +322,12 @@
           </widget>
          </item>
          <item>
-          <widget class="QRadioButton" name="rbTextureCoordinates">
+          <widget class="QRadioButton" name="rbUVWMap">
            <property name="text">
-            <string>Texture Coordinates</string>
+            <string>UVW Map</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
            </property>
           </widget>
          </item>

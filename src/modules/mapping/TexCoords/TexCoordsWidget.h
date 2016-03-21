@@ -29,12 +29,7 @@ namespace omni {
                 Q_OBJECT
             public:
                 TexCoords(QWidget* = nullptr);
-                TexCoords(omni::mapping::Interface*, QWidget* = nullptr);
                 ~TexCoords();
-
-            private:
-                void updateMappingParameters();
-                void setup();
             };
         }
     }

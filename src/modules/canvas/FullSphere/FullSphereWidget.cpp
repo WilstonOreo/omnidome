@@ -24,30 +24,22 @@ namespace omni {
     namespace ui {
         namespace canvas {
             FullSphere::FullSphere(QWidget *_parent) : CanvasParameters(_parent) {
-                setup();
-            }
-
-            FullSphere::FullSphere(omni::canvas::Interface *_canvas, QWidget *_parent) :
-                CanvasParameters(_canvas, _parent) {
-                setup();
             }
 
             FullSphere::~FullSphere() {}
 
-            void FullSphere::updateCanvasParameters() {
-                auto *_fullsphere = static_cast<omni::canvas::FullSphere *>(canvas());
+            bool FullSphere::frontendToData() {
+                auto *_fullsphere = static_cast<omni::canvas::FullSphere *>(dataModel());
                 _fullsphere->setDiameter(getParamAsFloat("Diameter"));
+                return CanvasParameters::frontendToData();
             }
 
-            void FullSphere::setup() {
-                if (!canvas()) return;
-
-                this->locked([&]() {
-                    auto* _diameter = addOffsetWidget("Diameter",5.0,0.5,20.0);
-                    /// Retrieve parameters for FullSphere canvas
-                    auto* _fullsphere = static_cast<omni::canvas::FullSphere*>(canvas());
-                    _diameter->setValue(_fullsphere->diameter());
-                });
+            void FullSphere::dataToFrontend() {
+                auto* _diameter = addOffsetWidget("Diameter",5.0,0.5,20.0);
+                /// Retrieve parameters for FullSphere canvas
+                auto* _fullsphere = static_cast<omni::canvas::FullSphere*>(dataModel());
+                _diameter->setValue(_fullsphere->diameter());
+                CanvasParameters::dataToFrontend();
             }
         }
     }

@@ -158,11 +158,32 @@ namespace omni {
 
             template<typename T>
             using UnsharedDataModel = DataModel<T,false>;
+
+            /**@brief Instantiate a new widget and set data model
+               @detail Uses raw pointer (unshared data model)
+             **/
+            template<typename WIDGET, typename DATAMODEL, typename...ARGS>
+            static WIDGET* makeWidget(DATAMODEL* _dataModel, ARGS&&..._args) {
+                auto* _widget = new WIDGET(_args...);
+                _widget->setDataModel(_dataModel);
+                return _widget;
+            }
+
+            /**@brief Instantiate a new widget and set data model
+               @detail Uses shared pointer (shared data model)
+             **/
+            template<typename WIDGET, typename DATAMODEL, typename...ARGS>
+            static WIDGET* makeWidget(std::shared_ptr<DATAMODEL> _dataModel, ARGS&&..._args) {
+                auto* _widget = new WIDGET(_args...);
+                _widget->setDataModel(_dataModel);
+                return _widget;
+            }
         }
 
         using mixin::DataModel;
         using mixin::SharedDataModel;
         using mixin::UnsharedDataModel;
+        using mixin::makeWidget;
     }
 }
 

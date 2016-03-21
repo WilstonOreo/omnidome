@@ -94,6 +94,7 @@ namespace omni
         auto _interp = util::intToEnum<WarpGrid::Interpolation>(_index);
         warpGrid()->setInterpolation(_interp);
         updateFrontend();
+        emit dataModelChanged();
     }
 
     void Warp::resetWarpGrid()

@@ -71,11 +71,6 @@ namespace omni
       /// Release shader
       void release();
 
-      /// Read mapping from stream
-      virtual void fromStream(QDataStream&);
-
-      /// Write mapping to stream
-      virtual void toStream(QDataStream&) const;
 
       bool flipHorizontal() const;
       void setFlipHorizontal(bool);
@@ -106,13 +101,13 @@ namespace omni
       inline virtual void update() {}
 
       /// Return const ref to affine transform
-      inline AffineTransform const& transform() const;
+      AffineTransform const& transform() const;
 
       /// Return ref to affine transform
-      inline AffineTransform& transform();
+      AffineTransform& transform();
 
       /// Set new affine transform
-      inline void setTransform(AffineTransform const& _transform);
+      void setTransform(AffineTransform const& _transform);
 
       /// Return matrix of transform
       virtual QMatrix4x4 matrix() const;
@@ -124,6 +119,12 @@ namespace omni
 
       /// Set whether mapping transform is attached to canvas transform
       void setBoundToCanvas(bool);
+
+      /// Write mapping to stream
+      virtual void toStream(QDataStream&) const;
+
+      /// Read mapping from stream
+      virtual void fromStream(QDataStream&);
 
     protected:
       std::unique_ptr<QOpenGLShaderProgram> shader_;

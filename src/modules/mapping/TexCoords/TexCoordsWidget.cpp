@@ -25,34 +25,9 @@ namespace omni {
         namespace mapping {
             TexCoords::TexCoords(QWidget *_widget) :
                 ui::MappingParameters(_widget) {
-                setup();
-            }
-
-            TexCoords::TexCoords(
-                omni::mapping::Interface *_mapping,
-                QWidget                  *_parent) :
-                ui::MappingParameters(_mapping, _parent) {
-                setup();
             }
 
             TexCoords::~TexCoords() {}
-
-            void TexCoords::updateMappingParameters() {
-                auto* _planar = static_cast<omni::mapping::TexCoords*>(mapping());
-                _planar->setFlipHorizontal(getParamAsBool(
-                                                "Flip horizontal"));
-                _planar->setFlipVertical(getParamAsBool("Flip vertical"));
-            }
-
-            void TexCoords::setup() {
-                if (!mapping()) return;
-
-                this->locked([&]() {
-                    // Set slider values for TexCoords mapping
-                    auto *_planar = static_cast<omni::mapping::TexCoords *>(mapping());
-                    addDefaultParameters();
-                });
-            }
         }
     }
 }

@@ -33,17 +33,12 @@ namespace omni
     /**@brief Input List contains a list of inputs. A TestImage input is always present at index 0
       *@detail Input List is serializable via QDataStream
      **/
-    class List : private std::map<QString,std::unique_ptr<Input>>
+    class List : public input::Interface
     {
     public:
-      typedef std::map<QString,std::unique_ptr<Input>> container_type;
+      OMNI_REGISTER_CLASS(Factory,List)
 
-      using container_type::size;
-      using container_type::empty;
-      using container_type::begin;
-      using container_type::end;
-
-      List();
+      List(Interface* _parent = nullptr);
 
       /**@brief Add new input with given type id. Returns nullptr if input with typeid does not exist
          @param _id Id for the input
@@ -57,6 +52,22 @@ namespace omni
         *@return Pair with input id and pointer to added input
        **/
       std::pair<QString,Input*> add(Id const& _typeId);
+
+      inline bool canHaveChildren() const {
+          return true;
+      }
+
+      inline QSize size() const {
+          return QSize(0,0);
+      }
+
+      inline GLuint textureId() const {
+          return 0;
+      }
+
+      inline QWidget* widget() {
+          return nullptr;
+      }
 
       /// Return input at index
       Input* operator[](QString const& _id);
@@ -96,6 +107,7 @@ namespace omni
       friend bool operator==(List const&,List const&);
 
     private:
+      /// Generate a new id for input
       QString generateId() const;
 
       QString currentId_;
@@ -106,7 +118,6 @@ namespace omni
 }
 
 OMNI_DECL_STREAM_OPERATORS(omni::input::List)
-
 
 
 #endif /* OMNI_INPUT_LIST_H */

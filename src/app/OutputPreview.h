@@ -56,6 +56,10 @@ namespace omni {
         private:
             void drawBorder(QColor _color, QRect const& _rect, QPoint& _capPos, QString const& _caption);
 
+            void drawTuning(QPainter&, proj::Tuning const*);
+            void drawScreen(QPainter&, QScreen const*);
+            int verticalMultiplier() const;
+
             /// Return non transformed rectangle for tuning
             QRect getRectForTuning(proj::Tuning const*);
 

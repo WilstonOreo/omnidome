@@ -170,6 +170,7 @@ namespace omni
 
   void Session::toStream(QDataStream& _os) const {
       PropertyMap _map;
+      _map("version",OMNIDOME_VERSION_STRING);
       _map("tunings",tunings_)
           ("mapping",mapping_)
           ("inputs",inputs_)

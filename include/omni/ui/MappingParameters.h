@@ -22,6 +22,7 @@
 
 #include <omni/mapping/Interface.h>
 #include <omni/ui/ParameterWidget.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
@@ -31,30 +32,25 @@ namespace omni
      **/
     class MappingParameters :
         public ParameterWidget,
-        protected mixin::Locked
+        public mixin::UnsharedDataModel<mapping::Interface>
     {
       Q_OBJECT
+      OMNI_UI_UNSHARED_DATAMODEL(mapping::Interface)
+
     public:
       MappingParameters(QWidget* _parent = nullptr);
-      MappingParameters(
-          mapping::Interface* _mapping,
-          QWidget* _parent = nullptr);
       ~MappingParameters();
 
-      mapping::Interface* mapping();
-      mapping::Interface const* mapping() const;
-      void setMapping(mapping::Interface* _mapping);
-
-      /// Set parameters from sliders to mapping
-      void updateParameters();
-
+    signals:
+        void dataModelChanged();
     protected:
-        void addDefaultParameters();
+      virtual void dataToFrontend();
 
-    private:
-      virtual void updateMappingParameters() = 0;
+                /// Return true if data has changed by front end
+      virtual bool frontendToData();
+      void addDefaultParameters();
 
-      mapping::Interface* mapping_ = nullptr;
+      omni::ui::AffineTransform* transform_ = nullptr;
     };
   }
 }

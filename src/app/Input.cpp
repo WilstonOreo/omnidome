@@ -64,19 +64,12 @@ namespace omni
     void Input::dataToFrontend()
     {
       prepareModel();
-      if (!dataModel()) {
-            if (paramWidget_) {
-                paramWidget_->deleteLater();
-                paramWidget_ = nullptr;
-            }
-          return;
-      }
-
       for (auto& _input : dataModel()->inputs())
       {
         addItem(_input.first,_input.second.get());
       }
-      setupInputWidget();
+      showParameterWidget();
+      emit inputIndexChanged();
     }
 
     void Input::addInput(QAction* _action)
@@ -93,8 +86,8 @@ namespace omni
       {
         addItem(_id,_input);
         dataModel()->inputs().setCurrentId(_id);
-        paramWidget_ = _input->widget();
-        setupInputWidget();
+        showParameterWidget();
+        emit inputIndexChanged();
       } else
       {
         dataModel()->inputs().remove(_id);
@@ -108,7 +101,7 @@ namespace omni
       int _row = ui_->inputList->currentIndex().row();
 
       qDebug() << "removeSelection: " << _row;
-      if (_row < 1 || _row > dataModel()->inputs().size()) return;
+      if (_row < 1 || _row > dataModel()->inputs().numberOfChildren()) return;
 
       auto* _item = model_->item(_row);
       qDebug() << "removeSelection: " << _item;
@@ -116,19 +109,16 @@ namespace omni
 
       dataModel()->inputs().remove(_item->text());
       model_->removeRows(_row,1);
-      if (paramWidget_) {
-          paramWidget_->hide();
-      }
-      changeSelection(model_->index(_row,0));
 
-      emit inputChanged();
+      this->removeParameterWidget(widget());
+      changeSelection(model_->index(_row,0));
     }
 
     void Input::clear()
     {
       dataModel()->inputs().clear();
       prepareModel();
-      setupInputWidget();
+      showParameterWidget();
     }
 
     QString Input::itemId(int _row) const {
@@ -139,52 +129,26 @@ namespace omni
 
     void Input::changeSelection(QModelIndex _index)
     {
-      if (!dataModel()) return;
+      if (!dataModel() || this->isLocked()) return;
       int _row = _index.row();
 
-      if (_row < 1 || _row > dataModel()->inputs().size())
+      if (_row < 1 || _row > dataModel()->inputs().numberOfChildren())
       {
           _row = -1;
       }
-      qDebug() << "changeSelection: " << itemId(_row);
+
+      if (itemId(_row) == dataModel()->inputs().currentId()) return;
 
       dataModel()->inputs().setCurrentId(itemId(_row));
-      setupInputWidget();
+      showParameterWidget();
+      emit inputIndexChanged();
     }
+    void Input::showParameterWidget() {
 
-    void Input::setupInputWidget() {
-        auto* _input = dataModel()->inputs().current();
-        if (!_input) {
-            if (paramWidget_) {
-                paramWidget_->deleteLater();
-                paramWidget_ = nullptr;
-            }
-            emit inputIndexChanged();
-            return;
-        }
-
-        paramWidget_ = dataModel()->inputs().current()->widget();
-        if (paramWidget_) {
-            QSizePolicy _sizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-            _sizePolicy.setVerticalStretch(1);
-            paramWidget_->setSizePolicy(_sizePolicy);
-            paramWidget_->setMinimumSize(QSize(0,128));
-
-            // Configure layout
-            widget()->layout()->addWidget(paramWidget_);
-
-            emit inputChanged();
-
-            // Update parameter when canvas has changed
-            connect(paramWidget_,SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
-        }
-
-        emit inputIndexChanged();
-
-        ///   Remove widget on next mapping type change
-        if (paramWidget_) {
-            connect(this,SIGNAL(inputIndexChanged()),paramWidget_,SLOT(deleteLater()));
-        }
+      this->setupParameterWidget(widget(),dataModel()->inputs().current());
+      if (this->parameterWidget()) {
+          connect(this->parameterWidget(),SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
+      }
     }
 
     void Input::prepareModel()
@@ -209,10 +173,7 @@ namespace omni
       ui_->inputList->resizeColumnToContents(1);
       ui_->inputList->resizeColumnToContents(2);
 
-      if (paramWidget_) {
-         paramWidget_->deleteLater();
-         paramWidget_ = nullptr;
-      }
+      this->removeParameterWidget(widget());
     }
 
     void Input::addItem(QString const& _id, input::Interface const* _input)
@@ -234,6 +195,13 @@ namespace omni
       ui_->inputList->resizeColumnToContents(0);
       ui_->inputList->resizeColumnToContents(1);
       ui_->inputList->resizeColumnToContents(2);
+    }
+
+    void Input::parameterWidgetSetupOptions(QWidget* _paramWidget) const {
+            QSizePolicy _sizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+            _sizePolicy.setVerticalStretch(1);
+            _paramWidget->setSizePolicy(_sizePolicy);
+            _paramWidget->setMinimumSize(QSize(0,128));
     }
   }
 }

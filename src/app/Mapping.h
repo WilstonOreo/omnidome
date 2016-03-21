@@ -22,6 +22,7 @@
 
 #include <memory>
 #include <omni/ui/mixin/DataModel.h>
+#include <omni/ui/mixin/ParameterWidget.h>
 #include <omni/ui/MappingParameters.h>
 #include <omni/TypeIdMemory.h>
 #include "DockWidget.h"
@@ -41,7 +42,8 @@ namespace omni
      **/
     class Mapping :
       public DockWidget,
-      public mixin::SharedDataModel<Session>
+      public mixin::SharedDataModel<Session>,
+      private mixin::ParameterWidget
     {
       Q_OBJECT
       OMNI_UI_SHARED_DATAMODEL(Session)
@@ -55,8 +57,6 @@ namespace omni
     public slots:
       void selectMappingType(QString const&);
 
-      void setDefaultMappingForCanvas();
-
     private:
       /// Update widgets from current mapping
       void dataToFrontend();
@@ -64,8 +64,9 @@ namespace omni
       /// Assign widget values to current mapping
       bool frontendToData();
 
+      void showParameterWidget();
+
       std::unique_ptr<Ui::Mapping> ui_;
-      QWidget* paramWidget_ = nullptr;
 
       /// Memory for storing/restoring settings of previously selected mapping types
       TypeIdMemory<mapping::Interface> mappingMemory_;

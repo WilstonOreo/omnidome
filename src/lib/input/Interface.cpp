@@ -21,26 +21,33 @@
 
 namespace omni {
     namespace input {
+        Interface::Interface(Interface* _parent) : parent_(_parent) {
+
+        }
+
         Interface::~Interface()
-        {}
+        {
+          disconnectAll();
+
+        }
 
         Interface * Interface::addInput(QString const& _id, Interface *_i) {
             if (!canHaveChildren()) {
                 throw exception::CannotHaveChildren();
             }
 
-            if (children_.count(_id) != 0) {
+            if (container_type::count(_id) != 0) {
                 return nullptr;
             }
-            children_[_id].reset(_i);
-            return children_[_id].get();
+            container_type::operator[](_id).reset(_i);
+            return container_type::operator[](_id).get();
         }
 
         void Interface::removeInput(QString const& _id) {
             if (!canHaveChildren()) {
                 throw exception::CannotHaveChildren();
             }
-            children_.erase(_id);
+            container_type::erase(_id);
         }
 
         Interface* Interface::getInput(QString const& _id) {
@@ -48,9 +55,9 @@ namespace omni {
                 throw exception::CannotHaveChildren();
             }
 
-            if (children_.count(_id) == 0) return nullptr;
+            if (container_type::count(_id) == 0) return nullptr;
 
-            return children_.at(_id).get();
+            return container_type::at(_id).get();
         }
 
         Interface const* Interface::getInput(QString const& _id) const {
@@ -58,23 +65,66 @@ namespace omni {
                 throw exception::CannotHaveChildren();
             }
 
-            if (children_.count(_id) == 0) return nullptr;
+            if (container_type::count(_id) == 0) return nullptr;
 
-            return children_.at(_id).get();
+            return container_type::at(_id).get();
         }
 
-        Interface::children_type& Interface::children() {
+        Interface::container_type& Interface::children() {
             if (!canHaveChildren()) {
                 throw exception::CannotHaveChildren();
             }
-            return children_;
+            return *this;
         }
 
-        Interface::children_type const& Interface::children() const {
+        Interface::container_type const& Interface::children() const {
             if (!canHaveChildren()) {
                 throw exception::CannotHaveChildren();
             }
-            return children_;
+            return *this;
+        }
+
+        bool Interface::isConnected(Interface* _i) const {
+            return used_.count(_i) > 0;
+        }
+
+        void Interface::connect(Interface* _i) {
+          if (_i != this) return;
+          _i->used_.insert(this);
+          this->used_.insert(_i);
+        }
+
+        void Interface::disconnect(Interface* _i) {
+            _i->used_.erase(this);
+            used_.erase(_i);
+        }
+
+        void Interface::disconnectAll() {
+            for (auto& _i : used_) {
+                disconnect(_i);
+            }
+        }
+        /// Return parent interface
+        Interface* Interface::parent() {
+            return parent_;
+        }
+
+        /// Return parent interface (const version)
+        Interface const* Interface::parent() const {
+            return parent_;
+        }
+
+        void Interface::setParent(Interface* _parent) {
+            parent_ = _parent;
+        }
+        /// Deserialize from stream
+        void Interface::fromStream(QDataStream& _is) {
+
+        }
+
+        /// Serialize to stream
+        void Interface::toStream(QDataStream& _os) const {
+
         }
     }
 }
