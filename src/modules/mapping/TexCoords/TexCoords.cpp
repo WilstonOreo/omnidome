@@ -39,9 +39,9 @@ namespace omni
     {
     }
 
-    void TexCoords::bind(OutputMode _outputMode)
+    void TexCoords::bind()
     {
-      Interface::bind(_outputMode);
+      Interface::bind();
       this->shader_->setUniformValue("offset",offset_);
       this->shader_->setUniformValue("stretch",stretch_);
       this->shader_->setUniformValue("tile_horizontal",GLint(tileHorizontal_));
@@ -111,7 +111,7 @@ namespace omni
     }
 
     QWidget* TexCoords::widget() {
-        return new ui::mapping::TexCoords(this);
+        return ui::makeWidget<ui::mapping::TexCoords>(this);
     }
   }
 }

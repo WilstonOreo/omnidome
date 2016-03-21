@@ -26,7 +26,7 @@
 #include <QOpenGLShaderProgram>
 #include <QPointF>
 #include <omni/visual/Session.h>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
@@ -36,13 +36,14 @@ namespace omni
   {
     class GLView :
       public QOpenGLWidget,
-      public mixin::SessionWidget,
+      public mixin::SharedDataModel<Session>,
       protected QOpenGLFunctions
     {
       Q_OBJECT
+      OMNI_UI_SHARED_DATAMODEL(Session)
     public:
       explicit GLView(QWidget* _parent = nullptr);
-      GLView(omni::Session*,QWidget* _parent = nullptr);
+      GLView(std::shared_ptr<omni::Session>,QWidget* _parent = nullptr);
       virtual ~GLView();
 
       typedef std::set<GLView*> view_set_type;
@@ -52,6 +53,9 @@ namespace omni
       QPointF mousePosition() const;
 
       bool initialized() const;
+
+    signals:
+      void dataModelChanged();
 
     private slots:
       inline virtual void free() {}
@@ -64,10 +68,12 @@ namespace omni
       virtual void mousePressEvent(QMouseEvent*);
 
       QPointF mousePosition_;
-      std::unique_ptr<visual::Session> session_;
+      std::unique_ptr<visual::Session> vizSession_;
 
     private:
-      virtual void sessionParameters();
+      virtual void dataToFrontend();
+      inline virtual bool frontendToData() { return false; }
+
       virtual bool initialize() = 0;
       bool initialized_ = false;
     };

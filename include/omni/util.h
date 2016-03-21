@@ -112,45 +112,6 @@ namespace omni
       return testPtrVectorEqual(_a,_b,testPtrEqual<element_type>);
     }
 
-
-    /// Serialize object behind SerializationInterface to stream
-    template<typename STREAM, typename T>
-    void serializePtr(STREAM& _stream, T const* _t)
-    {
-      if (!_t)
-      {
-        _stream << QString("none");
-        return;
-      }
-
-      _stream << _t->getTypeId();
-      _t->toStream(_stream);
-    }
-
-    /**@brief Deserialize a pointer from stream.
-       @detail Functor f must return a pointer which is constructed
-               from a factory with an id.
-               If pointer is not null, it will be deserialized from stream.
-               Otherwise, a serialization exception is thrown.
-     **/
-    template<typename STREAM, typename F>
-    void deserializePtr(STREAM& _stream, F f)
-    {
-      omni::Id _id;
-      _stream >> _id;
-      if (_id == "none") return;
-
-      auto* _ptr = f(_id);
-      if (_ptr)
-      {
-        _ptr->fromStream(_stream);
-      }
-      else
-      {
-        throw omni::exception::Serialization(_id);
-      }
-    }
-
     /// Converts an enum class to integer
     template<typename ENUM>
     auto enumToInt(ENUM const& _v)

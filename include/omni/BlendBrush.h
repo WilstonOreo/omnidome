@@ -96,6 +96,12 @@ namespace omni
 
     Buffer<float> const& buffer() const;
 
+    /// Write blend brush to stream
+    void toStream(QDataStream&) const;
+
+    /// Read blend brush from stream
+    void fromStream(QDataStream&);
+
     /// Test for equality, buffer is ignored
     friend bool operator==(BlendBrush const&,BlendBrush const&);
 
@@ -113,7 +119,6 @@ namespace omni
   };
 }
 
-QDataStream& operator>>(QDataStream&, omni::BlendBrush&);
-QDataStream& operator<<(QDataStream&, omni::BlendBrush const&);
+OMNI_DECL_STREAM_OPERATORS(omni::BlendBrush)
 
 #endif /* OMNI_BLENDBRUSH_H_ */

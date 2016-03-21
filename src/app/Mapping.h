@@ -21,8 +21,10 @@
 #define OMNI_UI_MAPPING_H_
 
 #include <memory>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/ui/mixin/DataModel.h>
+#include <omni/ui/mixin/ParameterWidget.h>
 #include <omni/ui/MappingParameters.h>
+#include <omni/TypeIdMemory.h>
 #include "DockWidget.h"
 
 namespace omni
@@ -40,26 +42,34 @@ namespace omni
      **/
     class Mapping :
       public DockWidget,
-      public mixin::SessionWidget
+      public mixin::SharedDataModel<Session>,
+      private mixin::ParameterWidget
     {
       Q_OBJECT
+      OMNI_UI_SHARED_DATAMODEL(Session)
     public:
       Mapping(QWidget* = nullptr);
       ~Mapping();
 
     signals:
-      void mappingTypeChanged();
-      void mappingChanged();
+      void dataModelChanged();
 
     public slots:
-      void mappingTypeSelected(QString const&);
-
-      void setDefaultMappingForCanvas();
-      void sessionParameters();
+      void selectMappingType(QString const&);
 
     private:
+      /// Update widgets from current mapping
+      void dataToFrontend();
+
+      /// Assign widget values to current mapping
+      bool frontendToData();
+
+      void showParameterWidget();
+
       std::unique_ptr<Ui::Mapping> ui_;
-      QWidget* paramWidget_ = nullptr;
+
+      /// Memory for storing/restoring settings of previously selected mapping types
+      TypeIdMemory<mapping::Interface> mappingMemory_;
     };
   }
 }

@@ -32,14 +32,16 @@ namespace omni
     class Sphere : public Interface
     {
     public:
+      enum TexCoordsMode {
+            EQUIRECTANGULAR,
+            FISHEYE
+      };
+
       Sphere(qreal _radius = 1.0);
       ~Sphere();
 
       qreal radius() const;
       void setRadius(qreal);
-
-      QVector3D scale() const;
-      void setScale(QVector3D const&);
 
       /// Return number of stacks (in Z direction)
       int stacks() const;
@@ -55,6 +57,9 @@ namespace omni
 
       float bottom() const;
       void setBottom(float);
+
+      TexCoordsMode texCoordsMode() const;
+      void setTexCoordsMode(TexCoordsMode);
 
       /// Draws sphere from vertex buffer object
       void draw() const;
@@ -74,11 +79,11 @@ namespace omni
       float bottom_ = 0.0;
 
       qreal radius_ = 1.0;
-      QVector3D scale_;
 
       VertexVBO vbo_;
       VertexVBO::vertex_buffer_type vertices_;
       VertexVBO::index_buffer_type indices_;
+      TexCoordsMode texCoordsMode_ = EQUIRECTANGULAR;
     };
   }
 }

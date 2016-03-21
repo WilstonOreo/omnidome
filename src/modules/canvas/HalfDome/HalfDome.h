@@ -32,6 +32,7 @@ namespace omni
     class HalfDome : public QObject, public Dome
     {
         OMNI_CANVAS_PLUGIN_DECL
+        OMNI_PLUGIN_CR8TR("Halfdome canvas","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,HalfDome)
 
@@ -40,19 +41,8 @@ namespace omni
 
       void draw() const;
 
-      EulerAngles& angles();
-      EulerAngles const& angles() const;
-
-      void fromStream(QDataStream&);
-      void toStream(QDataStream&) const;
-
-      QMatrix4x4 matrix() const;
-
       /// Make new box parameter widget
       QWidget* widget();
-
-    private:
-      EulerAngles angles_;
     };
   }
 }

@@ -34,9 +34,12 @@ namespace omni {
             QString styleSheetFile() const;
 
             static QSettings& settings();
+    //        static std::vector<PluginInfo> loadedPlugins();
 
         private:
             bool eventFilter(QObject* object,QEvent* event);
+
+            void loadPlugins();
 
             QString styleSheetFile_;
             static QSettings settings_;

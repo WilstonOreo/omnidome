@@ -20,6 +20,7 @@
 #include "ColorCorrection.h"
 
 #include <omni/util.h>
+#include <omni/Session.h>
 #include "ui_omni_ui_ColorCorrection.h"
 
 namespace omni {
@@ -30,13 +31,15 @@ namespace omni {
         {
             this->setup(ui_);
 
-            connect(ui_->params,SIGNAL(parametersUpdated()),ui_->graph,SLOT(update()));
-            connect(ui_->params,SIGNAL(parametersUpdated()),this,SIGNAL(colorCorrectionChanged()));
+            connect(ui_->params,SIGNAL(dataModelChanged()),ui_->graph,SLOT(update()));
+            connect(ui_->params,SIGNAL(dataModelChanged()),this,SIGNAL(dataModelChanged()));
 
             connect(ui_->btnAll,SIGNAL(clicked()),this,SLOT(setAllChannels()));
             connect(ui_->btnRed,SIGNAL(clicked()),this,SLOT(setRedChannel()));
             connect(ui_->btnGreen,SIGNAL(clicked()),this,SLOT(setGreenChannel()));
             connect(ui_->btnBlue,SIGNAL(clicked()),this,SLOT(setBlueChannel()));
+
+            connect(ui_->chkIsUsed,SIGNAL(clicked(bool)),this,SLOT(setUsed(bool)));
         }
 
         ColorCorrection::~ColorCorrection() {
@@ -58,8 +61,30 @@ namespace omni {
             setChannel(Channel::BLUE);
         }
 
+        void ColorCorrection::setUsed(bool _isUsed) {
+            auto _tuning = dataModel()->tunings().current();
+            if (!_tuning) return;
+
+            this->locked([&]{
+                auto& _colorCorrection = _tuning->colorCorrection();
+                _colorCorrection.setUsed(_isUsed);
+
+                ui_->chkIsUsed->setChecked(_isUsed);
+                ui_->btnAll->setEnabled(_isUsed);
+                ui_->btnRed->setEnabled(_isUsed);
+                ui_->btnGreen->setEnabled(_isUsed);
+                ui_->btnBlue->setEnabled(_isUsed);
+                ui_->graph->setEnabled(_isUsed);
+                ui_->params->setEnabled(_isUsed);
+                emit dataModelChanged();
+            });
+        }
+
         void ColorCorrection::setChannel(proj::Channel _channel) {
-            if (!tuning()) return;
+            if (!dataModel()) return;
+
+            auto _tuning = dataModel()->tunings().current();
+            if (!_tuning) return;
 
             this->locked([&]{
                 ui_->btnAll->setChecked(_channel == Channel::ALL);
@@ -67,15 +92,23 @@ namespace omni {
                 ui_->btnGreen->setChecked(_channel == Channel::GREEN);
                 ui_->btnBlue->setChecked(_channel == Channel::BLUE);
 
-                auto* _colorCorrection = &tuning()->colorCorrection();
-                ui_->graph->setSelectedChannel(_channel);
-                ui_->graph->setColorCorrection(_colorCorrection);
-                ui_->params->setChannelCorrection(_colorCorrection->correction(_channel),_channel);
+                auto* _colorCorrection = &_tuning->colorCorrection();
+                ui_->graph->setChannel(_channel);
+                ui_->graph->setDataModel(_colorCorrection);
+                ui_->params->setChannel(_channel);
+                ui_->params->setDataModel(_colorCorrection->correction(_channel));
             });
         }
 
-        void ColorCorrection::tuningParameters() {
+        void ColorCorrection::dataToFrontend() {
+            auto _tuning = dataModel()->tunings().current();
             setAllChannels();
+            if (!_tuning) return;
+            setUsed(_tuning->colorCorrection().isUsed());
+        }
+
+        bool ColorCorrection::frontendToData() {
+            return false;
         }
     }
 }

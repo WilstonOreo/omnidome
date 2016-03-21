@@ -20,21 +20,52 @@
 #ifndef OMNI_INPUT_INTERFACE_H_
 #define OMNI_INPUT_INTERFACE_H_
 
+#include <memory>
 #include <set>
-#include <QObject>
+#include <map>
+#include <functional>
 #include <QOpenGLTexture>
-#include <omni/SerializationInterface.h>
+#include <omni/exception.h>
+#include <omni/PluginInfo.h>
+#include <omni/serialization/Interface.h>
 #include <omni/mapping/Interface.h>
 
 namespace omni
 {
   namespace input
   {
+    namespace exception {
+        /**@brief Exception is thrown when accessing input of a children
+           @detail Is only thrown when input cannot accept children
+         **/
+        class CannotHaveChildren : public omni::exception::Error {
+        public:
+            OMNI_EXCEPTION(CannotHaveChildren)
+
+            inline QString message() const throw()
+            {
+                return QString("Input cannot have children!");
+            }
+        };
+    }
+
     /// Generic input interface
-    class Interface : public SerializationInterface
+    class Interface :
+        public SerializationInterface,
+        public TypeIdInterface,
+        private std::map<QString,std::unique_ptr<Interface>>
     {
     public:
       typedef Interface interface_type;
+      typedef std::map<QString,std::unique_ptr<Interface>> container_type;
+      typedef std::function<void()> callback_type;
+
+      using container_type::empty;
+      using container_type::begin;
+      using container_type::end;
+      using container_type::clear;
+
+      Interface(Interface* _parent = nullptr);
 
       /// Virtual destructor
       virtual ~Interface();
@@ -50,14 +81,12 @@ namespace omni
        **/
       inline virtual void free() {}
 
-      /// Returns an optional string with some basic information about the object
-      inline virtual QString infoText() const
-      {
-        return QString();
-      };
-
       /// An input must return width and height information
       virtual QSize size() const = 0;
+
+      inline size_t numberOfChildren() const {
+          return container_type::size();
+      }
 
       /// Return width from size
       inline int width() const
@@ -69,6 +98,11 @@ namespace omni
       inline int height() const
       {
         return size().height();
+      }
+
+      /// Optional info text
+      QString infoText() const {
+          return QString();
       }
 
       /// Make new parameter widget
@@ -83,16 +117,67 @@ namespace omni
           return true;
       }
 
-      /**@brief An Input may have an optional ruler position
-       * @detail Position is between (0.0,0.0) and (1.0,1.0)
-       **/
-      virtual inline QPointF rulerPos() const
-      {
-        return QPointF(-1.0,-1.0);
+      inline  virtual bool canHaveChildren() const {
+          return false;
       }
 
-      /// Set ruler position.
-      virtual inline void setRulerPos(QPointF const&) {}
+      inline void setUpdateCallBack(callback_type _updatedCallback) {
+          updatedCallback_ = _updatedCallback;
+      }
+
+      callback_type updatedCallback() {
+          return updatedCallback_;
+      }
+
+      /// Input with id and return pointer to input when successfully added
+      Interface* addInput(QString const& _id, Interface* _i);
+
+      /// Remove input with id
+      void removeInput(QString const& _id);
+
+      /// Return pointer of input with id, nullptr if input does not exist
+      Interface* getInput(QString const& _id);
+
+      /// Return pointer of input with id, nullptr if input does not exist
+      Interface const* getInput(QString const& _id) const;
+
+      /// Return children
+      container_type& children();
+
+      /// Return children
+      container_type const& children() const;
+
+      /// Return true if this input and input i are connected
+      bool isConnected(Interface* _i) const;
+
+      /// Connect this input and input i
+      void connect(Interface* _i);
+
+      /// Disconnect this input and input i
+      void disconnect(Interface* _i);
+
+      /// Disconnect all inputs
+      void disconnectAll();
+
+      /// Return parent interface
+      Interface* parent();
+
+      /// Return parent interface (const version)
+      Interface const* parent() const;
+
+      /// Set new parent
+      void setParent(Interface*);
+
+      virtual void toStream(QDataStream&) const;
+
+      virtual void fromStream(QDataStream&);
+
+  private:
+
+        Interface* parent_ = nullptr;
+        std::set<Interface*> used_;
+        container_type children_;
+        callback_type updatedCallback_;
     };
 
     /// Input Factory typedef
@@ -110,6 +195,7 @@ Q_DECLARE_INTERFACE(omni::input::Interface, OMNI_INPUT_INTERFACE_IID)
 #define OMNI_INPUT_PLUGIN_DECL \
     Q_OBJECT \
     Q_PLUGIN_METADATA(IID OMNI_INPUT_INTERFACE_IID) \
-    Q_INTERFACES(omni::input::Interface)
+    Q_INTERFACES(omni::input::Interface) \
+    OMNI_PLUGIN_TYPE("Input")
 
 #endif /* OMNI_INPUT_INTERFACE_H_ */

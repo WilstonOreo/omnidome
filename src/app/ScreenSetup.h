@@ -25,7 +25,7 @@
 
 #include <omni/proj/ScreenSetup.h>
 #include <omni/ui/mixin/TransformedRect.h>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/ui/mixin/DataModel.h>
 #include "proj/Tuning.h"
 #include "ScreenSetupDragWidget.h"
 #include "FullScreen.h"
@@ -41,10 +41,11 @@ namespace omni
      **/
     class ScreenSetup :
         public QWidget,
-        public mixin::TransformedRect<ScreenSetup>,
-        public mixin::SessionWidget
+        public mixin::SharedDataModel<Session>,
+        public mixin::TransformedRect<ScreenSetup>
     {
       Q_OBJECT
+      OMNI_UI_SHARED_DATAMODEL(Session)
     public:
       ScreenSetup(QWidget* = nullptr);
       ~ScreenSetup();
@@ -58,6 +59,8 @@ namespace omni
       void updateScreens();
 
       void detachTuning(omni::ui::proj::Tuning*);
+    signals:
+      void dataModelChanged();
 
     protected:
       void paintEvent(QPaintEvent*);
@@ -152,7 +155,9 @@ namespace omni
       };
 
       /// Set session parameters
-      void sessionParameters();
+      void dataToFrontend();
+
+      bool frontendToData() { return false; }
 
       /**@brief Returns pointer to a ScreenSetup::Item under given position
         *@detail Returns null otherwise

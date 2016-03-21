@@ -82,15 +82,33 @@ namespace omni {
             return true;
         }
 
+        bool ScreenSetup::noTuningsAssigned(QScreen const* _screen) const {
+            if (!session()) return true;
+
+            for (auto& _tuning : session()->tunings()) {
+                if (_tuning->screen() == _screen) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         /// Returns combined desktop and virtual desktop rect
         QRect ScreenSetup::combinedDesktopRect() const {
             /// If there are no tunings assigned, ignore desktopRect
-            auto _r = desktopRect();
-            return _r | virtualDesktopRect().translated(_r.topRight());
+            /*QRect _desktopRect;
+            auto  _screens = ScreenSetup::screens();
+            for (auto& _screen : _screens) {
+                if (noTuningsAssigned(_screen)) continue;
+                _desktopRect |= _screen->geometry();
+            }*/
+            return desktopRect() | virtualDesktopRect().translated(desktopRect().topRight());
         }
 
         int ScreenSetup::subScreenCount(QScreen const *_screen)
         {
+            if (!_screen)   return 0;
+
             // Go through list of screen resolutions and see if the
             // current screen has subscreens
             for (auto& _screenSize :screenResolutions())
@@ -108,6 +126,8 @@ namespace omni {
 
         int ScreenSetup::subScreenWidth(QScreen const *_screen)
         {
+            if (!_screen)   return 0;
+
             return _screen->size().width() / ScreenSetup::subScreenCount(_screen);
         }
 
@@ -134,14 +154,17 @@ namespace omni {
             std::vector<QScreen const *> _screens;
             auto _allScreens = QGuiApplication::screens();
 
-            for (auto& _screen : _allScreens)
-                if (!_excludeStandardScreen ||
-                    (_screen != standardScreen())) _screens.push_back(_screen);
+            for (auto& _screen : _allScreens) {
+                if (!_excludeStandardScreen || (_screen != standardScreen())) {
+                    _screens.push_back(_screen);
+                }
+            }
             return _screens;
         }
 
         QRect ScreenSetup::tuningRect(proj::Tuning const *_t) const {
             if (!session()) return QRect();
+
             auto _r = desktopRect();
 
             QRect _rect;
@@ -177,12 +200,36 @@ namespace omni {
 
         QRect ScreenSetup::tuningRect() const {
             if (!session()) return QRect();
+
             QRect _rect;
 
             for (auto& _tuning : session()->tunings()) {
                 _rect |= tuningRect(_tuning.get());
             }
             return _rect;
+        }
+
+        std::set<proj::Tuning const *>ScreenSetup::tunings(
+            bool _excludeNonAssigned) const {
+            std::set<proj::Tuning const *> _tunings;
+
+            for (auto& _tuning : session()->tunings()) {
+                if (!_excludeNonAssigned || _tuning->hasScreen()) {
+                    _tunings.insert(_tuning.get());
+                }
+            }
+
+            return _tunings;
+        }
+
+        QScreen const * ScreenSetup::screenFromRect(QRect const& _rect) {
+            std::vector<QScreen const *> _screens;
+            auto _allScreens = QGuiApplication::screens();
+
+            for (auto& _screen : _allScreens) {
+                if (_screen->geometry() == _rect) return _screen;
+            }
+            return nullptr;
         }
 
         bool ScreenSetup::operator==(const ScreenSetup& _rhs) const

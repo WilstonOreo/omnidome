@@ -20,7 +20,7 @@
 #include "EquirectangularTestImage.h"
 
 #include <omni/util.h>
-#include <omni/ui/InputPreview.h>
+#include <omni/ui/TestInputPreview.h>
 
 namespace omni
 {
@@ -38,7 +38,7 @@ namespace omni
     {
       static QString _fragmentSrc;
       if (_fragmentSrc.isEmpty())
-        _fragmentSrc = util::fileToStr(":/shaders/test_image.frag");
+        _fragmentSrc = util::fileToStr(":/shaders/EquirectangularTestImage.frag");
       return _fragmentSrc;
     }
     QString EquirectangularTestImage::vertexShaderSource() const
@@ -55,7 +55,7 @@ namespace omni
     }
 
     QWidget* EquirectangularTestImage::widget() {
-        return new ui::InputPreview(this);
+        return new ui::TestInputPreview(this);
     }
   }
 }

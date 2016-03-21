@@ -21,10 +21,11 @@
 
 #include <cstdint>
 #include <cstddef>
-#include <vector>
 #include <QRect>
 #include <QImage>
+#include <omni/util.h>
 #include <omni/PixelConverter.h>
+#include <omni/serialization/container.h>
 
 namespace omni {
         /// A buffer holds an w x h pixel array
@@ -196,11 +197,47 @@ namespace omni {
                         return static_cast<void*>(data_.data());
                 }
 
-private:
+                /// Write blend mask to stream
+                void toStream(QDataStream& _os) const {
+                    serialize(_os,width_);
+                    serialize(_os,height_);
+                    serialize(_os,data_);
+                }
+
+                /// Read blend mask from stream
+                void fromStream(QDataStream& _is) {
+                    deserialize(_is,width_);
+                    deserialize(_is,height_);
+                    deserialize(_is,data_);
+                }
+
+                /// Test for equality, buffer is ignored
+                friend bool operator==(Buffer const& _lhs, Buffer const& _rhs) {
+                    return
+                        OMNI_TEST_MEMBER_EQUAL(width_) &&
+                        OMNI_TEST_MEMBER_EQUAL(height_) &&
+                        OMNI_TEST_MEMBER_EQUAL(data_);
+                }
+
+            private:
                 int width_, height_;
                 data_type data_;
         };
-
 }
+
+/// Deserialize buffer from stream
+template<typename T>
+QDataStream& operator>>(QDataStream& _is, omni::Buffer<T>& _buf) {
+    _buf.fromStream(_is);
+    return _is;
+}
+
+/// Serialize buffer to stream
+template<typename T>
+QDataStream& operator<<(QDataStream& _os, omni::Buffer<T> const& _buf) {
+    _buf.toStream(_os);
+    return _os;
+}
+
 
 #endif /* OMNI_BUFFER_H_ */

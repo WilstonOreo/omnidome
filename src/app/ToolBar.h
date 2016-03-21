@@ -20,17 +20,20 @@
 #define OMNI_UI_TOOLBAR_H_
 
 #include <QToolBar>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 
-class QPushButton;
+class QToolButton;
 
 namespace omni {
     namespace ui {
+        /// Omnidome main window toolbar
         class ToolBar :
             public QToolBar,
-            public mixin::SessionWidget
+            public mixin::SharedDataModel<Session>
         {
             Q_OBJECT
+            OMNI_UI_SHARED_DATAMODEL(Session)
         public:
             ToolBar(QWidget* = nullptr);
             ~ToolBar();
@@ -43,21 +46,32 @@ namespace omni {
             void setColorCorrectionMode();
             void setExportMode();
             void setLiveMode();
-            void setMode(Session::Mode);
+
+            /// Show About dialog
+            void showSettings();
+
+            void buttonStates();
 
         signals:
-            void sessionModeChanged(Session::Mode);
+            void dataModelChanged();
 
         private:
-            void sessionParameters();
+            void setMode(Session::Mode);
 
-            QPushButton* btnScreenSetup_ = nullptr;
-            QPushButton* btnArrange_ = nullptr;
-            QPushButton* btnWarp_ = nullptr;
-            QPushButton* btnBlend_ = nullptr;
-            QPushButton* btnColorCorrection_ = nullptr;
-            QPushButton* btnExport_ = nullptr;
-            QPushButton* btnLive_ = nullptr;
+            /// Update buttons from session
+            void dataToFrontend();
+
+            /// Set session mode from buttons
+            bool frontendToData() { return false; }
+
+            QToolButton* btnSettings_ = nullptr;
+            QToolButton* btnScreenSetup_ = nullptr;
+            QToolButton* btnArrange_ = nullptr;
+            QToolButton* btnWarp_ = nullptr;
+            QToolButton* btnBlend_ = nullptr;
+            QToolButton* btnColorCorrection_ = nullptr;
+            QToolButton* btnExport_ = nullptr;
+            QToolButton* btnLive_ = nullptr;
 
         };
     }

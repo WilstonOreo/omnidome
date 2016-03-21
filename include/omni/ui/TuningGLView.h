@@ -24,12 +24,15 @@
 
 #include <omni/ui/GLView.h>
 #include <omni/visual/Tuning.h>
+#include <omni/ui/mixin/TuningFromIndex.h>
 
 namespace omni
 {
   namespace ui
   {
-    class TuningGLView : public GLView
+    class TuningGLView :
+        public GLView,
+        public mixin::TuningFromIndex<TuningGLView>
     {
       Q_OBJECT
     public:
@@ -47,6 +50,8 @@ namespace omni
 
       /// Returns true if cursor is visible
       bool showCursor() const;
+
+      bool fullscreenMode() const;
 
       /// Return relative border value
       float border() const;
@@ -78,8 +83,8 @@ namespace omni
       /// Set relative border distance
       void setBorder(float);
 
-      /// Show different content for different session modes
-      void sessionModeChange();
+      /// Set fullscreen mode
+      void setFullScreenMode(bool);
 
       void updateWithChildViews(bool _updateContext = true);
       void updateWithChildViews(QRect const&);
@@ -96,8 +101,11 @@ namespace omni
       void keyPressEvent(QKeyEvent* event);
 
     private:
-      omni::proj::Tuning* tuning();
-      omni::proj::Tuning const* tuning() const;
+
+      void drawOutput(
+        float _blendMaskOpacity,
+        float _inputOpacity = 1.0,
+        QColor _color = Qt::white);
 
       /// Draw Canvas from Projector's perspective
       void drawCanvas();
@@ -139,9 +147,6 @@ namespace omni
       /// Initialize OpenGL objects
       bool initialize();
 
-      /// Tuning index
-      int index_ = -1;
-
       /// Flags which determines if aspect ratio is used when drawing content
       bool keepAspectRatio_ = false;
 
@@ -157,6 +162,9 @@ namespace omni
       /// Cursor position (is not mouse position when widget is view only)
       QPointF cursorPosition_;
 
+      /// Last stroke position
+      QPointF lastStrokePos_;
+
       /// Show cursor flag (cursor is also shown when widget is view only)
       bool showCursor_ = true;
 
@@ -169,6 +177,9 @@ namespace omni
       /// Relative border
       float border_ = 0.0;
 
+      /// True if this widget is shown in fullscreen mode
+      bool fullscreenMode_ = false;
+
       /// Tuning visualizer
       std::shared_ptr<visual::Tuning> vizTuning_;
 
@@ -177,9 +188,6 @@ namespace omni
 
       /// Frame buffer which holds a texture with current view image
       std::unique_ptr<QOpenGLFramebufferObject> warpGridBuffer_;
-
-      /// Shader for displaying disabled output in grayscale
-      std::unique_ptr<QOpenGLShaderProgram> grayscaleShader_;
 
       std::set<TuningGLView*> childViews_;
     };

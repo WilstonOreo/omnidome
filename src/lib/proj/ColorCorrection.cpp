@@ -19,6 +19,10 @@
 
 #include <omni/proj/ColorCorrection.h>
 
+#include <omni/serialization/PropertyMap.h>
+
+#include <omni/util.h>
+
 namespace omni {
     namespace proj {
         bool ColorCorrection::isUsed() const {
@@ -120,5 +124,39 @@ namespace omni {
             }
             return Qt::transparent;
         }
+
+        bool operator==(ColorCorrection const& _lhs, ColorCorrection const& _rhs) {
+            return
+                OMNI_TEST_MEMBER_EQUAL(isUsed_) &&
+                OMNI_TEST_MEMBER_EQUAL(all_) &&
+                OMNI_TEST_MEMBER_EQUAL(red_) &&
+                OMNI_TEST_MEMBER_EQUAL(green_) &&
+                OMNI_TEST_MEMBER_EQUAL(blue_);
+        }
     }
+}
+
+QDataStream& operator>>(QDataStream& _is, omni::proj::ColorCorrection& _colorCorrection) {
+    using namespace omni;
+    PropertyMap _map;
+    _is >> _map;
+    _map.get<bool>("isUsed",_colorCorrection,std::mem_fn(&proj::ColorCorrection::setUsed));
+    _map.get("all",_colorCorrection.all());
+    _map.get("red",_colorCorrection.red());
+    _map.get("green",_colorCorrection.green());
+    _map.get("blue",_colorCorrection.blue());
+    return _is;
+}
+
+QDataStream& operator<<(QDataStream& _os, omni::proj::ColorCorrection const& _colorCorrection) {
+
+    using namespace omni;
+    PropertyMap _map;
+    _map("isUsed",_colorCorrection.isUsed())
+        ("all",_colorCorrection.all())
+        ("red",_colorCorrection.red())
+        ("green",_colorCorrection.green())
+        ("blue",_colorCorrection.blue());
+    _os << _map;
+    return _os;
 }

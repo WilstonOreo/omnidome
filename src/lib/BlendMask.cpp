@@ -21,133 +21,135 @@
 
 #include <omni/util.h>
 #include <omni/proj/Tuning.h>
+#include <omni/serialization/PropertyMap.h>
 
-namespace omni
-{
-  BlendMask::BlendMask(proj::Tuning const& _tuning) :
-    tuning_(_tuning),
-    rect_(0.1,0.1,0.8,0.9),
-    gamma_(2.0)
-  {
-    autoResizeStrokeBuffer();
-  }
+namespace omni {
+    BlendMask::BlendMask(proj::Tuning const& _tuning) :
+        tuning_(_tuning),
+        rect_(0.1, 0.1, 0.8, 0.9),
+        gamma_(2.0)
+    {
+        autoResizeStrokeBuffer();
+    }
 
-  void BlendMask::clear()
-  {
-    strokeBuffer_.clear();
-  }
+    void BlendMask::clear()
+    {
+        strokeBuffer_.clear();
+    }
 
-  void BlendMask::setRect(QRectF const& _rect, bool _update)
-  {
-    rect_ = _rect;
-  }
+    void BlendMask::setRect(QRectF const& _rect, bool _update)
+    {
+        rect_ = _rect;
+    }
 
-  QRectF BlendMask::rect() const
-  {
-    return rect_;
-  }
+    QRectF BlendMask::rect() const
+    {
+        return rect_;
+    }
 
-  float BlendMask::topWidth() const
-  {
-    return rect_.top();
-  }
+    float BlendMask::topWidth() const
+    {
+        return rect_.top();
+    }
 
-  float BlendMask::bottomWidth() const
-  {
-    return 1.0 - rect_.bottom();
-  }
+    float BlendMask::bottomWidth() const
+    {
+        return 1.0 - rect_.bottom();
+    }
 
-  float BlendMask::leftWidth() const
-  {
-    return rect_.left();
-  }
+    float BlendMask::leftWidth() const
+    {
+        return rect_.left();
+    }
 
-  float BlendMask::rightWidth() const
-  {
-    return 1.0 - rect_.right();
-  }
+    float BlendMask::rightWidth() const
+    {
+        return 1.0 - rect_.right();
+    }
 
-  void BlendMask::setGamma(float _gamma)
-  {
-    gamma_=_gamma;
-    if (gamma_ < 0.1) gamma_ = 0.1;
-  }
+    void BlendMask::setGamma(float _gamma)
+    {
+        gamma_ = _gamma;
 
-  float BlendMask::gamma() const
-  {
-    return gamma_;
-  }
+        if (gamma_ < 0.1) gamma_ = 0.1;
+    }
 
-  BlendBrush& BlendMask::brush()
-  {
-    return brush_;
-  }
+    float BlendMask::gamma() const
+    {
+        return gamma_;
+    }
 
-  BlendBrush const& BlendMask::brush() const
-  {
-    return brush_;
-  }
+    BlendBrush& BlendMask::brush()
+    {
+        return brush_;
+    }
 
-  void BlendMask::stamp(const QPointF& _pos)
-  {
-    autoResizeStrokeBuffer();
-    brush_.stamp(_pos,strokeBuffer_);
-  }
+    BlendBrush const& BlendMask::brush() const
+    {
+        return brush_;
+    }
 
-  float BlendMask::drawLine(QPointF const& _p0, QPointF const& _p1, float _leftOver)
-  {
-    autoResizeStrokeBuffer();
-    return brush_.drawLine(_p0,_p1,strokeBuffer_,_leftOver);
-  }
+    void BlendMask::stamp(const QPointF& _pos)
+    {
+        autoResizeStrokeBuffer();
+        brush_.stamp(_pos, strokeBuffer_);
+    }
 
-  BlendMask::Buffer const& BlendMask::strokeBuffer() const
-  {
-    return strokeBuffer_;
-  }
+    float BlendMask::drawLine(QPointF const& _p0,
+                              QPointF const& _p1,
+                              float          _leftOver)
+    {
+        autoResizeStrokeBuffer();
+        return brush_.drawLine(_p0, _p1, strokeBuffer_, _leftOver);
+    }
 
-  void BlendMask::resize(int width, int height)
-  {
-    strokeBuffer_.resize(width,height);
-  }
+    BlendMask::Buffer const& BlendMask::strokeBuffer() const
+    {
+        return strokeBuffer_;
+    }
 
-  void* BlendMask::strokeBufferData() const
-  {
-    return (void*)(strokeBuffer_.data().data());
-  }
+    void BlendMask::resize(int width, int height)
+    {
+        strokeBuffer_.resize(width, height);
+    }
 
-  void BlendMask::autoResizeStrokeBuffer()
-  {
-    if (strokeBuffer_.width() != tuning_.width() ||
-        strokeBuffer_.height() != tuning_.height())
-      strokeBuffer_.resize(tuning_.width(),tuning_.height());
-  }
+    void * BlendMask::strokeBufferData() const
+    {
+        return (void *)(strokeBuffer_.data().data());
+    }
 
-  bool operator==(BlendMask const& _lhs, BlendMask const& _rhs)
-  {
-    return
-      OMNI_TEST_MEMBER_EQUAL(rect_) &&
-      OMNI_TEST_MEMBER_EQUAL(gamma_) &&
-      OMNI_TEST_MEMBER_EQUAL(brush_);
-  }
-}
+    void BlendMask::autoResizeStrokeBuffer()
+    {
+        if ((strokeBuffer_.width() != tuning_.width()) ||
+            (strokeBuffer_.height() != tuning_.height())) strokeBuffer_.resize(
+                tuning_.width(),
+                tuning_.height());
+    }
 
-QDataStream& operator>>(QDataStream& _is, omni::BlendMask& _mask)
-{
-  QRectF _rect;
-  _is >> _rect;
-  float _gamma;
-  _is >> _gamma;
-  _is >> _mask.brush();
+    void BlendMask::toStream(QDataStream& _os) const {
+        omni::PropertyMap _map;
+        _map("rect", rect_)
+            ("gamma", gamma_)
+            ("brush", brush_)
+            ("strokeBuffer", strokeBuffer_);
+        _os << _map;
+    }
 
-  _mask.setGamma(_gamma);
-  _mask.setRect(_rect);
-  return _is;
-}
+    void BlendMask::fromStream(QDataStream& _is) {
+        PropertyMap _map;
+        _is >> _map;
+        _map.get("rect", rect_);
+        _map.get("gamma", gamma_);
+        _map.get("brush",        brush_);
+        _map.get("strokeBuffer", strokeBuffer_);
+    }
 
-QDataStream& operator<<(QDataStream& _os, omni::BlendMask const& _mask)
-{
-  _os << _mask.rect();
-  _os << _mask.gamma();
-  _os << _mask.brush();
-  return _os;
+    bool operator==(BlendMask const& _lhs, BlendMask const& _rhs)
+    {
+        return
+            OMNI_TEST_MEMBER_EQUAL(rect_) &&
+            OMNI_TEST_MEMBER_EQUAL(gamma_) &&
+            OMNI_TEST_MEMBER_EQUAL(brush_) &&
+            OMNI_TEST_MEMBER_EQUAL(strokeBuffer_);
+    }
 }

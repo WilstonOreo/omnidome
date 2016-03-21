@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -20,6 +20,7 @@
 #ifndef OMNI_WARPPOINT_H_
 #define OMNI_WARPPOINT_H_
 
+#include <omni/serialization/Interface.h>
 #include <QPointF>
 
 namespace omni
@@ -41,34 +42,34 @@ namespace omni
 
     /// Set new position
     void setPos(QPointF const& _pos);
-    
+
     /// Returns reference to position
     QPointF& pos();
 
     /// Returns const reference to position
     QPointF const& pos() const;
-   
+
     /// Return x coordinate of position
     float x() const;
-    
+
     /// Return y coordinate of position
     float y() const;
 
-    /// Set first bezier handle 
+    /// Set first bezier handle
     void setC1(QPointF const& _c1);
-    
+
     /// Returns reference to first bezier handle
     QPointF& c1();
-    
+
     /// Returns const reference to first bezier handle
     QPointF const& c1() const;
-    
-    /// Set second bezier handle 
+
+    /// Set second bezier handle
     void setC2(QPointF const& _c2);
-    
+
     /// Returns reference to second bezier handle
     QPointF& c2();
-    
+
     /// Returns const reference to second bezier handle
     QPointF const& c2() const;
 
@@ -81,16 +82,18 @@ namespace omni
     /// Test for equality
     friend bool operator==(WarpPoint const&,WarpPoint const&);
 
+    /// Write tuning to stream
+    void toStream(QDataStream&) const;
+
+    /// Read tuning from stream
+    void fromStream(QDataStream&);
+
   private:
     QPointF pos_, c1_, c2_;
     bool selected_ = false;
   };
 }
 
-/// Serialize omni::WarpPoint to stream
-QDataStream& operator<<(QDataStream& _os, const omni::WarpPoint& _p);
-
-/// Deserialize omni::WarpPoint from stream
-QDataStream& operator>>(QDataStream& _is, omni::WarpPoint& _p);
+OMNI_DECL_STREAM_OPERATORS(omni::WarpPoint)
 
 #endif /* OMNI_WARPPOINT_H_ */

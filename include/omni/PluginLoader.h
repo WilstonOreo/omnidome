@@ -4,6 +4,7 @@
 #include <vector>
 #include <QDir>
 #include <QString>
+#include <omni/PluginInfo.h>
 
 namespace omni {
     /**@brief PluginLoader singleton to load plugins from multiple directories
@@ -23,7 +24,10 @@ namespace omni {
 
         static std::vector<QDir> defaultPaths();
 
+        static std::vector<PluginInfo> const& loadedPlugins();
+
     private:
+        static std::vector<PluginInfo> loadedPlugins_;
 
         /// Load a single plugin from file
         static void loadPlugin(QString const& _file);

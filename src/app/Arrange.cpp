@@ -33,14 +33,20 @@ namespace omni {
 
         }
 
-        void Arrange::setSession(Session* _session) {
-            ui_->view->setSession(_session);
-            SessionWidget::setSession(_session);
+        void Arrange::dataToFrontend() {
+            ui_->view->setDataModel(dataModel());
         }
 
-        void Arrange::sessionParameters() {
-
+        GLView3D* Arrange::view() {
+            return ui_->view;
         }
 
+        GLView3D const* Arrange::view() const {
+            return ui_->view;
+        }
+
+        bool Arrange::frontendToData() {
+            return false;
+        }
     }
 }

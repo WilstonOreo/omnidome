@@ -29,14 +29,7 @@ namespace omni {
                 Q_OBJECT
             public:
                 CubeMap(QWidget* = nullptr);
-                CubeMap(omni::mapping::Interface*, QWidget* = nullptr);
                 ~CubeMap();
-
-            private:
-                void updateMappingParameters();
-                void setup();
-
-                Rotation* rotation_ = nullptr;
             };
         }
     }

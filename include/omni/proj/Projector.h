@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -31,7 +31,7 @@ namespace omni
 {
   namespace proj
   {
-    class Projector  
+    class Projector
     {
     public:
       Projector();
@@ -64,19 +64,25 @@ namespace omni
 
       QMatrix4x4& matrix();
       QMatrix4x4 const& matrix() const;
-      
+
       QMatrix4x4 projectionMatrix() const;
-      
+
       void setMatrix(QMatrix4x4 const&);
 
       QVector3D pos() const;
+
+      /// Write projector to stream
+      void toStream(QDataStream&) const;
+
+      /// Read projector from stream
+      void fromStream(QDataStream&);
 
       friend bool operator==(Projector const&,Projector const&);
 
     private:
       QMatrix4x4 matrix_;
       QScreen const* screen_ = nullptr;
-      int subScreenIndex_;
+      int subScreenIndex_ = -1;
       Angle fov_;
       std::unique_ptr<Setup> setup_;
     };
@@ -85,7 +91,6 @@ namespace omni
   using proj::Projector;
 }
 
-QDataStream& operator>>(QDataStream&, omni::proj::Projector&);
-QDataStream& operator<<(QDataStream&, omni::proj::Projector const&);
+OMNI_DECL_STREAM_OPERATORS(omni::proj::Projector)
 
 #endif /* OMNI_PROJ_PROJECTOR_H_ */

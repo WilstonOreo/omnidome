@@ -25,44 +25,9 @@ namespace omni {
         namespace mapping {
             TexCoords::TexCoords(QWidget *_widget) :
                 ui::MappingParameters(_widget) {
-                setup();
-            }
-
-            TexCoords::TexCoords(
-                omni::mapping::Interface *_mapping,
-                QWidget                  *_parent) :
-                ui::MappingParameters(_mapping, _parent) {
-                setup();
             }
 
             TexCoords::~TexCoords() {}
-
-            void TexCoords::updateMappingParameters() {
-                auto* _planar = static_cast<omni::mapping::TexCoords*>(mapping());
-                _planar->setOffset(QVector2D(getParamAsFloat("Offset X"),getParamAsFloat("Offset Y")));
-                _planar->setStretch(QVector2D(getParamAsFloat("Stretch X"),getParamAsFloat("Stretch Y")));
-                _planar->setFlipHorizontal(getParamAsBool(
-                                                "Flip horizontal"));
-                _planar->setFlipVertical(getParamAsBool("Flip vertical"));
-            }
-
-            void TexCoords::setup() {
-                if (!mapping()) return;
-
-                this->locked([&]() {
-                    // Set slider values for TexCoords mapping
-                    auto *_planar = static_cast<omni::mapping::TexCoords *>(mapping());
-                    auto *_offsetX = addOffsetWidget("Offset X", 0.0, -1.0, 1.0);
-                    auto *_offsetY = addOffsetWidget("Offset Y", 0.0, -1.0, 1.0);
-                    auto *_stretchX = addOffsetWidget("Stretch X", 1.0, 0.0, 1.0);
-                    auto *_stretchY = addOffsetWidget("Stretch Y", 1.0, 0.0, 1.0);
-                    _offsetX->setValue(_planar->offset().x());
-                    _offsetY->setValue(_planar->offset().y());
-                    _stretchX->setValue(_planar->stretch().x());
-                    _stretchY->setValue(_planar->stretch().y());
-                    addFlipParameters();
-                });
-            }
         }
     }
 }

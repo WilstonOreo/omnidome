@@ -22,9 +22,11 @@
 #include <QDataStream>
 
 #include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
 
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
+#include <omni/proj/RingArray.h>
 
 #include <omni/Renderer.h>
 
@@ -37,6 +39,8 @@ namespace omni
       using namespace proj;
       SetupFactory::reg<FreeSetup>();
       SetupFactory::reg<PeripheralSetup>();
+
+      MultiSetupFactory::reg<RingArray>();
     }
     // END Register Projector Setups
   }
@@ -107,6 +111,16 @@ namespace omni
     return screenSetup_;
   }
 
+  /// Return reference to blend settings
+  BlendSettings& Session::blendSettings() {
+      return blendSettings_;
+  }
+
+  /// Return reference to blend settings
+  BlendSettings const& Session::blendSettings() const {
+      return blendSettings_;
+  }
+
   Session::Mode Session::mode() const
   {
     return mode_;
@@ -117,25 +131,14 @@ namespace omni
     mode_=_mode;
   }
 
-  Session::BlendMode Session::blendMode() const
-  {
-    return blendMode_;
+  float Session::sceneSize() const {
+      return sceneSize_;
   }
 
-  void Session::setBlendMode(BlendMode _blendMode)
-  {
-    blendMode_ = _blendMode;
+  void Session::setSceneSize(float _size) {
+      sceneSize_ = _size;
   }
 
-  float Session::blendMaskInputOpacity() const
-  {
-    return blendMaskInputOpacity_;
-  }
-
-  void Session::setBlendMaskInputOpacity(float _blendMaskInputOpacity)
-  {
-    blendMaskInputOpacity_ = _blendMaskInputOpacity;
-  }
 
   bool Session::hasOutput() const
   {
@@ -165,48 +168,44 @@ namespace omni
     _stream >> *this;
   }
 
+  void Session::toStream(QDataStream& _os) const {
+      PropertyMap _map;
+      _map("version",OMNIDOME_VERSION_STRING);
+      _map("tunings",tunings_)
+          ("mapping",mapping_)
+          ("inputs",inputs_)
+          ("canvas",canvas_)
+          ("sceneSize",sceneSize_)
+          ("mode",util::enumToInt(mode_))
+          ("blendSettings",blendSettings_);
+      _os << _map;
+  }
+
+  void Session::fromStream(QDataStream& _is) {
+      PropertyMap _map;
+      _is >> _map;
+      _map.get("tunings",tunings_);
+      _map.getPtr("mapping",[&](Id const& _id) {
+         return setMapping(_id);
+      });
+      _map.get("inputs",inputs_);
+      _map.getPtr("canvas",[&](Id const& _id) {
+          return setCanvas(_id);
+      });
+      _map.get("sceneSize",sceneSize_);
+      mode_ = util::intToEnum<Mode>(_map.getValue<int>("mode"));
+      _map.get("blendSettings",blendSettings_);
+  }
+
   bool operator==(Session const& _lhs,Session const& _rhs)
   {
     return
       OMNI_TEST_MEMBER_EQUAL(tunings_) &&
       OMNI_TEST_PTR_MEMBER_EQUAL(mapping_) &&
       OMNI_TEST_MEMBER_EQUAL(inputs_) &&
-      OMNI_TEST_PTR_MEMBER_EQUAL(canvas_);
+      OMNI_TEST_PTR_MEMBER_EQUAL(canvas_) &&
+      OMNI_TEST_MEMBER_EQUAL(sceneSize_) &&
+      OMNI_TEST_MEMBER_EQUAL(mode_) &&
+      OMNI_TEST_MEMBER_EQUAL(blendSettings_);
   }
-}
-
-QDataStream& operator<<(QDataStream& _stream, omni::Session const& _session)
-{
-  using namespace omni::util;
-
-  _stream << _session.tunings();
-
-  serializePtr(_stream,_session.mapping());
-
-  _stream << _session.inputs();
-
-  serializePtr(_stream,_session.canvas());
-  return _stream;
-}
-
-QDataStream& operator>>(QDataStream& _stream, omni::Session& _session)
-{
-  using namespace omni::util;
-  _stream >> _session.tunings();
-
-  deserializePtr(_stream,[&](omni::Id const& _id) ->
-      omni::mapping::Interface*
-  {
-    return _session.setMapping(_id);
-  });
-
-  _stream >> _session.inputs();
-
-  deserializePtr(_stream,[&](omni::Id const& _id) ->
-      omni::canvas::Interface*
-  {
-    return _session.setCanvas(_id);
-  });
-
-  return _stream;
 }

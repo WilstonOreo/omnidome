@@ -37,8 +37,6 @@ namespace omni
 
     void ParameterWidget::clear()
     {
-      this->locked([&]()
-      {
         parameters_.clear();
         parameterMap_.clear();
 
@@ -51,13 +49,10 @@ namespace omni
             delete item;
           }
         }
-      });
     }
 
     void ParameterWidget::updateParameters()
     {
-      if (isLocked()) return;
-
       emit parametersUpdated();
     }
 
@@ -120,6 +115,7 @@ namespace omni
       _offset->setSingleStep(0.01);
       _offset->setPageStep(0.1);
       _offset->setPivot(0.0);
+      this->registerScaledSlider(_offset);
       return _offset;
     }
 
@@ -151,10 +147,7 @@ namespace omni
       auto* _widget = static_cast<RangedFloat*>(this->parameterMap_.at(_str));
       if (!_widget) return;
 
-      locked([&]()
-      {
-        _widget->setValue(_value);
-      });
+      _widget->setValue(_value);
     }
 
     int ParameterWidget::getParamAsInt(QString const& _str) const
@@ -169,10 +162,7 @@ namespace omni
       auto* _widget = static_cast<RangedInt*>(this->parameterMap_.at(_str));
       if (!_widget) return;
 
-      locked([&]()
-      {
-        _widget->setValue(_value);
-      });
+      _widget->setValue(_value);
     }
 
     bool ParameterWidget::getParamAsBool(QString const& _str) const
@@ -208,19 +198,25 @@ namespace omni
     }
 
     void ParameterWidget::focus(int _index) {
+        if (!layout()->itemAt(_index)) return;
+
         layout()->itemAt(_index)->widget()->setFocus();
     }
 
+    void ParameterWidget::focusFirst() {
+        focus(firstFocusId());
+    }
+
+    void ParameterWidget::focusLast() {
+        focus(layout()->count()-1);
+    }
+
     void ParameterWidget::keyPressEvent(QKeyEvent* _event) {
-          //if (hasFocus()) return;
-
-          qDebug() << _event->key();
-
           if (_event->key() == Qt::Key_Up) {
-              focusPrev(true);
+              focusPrev(false);
           }
           if (_event->key() == Qt::Key_Down) {
-              focusNext(true);
+              focusNext(false);
           }
       }
 
@@ -228,13 +224,13 @@ namespace omni
         int _focusId = focusId();
 
         if (_focusId != -1) {
-            int _nextFocus = _focusId + 1;
-            if (_nextFocus >= layout()->count()) {
-                _nextFocus = _circular ? 0 : layout()->count() - 1;
+            int _nextFocusId = _focusId + 1;
+            if (_nextFocusId >= layout()->count()) {
+                _nextFocusId = _circular ? firstFocusId() : layout()->count() - 1;
             }
-            auto _param = layout()->itemAt(_nextFocus)->widget();
+            auto _param = layout()->itemAt(_nextFocusId)->widget();
             _param->setFocus();
-            return _focusId != _nextFocus;
+            return _focusId != _nextFocusId;
         }
         return false;
     }
@@ -244,8 +240,8 @@ namespace omni
 
         if (_focusId != -1) {
             int _prevFocus = _focusId - 1;
-            if (_prevFocus < 0) {
-                _prevFocus = !_circular ? layout()->count() - 1 : 0;
+            if (_prevFocus < firstFocusId()) {
+                _prevFocus = _circular ? layout()->count() - 1 : firstFocusId();
             }
             auto _param = layout()->itemAt(_prevFocus)->widget();
             _param->setFocus();
@@ -272,6 +268,25 @@ namespace omni
       parameterMap_[_str] = _widget;
       parameters_.emplace_back(_widget);
       return _widget;
+    }
+
+    omni::ui::AffineTransform* ParameterWidget::addAffineTransformWidget(
+        QString const& _id, omni::AffineTransform* _transform) {
+
+        auto* _widget = ui::makeWidget<omni::ui::AffineTransform>(_transform);
+            
+        if (layout())
+            layout()->addWidget(_widget);
+
+        /// Install event filter to pipe through focus event to parent widget
+        _widget->installEventFilter(this);
+
+        /// Signal-slot connection for updating the data model
+        connect(_widget,SIGNAL(dataModelChanged()),this,SLOT(updateParameters()));
+
+        parameterMap_[_id] = _widget;
+        parameters_.emplace_back(_widget);
+        return _widget;
     }
   }
 }

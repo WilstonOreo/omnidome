@@ -31,13 +31,14 @@ namespace omni {
                 Q_OBJECT
             public:
                 FullSphere(QWidget* _parent = nullptr);
-                FullSphere(omni::canvas::Interface*, QWidget* _parent = nullptr);
                 ~FullSphere();
 
             private:
-                void updateCanvasParameters();
+            private:
+                void dataToFrontend();
 
-                void setup();
+                /// Return true if data has changed by front end
+                bool frontendToData();
             };
         }
     }

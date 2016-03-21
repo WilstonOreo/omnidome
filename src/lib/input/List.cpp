@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -19,117 +19,132 @@
 
 #include <omni/input/List.h>
 
+#include <algorithm>
 #include <omni/util.h>
+#include <omni/serialization/pointer.h>
+#include <omni/serialization/container.h>
 
 namespace omni
 {
   namespace input
   {
-    List::List()
+    List::List(Interface* _parent) : Interface(_parent)
     {
-      clear();
     }
 
     void List::clear()
     {
-      container_type::clear();
+      children().clear();
     }
 
-    Input* List::add(Id const& _typeId)
+    std::pair<QString,Input*> List::add(Id const& _typeId) {
+        auto _id = generateId();
+        return std::make_pair(_id,add(_id,_typeId));
+    }
+
+    Input* List::add(QString const& _id, Id const& _typeId)
     {
       std::unique_ptr<Input> _input(Factory::create(_typeId));
       if (!_input) return nullptr;
 
-      container_type::push_back(std::move(_input));
-      return container_type::back().get();
+      children()[_id] = std::move(_input);
+      return children().at(_id).get();
     }
 
-    Input* List::operator[](int _index)
+    Input* List::operator[](QString const& _id)
     {
-      return validIndex(_index) ? container_type::operator[](_index).get() : nullptr;
-    }
-
-    Input const* List::operator[](int _index) const
-    {
-      return validIndex(_index) ? 
-        container_type::operator[](_index).get() : 
+      return (children().count(_id) != 0) ?
+        children().operator[](_id).get() :
         nullptr;
     }
 
-    void List::remove(int _index)
+    Input const* List::operator[](QString const& _id) const
     {
-      if (!validIndex(_index)) return;
-
-      this->operator[](_index)->free();
-      container_type::erase(this->begin() + _index);
-    
-      if (container_type::empty())
-        setCurrentIndex(-1);
+      return (children().count(_id) != 0) ?
+        children().at(_id).get() :
+        nullptr;
     }
 
-    void List::fromStream(QDataStream& _stream) 
+    void List::remove(QString const& _id)
+    {
+      if (children().count(_id) == 0) return;
+
+      this->operator[](_id)->free();
+      children().erase(_id);
+
+      if (children().empty())
+        setCurrentId("");
+    }
+
+    void List::fromStream(QDataStream& _stream)
     {
       using namespace omni::util;
       clear();
 
-      _stream >> currentIndex_;
+      deserialize(_stream,currentId_);
+      int _size = deserializeReturn<int>(_stream,0);
 
       // Deserialize map of inputs
-      int _size = 0;
-      _stream >> _size;
       for (int i = 0; i < _size; ++i)
       {
-        deserializePtr(_stream,[&](omni::Id const& _id) -> 
+        auto _id = deserializeReturn<QString>(_stream);
+        deserializePtr(_stream,[&](Id const& _typeId) ->
             input::Interface*
         {
-          return add(_id);
+          return add(_id,_typeId);
         });
       }
-      setCurrentIndex(currentIndex_);
+      setCurrentId(currentId_);
     }
 
     void List::toStream(QDataStream& _stream) const
     {
       using namespace omni::util;
-      _stream << currentIndex_;
 
+      serialize(_stream,currentId_);
       // serialize map of inputs
-      _stream << int(size());
-      for (auto& _input : (*this))
+      serialize(_stream,int(children().size()));
+      for (auto& _idInput : (*this))
       {
-        serializePtr(_stream,_input.get());
+        auto& _id = _idInput.first;
+        auto& _input = _idInput.second;
+        serialize(_stream,_id);
+        serialize(_stream,_input.get());
       }
     }
-      
+
     Input const* List::current() const
     {
-      return validIndex(currentIndex_) ? container_type::at(currentIndex_).get() : nullptr;
+      return
+        children().count(currentId_) > 0 ?
+        children().at(currentId_).get() : nullptr;
     }
-    
+
     Input* List::current()
     {
-      return validIndex(currentIndex_) ? container_type::at(currentIndex_).get() : nullptr;
+      return
+        children().count(currentId_) > 0 ?
+        children().at(currentId_).get() : nullptr;
     }
 
-    int List::currentIndex() const
+    QString List::currentId() const
     {
-      return currentIndex_;
+      return currentId_;
     }
 
-    void List::setCurrentIndex(int _index)
-    { 
-      if (!validIndex(_index)) {
-        currentIndex_ = -1;
+    void List::setCurrentId(QString const& _id)
+    {
+      if (children().count(_id) == 0) {
+        currentId_ = "";
         return;
       }
-  
-      currentIndex_ = _index;
+
+      currentId_ = _id;
     }
-      
- 
+
     bool operator==(List const& _lhs, List const& _rhs)
     {
-      if (_lhs.currentIndex_ != _rhs.currentIndex_) return false;
+      if (_lhs.currentId_ != _rhs.currentId_) return false;
       if (_lhs.size() != _rhs.size()) return false;
 
       auto it = _lhs.begin();
@@ -137,27 +152,22 @@ namespace omni
 
       for (; (it != _lhs.end()) && (jt != _rhs.end()); ++it,++jt)
       {
-        if (!(*it)->equal(jt->get())) return false;
+        if (it->first != jt->first) return false;
+        if (!it->second->equal(jt->second.get())) return false;
       }
       return true;
     }
- 
-    bool List::validIndex(int _index) const
-    {
-      return (_index >= 0) && (_index < this->size()); 
+
+    QString List::generateId() const {
+        QString _id("0");
+        for (size_t i = 0; i <= children().size(); ++i) {
+            _id = QString("%1").arg(i);
+            if (children().count(_id) == 0)
+            {
+                return _id;
+            }
+        }
+        return _id;
     }
   }
 }
-
-QDataStream& operator<<(QDataStream& _stream, omni::input::List const& _list)
-{
-  _list.toStream(_stream);
-  return _stream;
-}
-
-QDataStream& operator>>(QDataStream& _stream, omni::input::List& _list)
-{
-  _list.fromStream(_stream);
-  return _stream;
-}
-

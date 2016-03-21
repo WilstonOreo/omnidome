@@ -20,15 +20,16 @@
 #ifndef OMNI_MAPPING_CUBEMAP_H_
 #define OMNI_MAPPING_CUBEMAP_H_
 
-#include <omni/mapping/Rotatable.h>
+#include <omni/mapping/Interface.h>
 
 namespace omni
 {
   namespace mapping
   {
-    class CubeMap : public QObject, public Rotatable
+    class CubeMap : public QObject, public Mapping
     {
         OMNI_MAPPING_PLUGIN_DECL
+      OMNI_PLUGIN_CR8TR("Cube mapping","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,CubeMap)
 

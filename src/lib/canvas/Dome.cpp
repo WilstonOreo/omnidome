@@ -19,6 +19,8 @@
 
 #include <omni/canvas/Dome.h>
 
+#include <omni/serialization/PropertyMap.h>
+
 namespace omni
 {
   namespace canvas
@@ -70,16 +72,6 @@ namespace omni
       return bounds_;
     }
 
-    QVector3D Dome::center() const
-    {
-      return center_;
-    }
-
-    void Dome::setCenter(QVector3D const& _center)
-    {
-      center_=_center;
-    }
-
     void Dome::update()
     {
       if (!this->needsUpdate_) return;
@@ -90,27 +82,20 @@ namespace omni
       sphere_.update();
     }
 
-    QMatrix4x4 Dome::matrix() const {
-        QMatrix4x4 _m;
-        _m.translate(center_);
-        return _m;
-    }
-
     void Dome::toStream(QDataStream& _stream) const
     {
-      _stream << radius();
-      _stream << center();
+      Envelope::toStream(_stream);
+      PropertyMap _map;
+      _map("radius",radius());
+      _stream << _map;
     }
 
     void Dome::fromStream(QDataStream& _stream)
     {
-      qreal _radius;
-      _stream >> _radius;
+      Envelope::fromStream(_stream);
+      PropertyMap _map;
+      qreal _radius = _map.getValue<qreal>("radius",qreal(5.0));
       setRadius(_radius);
-      QVector3D _center;
-      _stream >> _center;
-      setCenter(_center);
-      update();
     }
   }
 }

@@ -21,6 +21,7 @@
 #include "BoxWidget.h"
 
 #include <omni/visual/Box.h>
+#include <omni/serialization/PropertyMap.h>
 
 namespace omni
 {
@@ -37,7 +38,11 @@ namespace omni
 
     void Box::draw() const
     {
-      vizBox_.draw();
+        glPushMatrix();
+        {
+            vizBox_.draw();
+        }
+        glPopMatrix();
     }
 
     void Box::update()
@@ -50,15 +55,6 @@ namespace omni
       return this->bounds_.size();
     }
 
-    QVector3D Box::center() const {
-        auto _c = bounds().center();
-        return QVector3D(_c.x(),_c.y(),bounds().min().z()) + center_;
-    }
-
-    void Box::setCenter(QVector3D const& _c) {
-        center_ =_c;
-    }
-
     void Box::setSize(QVector3D const& _s)
     {
       bounds_.setMinMax(
@@ -68,27 +64,30 @@ namespace omni
 
     void Box::fromStream(QDataStream& _stream)
     {
-      QVector3D _size;
-      _stream >> _size;
+      Envelope::fromStream(_stream);
+      PropertyMap _map;
+      _stream >> _map;
+      auto _size = _map.getValue<QVector3D>("size",QVector3D(5,5,5));
       setSize(_size);
     }
 
     void Box::toStream(QDataStream& _stream) const
     {
-      _stream << size();
-    }
-
-    QMatrix4x4 Box::matrix() const
-    {
-      QMatrix4x4 _m;
-      _m.translate(center_ + QVector3D(0.0,0.0,bounds().center().z()));
-      _m *= angles_.matrix();
-      _m.scale(size());
-      return _m;
+      Envelope::toStream(_stream);
+      PropertyMap _map;
+      _map("size",size());
+      _stream << _map;
     }
 
     QWidget* Box::widget() {
-        return new ui::canvas::Box(this);
+        return ui::makeWidget<ui::canvas::Box>(this);
+    }
+
+    QMatrix4x4 Box::matrix() const {
+        QMatrix4x4 _mat = Envelope::matrix();
+        _mat.translate(QVector3D(0.0,0.0,bounds().center().z()));
+        _mat.scale(QVector3D(size().x(),size().y(),size().z()));
+        return _mat;
     }
   }
 }

@@ -21,126 +21,178 @@
 
 #include <omni/input/List.h>
 #include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
 
 #include <QOpenGLShaderProgram>
 
-
-namespace omni
-{
-  namespace mapping
-  {
-    Interface::Interface()
-    {
-    }
-
-    Interface::~Interface()
-    {
-    }
-
-    void Interface::initialize()
-    {
-      /// Make shader
-      shader_.reset(new QOpenGLShaderProgram());
-      shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,vertexShaderSourceCode());
-      shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,fragmentShaderSourceCode());
-      shader_->link();
-    }
-
-    void Interface::bind(OutputMode _outputMode)
-    {
-      if (!shader_) initialize();
-
-      if (shader_)
-      {
-        shader_->bind();
-        shader_->setUniformValue("flip_horizontal",flipHorizontal_);
-        shader_->setUniformValue("flip_vertical",flipVertical_);
-
-        switch (_outputMode)
+namespace omni {
+    namespace mapping {
+        Interface::Interface()
         {
-          case OutputMode::MAPPED_INPUT:
-          shader_->setUniformValue("output_mode",0);
-          break;
-          case OutputMode::TEXCOORDS:
-          shader_->setUniformValue("output_mode",1);
-          break;
-          case OutputMode::UVW:
-          shader_->setUniformValue("output_mode",2);
-          break;
-        };
-      }
-    }
+            // Disable scaling and translation by default
+            transform_.setTranslationEnabled(false);
+            transform_.setScaleEnabled(false);
+        }
 
-    void Interface::release()
-    {
-      if (shader_)
-        shader_->release();
-    }
+        Interface::~Interface()
+        {}
 
-    void Interface::fromStream(QDataStream&)
-    {
-    }
+        void Interface::initialize()
+        {
+            /// Make shader
+            shader_.reset(new QOpenGLShaderProgram());
+            shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,
+                                             vertexShaderSourceCode());
+            shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,
+                                             fragmentShaderSourceCode());
+            shader_->link();
+        }
 
-    void Interface::toStream(QDataStream&) const
-    {
-    }
+        void Interface::bind() {
+            if (!shader_) initialize();
 
-    bool Interface::flipHorizontal() const
-    {
-      return flipHorizontal_;
-    }
+            if (shader_)
+            {
+                shader_->bind();
+                shader_->setUniformValue("flip_horizontal", flipHorizontal_);
+                shader_->setUniformValue("flip_vertical",   flipVertical_);
 
-    void Interface::setFlipHorizontal(bool _flipHorizontal)
-    {
-      flipHorizontal_ = _flipHorizontal;
-    }
+                if (isUVW()) {
+                    shader_->setUniformValue("bound_to_canvas", boundToCanvas_);
+                    shader_->setUniformValue("matrix",          matrix());
+                }
+            }
+        }
 
-    bool Interface::flipVertical() const
-    {
-      return flipVertical_;
-    }
+        void Interface::bind(OutputMode _outputMode, bool _grayscale)
+        {
+            bind();
 
-    void Interface::setFlipVertical(bool _flipVertical)
-    {
-      flipVertical_ = _flipVertical;
-    }
+            if (shader_)
+            {
+                shader_->setUniformValue("output_mode",
+                                                        util::enumToInt(
+                                             _outputMode));
+                shader_->setUniformValue("gray_output", _grayscale);
+            }
+        }
 
-    IdSet Interface::getUVWMappings()
-    {
-      IdSet _ids;
-      for (auto& _mappingId : Factory::classes())
-      {
-        auto& _id = _mappingId.first;
-        std::unique_ptr<Mapping> _mapping(Factory::create(_id));
-        if (_mapping->isUVW())
-          _ids.insert(_id);
-      }
-      return _ids;
-    }
+        void Interface::release()
+        {
+            if (shader_) shader_->release();
+        }
 
-    IdSet Interface::getPlanarMappings()
-    {
-      IdSet _ids;
-      for (auto& _mappingId : Factory::classes())
-      {
-        auto& _id = _mappingId.first;
-        std::unique_ptr<Mapping> _mapping(Factory::create(_id));
-        if (!_mapping->isUVW())
-          _ids.insert(_id);
-      }
-      return _ids;
-    }
+        bool Interface::flipHorizontal() const
+        {
+            return flipHorizontal_;
+        }
 
-    QString Interface::vertexShaderSourceCode() const
-    {
-      return util::fileToStr(":/shaders/mapping/common.vert");
-    }
+        void Interface::setFlipHorizontal(bool _flipHorizontal)
+        {
+            flipHorizontal_ = _flipHorizontal;
+        }
 
-    QString Interface::fragmentShaderSourceCode() const
-    {
-      return
-        util::fileToStr(":/shaders/mapping/Template.frag") +
-        util::fileToStr(QString(":/shaders/mapping/") + getTypeId().str() + ".frag");
+        bool Interface::flipVertical() const
+        {
+            return flipVertical_;
+        }
+
+        void Interface::setFlipVertical(bool _flipVertical)
+        {
+            flipVertical_ = _flipVertical;
+        }
+
+        IdSet Interface::getUVWMappings()
+        {
+            IdSet _ids;
+
+            for (auto& _mappingId : Factory::classes())
+            {
+                auto& _id = _mappingId.first;
+                std::unique_ptr<Mapping> _mapping(Factory::create(_id));
+
+                if (_mapping->isUVW()) _ids.insert(_id);
+            }
+            return _ids;
+        }
+
+        IdSet Interface::getPlanarMappings()
+        {
+            IdSet _ids;
+
+            for (auto& _mappingId : Factory::classes())
+            {
+                auto& _id = _mappingId.first;
+                std::unique_ptr<Mapping> _mapping(Factory::create(_id));
+
+                if (!_mapping->isUVW()) _ids.insert(_id);
+            }
+            return _ids;
+        }
+
+        /// Return const ref to affine transform
+        AffineTransform const& Interface::transform() const {
+            return transform_;
+        }
+
+        /// Return ref to affine transform
+        AffineTransform& Interface::transform() {
+            return transform_;
+        }
+
+        /// Set new affine transform
+        void Interface::setTransform(AffineTransform const& _transform) {
+            transform_ = _transform;
+        }
+
+        /**@brief If true, mapping transform is attached to canvas transform
+           @detail Is true by default
+         **/
+        bool Interface::isBoundToCanvas() const {
+            return boundToCanvas_;
+        }
+
+        /// Set whether mapping transform is attached to canvas transform
+        void Interface::setBoundToCanvas(bool _boundToCanvas) {
+            boundToCanvas_ = _boundToCanvas;
+        }
+
+        QMatrix4x4 Interface::matrix() const {
+            return transform_.matrix();
+        }
+
+        QString Interface::vertexShaderSourceCode() const
+        {
+            return util::fileToStr(":/shaders/mapping/common.vert");
+        }
+
+        QString Interface::fragmentShaderSourceCode() const
+        {
+            return
+                util::fileToStr(":/shaders/mapping/Template.frag") +
+                util::fileToStr(QString(
+                                    ":/shaders/mapping/") + getTypeId().str() +
+                                ".frag");
+        }
+
+        /// Write mapping to stream
+        void Interface::toStream(QDataStream& _os) const {
+            PropertyMap _map;
+            _map("transform",transform_)
+                ("boundToCanvas",boundToCanvas_)
+                ("flipHorizontal",flipHorizontal_)
+                ("flipVertical",flipVertical_);
+            _os << _map;
+        }
+
+        /// Read mapping from stream
+        void Interface::fromStream(QDataStream& _is) {
+            PropertyMap _map;
+            _is >> _map;
+            _map.get("transform",transform_)
+                .get("boundToCanvas",boundToCanvas_)
+                .get("flipHorizontal",flipHorizontal_)
+                .get("flipVertical",flipVertical_);
+        }
     }
-  }
 }

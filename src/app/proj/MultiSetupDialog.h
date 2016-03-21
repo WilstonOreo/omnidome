@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -22,6 +22,8 @@
 
 #include <QDialog>
 #include <omni/proj/MultiSetup.h>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
@@ -34,7 +36,8 @@ namespace omni
         class MultiSetupDialog;
       };
 
-      class MultiSetupDialog : public QDialog
+      class MultiSetupDialog :
+        public QDialog
       {
         Q_OBJECT
       public:
@@ -45,10 +48,12 @@ namespace omni
           REPLACE
         };
 
-        MultiSetupDialog(omni::proj::MultiSetup* _multiSetup, Session* _session);
+        MultiSetupDialog(omni::proj::MultiSetup* _multiSetup,
+            std::shared_ptr<Session> _session);
         ~MultiSetupDialog();
 
-        static Result open(omni::proj::MultiSetup* _multiSetup, Session* _session);
+        static Result open(omni::proj::MultiSetup* _multiSetup,
+            std::shared_ptr<Session> _session);
 
       public slots:
         void replace();
@@ -56,7 +61,7 @@ namespace omni
         void cancel();
 
       private:
-        Session* session_ = nullptr;
+        std::shared_ptr<Session> session_;
         omni::proj::MultiSetup* multiSetup_ = nullptr;
         std::unique_ptr<Ui::MultiSetupDialog> ui_;
         Result result_ = Result::CANCELLED;

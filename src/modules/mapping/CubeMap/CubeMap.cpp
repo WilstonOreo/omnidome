@@ -34,7 +34,7 @@ namespace omni
     }
 
     QWidget* CubeMap::widget() {
-        return new ui::mapping::CubeMap(this);
+        return ui::makeWidget<ui::mapping::CubeMap>(this);
     }
   }
 }

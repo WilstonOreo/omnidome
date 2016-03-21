@@ -136,11 +136,13 @@ namespace omni
 
     void TestImage::toStream(QDataStream& _stream) const
     {
+      input::Interface::toStream(_stream);
       _stream << rulerPos_;
     }
 
     void TestImage::fromStream(QDataStream& _stream)
     {
+      input::Interface::fromStream(_stream);
       _stream >> rulerPos_;
       update();
     }

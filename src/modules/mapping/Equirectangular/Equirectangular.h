@@ -20,23 +20,24 @@
 #ifndef OMNI_MAPPING_EQUIRECTANGULAR_H_
 #define OMNI_MAPPING_EQUIRECTANGULAR_H_
 
-#include <omni/mapping/Rotatable.h>
+#include <omni/mapping/Interface.h>
 
 namespace omni
 {
   namespace mapping
   {
     /// Equirectangular spherical mapping
-    class Equirectangular : public QObject, public Rotatable
+    class Equirectangular : public QObject, public Mapping
     {
       OMNI_MAPPING_PLUGIN_DECL
+      OMNI_PLUGIN_CR8TR("Equirectangular mapping","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,Equirectangular)
 
       Equirectangular();
       ~Equirectangular();
 
-      void bind(OutputMode = OutputMode::MAPPED_INPUT);
+      void bind();
 
       /// Value between 0.0 and 1.0 for top strip position
       qreal stripTop() const;

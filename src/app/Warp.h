@@ -21,11 +21,12 @@
 #define OMNI_UI_WARP_H_
 
 #include <memory>
+#include <omni/Session.h>
 #include "DockWidget.h"
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
-  class Session;
   class WarpGrid;
 
   namespace ui
@@ -35,32 +36,34 @@ namespace omni
       class Warp;
     }
 
-    class Warp : public DockWidget
+    class Warp :
+        public DockWidget,
+        public mixin::SharedDataModel<Session>
     {
       Q_OBJECT
+      OMNI_UI_SHARED_DATAMODEL(Session)
     public:
       Warp(QWidget* = nullptr);
       ~Warp();
 
-      Session const* session() const;
-      void setSession(Session* _session);
-
     public slots:
       void resetWarpGrid();
       void resizeWarpGrid(bool);
-      void resizeWarpGrid();
-      void updateWarpGrid();
       void changeInterpolation(int);
 
     signals:
-      void warpGridChanged();
+      void dataModelChanged();
 
     private:
+      /// Update sliders from current warp grid
+      void dataToFrontend();
+
+      /// Assign slider values to current warp grid
+      bool frontendToData();
+
       omni::WarpGrid const* warpGrid() const;
       omni::WarpGrid* warpGrid();
 
-      bool locked_ = false;
-      Session* session_ = nullptr;
       std::unique_ptr<Ui::Warp> ui_;
     };
   }

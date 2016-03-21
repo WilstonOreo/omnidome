@@ -100,11 +100,13 @@ namespace omni
 
     void Image::toStream(QDataStream& _stream) const
     {
+      input::Interface::toStream(_stream);
       _stream << path_;
     }
 
     void Image::fromStream(QDataStream& _stream)
     {
+      input::Interface::fromStream(_stream);
       _stream >> path_;
       reload();
     }

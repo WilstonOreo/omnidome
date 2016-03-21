@@ -52,8 +52,6 @@ namespace omni {
 
                   float _factor = 1.0f;
 
-                  qDebug() << "TransformedRect::scalingFactor: " << _windowAspect << " " << _rectAspect;
-
                   if (_windowAspect < _rectAspect) {
                     _factor = float(_windowRect.width()) / _desktopRect.width();
                   } else {

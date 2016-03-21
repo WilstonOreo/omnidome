@@ -23,10 +23,11 @@
 #include <set>
 #include <QWidget>
 #include <QCheckBox>
-#include <omni/ui/mixin/Locked.h>
+#include <omni/ui/mixin/Scale.h>
 #include <omni/ui/RangedFloat.h>
 #include <omni/ui/RangedInt.h>
 #include <omni/ui/Rotation.h>
+#include <omni/ui/AffineTransform.h>
 #include <omni/util.h>
 
 namespace omni
@@ -37,7 +38,7 @@ namespace omni
     **/
     class ParameterWidget :
         public QWidget,
-        protected mixin::Locked
+        public mixin::Scale<omni::ui::RangedFloat>
     {
       Q_OBJECT
     public:
@@ -61,6 +62,9 @@ namespace omni
 
       /// Adds an Rotation widget with three dials for X,Y and Z axis
       Rotation* addRotationWidget(QString const&);
+
+      /// Add a new affine transform widget with an id
+      omni::ui::AffineTransform* addAffineTransformWidget(QString const&, omni::AffineTransform*);
 
       /// Adds a checkbox
       QCheckBox* addCheckBox(QString const&, bool _checked = false);
@@ -113,10 +117,20 @@ namespace omni
       /// Focus item in layout with index
       void focus(int _index);
 
+      /// Set focus on first widget in parameter list
+      void focusFirst();
+
+      /// Set focus on last widget in parameter list
+      void focusLast();
+
     signals:
       void parametersUpdated();
 
     protected:
+      /// Id of first focussed widget
+      inline virtual int firstFocusId() const {
+          return 0;
+      }
       void keyPressEvent(QKeyEvent* _event);
 
       /// Slider parameter widgets

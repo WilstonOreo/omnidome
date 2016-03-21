@@ -31,6 +31,7 @@ namespace omni
   {
     TuningGLView::TuningGLView(QWidget* _parent) :
       GLView(_parent),
+      mixin::TuningFromIndex<TuningGLView>(*this),
       cursorPosition_(0.0,0.0)
     {
       setViewOnly(false);
@@ -51,27 +52,17 @@ namespace omni
       makeCurrent();
       vizTuning_->free();
       vizTuning_.reset();
-      session_->free();
-      session_.reset();
+      vizSession_->free();
+      vizSession_.reset();
       frameBuffer_.reset();
       warpGridBuffer_.reset();
       destroy();
       doneCurrent();
     }
 
-    omni::proj::Tuning* TuningGLView::tuning()
-    {
-      return this->session_->session().tunings()[index_];
-    }
-
-    omni::proj::Tuning const* TuningGLView::tuning() const
-    {
-      return this->session_->session().tunings()[index_];
-    }
-
     void TuningGLView::setTuningIndex(int _index)
     {
-      index_=_index;
+      setIndex(_index);
       auto* _tuning = tuning();
 
       if (!_tuning) return;
@@ -109,9 +100,18 @@ namespace omni
       setMouseTracking(showCursor_ && !viewOnly_);
     }
 
+    void TuningGLView::setFullScreenMode(bool _fullscreenMode) {
+       fullscreenMode_ = _fullscreenMode;
+       update();
+    }
+
     bool TuningGLView::showCursor() const
     {
       return showCursor_;
+    }
+
+    bool TuningGLView::fullscreenMode() const {
+        return fullscreenMode_;
     }
 
     bool TuningGLView::isDrawingEnabled() const
@@ -175,20 +175,15 @@ namespace omni
       update();
     }
 
-    /// Show different content for different session modes
-    void TuningGLView::sessionModeChange()
-    {
-    }
-
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
     {
-      if (!session() || !vizTuning_ || (viewOnly() && !showCursor_)) return;
+      if (!dataModel() || !vizTuning_ || (viewOnly() && !showCursor_)) return;
 
       auto&& _rect = viewRect();
       float dx = float(event->x() - mousePosition().x()) / width() * _rect.width();
       float dy = float(event->y() - mousePosition().y()) / height() * _rect.height();
 
-      auto _mode = session()->mode();
+      auto _mode = dataModel()->mode();
 
       if (mouseDown_)
       {
@@ -209,9 +204,11 @@ namespace omni
         {
           auto _from = pixelPos(mousePosition_).toPoint();
           auto _to = pixelPos(event->pos()).toPoint();
-          leftOverDistance_ = tuning()->blendMask().drawLine(_from,_to,leftOverDistance_);
-          mousePosition_ = event->pos();
-          cursorPosition_ = screenPos(mousePosition_);
+          if (!(event->modifiers() & Qt::ShiftModifier)) {
+              leftOverDistance_ = tuning()->blendMask().drawLine(_from,_to,leftOverDistance_);
+              lastStrokePos_ = _from;
+          }
+
           for (auto& _childView : childViews_)
           {
             _childView->cursorPosition_ = cursorPosition_;
@@ -239,13 +236,13 @@ namespace omni
     {
       makeCurrent();
       QOpenGLWidget::mousePressEvent(event);
-      if (!session() || !vizTuning_ || viewOnly()) return;
+      if (!dataModel() || !vizTuning_ || viewOnly()) return;
 
       this->mousePosition_ = event->pos();
       auto&& _newPos = screenPos(this->mousePosition_);
       mouseDown_ = true;
 
-      auto _mode = session()->mode();
+      auto _mode = dataModel()->mode();
       if (_mode == Session::Mode::WARP)
       {
         auto& _warpGrid = tuning()->warpGrid();
@@ -267,6 +264,7 @@ namespace omni
       else if (_mode == Session::Mode::BLEND)
       {
         bool _inv = tuning()->blendMask().brush().invert();
+        lastStrokePos_ = pixelPos(mousePosition_).toPoint();
 
         // Invert brush on right click
         if (event->button() == Qt::RightButton)
@@ -291,14 +289,19 @@ namespace omni
 
     void TuningGLView::mouseReleaseEvent(QMouseEvent *event)
     {
-      if (!session() || !vizTuning_ || viewOnly()) return;
+      if (!dataModel() || !vizTuning_ || viewOnly()) return;
 
       mouseDown_ = false;
       makeCurrent();
-      auto _mode = session()->mode();
+      auto _mode = dataModel()->mode();
 
       if (_mode == Session::Mode::BLEND)
       {
+        if (event->modifiers() & Qt::ShiftModifier) {
+              auto _from = lastStrokePos_;
+              auto _to = pixelPos(event->pos()).toPoint();
+              tuning()->blendMask().drawLine(_from,_to,leftOverDistance_);
+        }
         leftOverDistance_ = 0.0;
 
         // Invert brush on right click
@@ -309,13 +312,15 @@ namespace omni
         }
       }
       this->mousePosition_ = event->pos();
+      this->cursorPosition_ = screenPos(this->mousePosition_);
+
       updateWithChildViews();
     }
 
     void TuningGLView::wheelEvent(QWheelEvent* event)
     {
-      if (!session()) return;
-      auto _mode = session()->mode();
+      if (!dataModel()) return;
+      auto _mode = dataModel()->mode();
 
       if (_mode == Session::Mode::BLEND)
       {
@@ -422,7 +427,7 @@ namespace omni
           _.glDisable(GL_LIGHTING);
           _.glDisable(GL_CULL_FACE);
           _.glEnable(GL_DEPTH_TEST);
-          session_->drawCanvas();
+          vizSession_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,tuning()->outputDisabled() && viewOnly());
           _.glDisable(GL_DEPTH_TEST);
       });
     }
@@ -479,7 +484,7 @@ namespace omni
         _.glPolygonOffset(1, 1);
 
           _.glEnable(GL_DEPTH_TEST);
-          session_->drawCanvas();
+          vizSession_->drawCanvas();
         });
       });
     }
@@ -507,26 +512,56 @@ namespace omni
 
     void TuningGLView::drawWarpGrid()
     {
-      updateWarpBuffer();
+      drawOutput(dataModel()->blendSettings().showInWarpMode() ? 1.0 : 0.0 /* zero blend mask opacity */);
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        _.glBindTexture(GL_TEXTURE_2D, warpGridBuffer_->texture());
-        _.glDisable(GL_LIGHTING);
-        _.glEnable(GL_BLEND);
-
         vizTuning_->drawWarpGrid();
-
-        _.glBindTexture(GL_TEXTURE_2D, 0);
-
-        drawScreenBorder();
       });
     }
 
     void TuningGLView::drawBlendMask()
     {
-      auto _blendMode = session()->blendMode();
-      float _inputOpacity = session()->blendMaskInputOpacity();
+      auto& _blendSettings = dataModel()->blendSettings();
+      auto _colorMode = _blendSettings.colorMode();
+      float _inputOpacity = _blendSettings.inputOpacity();
+      QColor _color = tuning()->color();
+        if (_colorMode == BlendSettings::ColorMode::WHITE) {
+            _color = Qt::white;
+        }
+        drawOutput(1.0,_inputOpacity,_color);
+
+        glDisable(GL_DEPTH_TEST);
+/*
+        ///@todo draw overlaps
+      for (auto& _tuning : dataModel()->tunings())
+      {
+        if (_tuning.get() == tuning()) continue;
+
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      glMultMatrixf(tuning()->projector().projectionMatrix().constData());
+      glMatrixMode(GL_MODELVIEW);
+
+      glLoadIdentity();
+
+      visual::with_current_context([&](QOpenGLFunctions& _)
+      {
+          _.glDisable(GL_LIGHTING);
+          _.glDisable(GL_CULL_FACE);
+          _.glDisable(GL_DEPTH_TEST);
+          vizSession_->drawFrustumIntersection(_tuning->projector(),_tuning->color(),ProjectorViewMode::BOTH);
+          _.glDisable(GL_DEPTH_TEST);
+      });
+
+      }
+      */
+
+      if (showCursor_ || !viewOnly_)
+         vizTuning_->drawCursor(cursorPosition_);
+    }
+
+    void TuningGLView::drawOutput(float _blendMaskOpacity, float _inputOpacity, QColor _color) {
 
       updateWarpBuffer();
 
@@ -534,51 +569,26 @@ namespace omni
       {
         _.glDisable(GL_LIGHTING);
         _.glEnable(GL_BLEND);
-        QColor _color = tuning()->color();
-        if (_blendMode == Session::BlendMode::WHITE) {
-            _color = Qt::white;
-        }
-        vizTuning_->drawBlendMask(warpGridBuffer_->texture(),_inputOpacity,_color);
-
+        vizTuning_->drawOutput(
+            warpGridBuffer_->texture(),
+            _inputOpacity,_color,_blendMaskOpacity,
+            tuning()->outputDisabled() && viewOnly());
         drawScreenBorder();
-
-        if (showCursor_ || !viewOnly_)
-          vizTuning_->drawCursor(cursorPosition_);
       });
     }
 
     void TuningGLView::drawColorCorrected()
     {
-      if (!session()->hasOutput())
-      {
-        drawTestCard();
-        return;
-      }
-      updateWarpBuffer();
-
-      drawOnSurface([&](QOpenGLFunctions& _)
-      {
-        _.glDisable(GL_LIGHTING);
-        _.glEnable(GL_BLEND);
-        vizTuning_->drawBlendMask(warpGridBuffer_->texture(),1.0);
-      });
+      drawOutput(
+          1.0 /* draw blend mask with alpha = 1.0 */,
+          1.0 /* draw input */ );
     }
 
     void TuningGLView::drawExportView()
     {
-      if (!session()->hasOutput())
-      {
-        drawTestCard();
-        return;
-      }
-      updateWarpBuffer();
-
-      drawOnSurface([&](QOpenGLFunctions& _)
-      {
-        _.glDisable(GL_LIGHTING);
-        _.glEnable(GL_BLEND);
-        vizTuning_->drawBlendMask(warpGridBuffer_->texture(),1.0);
-      });
+      drawOutput(
+          1.0 /* draw blend mask with alpha = 1.0 */,
+          1.0 /* draw input */ );
     }
 
     void TuningGLView::drawScreenBorder()
@@ -600,17 +610,19 @@ namespace omni
     {
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        vizTuning_->drawTestCard(index_+1);
+        vizTuning_->drawTestCard(index()+1,tuning()->outputDisabled() && viewOnly());
       });
     }
 
     void TuningGLView::paintGL()
     {
-      if (!isVisible() || this->isLocked( )|| !context() || aboutToBeDestroyed_) return;
+      if (!isVisible() || this->isLocked( )|| !context() || aboutToBeDestroyed_) return;
 
-      if (!vizTuning_ || !session_) return;
+      if (!vizTuning_ || !vizSession_ || !tuning()) return;
 
-      session_->update();
+      if (tuning()->outputDisabled() && this->fullscreenMode()) return;
+
+      vizSession_->update();
 
       if (!vizTuning_->initialized())
         vizTuning_->update();
@@ -624,13 +636,13 @@ namespace omni
         _.glClearColor(0.0,0.0,0.0,1.0);
       });
 
-      if (!session()->hasOutput())
+      if (!dataModel()->hasOutput())
       {
         drawTestCard();
         return;
       }
 
-      switch (session()->mode())
+      switch (dataModel()->mode())
       {
       case Session::Mode::SCREENSETUP:
         drawTestCard();

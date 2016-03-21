@@ -35,13 +35,6 @@ namespace omni
     {
         this->setup(ui_);
 
-      connect(ui_->btnResize,SIGNAL(clicked(bool)),this,SLOT(resizeWarpGrid(bool)));
-      connect(ui_->btnReset,SIGNAL(clicked()),this,
-              SLOT(resetWarpGrid()));
-
-      connect(ui_->boxInterpolation,SIGNAL(currentIndexChanged(int)),this,
-              SLOT(changeInterpolation(int)));
-
       auto setupSlider = [&](RangedInt* _slider)
       {
         _slider->hide();
@@ -50,7 +43,8 @@ namespace omni
         _slider->setPageStep(12);
         _slider->setDefaultValue(6);
         _slider->setUseDefaultValue(true);
-        connect(_slider,SIGNAL(valueChanged()),this,SLOT(resizeWarpGrid()));
+        connect(_slider,&RangedInt::valueChanged,
+            this,&Warp::updateDataModel);
       };
 
       setupSlider(ui_->sliderHorz);
@@ -58,54 +52,62 @@ namespace omni
 
       setupSlider(ui_->sliderVert);
       ui_->sliderVert->setLabel("Vertical");
+
+      connect(this,&Warp::dataModelChanged,this,&Warp::updateFrontend);
+
+      connect(ui_->btnResize,SIGNAL(clicked(bool)),this,SLOT(resizeWarpGrid(bool)));
+      connect(ui_->btnReset,SIGNAL(clicked()),this,
+              SLOT(resetWarpGrid()));
+
+      connect(ui_->boxInterpolation,SIGNAL(currentIndexChanged(int)),this,
+              SLOT(changeInterpolation(int)));
+      connect(ui_->chkShowBlendMask,&QCheckBox::clicked,
+          this,&Warp::updateDataModel);
     }
 
     Warp::~Warp()
     {
     }
 
-    Session const* Warp::session() const
+    void Warp::dataToFrontend()
     {
-      return session_;
+      if (!warpGrid()) return;
+
+      ui_->sliderHorz->setValue(warpGrid()->horizontal());
+      ui_->sliderVert->setValue(warpGrid()->vertical());
+      ui_->chkShowBlendMask->setChecked(dataModel()->blendSettings().showInWarpMode());
     }
 
-    void Warp::setSession(Session* _session)
-    {
-      session_=_session;
-      updateWarpGrid();
+    bool Warp::frontendToData() {
+        if (!warpGrid()) return false;
+
+        dataModel()->blendSettings().setShowInWarpMode(
+            ui_->chkShowBlendMask->isChecked());
+        warpGrid()->resize(ui_->sliderHorz->value(),ui_->sliderVert->value());
+
+        return true;
     }
 
-    void Warp::updateWarpGrid()
-    {
-      if (warpGrid())
-      {
-        locked_ = true;
-        ui_->sliderHorz->setValue(warpGrid()->horizontal());
-        ui_->sliderVert->setValue(warpGrid()->vertical());
-        locked_ = false;
-        emit warpGridChanged();
-      }
-    }
     void Warp::changeInterpolation(int _index) {
         if (!warpGrid()) return;
 
         auto _interp = util::intToEnum<WarpGrid::Interpolation>(_index);
         warpGrid()->setInterpolation(_interp);
-        emit warpGridChanged();
+        updateFrontend();
+        emit dataModelChanged();
     }
 
     void Warp::resetWarpGrid()
     {
-      if (!warpGrid() || locked_) return;
+      if (!warpGrid() || this->isLocked()) return;
 
       warpGrid()->reset();
-
-      emit warpGridChanged();
+      emit dataModelChanged();
     }
 
     void Warp::resizeWarpGrid(bool _enabled)
     {
-      if (!warpGrid() || locked_) return;
+      if (!warpGrid()) return;
 
       if (_enabled && !warpGrid()->isReset())
       {
@@ -115,35 +117,29 @@ namespace omni
                                 QMessageBox::Yes|QMessageBox::No,QMessageBox::No);
         if (_reply == QMessageBox::No)
         {
+          ui_->sliderVert->hide();
+          ui_->sliderHorz->hide();
           ui_->btnResize->setChecked(false);
           return;
         }
       }
 
-      ui_->sliderVert->setVisible(_enabled);
-      ui_->sliderHorz->setVisible(_enabled);
-    }
-
-    void Warp::resizeWarpGrid()
-    {
-      if (!warpGrid() || locked_) return;
-
-      warpGrid()->resize(ui_->sliderHorz->value(),ui_->sliderVert->value());
-      emit warpGridChanged();
+       ui_->sliderVert->show();
+       ui_->sliderHorz->show();
     }
 
     omni::WarpGrid const* Warp::warpGrid() const
     {
-      if (!session_) return nullptr;
+      if (!dataModel()) return nullptr;
 
-      return session_->tunings().current() ? &session_->tunings().current()->warpGrid() : nullptr;
+      return dataModel()->tunings().current() ? &dataModel()->tunings().current()->warpGrid() : nullptr;
     }
 
     omni::WarpGrid* Warp::warpGrid()
     {
-      if (!session_) return nullptr;
+      if (!dataModel()) return nullptr;
 
-      return session_->tunings().current() ? &session_->tunings().current()->warpGrid() : nullptr;
+      return dataModel()->tunings().current() ? &dataModel()->tunings().current()->warpGrid() : nullptr;
     }
   }
 }

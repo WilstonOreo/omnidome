@@ -18,22 +18,31 @@
  */
 
 #include <memory>
+#include <unordered_set>
 #include "DockWidget.h"
 
 namespace omni {
     namespace ui {
+        class GLView3D;
+
         namespace Ui {
             class Scene;
         }
 
+        /// Dock widget that contains view settings for the scene
         class Scene : public DockWidget {
             Q_OBJECT
         public:
             Scene(QWidget* _parent = nullptr);
             ~Scene();
 
+            void registerView(GLView3D*);
+            void unregisterView(GLView3D*);
+
         private:
             std::unique_ptr<Ui::Scene> ui_;
+
+            std::unordered_set<GLView3D*> views_;
         };
     }
 }

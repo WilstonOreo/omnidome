@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <omni/proj/ColorCorrection.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni {
     namespace ui {
@@ -30,23 +31,33 @@ namespace omni {
             using omni::proj::Channel;
 
             /// Widget which draws the graph for color corrections for each channel
-            class ColorCorrectionGraph : public QWidget {
+            class ColorCorrectionGraph :
+                public QWidget,
+                public mixin::UnsharedDataModel<omni::proj::ColorCorrection> {
                 Q_OBJECT
+                OMNI_UI_UNSHARED_DATAMODEL(omni::proj::ColorCorrection)
             public:
 
                 ColorCorrectionGraph(QWidget* = nullptr);
                 ~ColorCorrectionGraph();
 
-                Channel selectedChannel() const;
-                void setSelectedChannel(Channel _channel);
-
-                void setColorCorrection(omni::proj::ColorCorrection const*);
-                omni::proj::ColorCorrection const* colorCorrection() const;
+                Channel channel() const;
+                void setChannel(Channel _channel);
 
             protected:
                 void paintEvent(QPaintEvent*);
                 void resizeEvent(QResizeEvent*);
+
+            signals:
+                void dataModelChanged();
+
             private:
+                /// Update widget from current color correction
+                void dataToFrontend();
+
+                /// ColorCorrectionGraph cannot change data, hence there is nothing to do here
+                inline bool frontendToData() { return false; }
+
                 void drawGraphs(QPainter& _p, bool _selected) const;
                 void drawGraphForChannel(QPainter&,
                     omni::proj::ChannelCorrection const&,
@@ -54,10 +65,8 @@ namespace omni {
                 void drawGraphForChannel(QPainter&, Channel _channel) const;
                 void drawGridLines(QPainter&);
 
-                Channel selectedChannel_ = Channel::ALL;
-                omni::proj::ColorCorrection const* colorCorrection_ = nullptr;
+                Channel channel_ = Channel::ALL;
             };
-
         }
     }
 }

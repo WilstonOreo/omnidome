@@ -35,8 +35,17 @@ namespace omni
                 {
                         Q_OBJECT
                     public:
+                        enum class Scale {
+                            LINEAR,
+                            RECIPROCAL
+                        };
+
                         typedef mixin::RangedValue<RangedFloat,double> mixin_range_type;
                         typedef QDoubleSpinBox editor_type;
+                        using mixin_range_type::minimum;
+                        using mixin_range_type::maximum;
+                        using mixin_range_type::pageStep;
+                        using mixin_range_type::singleStep;
 
                         /// Construct from parent widget
                         RangedFloat(QWidget* = nullptr);
@@ -61,10 +70,15 @@ namespace omni
                         /// Return precision
                         int precision() const;
 
+                        /// Return grip size
+                        int gripSize() const;
+
                         /// Return flag if default value is used
                         bool useDefaultValue() const;
 
                         bool drawTicks() const;
+
+                        Scale scale() const;
 
                     public slots:
                         /// Set value, valueChanged() signal will be emitted
@@ -84,6 +98,8 @@ namespace omni
 
                         /// Toggle value snap on/off
                         void setSnap(bool);
+
+                        void setGripSize(int);
 
                         /// Use Default Value and show it
                         void setUseDefaultValue(bool);
@@ -105,6 +121,9 @@ namespace omni
 
                         void setPageStep(double);
 
+                        void setScale(Scale);
+
+
                     signals:
                         void valueChanged();
                         void rangeChanged();
@@ -124,7 +143,7 @@ namespace omni
                     private:
                         void init();
                         void editorSetup();
-                        
+
                         /// Get value from x mouse position
                         double valueFromPos(double) const;
 
@@ -134,10 +153,12 @@ namespace omni
                         /// Calculate position from value
                         double valueToPos(double) const;
 
+                        Scale scale_ = Scale::LINEAR;
                         bool moving_ = false;
                         bool drawTicks_ = false;
                         bool useDefaultValue_ = false;
                         QString suffix_;
+                        int gripSize_ = 10;
                         int precision_ = 2;
                 };
         }

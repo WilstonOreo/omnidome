@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>329</width>
-    <height>306</height>
+    <width>394</width>
+    <height>510</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -136,15 +136,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>omni::ui::BrushPreview</class>
-   <extends>QWidget</extends>
-   <header>BrushPreview.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>omni::ui::RangedFloat</class>
    <extends>QWidget</extends>
    <header location="global">omni/ui/RangedFloat.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::BrushPreview</class>
+   <extends>QWidget</extends>
+   <header>BrushPreview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

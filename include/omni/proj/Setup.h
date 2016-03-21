@@ -21,7 +21,7 @@
 #define OMNI_PROJ_SETUP_H_
 
 #include <QDataStream>
-#include <omni/SerializationInterface.h>
+#include <omni/serialization/Interface.h>
 
 namespace omni
 {
@@ -29,7 +29,9 @@ namespace omni
   {
     class Projector;
 
-    class Setup : public SerializationInterface
+    class Setup :
+        public SerializationInterface,
+        public TypeIdInterface
     {
     public:
       virtual void setup(Projector&) = 0;

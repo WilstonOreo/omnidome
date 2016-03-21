@@ -45,22 +45,18 @@ namespace omni {
             }
 
             connect(ui_->boxCanvasSelect, SIGNAL(currentIndexChanged(QString)), this,
-                    SLOT(canvasTypeSelected(QString)));
+                    SLOT(selectCanvasType(QString)));
         }
 
         Canvas::~Canvas()
         {}
 
-        void Canvas::changeProjectorViewMode(int _index) {
-            emit projectorViewModeChanged(ProjectorViewMode(_index));
-        }
-
-        void Canvas::sessionParameters()
+        void Canvas::dataToFrontend()
         {
-            if (!session()->canvas())
+            if (!dataModel()->canvas())
             {
-                session()->setCanvas("HalfDome");
-                canvasTypeSelected("HalfDome");
+                dataModel()->setCanvas("HalfDome");
+                selectCanvasType("HalfDome");
             }
             // Search combobox for available canvas types
             int _index = 0;
@@ -69,7 +65,7 @@ namespace omni {
             {
                 QString _id = ui_->boxCanvasSelect->itemData(i).toString();
 
-                if (_id == session()->canvas()->getTypeId().str())
+                if (_id == dataModel()->canvas()->getTypeId().str())
                 {
                     _index = i;
                 }
@@ -77,41 +73,37 @@ namespace omni {
 
             ui_->boxCanvasSelect->setCurrentIndex(_index);
             showParameterWidget();
-            emit canvasChanged();
-        }
-        void Canvas::showParameterWidget() {
-            if (!session()) return;
-
-            auto* _canvas = session()->canvas();
-            if (!_canvas) return;
-
-            paramWidget_ = _canvas->widget();
-            if (paramWidget_) {
-                // Configure layout
-                widget()->layout()->addWidget(paramWidget_);
-
-                // Update parameter when canvas has changed
-                connect(paramWidget_,SIGNAL(parametersUpdated()),this,SIGNAL(canvasChanged()));
-                paramWidget_->show();
-            }
-            emit canvasTypeChanged();
-
-            ///   Remove widget on next mapping type change
-            if (paramWidget_) {
-                connect(this,SIGNAL(canvasTypeChanged()),paramWidget_,SLOT(deleteLater()));
-            }
         }
 
-        void Canvas::canvasTypeSelected(QString _id)
+        bool Canvas::frontendToData() {
+            return false;
+        }
+
+        void Canvas::selectCanvasType(QString _id)
         {
-            if (!session() || this->isLocked()) return;
+            if (!dataModel() || this->isLocked()) return;
 
-            session()->setCanvas(_id);
-            if (paramWidget_) {
-                widget()->layout()->removeWidget(paramWidget_);
+            canvasMemory_.store(dataModel()->canvas());
+
+            /// Dont do anything if type id has not changed
+            if (dataModel()->canvas()->getTypeId().str() == _id) {
+                return;
             }
+
+            dataModel()->setCanvas(_id);
+            canvasMemory_.restore(dataModel()->canvas());
 
             showParameterWidget();
+            emit canvasTypeChanged();
+        }
+
+        void Canvas::showParameterWidget() {
+            this->setupParameterWidget(widget(),dataModel()->canvas());
+            if (this->parameterWidget()) {
+                // Update parameter when canvas has changed
+                connect(this->parameterWidget(),SIGNAL(dataModelChanged()),
+                        this,SIGNAL(dataModelChanged()));
+            }
         }
     }
 }

@@ -22,6 +22,8 @@
 
 #include <omni/proj/Tuning.h>
 #include <omni/ui/ParameterWidget.h>
+#include <omni/ui/mixin/DataModel.h>
+#include <omni/ui/mixin/TuningFromIndex.h>
 #include "proj/TuningLayout.h"
 
 namespace omni
@@ -45,9 +47,13 @@ namespace omni
       /**@brief Widget for manipulating projector parameters
          @detail Also holds a preview OpenGL widget
        **/
-      class Tuning : public ParameterWidget
+      class Tuning :
+        public ParameterWidget,
+        public mixin::SharedDataModel<Session>,
+        public mixin::TuningFromIndex<Tuning>
       {
         Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
       public:
         /// View mode (determines which elements are to be displayed)
         enum WindowState
@@ -65,30 +71,16 @@ namespace omni
         Tuning(QWidget* _parent = nullptr);
 
         /// Constructs with a given tuning (called by default from TuningList)
-        Tuning(int _index, omni::Session* _session, QWidget* _parent = nullptr);
+        Tuning(int _index, std::shared_ptr<omni::Session> _session, QWidget* _parent = nullptr);
 
         /// Destructor
         virtual ~Tuning();
-
-        /// Return tuning
-        omni::proj::Tuning* tuning();
-
-        /// Return tuning (const version)
-        omni::proj::Tuning const* tuning() const;
-
-        /// Set tuning from session and index
-        void setTuning(int _index, omni::Session*);
 
         TuningGLView* fullscreenWidget();
         TuningGLView const* fullscreenWidget() const;
 
         TuningGLView* previewWidget();
         TuningGLView const* previewWidget() const;
-
-        /// Return index of tuning
-        int index() const;
-
-        Session const* session() const;
 
         /// Return selected flag
         bool isSelected() const;
@@ -126,10 +118,17 @@ namespace omni
         /// Enable or disable fullscreen display
         void fullscreenToggle(bool);
 
+        /// Reset to free projector setup (discards previous projector setup)
+        void resetToFreeSetup();
+
+        /// Reset to peripheral projector setup (discards previous projector setup)
+        void resetToPeripheralSetup();
+
       signals:
-        void selected();
+        void selected(int);
         void closed(int);
         void projectorSetupChanged();
+        void dataModelChanged();
 
       protected:
         /// Handles resizing of sliders and preview
@@ -173,19 +172,21 @@ namespace omni
         void prepareRemove();
 
       private:
+        void dataToFrontend();
+        bool frontendToData();
+
         /// Setup (only called in constructor)
         void setup();
 
-        /// The index of the tuning
-        int index_ = -1;
+        /// Id of first focussed widget
+        inline virtual int firstFocusId() const {
+          return 2; // Title bar and view cannot be focussed
+        }
 
         /// Adds a new/changes a parameter group
         void addGroup(QString const& _groupName, widgetgroup_type const& _widgets);
 
         void setGroup(QString const& _groupName);
-
-        // The associated session
-        omni::Session* session_ = nullptr;
 
         /// Title bar widget
         TitleBar* titleBar_ = nullptr;

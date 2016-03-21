@@ -98,9 +98,9 @@ namespace omni
     {
     }
 
-    void GLView::sessionParameters()
+    void GLView::dataToFrontend()
     {
-      session_.reset(new visual::Session(*session()));
+      vizSession_.reset(new visual::Session(*dataModel()));
       initialized_ = initialize();
     }
 
@@ -108,7 +108,7 @@ namespace omni
     {
       QOpenGLWidget::mousePressEvent(event);
       setFocus();
-      if (!session_) return;
+      if (!vizSession_) return;
       mousePosition_ = event->pos();
 
       update();

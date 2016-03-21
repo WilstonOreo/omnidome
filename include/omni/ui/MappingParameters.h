@@ -22,6 +22,7 @@
 
 #include <omni/mapping/Interface.h>
 #include <omni/ui/ParameterWidget.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
@@ -29,42 +30,27 @@ namespace omni
   {
     /**@brief Parameter widget for getting and setting mapping parameters
      **/
-    class MappingParameters : public ParameterWidget
+    class MappingParameters :
+        public ParameterWidget,
+        public mixin::UnsharedDataModel<mapping::Interface>
     {
       Q_OBJECT
+      OMNI_UI_UNSHARED_DATAMODEL(mapping::Interface)
+
     public:
       MappingParameters(QWidget* _parent = nullptr);
-      MappingParameters(
-          mapping::Interface* _mapping,
-          QWidget* _parent = nullptr);
       ~MappingParameters();
 
-      mapping::Interface* mapping();
-      mapping::Interface const* mapping() const;
-      void setMapping(mapping::Interface* _mapping);
-
-      /// Set parameters from sliders to mapping
-      void updateParameters();
-
+    signals:
+        void dataModelChanged();
     protected:
-        void addFlipParameters();
+      virtual void dataToFrontend();
 
-        template<typename T>
-        Rotation* addRotationParameters(T* _mapping) {
-            Rotation* _rotation = nullptr;
-            this->locked([&]() {
-                _rotation = addRotationWidget("Rotation");
-                _rotation->setX(_mapping->roll().degrees());
-                _rotation->setY(_mapping->pitch().degrees());
-                _rotation->setZ(_mapping->yaw().degrees());
-            });
-            return _rotation;
-        }
+                /// Return true if data has changed by front end
+      virtual bool frontendToData();
+      void addDefaultParameters();
 
-    private:
-      virtual void updateMappingParameters() = 0;
-
-      mapping::Interface* mapping_ = nullptr;
+      omni::ui::AffineTransform* transform_ = nullptr;
     };
   }
 }

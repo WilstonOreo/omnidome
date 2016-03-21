@@ -23,46 +23,28 @@
 namespace omni {
     namespace ui {
         namespace mapping {
-            Fisheye::Fisheye(QWidget* _widget) : ui::MappingParameters(_widget) {
-                setup();
-            }
+            Fisheye::Fisheye(QWidget *_widget) : ui::MappingParameters(_widget) {}
 
-            Fisheye::Fisheye(
-                omni::mapping::Interface* _mapping,
-                QWidget* _parent) :
-                ui::MappingParameters(_mapping,_parent) {
-                setup();
-            }
+            Fisheye::~Fisheye() {}
 
-            Fisheye::~Fisheye() {
-            }
+            bool Fisheye::frontendToData() {
+                auto *_fisheye =
+                    static_cast<omni::mapping::Fisheye *>(dataModel());
 
-            void Fisheye::updateMappingParameters() {
-                auto* _fisheye = static_cast<omni::mapping::Fisheye*>(mapping());
                 _fisheye->setStretch(getParamAsFloat("Stretch"));
-                _fisheye->setRoll(rotation_->x());
-                _fisheye->setPitch(rotation_->y());
-                _fisheye->setYaw(rotation_->z());
-                _fisheye->setFlipHorizontal(getParamAsBool("Flip horizontal"));
-                _fisheye->setFlipVertical(getParamAsBool("Flip vertical"));
+                return MappingParameters::frontendToData();
             }
 
-            void Fisheye::setup() {
-                if (!mapping()) return;
-
-                qDebug() << mapping();
-                this->locked([&]() {
+            void Fisheye::dataToFrontend() {
                 // Set slider values for Fisheye mapping
-                auto* _fisheye = static_cast<omni::mapping::Fisheye*>(mapping());
-                rotation_ = addRotationParameters(_fisheye);
-                auto* _stretch = addOffsetWidget("Stretch",0.0,0.0,1.0);
+                auto *_fisheye =
+                    static_cast<omni::mapping::Fisheye *>(dataModel());
+                auto *_stretch = addOffsetWidget("Stretch", 0.0, 0.0, 1.0);
+
                 _stretch->setValue(_fisheye->stretch());
                 _stretch->setSuffix("");
-                addFlipParameters();
-            });
+                MappingParameters::dataToFrontend();
             }
-
         }
-
     }
 }

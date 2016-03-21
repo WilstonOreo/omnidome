@@ -31,16 +31,13 @@ namespace omni {
                 Q_OBJECT
             public:
                 HalfDome(QWidget* _parent = nullptr);
-                HalfDome(omni::canvas::Interface*, QWidget* _parent = nullptr);
                 ~HalfDome();
 
             private:
-                void updateCanvasParameters();
+                void dataToFrontend();
 
-                /// Clear and setup all parameter widgets
-                void setup();
-
-                Rotation* rotation_ = nullptr;
+                /// Return true if data has changed by front end
+                bool frontendToData();
             };
         }
     }

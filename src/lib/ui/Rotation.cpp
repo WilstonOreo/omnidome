@@ -41,7 +41,6 @@ namespace omni {
         void Rotation::init(double _x, double _y, double _z)
         {
             QLayout *_layout = new QHBoxLayout();
-
             auto setupDial = [&](double _value, QChar _letter) -> Dial *
                              {
                                  Dial *_d = new Dial(_value, 0.0, 360.0);
@@ -56,13 +55,13 @@ namespace omni {
                              };
 
             x_ = setupDial(_x, 'X');
-            connect(x_, SIGNAL(valueChanged()), this, SIGNAL(xChanged()));
+            connect(x_, &Dial::valueChanged, this, &Rotation::updateX);
 
             y_ = setupDial(_y, 'Y');
-            connect(y_, SIGNAL(valueChanged()), this, SIGNAL(yChanged()));
+            connect(y_, &Dial::valueChanged, this, &Rotation::updateY);
 
             z_ = setupDial(_z, 'Z');
-            connect(z_, SIGNAL(valueChanged()), this, SIGNAL(zChanged()));
+            connect(z_, &Dial::valueChanged, this, &Rotation::updateZ);
 
             setLayout(_layout);
         }
@@ -85,19 +84,46 @@ namespace omni {
         void Rotation::setX(double _x)
         {
             x_->setValue(_x);
-            emit xChanged();
         }
 
         void Rotation::setY(double _y)
         {
             y_->setValue(_y);
-            emit yChanged();
         }
 
         void Rotation::setZ(double _z)
         {
             z_->setValue(_z);
-            emit zChanged();
+        }
+
+        void Rotation::updateX() {
+            if (!this->isLocked()) {
+                emit xChanged();
+                emit rotationChanged();
+            }
+        }
+
+        void Rotation::updateY() {
+            if (!this->isLocked()) {
+                emit yChanged();
+                emit rotationChanged();
+            }
+        }
+
+        void Rotation::updateZ() {
+            if (!this->isLocked()) {
+                emit zChanged();
+                emit rotationChanged();
+            }
+        }
+
+        void Rotation::setRotation(EulerAngles const& _angles) {
+            this->locked([&]() {
+                x_->setValue(_angles.roll().degrees());
+                y_->setValue(_angles.pitch().degrees());
+                z_->setValue(_angles.yaw().degrees());
+                emit rotationChanged();
+            });
         }
     }
 }

@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -21,6 +21,8 @@
 
 #include <omni/proj/ScreenSetup.h>
 #include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
+#include <omni/serialization/pointer.h>
 
 namespace omni
 {
@@ -131,32 +133,44 @@ namespace omni
       return matrix().column(3).toVector3D();
     }
 
+    void Projector::toStream(QDataStream& _os) const {
+
+        PropertyMap _map;
+        if (screen_) {
+            // Serialize screen rectangle
+            _map("screenRect",screen_->geometry());
+        } else {
+            // Serialize null rectangle if there is not screen
+            _map("screenRect",QRect());
+        }
+        _map("subScreenIndex",subScreenIndex_);
+        _map("fov",fov_);
+        _map("setup",setup_);
+        _os << _map;
+    }
+
+    void Projector::fromStream(QDataStream& _is) {
+        PropertyMap _map;
+        _is >> _map;
+        QRect _screenRect = _map.getValue<QRect>("screenRect");
+        if (!_screenRect.isNull()) {
+            screen_ = _screenRect.isNull() ? nullptr :
+                ScreenSetup::screenFromRect(_screenRect);
+        }
+        _map.get("subScreenIndex",subScreenIndex_);
+        _map.get("fov",fov_);
+        _map.getPtr("setup",[this](const Id& _id) -> Setup* {
+            return this->setup(_id);
+        });
+    }
+
     bool operator==(Projector const& _lhs,Projector const& _rhs)
     {
       return
         OMNI_TEST_MEMBER_EQUAL(matrix_) &&
-        OMNI_TEST_MEMBER_EQUAL(fov_);
+        OMNI_TEST_MEMBER_EQUAL(fov_) &&
+        OMNI_TEST_MEMBER_EQUAL(subScreenIndex_) &&
+        OMNI_TEST_MEMBER_EQUAL(screen_);
     }
   }
-}
-
-QDataStream& operator>>(QDataStream& _stream, omni::proj::Projector& _proj)
-{
-  omni::util::deserializePtr(_stream,[&](omni::Id const& _id) ->
-      omni::proj::Setup*
-  {
-    return _proj.setup(_id);
-  });
-
-  omni::Angle _fov(45.0);
-  _stream >> _fov;
-  _proj.setFov(_fov);
-  return _stream;
-}
-
-QDataStream& operator<<(QDataStream& _stream, omni::proj::Projector const& _proj)
-{
-  omni::util::serializePtr(_stream,_proj.setup());
-  _stream << _proj.fov();
-  return _stream;
 }

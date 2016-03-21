@@ -50,7 +50,7 @@ namespace omni
     /// Cast operator returns copy of string representation
     operator QString() const;
 
-    /// Returns true if string is not valid
+    /// Returns true if string is valid
     bool valid() const;
 
     /// Comparison operator

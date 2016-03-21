@@ -23,6 +23,7 @@
 #include <QDataStream>
 #include <QOpenGLShaderProgram>
 #include <omni/util.h>
+#include <omni/serialization/PropertyMap.h>
 #include "EquirectangularWidget.h"
 
 namespace omni
@@ -37,9 +38,9 @@ namespace omni
     {
     }
 
-    void Equirectangular::bind(OutputMode _outputMode)
+    void Equirectangular::bind()
     {
-      Rotatable::bind(_outputMode);
+      Interface::bind();
       this->shader_->setUniformValue("strip_top",GLfloat(stripTop_));
       this->shader_->setUniformValue("strip_bottom",GLfloat(stripBottom_));
     }
@@ -73,28 +74,34 @@ namespace omni
 
     void Equirectangular::fromStream(QDataStream& _stream)
     {
-      Rotatable::fromStream(_stream);
-      _stream >> stripBottom_ >> stripTop_;
+      mapping::Interface::fromStream(_stream);
+      PropertyMap _map;
+      _stream >> _map;
+      _map.get("stripBottom",stripBottom_)
+          .get("stripTop",stripTop_);
       validate();
     }
 
     void Equirectangular::toStream(QDataStream& _stream) const
     {
-      Rotatable::toStream(_stream);
-      _stream << stripBottom_ << stripTop_;
+      mapping::Interface::toStream(_stream);
+      PropertyMap _map;
+      _map("stripBottom",stripBottom_)
+          ("stripTop",stripTop_);
+      _stream << _map;
     }
 
     bool operator==(Equirectangular const& _lhs, Equirectangular const& _rhs)
     {
-      const Rotatable& _blhs(_lhs);
-      const Rotatable& _brhs(_rhs);
-      return (_blhs == _brhs) &&
+    //  const Rotatable& _blhs(_lhs);
+    //  const Rotatable& _brhs(_rhs);
+      return //(_blhs == _brhs) &&
         OMNI_TEST_MEMBER_EQUAL(stripTop_) &&
         OMNI_TEST_MEMBER_EQUAL(stripBottom_);
     }
 
     QWidget* Equirectangular::widget() {
-        return new ui::mapping::Equirectangular(this);
+        return ui::makeWidget<ui::mapping::Equirectangular>(this);
     }
   }
 }

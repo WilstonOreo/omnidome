@@ -26,48 +26,25 @@ namespace omni
     CanvasParameters::CanvasParameters(QWidget* _parent) :
       ParameterWidget(_parent)
     {
-    }
-
-    CanvasParameters::CanvasParameters(
-        canvas::Interface* _canvas,
-        QWidget* _parent) :
-      ParameterWidget(_parent)
-    {
         QLayout *_layout = new QVBoxLayout;
         _layout->setSpacing(2);
         _layout->setContentsMargins(0, 0, 0, 0);
+        _layout->setSizeConstraint(QLayout::SetMaximumSize);
         setLayout(_layout);
-        setCanvas(_canvas);
+        connect(this,&ParameterWidget::parametersUpdated,this,&CanvasParameters::updateDataModel);
     }
 
     CanvasParameters::~CanvasParameters()
     {
     }
 
-    canvas::Interface* CanvasParameters::canvas()
-    {
-      return canvas_;
+    bool CanvasParameters::frontendToData() {
+        transform_->updateDataModel();
+        return true;
     }
 
-    canvas::Interface const* CanvasParameters::canvas() const
-    {
-      return canvas_;
+    void CanvasParameters::dataToFrontend() {
+        transform_ = addAffineTransformWidget("Transform", &dataModel()->transform());
     }
-
-    void CanvasParameters::setCanvas(omni::canvas::Interface* _canvas)
-    {
-      canvas_ = _canvas;
-    }
-
-    void CanvasParameters::updateParameters()
-    {
-      if (!canvas_ || isLocked()) return;
-
-      this->updateCanvasParameters();
-
-      canvas_->update();
-      emit parametersUpdated();
-    }
-
   }
 }

@@ -28,6 +28,7 @@
 #include <QMessageBox>
 #include <omni/util.h>
 #include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
@@ -44,7 +45,8 @@ namespace omni
     class GLView3D;
     class ToolBar;
 
-    class MainWindow : public QMainWindow
+    class MainWindow :
+        public QMainWindow
     {
       Q_OBJECT
     public:
@@ -71,9 +73,6 @@ namespace omni
       /// Edit current session with a new filename
       void editAsNew();
 
-      /// Show About dialog
-      void showSettings();
-
       /// Update all OpenGL views
       void updateAllViews();
 
@@ -89,14 +88,15 @@ namespace omni
       void buttonState();
 
       /// Set current tuning index
-      void setTuningIndex(int);
+      void setTuningIndex();
 
       void addProjector(QAction* _action);
 
       /// Sets session mode
-      void setMode(Session::Mode _mode);
+      void setMode();
 
     private:
+      void readSettings();
 
       /// Makes a new session
       void setupSession();
@@ -108,7 +108,7 @@ namespace omni
       QString filename_;
 
       /// Current projection session
-      std::unique_ptr<Session> session_;
+      std::shared_ptr<Session> session_;
 
       /// Modified flag
       bool modified_ = false;
@@ -123,13 +123,7 @@ namespace omni
             QUniquePtr<Arrange> arrange_;
 
             /// Page for current warp grid
-            QUniquePtr<TuningGLView> warp_;
-
-            /// Page for current blend mask
-            QUniquePtr<TuningGLView> blend_;
-
-            /// Page for color correction
-            QUniquePtr<TuningGLView> colorCorrection_;
+            QUniquePtr<TuningGLView> tuningView_;
 
             /// Page for exporting projection
             QUniquePtr<Export> export_;

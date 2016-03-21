@@ -44,12 +44,12 @@ namespace omni {
             auto _indexIt  = _indices.begin();
 
             std::array<QVector3D,6> _normals = {
-                QVector3D( 0.0, 0.0, 1.0),
-                QVector3D( 0.0, 0.0,-1.0),
                 QVector3D( 0.0, 1.0, 0.0),
                 QVector3D( 0.0,-1.0, 0.0),
                 QVector3D( 1.0, 0.0, 0.0),
-                QVector3D(-1.0, 0.0, 0.0)
+                QVector3D(-1.0, 0.0, 0.0),
+                QVector3D( 0.0, 0.0, 1.0),
+                QVector3D( 0.0, 0.0,-1.0)
             };
 
             for (size_t i = 0; i < 6; ++i) {
@@ -66,32 +66,32 @@ namespace omni {
 
                         // texCoords
                         QVector2D _pos(x / float(_resX - 1), y / float(_resY - 1));
-                        QVector2D _texCoord((i + _pos.x())/6.0,
-                                        1.0 - _pos.y());
+                        QVector2D _texCoord((i + 1.0 - _pos.x())/6.0,_pos.y());
                         _pos -= QVector2D(0.5,0.5);
-                        _vertexIt->setTexCoord(_texCoord);
 
                         switch(i)
                         {
                         case 0:
-                        _vertexIt->setPos(QVector3D(_pos.x(),_pos.y(),_normal.z()*0.5));
+                        _vertexIt->setPos(QVector3D(_pos.x(),_normal.y()*0.5,_pos.y()));
                         break;
                         case 1:
-                        _vertexIt->setPos(QVector3D(_pos.x(),_pos.y(),_normal.z()*0.5));
+                        _vertexIt->setPos(QVector3D(- _pos.x(),_normal.y()*0.5,_pos.y()));
                         break;
                         case 2:
-                        _vertexIt->setPos(QVector3D(_pos.x(),_normal.y()*0.5,_pos.y()));
+                        _vertexIt->setPos(QVector3D(_normal.x()*0.5,-_pos.x(),_pos.y()));
                         break;
                         case 3:
-                        _vertexIt->setPos(QVector3D(_pos.x(),_normal.y()*0.5,_pos.y()));
+                        _vertexIt->setPos(QVector3D(_normal.x()*0.5,_pos.x(),_pos.y()));
                         break;
                         case 4:
-                        _vertexIt->setPos(QVector3D(_normal.x()*0.5,_pos.x(),_pos.y()));
+                        _vertexIt->setPos(QVector3D(-_pos.x(),_pos.y(),_normal.z()*0.5));
                         break;
                         case 5:
-                        _vertexIt->setPos(QVector3D(_normal.x()*0.5,_pos.x(),_pos.y()));
+                        _vertexIt->setPos(QVector3D(-_pos.x(),-_pos.y(),_normal.z()*0.5));
                         break;
                         }
+
+                        _vertexIt->setTexCoord(_texCoord);
 
                         _vertexIt->setNormal(_normals[i]);
                         ++_vertexIt;
@@ -100,25 +100,6 @@ namespace omni {
             }
 
             vbo_.buffer(_vertices, _indices);
-        }
-
-        size_t Box::resX() const {
-            return resX_;
-        }
-
-        size_t Box::resY() const {
-            return resY_;
-        }
-
-        size_t Box::resZ() const {
-            return resZ_;
-        }
-
-        void Box::remesh(size_t _resX, size_t _resY, size_t _resZ) {
-            resX_ = _resX;
-            resY_ = _resY;
-            resZ_ = _resZ;
-            update();
         }
     }
 }

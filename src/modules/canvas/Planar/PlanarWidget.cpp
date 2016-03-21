@@ -24,60 +24,26 @@ namespace omni {
     namespace ui {
         namespace canvas {
             Planar::Planar(QWidget *_parent) : CanvasParameters(_parent) {
-                setup();
-            }
-
-            Planar::Planar(omni::canvas::Interface *_canvas, QWidget *_parent) :
-                CanvasParameters(_canvas, _parent) {
-                setup();
             }
 
             Planar::~Planar() {}
 
-            void Planar::updateCanvasParameters() {
-                auto* _planar = static_cast<omni::canvas::Planar*>(canvas());
+            bool Planar::frontendToData() {
+                auto* _planar = static_cast<omni::canvas::Planar*>(dataModel());
                 _planar->setHeight( getParamAsFloat("Length") );
                 _planar->setWidth( getParamAsFloat("Width") );
-                _planar->angles().roll().setDegrees(rotation_->x());
-                _planar->angles().pitch().setDegrees(rotation_->y());
-                _planar->angles().yaw().setDegrees(rotation_->z());
-                _planar->setCenter(QVector3D(
-                           getParamAsFloat("X Offset"),
-                           getParamAsFloat("Y Offset"),
-                           getParamAsFloat("Z Offset")));
+                return CanvasParameters::frontendToData();
             }
 
-            void Planar::setup() {
-                if (!canvas()) return;
+            void Planar::dataToFrontend() {
+                auto* _length = addOffsetWidget("Length",1.0,0.1,10.0);
+                auto* _width = addOffsetWidget("Width",1.0,0.1,10.0);
 
-                this->locked([&]() {
-                    rotation_ = addRotationWidget("Rotation");
-                    auto* _length = addOffsetWidget("Length",1.0,0.1,10.0);
-                    auto* _width = addOffsetWidget("Width",1.0,0.1,10.0);
-                    auto *_xOffset = addOffsetWidget("X Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-                    auto *_yOffset = addOffsetWidget("Y Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-                    auto *_zOffset = addOffsetWidget("Z Offset",
-                                                     0.0,
-                                                     -10.0,
-                                                     10.0);
-
-                    /// Retrieve parameters for Planar canvas
-                    auto* _planar = static_cast<omni::canvas::Planar*>(canvas());
-                    _width->setValue(_planar->width());
-                    _length->setValue(_planar->height());
-                    _xOffset->setValue(_planar->center().x());
-                    _yOffset->setValue(_planar->center().y());
-                    _zOffset->setValue(_planar->center().z());
-                    rotation_->setX(_planar->angles().roll().degrees());
-                    rotation_->setY(_planar->angles().pitch().degrees());
-                    rotation_->setZ(_planar->angles().yaw().degrees());
-                });
+                /// Retrieve parameters for Planar canvas
+                auto* _planar = static_cast<omni::canvas::Planar*>(dataModel());
+                _width->setValue(_planar->width());
+                _length->setValue(_planar->height());
+                return CanvasParameters::dataToFrontend();
             }
         }
     }

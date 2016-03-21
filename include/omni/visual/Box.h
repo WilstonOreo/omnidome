@@ -32,6 +32,7 @@ namespace omni {
             ~Box();
 
             void draw() const;
+
             void update();
 
             /// Return mesh resolution in x direction
@@ -47,9 +48,8 @@ namespace omni {
             void remesh(size_t _resX, size_t _resY, size_t _resZ);
 
         private:
-            size_t horizontal_ = 10;
-            size_t vertical_ = 10;
-            size_t resX_ = 10, resY_ = 10, resZ_ = 10;
+            size_t horizontal_ = 4;
+            size_t vertical_ =  4;
             VertexVBO vbo_;
         };
     }

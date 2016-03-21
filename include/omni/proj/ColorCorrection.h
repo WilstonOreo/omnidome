@@ -78,6 +78,9 @@ namespace omni {
 
             static QColor channelColor(Channel);
 
+            // Test if two color corrections are equal
+            friend bool operator==(ColorCorrection const&,ColorCorrection const&);
+
         private:
             bool isUsed_ = true;
             ChannelCorrection all_, red_, green_, blue_;
@@ -86,5 +89,8 @@ namespace omni {
 
     using proj::ColorCorrection;
 }
+
+QDataStream& operator>>(QDataStream&, omni::proj::ColorCorrection&);
+QDataStream& operator<<(QDataStream&, omni::proj::ColorCorrection const&);
 
 #endif /* OMNI_PROJ_COLORCORRECTION_H_ */

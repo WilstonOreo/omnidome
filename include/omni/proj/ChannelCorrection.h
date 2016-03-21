@@ -62,6 +62,9 @@ namespace omni {
             /// Return corrected value, value is NOT clamped
             double corrected(double _value) const;
 
+            /// Test for equality
+            friend bool operator==(ChannelCorrection const&, ChannelCorrection const&);
+
         private:
             // Gamma between -1 and 1
             double gamma_ = 0.0;
@@ -77,5 +80,8 @@ namespace omni {
         };
     }
 }
+
+QDataStream& operator>>(QDataStream&, omni::proj::ChannelCorrection&);
+QDataStream& operator<<(QDataStream&, omni::proj::ChannelCorrection const&);
 
 #endif /* OMNI_PROJ_CHANNELCORRECTION_H_ */

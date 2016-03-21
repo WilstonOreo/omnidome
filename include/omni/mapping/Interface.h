@@ -22,7 +22,9 @@
 
 #include <map>
 #include <memory>
-#include <omni/SerializationInterface.h>
+#include <omni/PluginInfo.h>
+#include <omni/AffineTransform.h>
+#include <omni/serialization/Interface.h>
 #include <omni/visual/Interface.h>
 
 class QOpenGLShaderProgram;
@@ -41,7 +43,9 @@ namespace omni
     {
       MAPPED_INPUT, // Draws actual input texture on mapping
       TEXCOORDS, // Draw texture coordinates of mapping
-      UVW // Draws uvw coordinates of mapping
+      UVW, // Draws uvw coordinates of mapping
+      LIGHTING_ONLY, // Draw plain canvas with lighting
+      LIGHTING_TEX // Draw canvas with
     };
 
     /**@brief Mapping interface with one or several inputs and shader
@@ -49,6 +53,7 @@ namespace omni
      */
     class Interface :
         public SerializationInterface,
+        public TypeIdInterface,
         public visual::Interface
     {
     public:
@@ -60,16 +65,12 @@ namespace omni
       void initialize();
 
       /// Bind shaders and set uniforms
-      virtual void bind(OutputMode = OutputMode::MAPPED_INPUT);
+      virtual void bind();
+      void bind(OutputMode, bool _grayscale);
 
       /// Release shader
       void release();
 
-      /// Read mapping from stream
-      virtual void fromStream(QDataStream&);
-
-      /// Write mapping to stream
-      virtual void toStream(QDataStream&) const;
 
       bool flipHorizontal() const;
       void setFlipHorizontal(bool);
@@ -77,7 +78,9 @@ namespace omni
       bool flipVertical() const;
       void setFlipVertical(bool);
 
-      /// Flag which tells if this mapping uses UVW texture coordinates (true by default)
+      /**@brief Flag which tells if this mapping uses UVW texture coordinates (true by default)
+         @detail
+       **/
       inline virtual bool isUVW() const
       {
         return true;
@@ -92,8 +95,36 @@ namespace omni
       /// Return pointer to parameter widget
       virtual QWidget* widget() = 0;
 
-      inline virtual void draw() const {}
+      inline void draw() const { draw(1.0); }
+
+      inline virtual void draw(float _opacity) const {}
       inline virtual void update() {}
+
+      /// Return const ref to affine transform
+      AffineTransform const& transform() const;
+
+      /// Return ref to affine transform
+      AffineTransform& transform();
+
+      /// Set new affine transform
+      void setTransform(AffineTransform const& _transform);
+
+      /// Return matrix of transform
+      virtual QMatrix4x4 matrix() const;
+
+      /**@brief If true, mapping transform is attached to canvas transform
+         @detail Is true by default
+       **/
+      bool isBoundToCanvas() const;
+
+      /// Set whether mapping transform is attached to canvas transform
+      void setBoundToCanvas(bool);
+
+      /// Write mapping to stream
+      virtual void toStream(QDataStream&) const;
+
+      /// Read mapping from stream
+      virtual void fromStream(QDataStream&);
 
     protected:
       std::unique_ptr<QOpenGLShaderProgram> shader_;
@@ -109,6 +140,8 @@ namespace omni
       **/
       virtual QString fragmentShaderSourceCode() const;
 
+      AffineTransform transform_;
+      bool boundToCanvas_ = true;
       bool flipHorizontal_ = false;
       bool flipVertical_ = false;
     };
@@ -129,7 +162,8 @@ Q_DECLARE_INTERFACE(omni::mapping::Interface, OMNI_MAPPING_INTERFACE_IID)
 #define OMNI_MAPPING_PLUGIN_DECL \
     Q_OBJECT \
     Q_PLUGIN_METADATA(IID OMNI_MAPPING_INTERFACE_IID) \
-    Q_INTERFACES(omni::mapping::Interface)
+    Q_INTERFACES(omni::mapping::Interface) \
+    OMNI_PLUGIN_TYPE("Mapping")
 
 
 #endif /* OMNI_MAPPING_INTERFACE_H_ */

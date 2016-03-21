@@ -20,8 +20,8 @@ function(QT5_GENERATE_UI outfiles )
           COMMAND ${Qt5Widgets_UIC_EXECUTABLE}
           ARGS ${ui_options} -o ${outfile} ${infile}
          MAIN_DEPENDENCY ${infile} VERBATIM)
-       #execute_process(COMMAND ${QT_UIC_EXECUTABLE} ${ui_options} -o ${outfile} ${infile}
-       #  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+       execute_process(COMMAND ${QT_UIC_EXECUTABLE} ${ui_options} -o ${outfile} ${infile}
+         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
         list(APPEND ${outfiles} ${outfile})
     endforeach()
@@ -89,7 +89,7 @@ ENDMACRO()
 
 # Qt5 Setup
 MACRO(setup_qt VERSION FOLDER)
-  SET(_moc ${CMAKE_SOURCE_DIR}/moc )
+    SET(_moc ${CMAKE_SOURCE_DIR}/moc )
 
   SET(QT_FOUND FALSE)
   SET(QT_VERSION ${VERSION})
@@ -104,7 +104,7 @@ MACRO(setup_qt VERSION FOLDER)
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   set(QT_QMAKE_EXECUTABLE "${QT5_LOCATION}/bin/qmake" )
-  set(QT_MOC_EXECUTABLE "${QT5_LOCATION}/bin/moc" )
+  set(QT_MOC_EXECUTABLE "${QT5_LOCATION}/bin/moc"  )
   set(QT_RCC_EXECUTABLE "${QT5_LOCATION}/bin/rcc" )
   set(QT_UIC_EXECUTABLE "${QT5_LOCATION}/bin/uic" )
   set(QT_INCLUDE_DIR "${QT5_LOCATION}/include" )

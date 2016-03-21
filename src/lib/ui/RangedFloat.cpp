@@ -155,6 +155,7 @@ namespace omni {
         void RangedFloat::setPrecision(int _precision)
         {
             precision_ = _precision;
+            editorAs<editor_type>()->setDecimals(_precision);
             valueChangedEvent();
         }
 
@@ -168,8 +169,40 @@ namespace omni {
         double RangedFloat::valueFromPos(double _pos) const
         {
             auto && _rect = rect();
+            if (scale_ == Scale::RECIPROCAL) {
+                if (minimum() <= 1.0 && maximum() >= 1.0 && minimum() > 0.0) {
+
+                    double _recMinimum = - 1.0 / minimum();
+                    double _max = maximum();
+                    double _posOne = valueToPos(1.0);
+
+                    double _v = (_pos - _rect.left()) / _rect.width() *
+                            (maximum() - _recMinimum) + _recMinimum;
+
+                    qDebug() << "valueFromPos: "<< _v;
+
+                    if (_v < 0.0) {
+                        _v = (_v - minimum()) * (1.0 / minimum() + maximum() /
+                             (1.0 / minimum() - 1.0) )  - 1.0 / minimum();
+                    }  else {
+                        _v = (_v + 1.0) / (_max - minimum() + 1.0) * (_max - minimum());
+                    }
+                    return _v;
+
+                    qDebug() << "valueFromPos: " << _recMinimum << " " << _max << " " << _posOne << " " << _pos;
+                    if (_pos < _posOne) {
+                        return - 1.0 / (_pos - _rect.left()) / _rect.width() *
+                                    (_max - _recMinimum) + _recMinimum;
+                    } else {
+                        return ((_pos - _posOne) - _rect.left()) / (_rect.width() - _posOne) *
+                            (maximum() - minimum()) + minimum();
+                    }
+                    ///@todo Handle RECIPROCAL mode
+                }
+            }
+
             return (_pos - _rect.left()) / _rect.width() *
-                   (maximum() - minimum()) + minimum();
+                (maximum() - minimum()) + minimum();
         }
 
         double RangedFloat::valueToPos() const
@@ -181,8 +214,22 @@ namespace omni {
         double RangedFloat::valueToPos(double _value) const
         {
             auto && _rect = rect();
-            return _rect.left() + mixin::Range<double>::ratio(_value) *
-                   double(_rect.width());
+            double _ratio = mixin::Range<double>::ratio(_value);
+
+            if (scale_ == Scale::RECIPROCAL) {
+                if (minimum() <= 1.0 && maximum() >= 1.0 && minimum() > 0.0) {
+                    double _recMinimum = - 1.0 / minimum();
+                    double _max = maximum();
+                    double _v = (_value - 1) / (_max -1) * _max;
+                    if (_value <= 1.0) {
+                        _v *= 1.0 / minimum();
+                    }
+                    _ratio = (_v - _recMinimum) / (_max - _recMinimum);
+                }
+            }
+
+            return _rect.left() + _ratio *
+                    double(_rect.width());
         }
 
         void RangedFloat::paintEvent(QPaintEvent *_paintEvent)
@@ -252,7 +299,7 @@ namespace omni {
         {
             AbstractInputWidget::mousePressEvent(e);
 
-            if (std::abs(e->pos().x() - valueToPos()) <= 7)
+            if (std::abs(e->pos().x() - valueToPos()) <= gripSize_ || !gripSize_)
             {
                 moving_ = true;
                 setValue(valueFromPos(e->pos().x()));
@@ -296,6 +343,15 @@ namespace omni {
             AbstractInputWidget::createEditor<editor_type>();
         }
 
+        RangedFloat::Scale RangedFloat::scale() const {
+            return scale_;
+        }
+
+        void RangedFloat::setScale(Scale _scale) {
+            scale_ = _scale;
+            update();
+        }
+
         void RangedFloat::editorSetup() {
             auto _editor = this->editorAs<editor_type>();
 
@@ -306,6 +362,14 @@ namespace omni {
             _editor->setButtonSymbols(QAbstractSpinBox::PlusMinus);
             mixin_range_type::apply(_editor);
             valueChangedEvent();
+        }
+
+        int RangedFloat::gripSize() const {
+            return gripSize_;
+        }
+
+        void RangedFloat::setGripSize(int _gripSize) {
+            gripSize_ = _gripSize;
         }
     }
 }

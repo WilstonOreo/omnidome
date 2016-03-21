@@ -22,6 +22,7 @@
 #include <omni/proj/ColorCorrection.h>
 #include <omni/proj/ChannelCorrection.h>
 #include <omni/ui/ParameterWidget.h>
+#include <omni/ui/mixin/DataModel.h>
 
 class QPushButton;
 
@@ -32,30 +33,40 @@ namespace omni {
         using omni::proj::Channel;
 
         namespace proj {
-            class ChannelCorrectionParameters : public ParameterWidget
+            class ChannelCorrectionParameters :
+                public ParameterWidget,
+                public mixin::UnsharedDataModel<ChannelCorrection>
             {
                 Q_OBJECT
+                OMNI_UI_UNSHARED_DATAMODEL(ChannelCorrection)
             public:
                 ChannelCorrectionParameters(QWidget* = nullptr);
                 ~ChannelCorrectionParameters();
 
-                void setChannelCorrection(ChannelCorrection*, Channel = Channel::ALL);
-                ChannelCorrection* channelCorrection();
-                ChannelCorrection const* channelCorrection() const;
+                Channel channel() const;
+                void setChannel(Channel _channel);
 
             public slots:
-                void updateParameters();
                 void reset();
+
+            signals:
+                void dataModelChanged();
 
             private:
                 void setup();
 
-                ChannelCorrection* channelCorrection_ = nullptr;
+                /// Update sliders from current warp grid
+                void dataToFrontend();
+
+                /// Assign slider values to current warp grid
+                bool frontendToData();
+
                 RangedFloat* brightness_ = nullptr;
                 RangedFloat* contrast_ = nullptr;
                 RangedFloat* gamma_ = nullptr;
                 RangedFloat* multiplier_ = nullptr;
                 QPushButton* reset_ = nullptr;
+                Channel channel_ = Channel::ALL;
             };
         }
     }

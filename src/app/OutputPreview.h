@@ -21,17 +21,19 @@
 #include <QColor>
 #include <QRect>
 #include <QPoint>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 #include <omni/ui/mixin/TransformedRect.h>
 
 namespace omni {
     namespace ui {
         class OutputPreview:
             public QWidget,
-            public mixin::SessionWidget,
+            public mixin::SharedDataModel<Session>,
             public mixin::TransformedRect<OutputPreview>
         {
             Q_OBJECT
+            OMNI_UI_SHARED_DATAMODEL(Session)
         public:
             OutputPreview(QWidget* = nullptr);
             ~OutputPreview();
@@ -44,6 +46,9 @@ namespace omni {
         public slots:
             void render();
 
+        signals:
+            void dataModelChanged();
+
         protected:
             void resizeEvent(QResizeEvent*);
             void paintEvent(QPaintEvent*);
@@ -51,10 +56,15 @@ namespace omni {
         private:
             void drawBorder(QColor _color, QRect const& _rect, QPoint& _capPos, QString const& _caption);
 
+            void drawTuning(QPainter&, proj::Tuning const*);
+            void drawScreen(QPainter&, QScreen const*);
+            int verticalMultiplier() const;
+
             /// Return non transformed rectangle for tuning
             QRect getRectForTuning(proj::Tuning const*);
 
-            void sessionParameters();
+            void dataToFrontend();
+            inline bool frontendToData() { return false; }
 
             RenderOptions renderOptions_;
             QImage image_;

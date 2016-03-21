@@ -25,6 +25,8 @@
 #include <QAction>
 #include <QStandardItemModel>
 #include <omni/input/Interface.h>
+#include <omni/ui/mixin/DataModel.h>
+#include <omni/ui/mixin/ParameterWidget.h>
 
 namespace omni
 {
@@ -38,15 +40,16 @@ namespace omni
     }
 
     /// Input List widget
-    class Input : public DockWidget
+    class Input :
+        public DockWidget,
+        public mixin::SharedDataModel<Session>,
+        private mixin::ParameterWidget
     {
       Q_OBJECT
+      OMNI_UI_SHARED_DATAMODEL(Session)
     public:
       Input(QWidget* = nullptr);
       ~Input();
-
-      Session const* session() const;
-      void setSession(Session* _session);
 
     public slots:
       void addInput(QAction*);
@@ -62,23 +65,32 @@ namespace omni
 
     signals:
       void inputChanged();
+      void dataModelChanged();
       void inputIndexChanged();
 
     private:
+      /// Update sliders from given blend mask
+      void dataToFrontend();
+
+      /// Assign slider values to blend mask
+      inline bool frontendToData() { return false; }
+
       /// Setup the item model with columns etc
       void prepareModel();
 
-      void setupInputWidget();
-
       bool showSettingsDialog(input::Interface*);
 
-      /// Add an item to input list widget
-      void addItem(input::Interface const*);
+      QString itemId(int _row) const;
 
-      Session* session_ = nullptr;
+      /// Add an item to input list widget
+      void addItem(QString const& _id, input::Interface const*);
+
+      void parameterWidgetSetupOptions(QWidget* _paramWidget) const;
+
+      void showParameterWidget();
+
       std::unique_ptr<Ui::Input> ui_;
       std::unique_ptr<QStandardItemModel> model_;
-      QWidget* paramWidget_ = nullptr;
     };
   }
 }

@@ -20,22 +20,23 @@
 #ifndef OMNI_MAPPING_FISHEYE_H_
 #define OMNI_MAPPING_FISHEYE_H_
 
-#include <omni/mapping/Rotatable.h>
+#include <omni/mapping/Interface.h>
 
 namespace omni
 {
   namespace mapping
   {
-    class Fisheye : public QObject, public Rotatable
+    class Fisheye : public QObject, public Mapping
     {
       OMNI_MAPPING_PLUGIN_DECL
+      OMNI_PLUGIN_CR8TR("Fisheye mapping","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,Fisheye)
 
       Fisheye();
       ~Fisheye();
 
-      void bind(OutputMode = OutputMode::MAPPED_INPUT);
+      void bind();
 
       qreal stretch() const;
       void setStretch(qreal _stretch);

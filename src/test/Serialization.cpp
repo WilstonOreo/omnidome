@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -34,9 +34,9 @@ namespace omni
       typedef T obj_type;
 
       template<typename...ARGS>
-      Serialization(QString _filename, 
-          obj_type const& _serialized, 
-          ARGS&&..._args) : 
+      Serialization(QString _filename,
+          obj_type const& _serialized,
+          ARGS&&..._args) :
         filename_(QString("src/test/data/")+_filename+".omni"),
         serialized_(_serialized),
         deserialized_(_args...)
@@ -60,7 +60,7 @@ namespace omni
       {
         QFile _outfile(filename_);
         if (_outfile.open(QIODevice::WriteOnly))
-        { 
+        {
           QDataStream _out(&_outfile);
           _out << serialized_;
         }
@@ -73,9 +73,9 @@ namespace omni
           try
           {
             _in >> deserialized_;
-          } catch (omni::exception::Serialization& e)
+          } catch (omni::Exception& e)
           {
-            qDebug() << e.what();
+            qDebug() << e.message();
             return false;
           }
         }
@@ -98,12 +98,43 @@ namespace omni
 #include <omni/proj/Tuning.h>
 #include <omni/input/List.h>
 
+#include <omni/serialization/PropertyMap.h>
+
 
 int main(int ac, char* av[])
 {
   using namespace omni;
 
   Session _session;
+  {
+      try {
+
+      QBuffer _buf;
+      _buf.open(QIODevice::WriteOnly);
+      QDataStream _os(&_buf);
+      using serialization::PropertyMap;
+
+      PropertyMap _input;
+      _input.put("test","test");
+
+      QString _string;
+      _input.get("test",_string);
+
+      _os << _input;
+
+      QDataStream _is(_buf.data());
+
+      PropertyMap _output;
+      _is>> _output;
+
+      _output.get("test",_string);
+      qDebug() << _string;
+
+  } catch (Exception& e) {
+      qDebug() << e.message();
+  }
+  }
+
 
   /// Test WarpPoint
   {
@@ -117,13 +148,21 @@ int main(int ac, char* av[])
     test::Serialization<WarpGrid>("WarpGrid",_grid);
   }
 
+  /// Test projector
+  {
+      proj::Projector _proj;
+      test::Serialization<Projector>("Projector",_proj);
+  }
+
+
   /// Test Tuning
   {
     proj::Tuning _tuning;
     test::Serialization<proj::Tuning>("proj_Tuning",_tuning);
   }
 
-  /// Test TuningList 
+
+  /// Test TuningList
   {
     proj::TuningList _tuningList;
     _tuningList.add();
@@ -138,7 +177,6 @@ int main(int ac, char* av[])
     _inputs.add("Image");
     test::Serialization<InputList>("inputs",_inputs);
   }
-
   /// Test session
   {
     Session _session;

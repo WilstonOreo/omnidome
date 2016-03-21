@@ -91,13 +91,37 @@ namespace omni
       /// Returns height of screen
       int height() const;
 
+      /// Return flag if output is disabled, projector output is black
+      bool outputDisabled() const;
+
+      /// Return flag if output is enabled
+      bool outputEnabled() const;
+
+      /// Disable output if _disabled is true, enable otherwise
+      void setOutputDisabled(bool _disabled = true);
+
+      /// Enable output if _enabled is true, disable otherwise
+      void setOutputEnabled(bool _enabled = true);
+
+      /// Return opacity of overlapped blend mask
+      float overlapOpacity() const;
+
+      /// Set opacity of overlap mask in blend mode
+      void setOverlapOpacity(float);
+
+      /// Write tuning to stream
+      void toStream(QDataStream&) const;
+
+      /// Read tuning from stream
+      void fromStream(QDataStream&);
+
       friend bool operator==(Tuning const&,Tuning const&);
 
     private:
+      bool outputDisabled_ = false;
+      bool overlapOpacity_ = 0.0;
       QColor color_;
       Projector projector_;
-      std::unique_ptr<ProjectorSetup> projectorSetup_;
-
       WarpGrid warpGrid_;
       BlendMask blendMask_;
       ColorCorrection colorCorrection_;
@@ -105,7 +129,6 @@ namespace omni
   }
 }
 
-QDataStream& operator>>(QDataStream&, omni::proj::Tuning&);
-QDataStream& operator<<(QDataStream&, omni::proj::Tuning const&);
+OMNI_DECL_STREAM_OPERATORS(omni::proj::Tuning)
 
 #endif /* OMNI_MAPPING_H_ */

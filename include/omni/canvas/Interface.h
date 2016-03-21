@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -22,7 +22,9 @@
 
 #include <set>
 #include <QMatrix4x4>
-#include <omni/SerializationInterface.h>
+#include <omni/PluginInfo.h>
+#include <omni/AffineTransform.h>
+#include <omni/serialization/Interface.h>
 #include <omni/mapping/Interface.h>
 #include <omni/visual/Interface.h>
 #include <omni/Box.h>
@@ -37,11 +39,14 @@ namespace omni
      **/
     class Interface :
       public SerializationInterface,
+      public TypeIdInterface,
       public visual::Interface
     {
     public:
+      Interface();
+
       /// Virtual destructor
-      virtual ~Interface() {}
+      virtual ~Interface();
 
       /// Draws auxiliary elements which are not used for mapping (e.g. positioning grids)
       inline virtual void drawAux() const
@@ -56,43 +61,36 @@ namespace omni
       virtual Box bounds() const = 0;
 
       /// Spectator's center of canvas (center of bounding box by default)
-      inline virtual QVector3D center() const
-      {
-        return (bounds().max() + bounds().min()) * 0.5;
-      }
-
-      /**@brief Flag which tells if this canvas supports UVW mapping modes (true by default)
-       **/
-      virtual bool supportsUVWMapping() const {
-        return true;
-      }
-
-      /**@brief Returns overall extent of canvas.
-       * @detail Value is needed for defining ranges for projector positioning
-       *         Is the length of the diagonal vector of the bounding box by default.
-       ***/
-      inline virtual qreal extent() const
-      {
-        return bounds().size().length();
-      }
+      virtual QVector3D center() const;
 
       /// Canvas radius (is half of size by default)
-      inline virtual qreal radius() const
-      {
-        return extent() * 0.5;
-      }
+      virtual qreal radius() const;
+
+      /// Return const ref to affine transform
+      AffineTransform const& transform() const;
+
+      /// Return ref to affine transform
+      AffineTransform& transform();
+
+      /// Set new affine transform
+      void setTransform(AffineTransform const& _transform);
 
       /// Transformation matrix for canvas
-      inline virtual QMatrix4x4 matrix() const
-      {
-        return QMatrix4x4();
-      }
+      virtual QMatrix4x4 matrix() const;
 
       /// Returns pointer to parameter widget
       virtual QWidget* widget() = 0;
 
+      /// Write mapping to stream
+      virtual void toStream(QDataStream&) const;
+
+      /// Read mapping from stream
+      virtual void fromStream(QDataStream&);
+
     protected:
       bool needsUpdate_ = true;
+    private:
+      AffineTransform transform_;
     };
 
     /// Our canvas factory
@@ -110,6 +108,7 @@ Q_DECLARE_INTERFACE(omni::canvas::Interface, OMNI_CANVAS_INTERFACE_IID)
 #define OMNI_CANVAS_PLUGIN_DECL \
     Q_OBJECT \
     Q_PLUGIN_METADATA(IID OMNI_CANVAS_INTERFACE_IID) \
-    Q_INTERFACES(omni::canvas::Interface)
+    Q_INTERFACES(omni::canvas::Interface) \
+    OMNI_PLUGIN_TYPE("Canvas")
 
 #endif /* OMNI_CANVAS_INTERFACE_H_ */

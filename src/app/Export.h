@@ -23,7 +23,8 @@
 #include <memory>
 #include <QWidget>
 #include <omni/RenderOptions.h>
-#include <omni/ui/mixin/SessionWidget.h>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni
 {
@@ -38,20 +39,27 @@ namespace omni
 
     class Export :
         public QWidget,
-        public mixin::SessionWidget
+        public mixin::SharedDataModel<Session>
     {
       Q_OBJECT
+      OMNI_UI_SHARED_DATAMODEL(Session)
     public:
       Export(QWidget* = nullptr);
       ~Export();
-
 
     public slots:
       void exportToFile();
       void renderPreview();
 
+      void selectPlainImage(bool);
+      void selectOmniCalibration(bool);
+
+    signals:
+      void dataModelChanged();
+
     private:
-      void sessionParameters();
+      void dataToFrontend();
+      inline bool frontendToData() { return false; }
       void setup();
       omni::RenderOptions getRenderOptions() const;
 

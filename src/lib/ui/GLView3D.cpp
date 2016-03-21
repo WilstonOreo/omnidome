@@ -20,6 +20,7 @@
 #include <omni/ui/GLView3D.h>
 
 #include <QMouseEvent>
+#include <omni/util.h>
 #include <omni/visual/util.h>
 
 namespace omni
@@ -38,10 +39,10 @@ namespace omni
 
     bool GLView3D::initialize()
     {
-      if (!session() || initialized() || !context()) return false;
+      if (!dataModel() || initialized() || !context()) return false;
 
       using namespace visual;
-      float _radius = session()->canvas() ? session()->canvas()->radius() : 5.0;
+      float _radius = dataModel()->canvas() ? dataModel()->canvas()->radius() : 5.0;
 
       camera_ = Camera(
                   Tracker(QVector3D(0,0,0), PolarVec(-45.0,45.0,_radius * 5.0)));
@@ -60,7 +61,7 @@ namespace omni
 
       updateLight();
       grid_.update();
-      this->session_->update();
+      this->vizSession_->update();
       return true;
     }
 
@@ -78,9 +79,9 @@ namespace omni
 
     void GLView3D::paintGL()
     {
-      if (!session() || this->isLocked()) return;
+      if (!dataModel() || this->isLocked()) return;
 
-      this->session_->update();
+      this->vizSession_->update();
       glEnable(GL_DEPTH_TEST);
 
       makeCurrent();
@@ -92,26 +93,36 @@ namespace omni
       glLoadIdentity();
       updateLight();
 
-      this->session_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,displayInput_);
-      this->session_->drawProjectors();
-      this->session_->drawCanvasWithFrustumIntersections(projectorViewMode_);
-      this->session_->drawProjectorHalos();
+      this->vizSession_->drawCanvas(displayInput_ && dataModel()->hasOutput() ?
+          mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
+      if (displayProjectors()) {
+          this->vizSession_->drawProjectors();
+      }
 
-      grid_.draw(0.5);
-      glDisable(GL_DEPTH_TEST);
-      grid_.draw(0.5);
+      if (displayProjectedAreas()) {
+          this->vizSession_->drawCanvasWithFrustumIntersections(projectorViewMode_);
+      }
+      if (displayProjectors()) {
+          this->vizSession_->drawProjectorHalos();
+      }
+
+      if (displayGrid()) {
+        grid_.draw(0.5);
+        glDisable(GL_DEPTH_TEST);
+        grid_.draw(0.5);
+      }
     }
 
     void GLView3D::wheelEvent(QWheelEvent* event)
     {
-      if (!session()) return;
+      if (!dataModel()) return;
 
       float _r = event->delta()/100.0;
       camera_.track( 0, 0, _r );
 
-      if (session()->canvas())
+      if (dataModel()->canvas())
       {
-        auto _r = session()->canvas()->radius();
+        auto _r = dataModel()->canvas()->radius();
         camera_.limitDistance(_r*0.1,_r*10.0);
       }
 
@@ -170,6 +181,11 @@ namespace omni
       return displayProjectors_;
     }
 
+    bool GLView3D::displayProjectedAreas() const
+    {
+      return displayProjectedAreas_;
+    }
+
     EditMode GLView3D::editMode() const {
         return editMode_;
     }
@@ -203,6 +219,11 @@ namespace omni
         update();
     }
 
+    void GLView3D::setDisplayProjectedAreas(bool _displayProjectedAreas) {
+        displayProjectedAreas_ = _displayProjectedAreas;
+        update();
+    }
+
     void GLView3D::setEditMode(EditMode _editMode) {
         editMode_ = _editMode;
         update();
@@ -227,6 +248,10 @@ namespace omni
     {
       projectorViewMode_ = _projectorViewMode;
       update();
+    }
+
+    void GLView3D::setProjectorViewMode(int _proj) {
+       setProjectorViewMode(util::intToEnum<ProjectorViewMode>(_proj));
     }
 
     void GLView3D::changeZoom(int _value)

@@ -21,20 +21,21 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include <QFontDatabase>
+#include <omni/PluginLoader.h>
 
 namespace omni {
     namespace ui {
-        QSettings Application::settings_;
+        QSettings Application::settings_("omnidome.settings");
 
         Application::Application(int& ac, char **av) :
             QApplication(ac, av)
         {
-            // This line is absolutely mandatory for being able to have multiple
-            // QOpenGLWidgets in different windows!!!
-            QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
-
             QCoreApplication::setApplicationName("Omnidome");
             QCoreApplication::setApplicationVersion(OMNIDOME_VERSION_STRING);
+            QCoreApplication::setOrganizationName("cr8tr");
+            QCoreApplication::setOrganizationDomain("cr8tr.org / omnido.me");
+
+            loadPlugins();
 
             std::vector<QString> _fonts = {
                 ":/fonts/SourceSansPro-Bold.ttf",
@@ -51,6 +52,7 @@ namespace omni {
             }
 
             setStyleSheetFile(":/stylesheet.qss");
+
             installEventFilter(this);
         }
 
@@ -74,9 +76,17 @@ namespace omni {
             return settings_;
         }
 
+        void Application::loadPlugins() {
+
+            std::vector<QDir> _pluginDirs;
+
+            // Load plugins
+            PluginLoader _pluginLoader(_pluginDirs);
+        }
+
         bool Application::eventFilter(QObject *object, QEvent *event)
         {
-#ifdef DEBUG
+#ifdef DEBUG // Reload style sheet in debug mode when pressing F5
             if (event->type() == QEvent::KeyPress)
             {
                 auto *keyEvent = static_cast<QKeyEvent*>(event);

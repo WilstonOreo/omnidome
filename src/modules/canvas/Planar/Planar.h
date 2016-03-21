@@ -32,6 +32,7 @@ namespace omni
     class Planar : public QObject, public Canvas
     {
         OMNI_CANVAS_PLUGIN_DECL
+        OMNI_PLUGIN_CR8TR("Planar canvas","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,Planar)
 
@@ -49,12 +50,6 @@ namespace omni
       float height() const;
       void setHeight(float _height);
 
-      QVector3D center() const;
-      void setCenter(QVector3D const&);
-
-      EulerAngles& angles();
-      EulerAngles const& angles() const;
-
       omni::Box bounds() const;
 
       void fromStream(QDataStream&);
@@ -62,12 +57,8 @@ namespace omni
 
       QWidget* widget();
 
-      QMatrix4x4 matrix() const;
-
     private:
       float width_ = 1.0, height_ = 1.0;
-      QVector3D center_;
-      EulerAngles angles_;
       visual::Plane plane_;
     };
   }

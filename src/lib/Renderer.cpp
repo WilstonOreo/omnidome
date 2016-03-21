@@ -254,11 +254,11 @@ namespace omni {
             glMultMatrixf(_m.constData());
         },
 
-// Model view operation
+        // Model view operation
                        [&](QOpenGLFunctions& _)
         {
             _.glDisable(GL_TEXTURE_2D);
-            _tuningViz.drawBlendMask();
+            _tuningViz.drawOutput();
         });
 
         // 5th step: Merge blend and warp buffer
@@ -282,11 +282,11 @@ namespace omni {
         RenderBuffer _buffer(_w, _h);
 
         render(_tuning, _buffer);
-        _image = QImage(_w, _overallHeight * 3, QImage::Format_RGB32);
 
         if (options_.mappingOutputMode() == mapping::OutputMode::MAPPED_INPUT)
         {
-            bufferToImage(_buffer, _image, [&](RGBAFloat const& _pixel)
+            _image = QImage(_w, _overallHeight, QImage::Format_RGB32);
+            bufferToImage(_buffer, _image, [&](RGBAFloat const& _input, RGBAFloat const& _pixel)
             {
                 return _pixel;
             });
@@ -297,18 +297,31 @@ namespace omni {
             getUpper8bit(_buffer, _upper8bit);
             QImage _lower8bit(_w, _h, QImage::Format_ARGB32);
             getLower8bit(_buffer, _lower8bit);
-            QImage _blendMask(_w, _h, QImage::Format_ARGB32);
-            getAlphaMask(_buffer, _blendMask);
 
             // Encode color correction information into the green channel
-            encodeColorCorrection(
-                _tuning->colorCorrection(), Channel::GREEN, _blendMask);
 
-            QPainter _p(&_image);
-            _p.drawImage(QPoint(0, 0),                  _upper8bit);
-            _p.drawImage(QPoint(0, _overallHeight),     _lower8bit);
-            _p.drawImage(QPoint(0, 2 * _overallHeight), _blendMask);
-            _p.end();
+            if (options_.mappingOutputMode() == mapping::OutputMode::TEXCOORDS) {
+                getAlphaMask(_buffer,_upper8bit,Channel::BLUE);
+                _image = QImage(_w, _overallHeight * 2, QImage::Format_RGB32);
+                encodeColorCorrection(
+                    _tuning->colorCorrection(), Channel::BLUE, _lower8bit);
+                QPainter _p(&_image);
+                _p.drawImage(QPoint(0, 0),                  _upper8bit);
+                _p.drawImage(QPoint(0, _overallHeight),     _lower8bit);
+                _p.end();
+            }
+            if (options_.mappingOutputMode() == mapping::OutputMode::UVW) {
+                QImage _blendMask(_w, _h, QImage::Format_ARGB32);
+                getAlphaMask(_buffer, _blendMask);
+                _image = QImage(_w, _overallHeight * 3, QImage::Format_RGB32);
+                encodeColorCorrection(
+                    _tuning->colorCorrection(), Channel::GREEN, _blendMask);
+                QPainter _p(&_image);
+                _p.drawImage(QPoint(0, 0),                  _upper8bit);
+                _p.drawImage(QPoint(0, _overallHeight),     _lower8bit);
+                _p.drawImage(QPoint(0, 2 * _overallHeight), _blendMask);
+                _p.end();
+            }
         }
     }
 
@@ -414,7 +427,9 @@ namespace omni {
                                  QImage            & _image,
                                  OPERATION           _f)
     {
-        _image = QImage(_buffer.width(), _buffer.height(), QImage::Format_ARGB32);
+        if ((_image.width() != _buffer.width()) && (_image.height() != _buffer.height())) {
+            _image = QImage(_buffer.width(), _buffer.height(), QImage::Format_ARGB32);
+        }
 
         int _pos = 0;
 
@@ -424,7 +439,13 @@ namespace omni {
 
             for (int x = 0; x < _image.width() * 4; x += 4)
             {
-                RGBAFloat _pixel = _f(_buffer.data()[_pos + x / 4]);
+                RGBAFloat _imagePixel(
+                    _line[x+2]/255.0,
+                    _line[x+1]/255.0,
+                    _line[x+0]/255.0,
+                    _line[x+3]/255.0);
+
+                RGBAFloat _pixel = _f(_imagePixel,_buffer.data()[_pos + x / 4]);
                 _line[x + 2] = qBound(0, int(_pixel.r * 255), 255);
                 _line[x + 1] = qBound(0, int(_pixel.g * 255), 255);
                 _line[x + 0] = qBound(0, int(_pixel.b * 255), 255);
@@ -500,11 +521,18 @@ namespace omni {
         }
     }
 
-    void Renderer::getAlphaMask(RenderBuffer const& _buffer, QImage& _image) const
+    void Renderer::getAlphaMask(RenderBuffer const& _buffer, QImage& _image, Channel _channel) const
     {
-        bufferToImage(_buffer, _image, [&](RGBAFloat const& _pixel)
+        bufferToImage(_buffer, _image, [&](RGBAFloat const& _input, RGBAFloat const& _pixel)
         {
-            return RGBAFloat(_pixel.a, _pixel.a, _pixel.a);
+            RGBAFloat _output = _input;
+            switch(_channel) {
+                case Channel::RED: _output.r = _pixel.a; break;
+                case Channel::GREEN: _output.g = _pixel.a; break;
+                case Channel::BLUE: _output.b = _pixel.a; break;
+                case Channel::ALL: return RGBAFloat(_pixel.a,_pixel.a,_pixel.a);
+            }
+            return _output;
         });
     }
 

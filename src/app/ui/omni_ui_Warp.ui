@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>615</width>
-    <height>759</height>
+    <width>543</width>
+    <height>396</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -67,6 +67,13 @@
        <string>Linear Interpolation</string>
       </property>
      </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkShowBlendMask">
+     <property name="text">
+      <string>Show Blend Mask</string>
+     </property>
     </widget>
    </item>
    <item>

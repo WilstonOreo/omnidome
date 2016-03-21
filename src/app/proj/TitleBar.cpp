@@ -59,11 +59,7 @@ namespace omni
 
       void TitleBar::selectColor()
       {
-        QColorDialog _colorDialog;
-        _colorDialog.setCurrentColor(color());
-        _colorDialog.setOptions(
-                /* do not use native dialog */
-                QColorDialog::DontUseNativeDialog);
+        QColorDialog _colorDialog(color());
 
         if (_colorDialog.exec())
           setColor(_colorDialog.selectedColor());
@@ -100,6 +96,11 @@ namespace omni
       void TitleBar::setup()
       {
         this->label_->setAlignment(Qt::AlignCenter);
+        this->label_->setStyleSheet("QLabel {"
+        "  background: transparent; "
+        "  color : #0e0e0e; "
+        "  font-size : 10pt; "
+        "}");
 
         layout()->removeWidget(this->label_);
 
@@ -108,7 +109,11 @@ namespace omni
         {
           _btn.reset(new QToolButton());
           _btn->setAutoRaise(true);
-          _btn->setStyleSheet("background : transparent");
+          _btn->setStyleSheet("QToolButton { "
+          "     background : transparent; "
+          "     border: 0px; "
+          " } "
+          "QToolButton::menu-indicator { image: none; }");
           _btn->installEventFilter(this->parent());
           _btn->installEventFilter(this);
         };
@@ -122,28 +127,30 @@ namespace omni
         /// Generate and add popup menu
         menuButton_->setMenu(menu_.get());
         menuButton_->setPopupMode(QToolButton::InstantPopup);
+        menuButton_->setArrowType(Qt::NoArrow);
+        menuButton_->setIcon(QIcon(":/arrows/212121_90.png"));
         auto* _changeColor = menu_->addAction("Change color...");
         connect(_changeColor,SIGNAL(triggered()),this,SLOT(selectColor()));
 
         menu_->addSeparator();
         auto* _peripheral = menu_->addAction("Peripheral Setup");
-        _peripheral->setCheckable(true);
+        connect(_peripheral,SIGNAL(triggered()),this,SIGNAL(peripheralSetupSelected()));
 
         auto* _free = menu_->addAction("Free Setup");
-        _free->setCheckable(true);
+        connect(_free,SIGNAL(triggered()),this,SIGNAL(freeSetupSelected()));
 
         setupToolButton(displayButton_);
         displayButton_->setCheckable(true);
-        displayButton_->setIcon(QIcon(":/qss_icons/undock.png"));
+        displayButton_->setIcon(QIcon(":/icons/eye.png"));
 
         connect(displayButton_.get(),SIGNAL(clicked(bool)),tuningWidget(),SLOT(fullscreenToggle(bool)));
 
         setupToolButton(maximizeButton_);
-        maximizeButton_->setIcon(QIcon(":/qss_icons/up_arrow.png"));
+        maximizeButton_->setIcon(QIcon(":/icons/maximize.png"));
         connect(maximizeButton_.get(),SIGNAL(clicked()),tuningWidget(),SLOT(setNextWindowState()));
 
         setupToolButton(closeButton_);
-        closeButton_->setIcon(QIcon(":/qss_icons/close.png"));
+        closeButton_->setIcon(QIcon(":/icons/close.png"));
         connect(closeButton_.get(),SIGNAL(clicked()),this,SIGNAL(closeButtonClicked()));
 
         ///////////////////// END Setup buttons

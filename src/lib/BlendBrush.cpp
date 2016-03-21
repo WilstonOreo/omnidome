@@ -23,227 +23,244 @@
 #include <QPointF>
 #include <QVector2D>
 #include <QDataStream>
+#include <omni/serialization/PropertyMap.h>
 
-namespace omni
-{
-  BlendBrush::BlendBrush()
-  {
-    generate();
-  }
-
-  BlendBrush::BlendBrush(float _size, float _feather) :
-    size_(_size),
-    feather_(_feather)
-  {
-    generate();
-  }
-
-
-
-  float BlendBrush::size() const
-  {
-    return size_;
-  }
-
-  void BlendBrush::setSize(float _size)
-  {
-    size_= qBound(2.0f,_size,512.0f);
-    generate();
-  }
-
-  void BlendBrush::changeSize(float _delta)
-  {
-    setSize(size_ + _delta);
-  }
-
-  float BlendBrush::opacity() const {
-      return opacity_;
-  }
-
-  void BlendBrush::setOpacity(float _opacity) {
-      opacity_ = _opacity;
-      if (opacity_ < 0.0) {
-          opacity_ = 0.0;
-      }
-      if (opacity_ > 1.0) {
-          opacity_ = 1.0;
-      }
-      generate();
-  }
-
-  float BlendBrush::feather() const
-  {
-    return feather_;
-  }
-
-  void BlendBrush::setFeather(float _feather)
-  {
-    feather_=_feather;
-    if (feather_ < 0.0) feather_ = 0.0;
-    if (feather_ > 10.0) feather_ = 10.0;
-    generate();
-  }
-
-  bool BlendBrush::invert() const
-  {
-    return invert_;
-  }
-
-  void BlendBrush::setInvert(bool _invert)
-  {
-    invert_=_invert;
-    generate();
-  }
-
-  void BlendBrush::setBrush(
-      float _size,
-      float _feather,
-      float _opacity, bool _invert)
-  {
-    size_= qBound(_size,2.0f,512.0f);
-    feather_=_feather;
-    if (feather_ < 0.0) feather_ = 0.0;
-    if (feather_ > 10.0) feather_ = 10.0;
-    invert_=_invert;
-      if (opacity_ < 0.0) {
-          opacity_ = 0.0;
-      }
-      if (opacity_ > 1.0) {
-          opacity_ = 1.0;
-      }
-    opacity_ = _opacity;
-    generate();
-  }
-
-  void BlendBrush::stamp(QPointF const& _p, Buffer<uint8_t>& _buf) const
-  {
-    int _size = size();
-    float r = size()*0.5;
-
-    int dx = _p.x() - r;
-    int dy = _p.y() - r;
-
-    for (int i = 0; i < _size; ++i)
+namespace omni {
+    BlendBrush::BlendBrush()
     {
-      int _posx = int(i + dx);
-      if ((_posx < 0) || (_posx >= _buf.width())) continue;
-      for (int j = 0; j < _size; ++j)
-      {
-        int _posy = int(j + dy);
-        if ((_posy < 0) || (_posy >= _buf.height())) continue;
+        generate();
+    }
 
-        auto _v = buffer_(i,j);
-        auto& _pix = _buf(_posx,_posy);
+    BlendBrush::BlendBrush(float _size, float _feather) :
+        size_(_size),
+        feather_(_feather)
+    {
+        generate();
+    }
 
-        if (invert())
-        {
-          _pix = _pix * _v;
+    float BlendBrush::size() const
+    {
+        return size_;
+    }
+
+    void BlendBrush::setSize(float _size)
+    {
+        size_ = qBound(2.0f, _size, 512.0f);
+        generate();
+    }
+
+    void BlendBrush::changeSize(float _delta)
+    {
+        setSize(size_ + _delta);
+    }
+
+    float BlendBrush::opacity() const {
+        return opacity_;
+    }
+
+    void BlendBrush::setOpacity(float _opacity) {
+        opacity_ = _opacity;
+
+        if (opacity_ < 0.0) {
+            opacity_ = 0.0;
         }
-        else
-        {
-          _pix = (255 - (255 - _buf(_posx,_posy)) * _v);
+
+        if (opacity_ > 1.0) {
+            opacity_ = 1.0;
         }
-      }
+        generate();
     }
-  }
 
-  float BlendBrush::drawLine(const QPointF& _p0, const QPointF& _p1,
-                             Buffer<uint8_t>& _buf, float _leftOver)
-  {
-    float _spacing = size_ / 10.0;
-    if (_spacing < 0.5) _spacing = 0.5;
-
-    QVector2D _step(0.0,0.0);
-
-    // Calculate vector and distance
-    QVector2D _delta(_p1 - _p0);
-    float _dist = _delta.length();
-
-    float _invDist = 0.0;
-    if (_dist > 0.0)
+    float BlendBrush::feather() const
     {
-      _invDist = 1.0 / _dist;
-      _step += _delta * _invDist;
+        return feather_;
     }
 
-    // Draw line
-    QVector2D _offset(0.0,0.0);
-    float _totalDistance = _leftOver + _dist;
-    while (_totalDistance >= _spacing)
+    void BlendBrush::setFeather(float _feather)
     {
-      if (_leftOver > 0)
-      {
-        _offset += _step * (_spacing - _leftOver);
-        _leftOver -= _spacing;
-      }
-      else
-      {
-        _offset += _step * _spacing;
-      }
-      // Draw stamp
-      stamp(_p0 + _offset.toPointF(),_buf);
+        feather_ = _feather;
 
-      _totalDistance -= _spacing;
+        if (feather_ < 0.0) feather_ = 0.0;
+
+        if (feather_ > 10.0) feather_ = 10.0;
+        generate();
     }
 
-    return _totalDistance;
-  }
+    bool BlendBrush::invert() const
+    {
+        return invert_;
+    }
 
-  Buffer<float> const& BlendBrush::buffer() const
-  {
-    return buffer_;
-  }
+    void BlendBrush::setInvert(bool _invert)
+    {
+        invert_ = _invert;
+        generate();
+    }
 
+    void BlendBrush::setBrush(
+        float _size,
+        float _feather,
+        float _opacity, bool _invert)
+    {
+        size_    = qBound(_size, 2.0f, 512.0f);
+        feather_ = _feather;
 
-  void BlendBrush::generate()
-  {
-    int _size = std::max(int(size()+1),2);
-    buffer_.resize(_size,_size);
+        if (feather_ < 0.0) feather_ = 0.0;
 
-    float _r = _size*0.5;
-    // Calculate feather radius
-    float _innerRadius = feather() * (1.0 - _r) + _r;
+        if (feather_ > 10.0) feather_ = 10.0;
+        invert_ = _invert;
 
-    // For each pixel
-    for (int y = 0; y < _size; ++y)
-      for (int x = 0; x < _size; ++x)
-      {
-        float _distance = QVector2D(x - _r,y - _r).length();
+        if (opacity_ < 0.0) {
+            opacity_ = 0.0;
+        }
 
-        // Pixel value
-        float _v = (_distance - _innerRadius) / (_r - _innerRadius) * opacity_ + 1.0 - opacity_ ;
+        if (opacity_ > 1.0) {
+            opacity_ = 1.0;
+        }
+        opacity_ = _opacity;
+        generate();
+    }
 
-        // Clamp and set pixel value
-        buffer_(x,y) = qBound(0.0f,_v,1.0f);
-      }
-  }
+    void BlendBrush::stamp(QPointF const& _p, Buffer<uint8_t>& _buf) const
+    {
+        int   _size = size();
+        float r     = size() * 0.5;
 
-  bool operator==(BlendBrush const& _lhs, BlendBrush const& _rhs)
-  {
-    return
-      OMNI_TEST_MEMBER_EQUAL(size_) &&
-      OMNI_TEST_MEMBER_EQUAL(feather_) &&
-      OMNI_TEST_MEMBER_EQUAL(opacity_) &&
-      OMNI_TEST_MEMBER_EQUAL(invert_);
-  }
-}
+        int dx = _p.x() - r;
+        int dy = _p.y() - r;
 
-QDataStream& operator>>(QDataStream& _is, omni::BlendBrush& _brush)
-{
-  float _size;
-  _is >> _size;
-  float _feather;
-  _is >> _feather;
-  float _opacity;
-  _is >> _opacity;
-  bool _invert;
-  _is >> _invert;
-  _brush.setBrush(_size,_feather,_opacity,_invert);
-  return _is;
-}
+        for (int i = 0; i < _size; ++i)
+        {
+            int _posx = int(i + dx);
 
-QDataStream& operator<<(QDataStream& _os, omni::BlendBrush const& _brush)
-{
-  _os << _brush.size() << _brush.feather() << _brush.opacity() << _brush.invert();
-  return _os;
+            if ((_posx < 0) || (_posx >= _buf.width())) continue;
+
+            for (int j = 0; j < _size; ++j)
+            {
+                int _posy = int(j + dy);
+
+                if ((_posy < 0) || (_posy >= _buf.height())) continue;
+
+                auto  _v   = buffer_(i, j);
+                auto& _pix = _buf(_posx, _posy);
+
+                if (invert())
+                {
+                    _pix = _pix * _v;
+                }
+                else
+                {
+                    _pix = (255 - (255 - _buf(_posx, _posy)) * _v);
+                }
+            }
+        }
+    }
+
+    float BlendBrush::drawLine(const QPointF& _p0, const QPointF& _p1,
+                               Buffer<uint8_t>& _buf, float _leftOver)
+    {
+        float _spacing = size_ / 10.0;
+
+        if (_spacing < 0.5) _spacing = 0.5;
+
+        QVector2D _step(0.0, 0.0);
+
+        // Calculate vector and distance
+        QVector2D _delta(_p1 - _p0);
+        float     _dist = _delta.length();
+
+        float _invDist = 0.0;
+
+        if (_dist > 0.0)
+        {
+            _invDist = 1.0 / _dist;
+            _step   += _delta * _invDist;
+        }
+
+        // Draw line
+        QVector2D _offset(0.0, 0.0);
+        float     _totalDistance = _leftOver + _dist;
+
+        while (_totalDistance >= _spacing)
+        {
+            if (_leftOver > 0)
+            {
+                _offset   += _step * (_spacing - _leftOver);
+                _leftOver -= _spacing;
+            }
+            else
+            {
+                _offset += _step * _spacing;
+            }
+
+            // Draw stamp
+            stamp(_p0 + _offset.toPointF(), _buf);
+
+            _totalDistance -= _spacing;
+        }
+
+        return _totalDistance;
+    }
+
+    Buffer<float>const& BlendBrush::buffer() const
+    {
+        return buffer_;
+    }
+
+    void BlendBrush::generate()
+    {
+        int _size = std::max(int(size() + 1), 2);
+
+        buffer_.resize(_size, _size);
+
+        float _r = _size * 0.5;
+
+        // Calculate feather radius
+        float _innerRadius = feather() * (1.0 - _r) + _r;
+
+        // For each pixel
+        for (int y = 0; y < _size; ++y)
+            for (int x = 0; x < _size; ++x)
+            {
+                float _distance = QVector2D(x - _r, y - _r).length();
+
+                // Pixel value
+                float _v = (_distance - _innerRadius) / (_r - _innerRadius) *
+                           opacity_ + 1.0 - opacity_;
+
+                // Clamp and set pixel value
+                buffer_(x, y) = qBound(0.0f, _v, 1.0f);
+            }
+    }
+
+    /// Write blend brush to stream
+    void BlendBrush::toStream(QDataStream& _os) const {
+        PropertyMap _map;
+
+        _map("size", size_)
+            ("feather", feather_)
+            ("opacity", opacity_)
+            ("invert", invert_);
+        _os << _map;
+    }
+
+    /// Read blend brush from stream
+    void BlendBrush::fromStream(QDataStream& _is) {
+        PropertyMap _map;
+        _is >> _map;
+        _map.get("size",    size_);
+        _map.get("feather", feather_);
+        _map.get("opacity", opacity_);
+        _map.get("invert",  invert_);
+        generate();
+    }
+
+    bool operator==(BlendBrush const& _lhs, BlendBrush const& _rhs)
+    {
+        return
+            OMNI_TEST_MEMBER_EQUAL(size_) &&
+            OMNI_TEST_MEMBER_EQUAL(feather_) &&
+            OMNI_TEST_MEMBER_EQUAL(opacity_) &&
+            OMNI_TEST_MEMBER_EQUAL(invert_);
+    }
 }

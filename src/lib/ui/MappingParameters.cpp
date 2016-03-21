@@ -26,51 +26,41 @@ namespace omni
     MappingParameters::MappingParameters(QWidget* _parent) :
       ParameterWidget(_parent)
     {
-    }
-
-    MappingParameters::MappingParameters(
-        mapping::Interface* _mapping,
-        QWidget* _parent) :
-      ParameterWidget(_parent)
-    {
         QLayout *_layout = new QVBoxLayout;
         _layout->setSpacing(2);
         _layout->setContentsMargins(0, 0, 0, 0);
+        _layout->setSizeConstraint(QLayout::SetMaximumSize);
         setLayout(_layout);
-        setMapping(_mapping);
+        connect(this,&ParameterWidget::parametersUpdated,this,&MappingParameters::updateDataModel);
     }
 
     MappingParameters::~MappingParameters()
     {
     }
 
-    mapping::Interface* MappingParameters::mapping()
-    {
-      return mapping_;
+    void MappingParameters::dataToFrontend() {
+        addCheckBox("Flip horizontal",dataModel()->flipHorizontal());
+        addCheckBox("Flip vertical",dataModel()->flipVertical());
+
+        if (dataModel()->isUVW()) {
+            addCheckBox("Bound to canvas",dataModel()->isBoundToCanvas());
+            transform_ = addAffineTransformWidget("Transform", &dataModel()->transform());
+            transform_->setTranslationVisible(false);
+        }
     }
 
-    mapping::Interface const* MappingParameters::mapping() const
+    bool MappingParameters::frontendToData()
     {
-      return mapping_;
-    }
+        dataModel()->setFlipHorizontal(getParamAsBool("Flip horizontal"));
+        dataModel()->setFlipVertical(getParamAsBool("Flip vertical"));
 
-    void MappingParameters::setMapping(mapping::Interface* _mapping)
-    {
-      mapping_ = _mapping;
-    }
+        if (dataModel()->isUVW()) {
+            dataModel()->setBoundToCanvas(getParamAsBool("Bound to canvas"));
 
-    void MappingParameters::addFlipParameters() {
-        if (!mapping()) return;
-        addCheckBox("Flip horizontal",mapping()->flipHorizontal());
-        addCheckBox("Flip vertical",mapping()->flipVertical());
-    }
-
-    void MappingParameters::updateParameters()
-    {
-      if (!mapping_ || isLocked()) return;
-
-      updateMappingParameters();
-      emit parametersUpdated();
+            if (transform_)
+                transform_->updateDataModel();
+        }
+        return true;
     }
   }
 }

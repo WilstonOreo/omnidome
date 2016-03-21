@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -20,6 +20,7 @@
 #include <omni/EulerAngles.h>
 
 #include <QDataStream>
+#include <omni/util.h>
 
 namespace omni
 {
@@ -89,10 +90,17 @@ namespace omni
     _matrix.rotate(_roll.degrees(),QVector3D(1.0,0.0,0.0));
     return _matrix;
   }
- 
+
   QMatrix4x4 EulerAngles::matrix() const
   {
     return matrix(yaw_,pitch_,roll_);
+  }
+
+  bool operator==(EulerAngles const& _lhs, EulerAngles const& _rhs) {
+      return
+        OMNI_TEST_MEMBER_EQUAL(yaw_) &&
+        OMNI_TEST_MEMBER_EQUAL(pitch_) &&
+        OMNI_TEST_MEMBER_EQUAL(roll_);
   }
 }
 
@@ -107,4 +115,3 @@ QDataStream& operator<<(QDataStream& _stream, omni::EulerAngles const& _angles)
   _stream << _angles.yaw() << _angles.pitch() << _angles.roll();
   return _stream;
 }
-
