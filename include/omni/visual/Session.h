@@ -40,15 +40,15 @@ namespace omni
       omni::Session& session();
 
       void drawCanvas(mapping::OutputMode = mapping::OutputMode::MAPPED_INPUT, bool _grayscale = false) const;
-      void drawCanvasWithFrustumIntersections(ProjectorViewMode) const;
+      void drawCanvasWithFrustumIntersections(ProjectorViewMode, bool _selectedOnly) const;
 
       void drawFrustumIntersection(proj::Projector const&, QColor const&, ProjectorViewMode) const;
 
       void update();
       void free();
 
-      void drawProjectors() const;
-      void drawProjectorHalos() const;
+      void drawProjectors(bool _selectedOnly) const;
+      void drawProjectorHalos(bool _selectedOnly) const;
 
       bool needsUpdate() const;
 

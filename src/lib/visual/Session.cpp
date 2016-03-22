@@ -93,12 +93,17 @@ namespace omni {
         }
 
         void Session::drawCanvasWithFrustumIntersections(
-            ProjectorViewMode _projectorViewMode) const
+            ProjectorViewMode _projectorViewMode, bool _selectedOnly) const
         {
+            int _tuningIndex = session_.tunings().currentIndex();
+            int i = 0;
             for (auto& _tuning : session_.tunings())
             {
-                drawFrustumIntersection(_tuning->projector(),
-                                        _tuning->color(), _projectorViewMode);
+                if (!_selectedOnly || (i == _tuningIndex)) {
+                    drawFrustumIntersection(_tuning->projector(),
+                                            _tuning->color(), _projectorViewMode);
+                }
+                ++i;
             }
         }
 
@@ -158,32 +163,53 @@ namespace omni {
             return session_.tunings().size() != projectors_.size();
         }
 
-        void Session::drawProjectors() const
+        void Session::drawProjectors(bool _selectedOnly) const
         {
             if (needsUpdate()) return;
 
             glDisable(GL_DEPTH_TEST);
 
+            int _tuningIndex = session_.tunings().currentIndex();
+
+            int i = 0;
+
             for (auto& _proj : projectors_)
             {
-                _proj.draw();
+                if (!_selectedOnly || (i == _tuningIndex)) {
+                    _proj.draw();
+                }
+                ++i;
             }
+
 
             if (session_.canvas())
             {
-                for (auto& _proj : projectors_) _proj.drawPositioning(
-                        session_.canvas()->center());
+                i = 0;
+                for (auto& _proj : projectors_) {
+                    if (!_selectedOnly || (i == _tuningIndex)) {
+                        _proj.drawPositioning(
+                            session_.canvas()->center());
+                    }
+                    ++i;
+                }
             }
+
             glEnable(GL_DEPTH_TEST);
         }
 
-        void Session::drawProjectorHalos() const
+        void Session::drawProjectorHalos(bool _selectedOnly) const
         {
             if (needsUpdate()) return;
 
+            int _tuningIndex = session_.tunings().currentIndex();
+            int i = 0;
+
             for (auto& _proj : projectors_)
             {
-                _proj.drawHalo();
+                if (!_selectedOnly || (i == _tuningIndex)) {
+                    _proj.drawHalo();
+                }
+                ++i;
             }
         }
 

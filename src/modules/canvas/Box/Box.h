@@ -54,6 +54,9 @@ namespace omni
       /// Return size of the box
       QVector3D size() const;
 
+      /// Center point on the bottom
+      QVector3D center() const;
+
       /// Set size of the box
       void setSize(QVector3D const&);
 

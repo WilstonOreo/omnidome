@@ -62,6 +62,11 @@ namespace omni
           QVector3D( _s.x()*0.5, _s.y()*0.5,_s.z()));
     }
 
+    QVector3D Box::center() const {
+        auto _center = bounds_.center();
+        return QVector3D(_center.x(),_center.y(),0.0);
+    }
+
     void Box::fromStream(QDataStream& _stream)
     {
       Envelope::fromStream(_stream);

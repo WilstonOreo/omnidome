@@ -95,16 +95,11 @@ namespace omni
 
       this->vizSession_->drawCanvas(displayInput_ && dataModel()->hasOutput() ?
           mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
-      if (displayProjectors()) {
-          this->vizSession_->drawProjectors();
-      }
 
-      if (displayProjectedAreas()) {
-          this->vizSession_->drawCanvasWithFrustumIntersections(projectorViewMode_);
-      }
-      if (displayProjectors()) {
-          this->vizSession_->drawProjectorHalos();
-      }
+      this->vizSession_->drawProjectors(!displayProjectors());
+
+      this->vizSession_->drawCanvasWithFrustumIntersections(projectorViewMode_,!displayProjectedAreas());
+      this->vizSession_->drawProjectorHalos(!displayProjectors());
 
       if (displayGrid()) {
         grid_.draw(0.5);
