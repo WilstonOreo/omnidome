@@ -86,14 +86,14 @@ namespace omni
     void CubeMapTestImage::toStream(QDataStream& _stream) const
     {
       TestImage::toStream(_stream);
-      _stream << flipText_;
+  //    _stream << flipText_;
     }
 
     void CubeMapTestImage::fromStream(QDataStream& _stream)
     {
       TestImage::fromStream(_stream);
-      _stream >> flipText_;
-      update();
+//      _stream >> flipText_;
+//      update();
     }
   }
 }
