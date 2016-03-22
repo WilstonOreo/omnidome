@@ -19,8 +19,9 @@
 
 #include "CubeMapTestImage.h"
 
+#include <QDebug>
 #include <omni/util.h>
-#include <omni/ui/InputPreview.h>
+#include "CubeMapTestImageWidget.h"
 
 namespace omni
 {
@@ -49,6 +50,29 @@ namespace omni
         _vertSrc = util::fileToStr(":/shaders/test_image.vert");
       return _vertSrc;
     }
+    void CubeMapTestImage::setFlipText(bool _flipText) {
+        flipText_ = _flipText;
+        flipTextChanged_ = true;
+        this->update();
+    }
+
+    bool CubeMapTestImage::flipText() const {
+        return flipText_;
+    }
+
+    bool CubeMapTestImage::changed() const {
+        return flipTextChanged_;
+    }
+
+    void CubeMapTestImage::update() {
+        TestImage::update();
+        flipTextChanged_ = false;
+    }
+
+    void CubeMapTestImage::shaderUniformHandler() {
+        TestImage::shaderUniformHandler();
+        this->shader_->setUniformValue("flip_text",flipText_);
+    }
 
     QSize CubeMapTestImage::size() const
     {
@@ -56,7 +80,20 @@ namespace omni
     }
 
     QWidget* CubeMapTestImage::widget() {
-        return new ui::InputPreview(this);
+        return new omni::ui::input::CubeMapTestImage(this);
+    }
+
+    void CubeMapTestImage::toStream(QDataStream& _stream) const
+    {
+      TestImage::toStream(_stream);
+      _stream << flipText_;
+    }
+
+    void CubeMapTestImage::fromStream(QDataStream& _stream)
+    {
+      TestImage::fromStream(_stream);
+      _stream >> flipText_;
+      update();
     }
   }
 }

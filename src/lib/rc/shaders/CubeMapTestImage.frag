@@ -1,5 +1,6 @@
 
 uniform vec2 ruler_pos;
+uniform bool flip_text;
 varying vec2 vTexCoord;
 
 vec4 ch_A = vec4(0x003078,0xCCCCCC,0xFCCCCC,0xCC0000);
@@ -210,10 +211,10 @@ vec3 cubeSide(in vec3 color, vec2 uv) {
     // Grid
     vec3 result_color = vec3(0.0);
     vec2 grid_st = uv*100.;
-    result_color += 1.0*color*grid(grid_st,1.0/100.0,1.0);
-    result_color += 0.5*color*grid(grid_st,1.0/50.0,0.4);
-    result_color += 0.2*color*grid(grid_st,1.0/10.0,0.4);
-    result_color += 0.1*color*grid(grid_st,1.0/2.0,0.3);
+    result_color += 1.5*color*grid(grid_st,1.0/100.0,1.0);
+    result_color += 0.8*color*grid(grid_st,1.0/50.0,0.4);
+    result_color += 0.6*color*grid(grid_st,1.0/10.0,0.4);
+    result_color += 0.4*color*grid(grid_st,1.0/2.0,0.3);
 
     // Crosses
     vec2 crosses_st = uv + .5;
@@ -234,7 +235,8 @@ void main(void)
     uv *= vec2(6.0,1.0);
 
     float t = floor(uv.x);
-    vec2 st = fract(uv);
+    vec2 st = fract(uv * (flip_text ? vec2(-1.0,1.0) : vec2(1.0)));
+
 
     if (t == 0.0) {
     	color += cubeSide(vec3(1.0,0.0,0.0),uv);
@@ -250,7 +252,7 @@ void main(void)
     } else
     if (t == 3.0) {
     	color += cubeSide(vec3(1.0,0.0,1.0),uv);
-        color += vec3(text_right(fract(uv)));
+        color += vec3(text_right(st));
     } else
     if (t == 4.0) {
     	color += cubeSide(vec3(0.0,0.0,1.0),uv);

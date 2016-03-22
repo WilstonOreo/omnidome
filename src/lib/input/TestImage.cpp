@@ -65,11 +65,15 @@ namespace omni
       shader_->setUniformValue("ruler_pos",rulerPos_ - QPointF(0.5,0.5));
     }
 
+    bool TestImage::changed() const {
+        return rulerPosChanged_;
+    }
+
     void TestImage::update()
     {
       if (!QOpenGLContext::currentContext()) return;
 
-      bool _changed = rulerPosChanged_;
+      bool _changed = changed();
 
       if (!framebuffer_)
       {

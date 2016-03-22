@@ -40,9 +40,23 @@ namespace omni
 
       QWidget* widget();
 
+      void setFlipText(bool);
+      bool flipText() const;
+
+      void update();
+
+      void toStream(QDataStream&) const;
+      void fromStream(QDataStream&);
+
     private:
+      bool changed() const;
+
       QString fragmentShaderSource() const;
       QString vertexShaderSource() const;
+      void shaderUniformHandler();
+
+      bool flipText_ = false;
+      bool flipTextChanged_ = true;
     };
   }
 }

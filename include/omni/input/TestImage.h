@@ -39,7 +39,7 @@ namespace omni
 
       GLuint textureId() const;
       void free();
-      void update();
+      virtual void update();
 
       QPointF rulerPos() const;
       void setRulerPos(QPointF const&);
@@ -47,14 +47,17 @@ namespace omni
       virtual void toStream(QDataStream&) const;
       virtual void fromStream(QDataStream&);
 
+    protected:
+      virtual void shaderUniformHandler();
+      virtual bool changed() const;
+      std::unique_ptr<QOpenGLShaderProgram> shader_;
+
     private:
       virtual QString fragmentShaderSource() const = 0;
       virtual QString vertexShaderSource() const = 0;
-      virtual void shaderUniformHandler();
 
       QPointF rulerPos_;
       bool rulerPosChanged_ = true;
-      std::unique_ptr<QOpenGLShaderProgram> shader_;
       std::unique_ptr<QOpenGLFramebufferObject> framebuffer_;
     };
 
