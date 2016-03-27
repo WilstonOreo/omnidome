@@ -173,8 +173,8 @@ int main(int ac, char* av[])
   /// Test InputList
   {
     InputList _inputs;
-    _inputs.add("TestImage");
-    _inputs.add("Image");
+    _inputs.addInput("TestImage");
+    _inputs.addInput("Image");
     test::Serialization<InputList>("inputs",_inputs);
   }
   /// Test session

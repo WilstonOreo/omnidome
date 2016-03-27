@@ -26,37 +26,47 @@
 #include <omni/TypeIdInterface.h>
 
 namespace omni {
-    template<typename INTERFACE>
-    class TypeIdMemory {
+  /**@brief Helper class to store objects with a certain type id in QBuffer
+     @detail Used in GUI for storing previously selected mapping or canvas types
+   **/
+  template<typename INTERFACE>
+  class TypeIdMemory {
     public:
-        typedef INTERFACE interface_type;
+      /// Our interface type
+      typedef INTERFACE interface_type;
 
-        void clear() {
-            memory_.clear();
-        }
+      /// Clear memory
+      void clear() {
+        memory_.clear();
+      }
 
-        void store(interface_type const* _t) {
-            auto _id = _t->getTypeId();
+      /// Store object with interface in memory
+      void store(interface_type const *_t) {
+        auto _id = _t->getTypeId();
 
-            QBuffer _buf;
-            _buf.open(QIODevice::WriteOnly);
-            QDataStream _s(&_buf);
-            _t->toStream(_s);
-            memory_[_id] = _buf.data();
-        }
+        QBuffer _buf;
+        /// Serialize to QByteArray
+        _buf.open(QIODevice::WriteOnly);
+        QDataStream _s(&_buf);
+        _t->toStream(_s);
+        memory_[_id] = _buf.data();
+      }
 
-        void restore(interface_type* _t) const {
-            auto _id = _t->getTypeId();
-            if (memory_.count(_id) == 0) return;
+      /// Restore object with interface in memory, if exists
+      void restore(interface_type *_t) const {
+        auto _id = _t->getTypeId();
 
-            QDataStream _s(memory_.at(_id));
-            _t->fromStream(_s);
-        }
+        /// No exception is thrown
+        if (memory_.count(_id) == 0) return;
+
+        /// Deserialize from QByteArray
+        QDataStream _s(memory_.at(_id));
+        _t->fromStream(_s);
+      }
 
     private:
-
-        std::map<Id,QByteArray> memory_;
-    };
+      std::map<Id, QByteArray> memory_;
+  };
 }
 
 #endif /* OMNI_TYPEIDMEMORY_H_ */

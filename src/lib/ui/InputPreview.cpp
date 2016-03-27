@@ -75,7 +75,7 @@ namespace omni
 
     QRectF InputPreview::viewRect() const
     {
-      if (!input_ || this->isLocked()) return QRectF();
+      if (!input_ || this->isLocked()) return QRectF();
 
       auto* _input = input();
       if (!_input) return QRectF(0.0,0.0,1.0,1.0);

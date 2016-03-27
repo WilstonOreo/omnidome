@@ -42,6 +42,7 @@ namespace omni
       /// Update shaders, warp grid and blend texture
       void update();
 
+      /// Updates blend texture after it has changed by blend brush
       void updateBlendTexture();
 
       /// Update warp grid mesh

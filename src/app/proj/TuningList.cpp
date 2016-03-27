@@ -29,341 +29,390 @@
 
 #include <QDebug>
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace proj
-    {
-      TuningList::TuningList(QWidget* _parent) :
-        QScrollArea(_parent),
-        layout_(new QVBoxLayout())
-      {
-        // Set contents and layout, so tuning widgets can be placed vertically using
-        // QScrollArea funcionality
-        layout_->setSizeConstraint(QLayout::SetMinAndMaxSize);
-        layout_->setSpacing(3);
-        layout_->setContentsMargins(0,0,16,0);
-
-        this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-
-        contents_ = new QWidget(this);
-        contents_->setLayout(layout_);
-        this->setWidget(contents_);
-        contents_->show();
-
-        this->setWidgetResizable(true);
-      }
-
-      TuningList::~TuningList()
-      {
-      }
-
-      Tuning* TuningList::widget(int _index) {
-         return (_index >= 0) && (_index < widgets_.size()) ?
-            widgets_[_index].get() : nullptr;
-      }
-
-      Tuning const* TuningList::widget(int _index) const {
-         return (_index >= 0) && (_index < widgets_.size()) ?
-            widgets_[_index].get() : nullptr;
-      }
-
-      void TuningList::dataToFrontend() {
-        removeWidgets();
-        for (auto& _tuning : dataModel()->tunings())
-          addTuning(_tuning.get());
-
-        sessionModeChange();
-      }
-
-      /// Return fullscreen and preview widget from index
-      std::set<TuningGLView*> TuningList::getViews(int _index) const
-      {
-        std::set<TuningGLView*> _views;
-        if (_index < 0 || _index >= widgets_.size()) return _views;
-
-        auto* _widget = widgets_[_index].get();
-        _views.insert(_widget->fullscreenWidget());
-        _views.insert(_widget->previewWidget());
-
-        return _views;
-      }
-
-      void TuningList::addTuning()
-      {
-        QString _setupId = "PeripheralSetup";
-        if (!dataModel()->tunings().empty())
-        {
-          // Set setup id from last tuning
-          auto* _setup = dataModel()->tunings()[dataModel()->tunings().size()-1]->projector().setup();
-          if (_setup)
-            _setupId = _setup->getTypeId();
-        }
-        addTuning(_setupId);
-      }
-
-      /// Add tuning with specific projector setup
-      void TuningList::addTuning(QString const& _projSetupId)
-      {
-        auto* _tuning = dataModel()->tunings().add(false);
-
-        if (!_tuning) return;
-
-        _tuning->setColor(getTuningColor());
-        _tuning->projector().setup(_projSetupId);
-        addTuning(_tuning);
-
-        // Select this tuning index
-        setTuningIndex(dataModel()->tunings().size()-1);
-      }
-
-      /// Opens multi setup dialog and appends/replaces new projections when dialogs was accepted
-      void TuningList::addMultiSetup(QString const& _multiSetupId)
-      {
-        std::unique_ptr<omni::proj::MultiSetup> _multiSetup ;
-        _multiSetup.reset(omni::proj::MultiSetupFactory::create(_multiSetupId));
-        if (!_multiSetup) return;
-
-        auto _result = proj::MultiSetupDialog::open(_multiSetup.get(),dataModel());
-        auto&& _projectors = _multiSetup->projectors();
-
-        int _numTunings = dataModel()->tunings().size();
-
-        switch (_result)
-        {
-        case MultiSetupDialog::Result::REPLACE:
-          this->clear();
-          _numTunings = 0; // Set number of tunings zero because it is not up-to-date anymore
-        case MultiSetupDialog::Result::APPEND:
-          for (auto& _projector : _projectors)
-          {
-            auto* _tuning = dataModel()->tunings().add();
-            if (!_tuning) return;
-            _tuning->setColor(getTuningColor());
-            _tuning->projector() = std::move(_projector);
-            addTuning(_tuning);
-            setTuningIndex(_numTunings);
-          }
-
-        case MultiSetupDialog::Result::CANCELLED:
-        default:
-          return;
-        };
-
-      }
-
-      void TuningList::addTuning(omni::proj::Tuning* _tuning)
-      {
-        if (widgets_.size() >= maxNumberTunings())
-        {
-          QMessageBox::information(this,"Information", QString("You have reached the maximum of %1 projectors.").arg(maxNumberTunings()));
-          return;
-        }
-
-        int _index = 0;
-        for (auto& _sessionTuning : dataModel()->tunings())
-        {
-          if (_sessionTuning.get() == _tuning)
-          {
-            break;
-          }
-          ++_index;
-        }
-
-        widgets_.emplace_back(new ui::proj::Tuning(_index,dataModel(),this));
-        auto _widget = widgets_.back().get();
-        contents_->layout()->addWidget(_widget);
-
-        _widget->connect(_widget,SIGNAL(selected(int)),this,SLOT(setTuningIndex(int)));
-        _widget->connect(_widget,SIGNAL(closed(int)),this,SLOT(removeTuning(int)));
-        _widget->connect(_widget,SIGNAL(projectorSetupChanged()),this,SIGNAL(tuningChanged()));
-        _widget->sessionModeChange();
-
-        emit tuningAdded();
-      }
-
-      QColor TuningList::getTuningColor()
-      {
-        // Generate standard colors, for tuning
-        static std::vector<QColor> _colors;
-
-        if (_colors.empty())
-        {
-          _colors.reserve(maxNumberTunings());
-
-          int _hue = 0;
-          int _hueDiff = 120;
-          for (int i = 0; i < maxNumberTunings(); ++i)
-          {
-            int _saturation = float(maxNumberTunings()/2 - i/2) / maxNumberTunings() * 2.0 * 255.0; //int(i * 2.0 / maxNumberTunings()) * 255;
-            _colors.push_back(QColor::fromHsv(_hue,_saturation,255));
-
-            _hue += 120;
-            if (_hue >= 360)
+namespace omni {
+    namespace ui {
+        namespace proj {
+            TuningList::TuningList(QWidget *_parent) :
+                QScrollArea(_parent),
+                layout_(new QVBoxLayout())
             {
-              _hueDiff /= 2;
-              _hue += _hueDiff;
-              _hue %= 360;
+                // Set contents and layout, so tuning widgets can be placed
+                // vertically using
+                // QScrollArea funcionality
+                layout_->setSizeConstraint(QLayout::SetMinAndMaxSize);
+                layout_->setSpacing(3);
+                layout_->setContentsMargins(0, 0, 16, 0);
+
+                this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+                contents_ = new QWidget(this);
+                contents_->setLayout(layout_);
+                this->setWidget(contents_);
+                contents_->show();
+
+                this->setWidgetResizable(true);
             }
-          }
-        }
-        int _numTunings = dataModel()->tunings().size();
 
-        if (dataModel()->tunings().size() > maxNumberTunings()) return QColor("#000000");
+            TuningList::~TuningList()
+            {}
 
-        /// Find first color in spectrum that is not already used
-        for (int j = 0; j < maxNumberTunings(); ++j)
-        {
-          auto _color = _colors[j];
-          bool _colorsEqual = false;
-
-          for (int i = 0; i < _numTunings; ++i)
-          {
-            auto _tuningColor = dataModel()->tunings()[i]->color();
-
-            /// Compare R,G,B channels for both colors, alpha can be ignored
-            _colorsEqual |= _color.red() == _tuningColor.red() &&
-                _color.green() == _tuningColor.green() &&
-                _color.blue() == _tuningColor.blue();
-          }
-
-          /// Return the first color which is not equal to an existing
-          if (!_colorsEqual) return _color;
-        }
-
-        return _colors[_numTunings-1];
-      }
-
-      void TuningList::removeTuning(int _index)
-      {
-        if (_index < 0 || _index >= widgets_.size()) return;
-
-        auto& _widget = widgets_[_index];
-        contents_->layout()->removeWidget(_widget.get());
-        _widget->setParent(nullptr);
-        emit tuningToBeRemoved(_widget.get());
-        _widget.reset();
-
-        widgets_.erase(widgets_.begin() + _index);
-        dataModel()->tunings().remove(_index);
-
-        // Re assign tuning indices to remaining widgets
-        for (int i = 0; i < dataModel()->tunings().size(); ++i)
-        {
-          widgets_[i]->setIndex(i);
-        }
-
-        setTuningIndex(std::max(_index-1,0));
-
-        emit dataModelChanged();
-      }
-
-      void TuningList::sessionModeChange()
-      {
-          if (!dataModel()) return;
-
-          auto _currentIndex = dataModel()->tunings().currentIndex();
-          for (auto& _widget : widgets_) {
-              _widget->sessionModeChange();
-          }
-
-          if (_currentIndex >= 0 && _currentIndex < widgets_.size()) {
-              widgets_[_currentIndex]->setFocus();
-          }
-      }
-
-      void TuningList::clear()
-      {
-        removeWidgets();
-        dataModel()->tunings().clear();
-      }
-
-      void TuningList::removeWidgets()
-      {
-        for (auto& _widget : widgets_)
-        {
-          contents_->layout()->removeWidget(_widget.get());
-          _widget->setParent(nullptr);
-        }
-        widgets_.clear();
-      }
-
-      /// Updates/Repaints GL Views of all tunings widgets
-      void TuningList::updateViews()
-      {
-        for (auto& _widget : widgets_)
-          _widget->updateViews();
-      }
-
-      void TuningList::resizeEvent(QResizeEvent* event)
-      {
-        for (auto& _widget : widgets_)
-          _widget->layout()->update();
-
-        QScrollArea::resizeEvent(event);
-      }
-
-      void TuningList::keyPressEvent(QKeyEvent* _event) {
-          int _tuningIndex = dataModel()->tunings().currentIndex();
-          auto* _widget = widget(_tuningIndex);
-          if (!_widget) return;
-          if (_widget->hasFocus() && !_widget->isSelected()) return;
-
-          if (_event->key() == Qt::Key_Up) {
-                  if (!_widget->focusPrev(false) && (_tuningIndex > 0)) {
-                      setTuningIndex(_tuningIndex - 1);
-                      widget(_tuningIndex - 1)->focusLast();
-                  }
-          }
-          if (_event->key() == Qt::Key_Down) {
-                  if (!_widget->focusNext(false) && (_tuningIndex < dataModel()->tunings().size() - 1)) {
-                      setTuningIndex(_tuningIndex + 1);
-                      widget(_tuningIndex + 1)->focusFirst();
-                  }
-          }
-      }
-
-      bool TuningList::eventFilter(QObject *obj, QEvent *event) {
-            if (event->type() == QEvent::KeyPress) {
-                auto *keyEvent = static_cast<QKeyEvent*>(event);
-                keyPressEvent(keyEvent);
+            Tuning * TuningList::widget(int _index) {
+                return (_index >= 0) && (_index < widgets_.size()) ?
+                       widgets_[_index].get() : nullptr;
             }
-        return QWidget::eventFilter(obj,event);
-      }
 
-      void TuningList::setCurrentTuning()
-      {
-        if (!dataModel()) return;
+            Tuning const * TuningList::widget(int _index) const {
+                return (_index >= 0) && (_index < widgets_.size()) ?
+                       widgets_[_index].get() : nullptr;
+            }
 
-        int _index = 0;
-        for (auto& _widget : widgets_)
-        {
-          if (_widget->isSelected())
-          {
-            setTuningIndex(_index);
-        } else {
-            _widget->setSelected(false);
-        }
-          ++_index;
-        }
-      }
+            void TuningList::dataToFrontend() {
+                removeWidgets();
 
-      void TuningList::setTuningIndex(int _index)
-      {
-        int _oldIndex = dataModel()->tunings().currentIndex();
-        dataModel()->tunings().setCurrentIndex(_index);
-        for (auto& _widget : widgets_) {
-            if (_widget->index() != _index && _widget->isSelected()) {
-                _widget->setSelected(false);
+                for (auto& _tuning : dataModel()->tunings()) addTuning(
+                        _tuning.get());
+
+                sessionModeChange();
+            }
+
+            /// Return fullscreen and preview widget from index
+            std::set<TuningGLView *>TuningList::getViews(int _index) const
+            {
+                std::set<TuningGLView *> _views;
+
+                if ((_index < 0) || (_index >= widgets_.size())) return _views;
+
+                auto *_widget = widgets_[_index].get();
+                _views.insert(_widget->fullscreenWidget());
+                _views.insert(_widget->previewWidget());
+
+                return _views;
+            }
+
+            void TuningList::addTuning()
+            {
+                QString _setupId = "PeripheralSetup";
+
+                if (!dataModel()->tunings().empty())
+                {
+                    // Set setup id from last tuning
+                    auto *_setup =
+                        dataModel()->tunings()[dataModel()->tunings().size() -
+                                               1]->projector().setup();
+
+                    if (_setup) _setupId = _setup->getTypeId();
+                }
+                addTuning(_setupId);
+            }
+
+            /// Add tuning with specific projector setup
+            void TuningList::addTuning(QString const& _projSetupId)
+            {
+                auto *_tuning = dataModel()->tunings().add(false);
+
+                if (!_tuning) return;
+
+                _tuning->setColor(getTuningColor());
+                _tuning->projector().setup(_projSetupId);
+                addTuning(_tuning);
+
+                // Select this tuning index
+                setTuningIndex(dataModel()->tunings().size() - 1);
+            }
+
+            /// Opens multi setup dialog and appends/replaces new projections
+            // when dialogs was accepted
+            void TuningList::addMultiSetup(QString const& _multiSetupId)
+            {
+                std::unique_ptr<omni::proj::MultiSetup> _multiSetup;
+
+                _multiSetup.reset(omni::proj::MultiSetupFactory::create(
+                                      _multiSetupId));
+
+                if (!_multiSetup) return;
+
+                auto _result = proj::MultiSetupDialog::open(
+                    _multiSetup.get(), dataModel());
+                auto && _projectors = _multiSetup->projectors();
+
+                int _numTunings = dataModel()->tunings().size();
+
+                switch (_result)
+                {
+                case MultiSetupDialog::Result::REPLACE:
+                    this->clear();
+                    _numTunings = 0; // Set number of tunings zero because it is
+                                     // not up-to-date anymore
+
+                case MultiSetupDialog::Result::APPEND:
+
+                    for (auto& _projector : _projectors)
+                    {
+                        auto *_tuning = dataModel()->tunings().add();
+
+                        if (!_tuning) return;
+
+                        _tuning->setColor(getTuningColor());
+                        _tuning->projector() = std::move(_projector);
+                        addTuning(_tuning);
+                        setTuningIndex(_numTunings);
+                    }
+
+                case MultiSetupDialog::Result::CANCELLED:
+                default:
+                    return;
+                }
+            }
+
+            void TuningList::addTuning(omni::proj::Tuning *_tuning)
+            {
+                if (widgets_.size() >= maxNumberTunings())
+                {
+                    QMessageBox::information(this, "Information",
+                                             QString(
+                                                 "You have reached the maximum of %1 projectors.").arg(
+                                                 maxNumberTunings()));
+                    return;
+                }
+
+                int _index = 0;
+
+                for (auto& _sessionTuning : dataModel()->tunings())
+                {
+                    if (_sessionTuning.get() == _tuning)
+                    {
+                        break;
+                    }
+                    ++_index;
+                }
+
+                widgets_.emplace_back(new ui::proj::Tuning(_index, dataModel(),
+                                                           this));
+                auto _widget = widgets_.back().get();
+                contents_->layout()->addWidget(_widget);
+
+                _widget->connect(_widget, SIGNAL(selected(
+                                                     int)),    this,
+                                 SLOT(setTuningIndex(int)));
+                _widget->connect(_widget, SIGNAL(closed(
+                                                     int)),    this,
+                                 SLOT(removeTuning(int)));
+                _widget->connect(_widget, SIGNAL(
+                                     projectorSetupChanged()), this,
+                                 SIGNAL(tuningChanged()));
+                _widget->sessionModeChange();
+
+                emit tuningAdded();
+            }
+
+            QColor TuningList::getTuningColor()
+            {
+                // Generate standard colors, for tuning
+                static std::vector<QColor> _colors;
+
+                if (_colors.empty())
+                {
+                    _colors.reserve(maxNumberTunings());
+
+                    int _hue     = 0;
+                    int _hueDiff = 120;
+
+                    for (int i = 0; i < maxNumberTunings(); ++i)
+                    {
+                        int _saturation = float(maxNumberTunings() / 2 - i / 2) /
+                                          maxNumberTunings() * 2.0 * 255.0; // int(i
+                                                                            // *
+                                                                            // 2.0
+                                                                            // /
+                                                                            // maxNumberTunings())
+                                                                            // *
+                                                                            // 255;
+                        _colors.push_back(QColor::fromHsv(_hue, _saturation,
+                                                          255));
+
+                        _hue += 120;
+
+                        if (_hue >= 360)
+                        {
+                            _hueDiff /= 2;
+                            _hue     += _hueDiff;
+                            _hue     %= 360;
+                        }
+                    }
+                }
+                int _numTunings = dataModel()->tunings().size();
+
+                if (dataModel()->tunings().size() >
+                    maxNumberTunings()) return QColor("#000000");
+
+                /// Find first color in spectrum that is not already used
+                for (int j = 0; j < maxNumberTunings(); ++j)
+                {
+                    auto _color       = _colors[j];
+                    bool _colorsEqual = false;
+
+                    for (int i = 0; i < _numTunings; ++i)
+                    {
+                        auto _tuningColor = dataModel()->tunings()[i]->color();
+
+                        /// Compare R,G,B channels for both colors, alpha can be
+                        // ignored
+                        _colorsEqual |= _color.red() == _tuningColor.red() &&
+                                        _color.green() == _tuningColor.green() &&
+                                        _color.blue() == _tuningColor.blue();
+                    }
+
+                    /// Return the first color which is not equal to an existing
+                    if (!_colorsEqual) return _color;
+                }
+
+                return _colors[_numTunings - 1];
+            }
+
+            void TuningList::removeTuning(int _index)
+            {
+                if ((_index < 0) || (_index >= widgets_.size())) return;
+
+                auto& _widget = widgets_[_index];
+                contents_->layout()->removeWidget(_widget.get());
+                _widget->setParent(nullptr);
+                emit tuningToBeRemoved(_widget.get());
+                _widget.reset();
+
+                widgets_.erase(widgets_.begin() + _index);
+                dataModel()->tunings().remove(_index);
+
+                // Re assign tuning indices to remaining widgets
+                for (int i = 0; i < dataModel()->tunings().size(); ++i)
+                {
+                    widgets_[i]->setIndex(i);
+                    widgets_[i]->setDataModel(dataModel());
+                }
+
+                setTuningIndex(std::max(_index - 1, 0));
+
+                emit dataModelChanged();
+            }
+
+            void TuningList::sessionModeChange()
+            {
+                if (!dataModel()) return;
+
+                auto _currentIndex = dataModel()->tunings().currentIndex();
+
+                for (auto& _widget : widgets_) {
+                    _widget->sessionModeChange();
+                }
+
+                if ((_currentIndex >= 0) && (_currentIndex < widgets_.size())) {
+                    widgets_[_currentIndex]->setFocus();
+                }
+            }
+
+            void TuningList::clear()
+            {
+                removeWidgets();
+                dataModel()->tunings().clear();
+            }
+
+            void TuningList::removeWidgets()
+            {
+                for (auto& _widget : widgets_)
+                {
+                    contents_->layout()->removeWidget(_widget.get());
+                    _widget->setParent(nullptr);
+                }
+                widgets_.clear();
+            }
+
+            /// Updates/Repaints GL Views of all tunings widgets
+            void TuningList::updateViews()
+            {
+                for (auto& _widget : widgets_) _widget->updateViews();
+            }
+
+            /// Adjust sliders to scene scale
+            void TuningList::updateSceneScale() {
+                if (!dataModel() || isLocked()) return;
+
+                for (auto& _widget : widgets_) {
+                    _widget->setScale(dataModel()->scene().scale());
+                }
+            }
+
+            void TuningList::resizeEvent(QResizeEvent *event)
+            {
+                for (auto& _widget : widgets_) _widget->layout()->update();
+
+                QScrollArea::resizeEvent(event);
+            }
+
+            void TuningList::keyPressEvent(QKeyEvent *_event) {
+                int   _tuningIndex = dataModel()->tunings().currentIndex();
+                auto *_widget      = widget(_tuningIndex);
+
+                if (!_widget) return;
+
+                if (_widget->hasFocus() && !_widget->isSelected()) return;
+
+                if (_event->key() == Qt::Key_Up) {
+                    if (!_widget->focusPrev(false) && (_tuningIndex > 0)) {
+                        setTuningIndex(_tuningIndex - 1);
+                        widget(_tuningIndex - 1)->focusLast();
+                    }
+                }
+
+                if (_event->key() == Qt::Key_Down) {
+                    if (!_widget->focusNext(false) &&
+                        (_tuningIndex < dataModel()->tunings().size() - 1)) {
+                        setTuningIndex(_tuningIndex + 1);
+                        widget(_tuningIndex + 1)->focusFirst();
+                    }
+                }
+            }
+
+            bool TuningList::eventFilter(QObject *obj, QEvent *event) {
+                if (event->type() == QEvent::KeyPress) {
+                    auto *keyEvent = static_cast<QKeyEvent *>(event);
+                    keyPressEvent(keyEvent);
+                }
+                return QWidget::eventFilter(obj, event);
+            }
+
+            void TuningList::setCurrentTuning()
+            {
+                if (!dataModel()) return;
+
+                int _index = 0;
+
+                for (auto& _widget : widgets_)
+                {
+                    if (_widget->isSelected())
+                    {
+                        setTuningIndex(_index);
+                    } else {
+                        _widget->setSelected(false);
+                    }
+                    ++_index;
+                }
+            }
+
+            void TuningList::setTuningIndex(int _index)
+            {
+                int _oldIndex = dataModel()->tunings().currentIndex();
+
+                dataModel()->tunings().setCurrentIndex(_index);
+
+                for (auto& _widget : widgets_) {
+                    if ((_widget->index() != _index) && _widget->isSelected()) {
+                        _widget->setSelected(false);
+                    }
+                }
+
+                if (_index != _oldIndex) emit currentIndexChanged(_index);
+
+                emit dataModelChanged();
             }
         }
-
-        if (_index != _oldIndex)
-          emit currentIndexChanged(_index);
-
-        emit dataModelChanged();
-      }
     }
-  }
 }

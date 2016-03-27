@@ -23,74 +23,73 @@
 #include <omni/serialization/Interface.h>
 #include <QPointF>
 
-namespace omni
-{
+namespace omni {
   /**@brief A Warp defines a bezier point with one position and two handles
-  / *@detail Also stores flag if it is selected
-  **/
-  class WarpPoint
-  {
-  public:
-    /// Default constructor
-    WarpPoint();
+     / *@detail Also stores flag if it is selected
+   **/
+  class WarpPoint {
+    public:
+      /// Default constructor
+      WarpPoint();
 
-    /// Constructor from point
-    WarpPoint(
+      /// Constructor from point
+      WarpPoint(
         QPointF const& _pos,
-        QPointF const& _c1 = QPointF(0.0,0.0),
-        QPointF const& _c2 = QPointF(0.0,0.0));
+        QPointF const& _c1 = QPointF(0.0, 0.0),
+        QPointF const& _c2 = QPointF(0.0, 0.0));
 
-    /// Set new position
-    void setPos(QPointF const& _pos);
+      /// Set new position
+      void           setPos(QPointF const& _pos);
 
-    /// Returns reference to position
-    QPointF& pos();
+      /// Returns reference to position
+      QPointF      & pos();
 
-    /// Returns const reference to position
-    QPointF const& pos() const;
+      /// Returns const reference to position
+      QPointF const& pos() const;
 
-    /// Return x coordinate of position
-    float x() const;
+      /// Return x coordinate of position
+      float          x() const;
 
-    /// Return y coordinate of position
-    float y() const;
+      /// Return y coordinate of position
+      float          y() const;
 
-    /// Set first bezier handle
-    void setC1(QPointF const& _c1);
+      /// Set first bezier handle
+      void           setC1(QPointF const& _c1);
 
-    /// Returns reference to first bezier handle
-    QPointF& c1();
+      /// Returns reference to first bezier handle
+      QPointF      & c1();
 
-    /// Returns const reference to first bezier handle
-    QPointF const& c1() const;
+      /// Returns const reference to first bezier handle
+      QPointF const& c1() const;
 
-    /// Set second bezier handle
-    void setC2(QPointF const& _c2);
+      /// Set second bezier handle
+      void           setC2(QPointF const& _c2);
 
-    /// Returns reference to second bezier handle
-    QPointF& c2();
+      /// Returns reference to second bezier handle
+      QPointF      & c2();
 
-    /// Returns const reference to second bezier handle
-    QPointF const& c2() const;
+      /// Returns const reference to second bezier handle
+      QPointF const& c2() const;
 
-    /// Set selection flag
-    void setSelected(bool);
+      /// Set selection flag
+      void           setSelected(bool);
 
-    /// Return selection flag
-    bool selected() const;
+      /// Return selection flag
+      bool           selected() const;
 
-    /// Test for equality
-    friend bool operator==(WarpPoint const&,WarpPoint const&);
+      /// Test for equality
+      friend bool    operator==(WarpPoint const&,
+                                WarpPoint const&);
 
-    /// Write tuning to stream
-    void toStream(QDataStream&) const;
+      /// Write tuning to stream
+      void toStream(QDataStream&) const;
 
-    /// Read tuning from stream
-    void fromStream(QDataStream&);
+      /// Read tuning from stream
+      void fromStream(QDataStream&);
 
-  private:
-    QPointF pos_, c1_, c2_;
-    bool selected_ = false;
+    private:
+      QPointF pos_, c1_, c2_;
+      bool    selected_ = false;
   };
 }
 

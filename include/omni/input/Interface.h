@@ -30,172 +30,176 @@
 #include <omni/serialization/Interface.h>
 #include <omni/mapping/Interface.h>
 
-namespace omni
-{
-  namespace input
-  {
+namespace omni {
+  namespace input {
     namespace exception {
-        /**@brief Exception is thrown when accessing input of a children
-           @detail Is only thrown when input cannot accept children
-         **/
-        class CannotHaveChildren : public omni::exception::Error {
+      /**@brief Exception is thrown when accessing input of a children
+         @detail Is only thrown when input cannot accept children
+       **/
+      class CannotHaveChildren : public omni::exception::Error {
         public:
-            OMNI_EXCEPTION(CannotHaveChildren)
+          OMNI_EXCEPTION(CannotHaveChildren)
 
-            inline QString message() const throw()
-            {
-                return QString("Input cannot have children!");
-            }
-        };
+          inline QString message() const throw()
+          {
+            return QString("Input cannot have children!");
+          }
+      };
     }
 
     /// Generic input interface
     class Interface :
-        public SerializationInterface,
-        public TypeIdInterface,
-        private std::map<QString,std::unique_ptr<Interface>>
-    {
-    public:
-      typedef Interface interface_type;
-      typedef std::map<QString,std::unique_ptr<Interface>> container_type;
-      typedef std::function<void()> callback_type;
+      public SerializationInterface,
+      public TypeIdInterface,
+      private std::map<QString, std::unique_ptr<Interface> >{
+      public:
+        typedef Interface                                     interface_type;
+        typedef std::map<QString, std::unique_ptr<Interface> >container_type;
+        typedef std::function<void ()>                        callback_type;
 
-      using container_type::empty;
-      using container_type::begin;
-      using container_type::end;
-      using container_type::clear;
+        using container_type::empty;
+        using container_type::begin;
+        using container_type::end;
+        using container_type::clear;
 
-      Interface(Interface* _parent = nullptr);
+        Interface(Interface const *_parent = nullptr);
 
-      /// Virtual destructor
-      virtual ~Interface();
+        /// Virtual destructor
+        virtual ~Interface();
 
-      /// An input must return an OpenGL texture ID
-      virtual GLuint textureId() const = 0;
+        /// An input must return an OpenGL texture ID
+        virtual GLuint textureId() const = 0;
 
-      /// Update interface
-      inline virtual void update() {}
+        /// Update interface
+        inline virtual void update() {}
 
-      /**@brief Free stored OpenGL Content (like textures, shaders etc)
-       * @detail Is called before destructor, when there is still an active OpenGL context
-       **/
-      inline virtual void free() {}
+        /**@brief Free stored OpenGL Content (like textures, shaders etc)
+         * @detail Is called before destructor, when there is still an active
+         * OpenGL context
+         **/
+        inline virtual void free() {}
 
-      /// An input must return width and height information
-      virtual QSize size() const = 0;
+        /// An input must return width and height information
+        virtual QSize size() const = 0;
 
-      inline size_t numberOfChildren() const {
+        inline size_t numberOfChildren() const {
           return container_type::size();
-      }
+        }
 
-      /// Return width from size
-      inline int width() const
-      {
-        return size().width();
-      }
+        /// Return width from size
+        inline int width() const
+        {
+          return size().width();
+        }
 
-      /// Return height from size
-      inline int height() const
-      {
-        return size().height();
-      }
+        /// Return height from size
+        inline int height() const
+        {
+          return size().height();
+        }
 
-      /// Optional info text
-      QString infoText() const {
+        /// Optional info text
+        QString infoText() const {
           return QString();
-      }
+        }
 
-      /// Make new parameter widget
-      virtual QWidget* widget() = 0;
+        /// Make new parameter widget
+        virtual QWidget* widget() = 0;
 
-      /**@brief Returns true if this input can be added
-         @detail E.g., an input can be added after an initial settings dialog
-                was approved or it has valid settings.
-         @return Flag if input can be added
-      **/
-      inline virtual bool canAdd() {
+        /**@brief Returns true if this input can be added
+           @detail E.g., an input can be added after an initial settings dialog
+                  was approved or it has valid settings.
+           @return Flag if input can be added
+         **/
+        inline virtual bool canAdd() {
           return true;
-      }
+        }
 
-      inline  virtual bool canHaveChildren() const {
+        inline  virtual bool canHaveChildren() const {
           return false;
-      }
+        }
 
-      inline void setUpdateCallBack(callback_type _updatedCallback) {
+        inline void setUpdateCallBack(callback_type _updatedCallback) {
           updatedCallback_ = _updatedCallback;
-      }
+        }
 
-      callback_type updatedCallback() {
+        callback_type updatedCallback() {
           return updatedCallback_;
-      }
+        }
 
-      /// Input with id and return pointer to input when successfully added
-      Interface* addInput(QString const& _id, Interface* _i);
+        /**@brief Add new input with given type id. Returns nullptr if input
+           with typeid does not exist
+           @param _id Id for the input
+         *@param _typeId Type id of input to determine which kind of input is
+         * created
+         **/
+        Interface* addInput(QString const& _id,
+                            Id const& _typeId);
 
-      /// Remove input with id
-      void removeInput(QString const& _id);
+        /// Input with id and return pointer to input when successfully added
+        Interface* addInput(QString const& _id,
+                            Interface *_i);
 
-      /// Return pointer of input with id, nullptr if input does not exist
-      Interface* getInput(QString const& _id);
+        /// Remove input with id
+        virtual void          removeInput(QString const& _id);
 
-      /// Return pointer of input with id, nullptr if input does not exist
-      Interface const* getInput(QString const& _id) const;
+        /// Return pointer of input with id, nullptr if input does not exist
+        Interface           * getInput(QString const& _id);
 
-      /// Return children
-      container_type& children();
+        /// Return pointer of input with id, nullptr if input does not exist
+        Interface const     * getInput(QString const& _id) const;
 
-      /// Return children
-      container_type const& children() const;
+        /// Return children
+        container_type      & children();
 
-      /// Return true if this input and input i are connected
-      bool isConnected(Interface* _i) const;
+        /// Return children
+        container_type const& children() const;
 
-      /// Connect this input and input i
-      void connect(Interface* _i);
+        /// Return true if this input and input i are connected
+        bool                  isConnected(Interface *_i) const;
 
-      /// Disconnect this input and input i
-      void disconnect(Interface* _i);
+        /// Connect this input and input i
+        void                  connect(Interface *_i);
 
-      /// Disconnect all inputs
-      void disconnectAll();
+        /// Disconnect this input and input i
+        void                  disconnect(Interface *_i);
 
-      /// Return parent interface
-      Interface* parent();
+        /// Disconnect all inputs
+        void                  disconnectAll();
 
-      /// Return parent interface (const version)
-      Interface const* parent() const;
+        /// Return parent interface (const version)
+        Interface const     * parent() const;
 
-      /// Set new parent
-      void setParent(Interface*);
+        /// Set new parent
+        void                  setParent(Interface *);
 
-      virtual void toStream(QDataStream&) const;
+        virtual void          toStream(QDataStream&) const;
 
-      virtual void fromStream(QDataStream&);
+        virtual void          fromStream(QDataStream&);
 
-  private:
-
-        Interface* parent_ = nullptr;
-        std::set<Interface*> used_;
+      private:
+        Interface const *parent_ = nullptr;
+        std::set<Interface *> used_;
         container_type children_;
-        callback_type updatedCallback_;
+        callback_type  updatedCallback_;
     };
 
     /// Input Factory typedef
-    typedef AbstractFactory<Interface> Factory;
+    typedef AbstractFactory<Interface, Interface const *>Factory;
   }
 
   typedef input::Interface Input;
-  typedef input::Factory InputFactory;
+  typedef input::Factory   InputFactory;
 }
 
 #define OMNI_INPUT_INTERFACE_IID "org.omnidome.input.Interface"
 
 Q_DECLARE_INTERFACE(omni::input::Interface, OMNI_INPUT_INTERFACE_IID)
 
-#define OMNI_INPUT_PLUGIN_DECL \
-    Q_OBJECT \
-    Q_PLUGIN_METADATA(IID OMNI_INPUT_INTERFACE_IID) \
-    Q_INTERFACES(omni::input::Interface) \
-    OMNI_PLUGIN_TYPE("Input")
+#define OMNI_INPUT_PLUGIN_DECL                    \
+  Q_OBJECT                                        \
+  Q_PLUGIN_METADATA(IID OMNI_INPUT_INTERFACE_IID) \
+  Q_INTERFACES(omni::input::Interface)            \
+  OMNI_PLUGIN_TYPE("Input")
 
 #endif /* OMNI_INPUT_INTERFACE_H_ */

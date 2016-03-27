@@ -26,55 +26,57 @@
 class QToolButton;
 
 namespace omni {
-    namespace ui {
-        /// Omnidome main window toolbar
-        class ToolBar :
-            public QToolBar,
-            public mixin::SharedDataModel<Session>
-        {
-            Q_OBJECT
-            OMNI_UI_SHARED_DATAMODEL(Session)
-        public:
-            ToolBar(QWidget* = nullptr);
-            ~ToolBar();
+  namespace ui {
+    /// Omnidome main window toolbar
+    class ToolBar :
+      public QToolBar,
+      public mixin::SharedDataModel<Session>{
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
 
-        public slots:
-            void setScreenSetupMode();
-            void setArrangeMode();
-            void setWarpMode();
-            void setBlendMode();
-            void setColorCorrectionMode();
-            void setExportMode();
-            void setLiveMode();
+      public:
+        ToolBar(QWidget * = nullptr);
+        ~ToolBar();
 
-            /// Show About dialog
-            void showSettings();
+      public slots:
+        void setScreenSetupMode();
+        void setArrangeMode();
+        void setWarpMode();
+        void setBlendMode();
+        void setColorCorrectionMode();
+        void setExportMode();
+        void setLiveMode();
 
-            void buttonStates();
+        /// Show About dialog
+        void showSettings();
 
-        signals:
-            void dataModelChanged();
+        /// Set button states (e.g. disable buttons when modes are not accessible)
+        void buttonStates();
 
-        private:
-            void setMode(Session::Mode);
+      signals:
+        void dataModelChanged();
 
-            /// Update buttons from session
-            void dataToFrontend();
+      private:
+        void setMode(Session::Mode);
 
-            /// Set session mode from buttons
-            bool frontendToData() { return false; }
+        /// Update buttons from session
+        void dataToFrontend();
 
-            QToolButton* btnSettings_ = nullptr;
-            QToolButton* btnScreenSetup_ = nullptr;
-            QToolButton* btnArrange_ = nullptr;
-            QToolButton* btnWarp_ = nullptr;
-            QToolButton* btnBlend_ = nullptr;
-            QToolButton* btnColorCorrection_ = nullptr;
-            QToolButton* btnExport_ = nullptr;
-            QToolButton* btnLive_ = nullptr;
+        /// Set session mode from buttons
+        bool frontendToData() {
+          return false;
+        }
 
-        };
-    }
+        QToolButton *btnSettings_        = nullptr;
+        QToolButton *btnScreenSetup_     = nullptr;
+        QToolButton *btnArrange_         = nullptr;
+        QToolButton *btnWarp_            = nullptr;
+        QToolButton *btnBlend_           = nullptr;
+        QToolButton *btnColorCorrection_ = nullptr;
+        QToolButton *btnExport_          = nullptr;
+        QToolButton *btnLive_            = nullptr;
+    };
+  }
 }
 
 #endif /* OMNI_UI_TOOLBAR_H_ */

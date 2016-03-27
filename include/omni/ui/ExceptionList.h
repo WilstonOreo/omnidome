@@ -21,23 +21,26 @@
 #include <QWidget>
 
 namespace omni {
-    namespace ui {
-        namespace Ui {
-            class ExceptionList;
-        }
+  namespace ui {
+    namespace Ui {
+      class ExceptionList;
+    }
 
-        class ExceptionList : public QWidget {
-            Q_OBJECT
-        public:
-            ExceptionList(QWidget* = nullptr);
-            ~ExceptionList();
+    /// A list of all exceptions occured during a process
+    class ExceptionList : public QWidget {
+      Q_OBJECT
 
-            void addException(Exception*);
+      public:
+        ExceptionList(QWidget * = nullptr);
+        ~ExceptionList();
 
-        private:
-            void setupModel();
+        /// Add exception to list
+        void addException(Exception *);
+
+      private:
+        void setupModel();
 
         //    std::unique_ptr<Ui::ExceptionList> ui_;
-        };
-    }
+    };
+  }
 }

@@ -24,73 +24,76 @@
 #include <QColor>
 
 namespace omni {
-    namespace proj {
-        /// Color correction for RGB color space
-        class ColorCorrection {
-        public:
-            bool isUsed() const;
-            void setUsed(bool _isUsed);
+  namespace proj {
+    /// Color correction for RGB color space
+    class ColorCorrection {
+      public:
+        bool                     isUsed() const;
+        void                     setUsed(bool _isUsed);
 
-            /// Return reference to channel correction for all channels
-            ChannelCorrection& all();
+        /// Return reference to channel correction for all channels
+        ChannelCorrection      & all();
 
-            /// Return reference to channel correction for all channels (const)
-            ChannelCorrection const& all() const;
+        /// Return reference to channel correction for all channels (const)
+        ChannelCorrection const& all() const;
 
-            /// Set channel correction for all channels
-            void setAll(ChannelCorrection const&);
+        /// Set channel correction for all channels
+        void                     setAll(ChannelCorrection const&);
 
-            /// Return reference to channel correction for red channel
-            ChannelCorrection& red();
+        /// Return reference to channel correction for red channel
+        ChannelCorrection      & red();
 
-            /// Return reference to channel correction for red channel
-            ChannelCorrection const& red() const;
+        /// Return reference to channel correction for red channel
+        ChannelCorrection const& red() const;
 
-            /// Set channel correction for red channel
-            void setRed(ChannelCorrection const&);
+        /// Set channel correction for red channel
+        void                     setRed(ChannelCorrection const&);
 
-            /// Return reference to channel correction for green channel
-            ChannelCorrection& green();
+        /// Return reference to channel correction for green channel
+        ChannelCorrection      & green();
 
-            /// Return reference to channel correction for green channel
-            ChannelCorrection const& green() const;
+        /// Return reference to channel correction for green channel
+        ChannelCorrection const& green() const;
 
-            /// Set channel correction for green channel
-            void setGreen(ChannelCorrection const&);
+        /// Set channel correction for green channel
+        void                     setGreen(ChannelCorrection const&);
 
-            /// Return reference to channel correction for blue channel
-            ChannelCorrection& blue();
+        /// Return reference to channel correction for blue channel
+        ChannelCorrection      & blue();
 
-            /// Return reference to channel correction for blue channel
-            ChannelCorrection const& blue() const;
+        /// Return reference to channel correction for blue channel
+        ChannelCorrection const& blue() const;
 
-            /// Set channel correction for blue channel
-            void setBlue(ChannelCorrection const&);
+        /// Set channel correction for blue channel
+        void                     setBlue(ChannelCorrection const&);
 
-            /// Return corrected color
-            QColor corrected(QColor) const;
+        /// Return corrected color
+        QColor corrected(QColor) const;
 
-            /// Return color correction for given channel
-            ChannelCorrection* correction(Channel);
+        /// Return color correction for given channel
+        ChannelCorrection *correction(Channel);
 
-            /// Return color correction for given channel (const version)
-            ChannelCorrection const* correction(Channel) const;
+        /// Return color correction for given channel (const version)
+        ChannelCorrection const *correction(Channel) const;
 
-            static QColor channelColor(Channel);
+        static QColor channelColor(Channel);
 
-            // Test if two color corrections are equal
-            friend bool operator==(ColorCorrection const&,ColorCorrection const&);
+        // Test if two color corrections are equal
+        friend bool operator==(ColorCorrection const&,
+                               ColorCorrection const&);
 
-        private:
-            bool isUsed_ = true;
-            ChannelCorrection all_, red_, green_, blue_;
-        };
-    }
+      private:
+        bool isUsed_ = true;
+        ChannelCorrection all_, red_, green_, blue_;
+    };
+  }
 
-    using proj::ColorCorrection;
+  using proj::ColorCorrection;
 }
 
-QDataStream& operator>>(QDataStream&, omni::proj::ColorCorrection&);
-QDataStream& operator<<(QDataStream&, omni::proj::ColorCorrection const&);
+QDataStream& operator>>(QDataStream&,
+                        omni::proj::ColorCorrection&);
+QDataStream& operator<<(QDataStream&,
+                        omni::proj::ColorCorrection const&);
 
 #endif /* OMNI_PROJ_COLORCORRECTION_H_ */

@@ -25,35 +25,35 @@
 #include <omni/util.h>
 #include "ScreenSetupDragWidget.h"
 
-namespace omni
-{
-  namespace ui
-  {
+namespace omni {
+  namespace ui {
     /// Widget for fullscreen display
-    class FullScreen : public QWidget
-    {
+    class FullScreen : public QWidget {
       Q_OBJECT
-    public:
-      FullScreen(const QScreen* _screen);
-      ~FullScreen();
 
-      void hideDragWidget();
-      void showDragWidget(int _subIndex, QColor const& _color);
+      public:
+        FullScreen(const QScreen *_screen);
+        ~FullScreen();
 
-      void attach(int _subIndex, QWidget* _widget);
-      void detach(int _subIndex);
-      void detachAll();
+        void hideDragWidget();
+        void showDragWidget(int _subIndex,
+                            QColor const& _color);
 
-    protected:
-      void closeEvent(QCloseEvent* _event);
+        void attach(int _subIndex,
+                    QWidget *_widget);
+        void detach(int _subIndex);
+        void detachAll();
 
-    private:
+      protected:
+        void closeEvent(QCloseEvent *_event);
 
-      void setGeometry(QWidget*, int _subIndex) const;
+      private:
+        void setGeometry(QWidget *,
+                         int _subIndex) const;
 
-      QScreen const* screen_;
-      std::map<int,QWidget*> widgets_;
-      QUniquePtr<ScreenSetupDragWidget> dragWidget_;
+        QScreen const *screen_;
+        std::map<int, QWidget *> widgets_;
+        QUniquePtr<ScreenSetupDragWidget> dragWidget_;
     };
   }
 }

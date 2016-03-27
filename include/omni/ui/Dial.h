@@ -27,82 +27,130 @@
 #include <omni/ui/mixin/RangedValue.h>
 #include <omni/ui/mixin/Editor.h>
 
-namespace omni
-{
-        namespace ui
-        {
-                class Dial :
-                public QWidget,
-                public mixin::RangedValue<Dial,double>,
-                protected mixin::Editor<Dial,QDoubleSpinBox>
-                {
-                        Q_OBJECT
-                    public:
-                        typedef mixin::Editor<Dial,QDoubleSpinBox> mixin_editor_type;
-                        typedef mixin::RangedValue<Dial,double> mixin_range_type;
-                        typedef typename mixin_range_type::value_type value_type;
+namespace omni {
+  namespace ui {
+    /// Circular dial widget with range value and editor
+    class Dial :
+      public QWidget,
+      public mixin::RangedValue<Dial, double>,
+      protected mixin::Editor<Dial, QDoubleSpinBox>{
+        Q_OBJECT
 
-                        Dial(QWidget* = nullptr);
-                        Dial(value_type _value, value_type _minimum, value_type _maximum,QWidget* = nullptr);
-                        ~Dial();
+      public:
+        /// Editor mixin type
+        typedef mixin::Editor<Dial, QDoubleSpinBox>   mixin_editor_type;
 
-                        QString const& suffix() const;
+        /// Ranged value mixin type
+        typedef mixin::RangedValue<Dial, double>      mixin_range_type;
+        typedef typename mixin_range_type::value_type value_type;
 
-                        QChar letter() const;
+        /// Construct with optional parent widget
+        Dial(QWidget * = nullptr);
 
-                        ColorSet const& colorSet() const;
+        /// Construct with value and minimum and maximum values
+        Dial(value_type _value,
+             value_type _minimum,
+             value_type _maximum,
+             QWidget * = nullptr);
 
-                        bool isMoving() const;
-                        bool showTicks() const;
+        /// Destructor
+        ~Dial();
 
-                    public slots:
-                        void setShowTicks(bool);
-                        void setSuffix(QString const&);
-                        void setLetter(QChar);
+        /// Return suffix string
+        QString const & suffix() const;
 
-                        void setSingleStep(double);
-                        void setPageStep(double);
-                        void setMinimum(double);
-                        void setMaximum(double);
-                        void setRange(double,double);
-                        void setValue(int);
-                        void setValue(double);
+        /// Return letter shown in background
+        QChar           letter() const;
 
-                        void setEditorVisible(bool);
+        /// Return color set
+        ColorSet const& colorSet() const;
 
-                    signals:
-                        void valueChanged();
-                        void rangeChanged();
+        /// Is moving when mouse button is pressed
+        bool            isMoving() const;
 
-                    protected:
-                        void resizeEvent(QResizeEvent*);
-                        void paintEvent(QPaintEvent*);
-                        void mousePressEvent(QMouseEvent*);
-                        void mouseReleaseEvent(QMouseEvent*);
-                        void mouseMoveEvent(QMouseEvent*);
-                        void mouseDoubleClickEvent(QMouseEvent*);
-                        void keyPressEvent(QKeyEvent*);
+        /// Show ticks
+        bool            showTicks() const;
 
-                        void valueChangedEvent();
-                        void rangeChangedEvent();
+      public slots:
+        /// Set show ticks
+        void            setShowTicks(bool);
 
-                    private:
-                        bool isMoving_ = false;
-                        bool showTicks_ = true;
-                        QChar letter_ = 'X';
-                        QString suffix_;
-                        QLabel* valueLabel_;
-                        ColorSet colorSet_;
+        /// Set suffix string
+        void            setSuffix(QString const&);
 
-                        void init();
-                        void editorSetup();
-                        QPointF pos_;
+        /// Set letter
+        void            setLetter(QChar);
 
-                        double radius() const;
-                        double getValue(QPoint const&);
-                        void paintTick(QPainter&, double _value, double _length);
-                };
-        }
+        /// Set single step value
+        void            setSingleStep(double);
+
+        /// Set page step value
+        void            setPageStep(double);
+
+        /// Set minimum value
+        void            setMinimum(double);
+
+        /// Set maximum value
+        void            setMaximum(double);
+
+        /// Set range
+        void            setRange(double,
+                                 double);
+
+        /// Set value from integer
+        void            setValue(int);
+
+        /// Set value
+        void            setValue(double);
+
+        /// Set visibility of editor
+        void            setEditorVisible(bool);
+
+      signals:
+        void            valueChanged();
+        void            rangeChanged();
+
+      protected:
+        /// Re-paint on resize
+        void            resizeEvent(QResizeEvent *);
+        void            paintEvent(QPaintEvent *);
+        void            mousePressEvent(QMouseEvent *);
+        void            mouseReleaseEvent(QMouseEvent *);
+        void            mouseMoveEvent(QMouseEvent *);
+
+        /**@brief Double click in center shows editor, double click on border reset to default value
+         **/
+        void            mouseDoubleClickEvent(QMouseEvent *);
+
+        /// Show editor when enter key is pressed
+        void            keyPressEvent(QKeyEvent *);
+
+        void            valueChangedEvent();
+        void            rangeChangedEvent();
+
+      private:
+        bool     isMoving_  = false;
+        bool     showTicks_ = true;
+        QChar    letter_    = 'X';
+        QString  suffix_;
+        QLabel  *valueLabel_;
+        ColorSet colorSet_;
+
+        void   init();
+        void   editorSetup();
+        QPointF pos_;
+
+        double radius() const;
+
+        /// Get value from point on widget
+        double getValue(QPoint const&);
+
+        /// Draw a tick with value and length
+        void   paintTick(QPainter&,
+                         double _value,
+                         double _length);
+    };
+  }
 }
 
 #endif /* OMNI_UI_DIAL_H_ */

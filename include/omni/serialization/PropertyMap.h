@@ -33,184 +33,186 @@
 #include <omni/serialization/Interface.h>
 
 namespace omni {
-    namespace serialization {
-        namespace exception {
-            /// Checksum exception which is raids when checksums mismatch
-            class ChecksumError : public Error {
-            public:
-                OMNI_EXCEPTION(ChecksumError)
-
-                ChecksumError(QString _got, QString _expected, Id const& _id = Id()) :
-                    got_(_got),
-                    expected_(_expected),
-                    id_(_id) {}
-
-                inline QString message() const throw() {
-                    QString _s("ChecksumError: Expected %1, got %2.");
-                    _s = _s.arg(expected_).arg(got_);
-                    if (!QString(id_).isEmpty()) {
-                        _s += QString("On id %1.").arg(QString(id_));
-                    }
-                    return _s;
-                }
-
-            private:
-                QString got_;
-                QString expected_;
-                Id id_;
-            };
-
-            class PropertyExisting : public Error {
-            public:
-                OMNI_EXCEPTION(PropertyExisting)
-
-                PropertyExisting(Id const& _id) : id_(_id) {}
-
-                inline QString message() const throw() {
-                    return QString("Property with id %1 already exists!").arg(QString(id_));
-                }
-
-            private:
-                Id const& id_;
-            };
-
-            class PropertyNotExisting : public Error {
-            public:
-                OMNI_EXCEPTION(PropertyNotExisting)
-
-                PropertyNotExisting(Id const& _id) : id_(_id) {}
-
-                inline QString message() const throw() {
-                    return QString("Property with id %1 does not exist!").arg(QString(id_));
-                }
-
-            private:
-                Id const& id_;
-            };
-        }
-
-        /**@brief Property map
-         **/
-        class PropertyMap : public Interface {
+  namespace serialization {
+    namespace exception {
+      /// Checksum exception which is raids when checksums mismatch
+      class ChecksumError : public Error {
         public:
-            enum Mode {
-                READ,
-                WRITE
-            };
+          OMNI_EXCEPTION(ChecksumError)
 
-            PropertyMap();
+          ChecksumError(QString _got, QString _expected, Id const& _id = Id()) :
+            got_(_got),
+            expected_(_expected),
+            id_(_id) {}
 
-            /// Put an object of type T with id into property map
-            template<typename T, typename...ARGS>
-            PropertyMap& put(Id const& _id, T const& _t, ARGS&&..._args) {
-                if (properties_.count(_id) != 0) {
-                    throw exception::PropertyExisting(_id);
-                }
+          inline QString message() const throw() {
+            QString _s("ChecksumError: Expected %1, got %2.");
 
-                QBuffer _buf;
-                _buf.open(QIODevice::WriteOnly);
-                QDataStream _s(&_buf); //,QIODevice::WriteOnly);
-                serialize(_s,_t,_args...);
-                properties_[_id] = _buf.data();
-                return *this;
+            _s = _s.arg(expected_).arg(got_);
+
+            if (!QString(id_).isEmpty()) {
+              _s += QString("On id %1.").arg(QString(id_));
             }
-
-            /// Read an object of type T with id from property map
-            template<typename T, typename...ARGS>
-            PropertyMap const& get(Id const& _id, T& _t, ARGS&&..._args) const {
-                if (properties_.count(_id) == 0) {
-                    throw exception::PropertyNotExisting(_id);
-                }
-
-                QDataStream _s(properties_.at(_id));
-                deserialize(_s,_t,_args...);
-                return *this;
-            }
-
-            /// Read an object of type T with id from property map
-            template<typename T, typename...ARGS>
-            PropertyMap const& get(Id const& _id, T* _t, ARGS&&..._args) const {
-                if (properties_.count(_id) == 0) {
-                    throw exception::PropertyNotExisting(_id);
-                }
-
-                QDataStream _s(properties_.at(_id));
-                deserialize(_s,_t,_args...);
-                return *this;
-            }
-
-            template<typename T>
-            T getValue(Id const& _id, T const& _default = T()) const {
-                if (properties_.count(_id) == 0) {
-                    return _default;
-                }
-                T _t;
-                QDataStream _s(properties_.at(_id));
-                deserialize(_s,_t);
-                return _t;
-            }
-
-            /// Read an object of type T with id from property map
-            template<typename FACTORY_FUNCTOR, typename...ARGS>
-            PropertyMap const& getPtr(Id const& _id, FACTORY_FUNCTOR _f, ARGS&&..._args) const {
-                if (properties_.count(_id) == 0) {
-                    throw exception::PropertyNotExisting(_id);
-                }
-                QDataStream _s(properties_.at(_id));
-                deserializePtr(_s,_f,_args...);
-                return *this;
-            }
-
-            /**@brief Get value from
-             **/
-            template<typename T, typename CLASS, typename MEM_FN>
-            PropertyMap const& get(Id const& _id, CLASS& _class, MEM_FN _memFn, T const& _default = T()) const {
-
-                T _value = _default;
-                try {
-                    get<T>(_id,_value);
-                    _memFn(_class, _value);
-                } catch(exception::PropertyNotExisting& e) {
-                    return *this;
-                }
-                return *this;
-            }
-
-            /// Write an object into property map
-            template<typename T, typename...ARGS>
-            PropertyMap& operator()(QString const& _id, T const& _t) {
-                return put(_id,_t);
-            }
-
-            /// Read an object from property map
-            template<typename T>
-            PropertyMap const& operator()(QString const& _id, T& _t) const {
-                return get(_id,_t);
-            }
-
-            /// Write property map to stream
-            void toStream(QDataStream&) const;
-
-            /// Read property map from stream
-            void fromStream(QDataStream&);
+            return _s;
+          }
 
         private:
-            typedef std::map<Id,QByteArray> property_map;
+          QString got_;
+          QString expected_;
+          Id id_;
+      };
 
-            /// Make MD5 checksum from byte array
-            static QString makeChecksum(QByteArray const& _b);
+      class PropertyExisting : public Error {
+        public:
+          OMNI_EXCEPTION(PropertyExisting)
 
-            /// Make MD5 checksum from byte array
-            static QString makeChecksum(QString const& _s);
+          PropertyExisting(Id const& _id) : id_(_id) {}
 
-            /// Make MD5 checksum from property map
-            static QString makeChecksum(property_map const& _properties);
+          inline QString message() const throw() {
+            return QString("Property with id %1 already exists!").arg(QString(id_));
+          }
 
-            property_map properties_;
-        };
+        private:
+          Id const& id_;
+      };
+
+      class PropertyNotExisting : public Error {
+        public:
+          OMNI_EXCEPTION(PropertyNotExisting)
+
+          PropertyNotExisting(Id const& _id) : id_(_id) {}
+
+          inline QString message() const throw() {
+            return QString("Property with id %1 does not exist!").arg(QString(id_));
+          }
+
+        private:
+          Id const& id_;
+      };
     }
 
-    using serialization::PropertyMap;
+    /**@brief Property map to store properties in a QBuffer with an id
+    **/
+    class PropertyMap : public Interface {
+      public:
+        PropertyMap();
+
+        /// Put an object of type T with id into property map
+        template<typename T, typename ... ARGS>
+        PropertyMap& put(Id const& _id, T const& _t, ARGS&& ... _args) {
+          if (properties_.count(_id) != 0) {
+            throw exception::PropertyExisting(_id);
+          }
+          QBuffer _buf;
+          _buf.open(QIODevice::WriteOnly);
+          QDataStream _s(&_buf); // ,QIODevice::WriteOnly);
+          serialize(_s, _t, _args ...);
+          properties_[_id] = _buf.data();
+          return *this;
+        }
+
+        /// Read an object of type T with id from property map
+        template<typename T, typename ... ARGS>
+        PropertyMap const& get(Id const& _id, T& _t, ARGS&& ... _args) const {
+          if (properties_.count(_id) == 0) {
+            throw exception::PropertyNotExisting(_id);
+          }
+
+          QDataStream _s(properties_.at(_id));
+          deserialize(_s, _t, _args ...);
+          return *this;
+        }
+
+        /// Read an object of type T with id from property map
+        template<typename T, typename ... ARGS>
+        PropertyMap const& get(Id const& _id, T *_t, ARGS&& ... _args) const {
+          if (properties_.count(_id) == 0) {
+            throw exception::PropertyNotExisting(_id);
+          }
+
+          QDataStream _s(properties_.at(_id));
+          deserialize(_s, _t, _args ...);
+          return *this;
+        }
+
+        /// Get value from id (with optional default value when id is not present)
+        template<typename T>
+        T getValue(Id const& _id, T const& _default = T()) const {
+          if (properties_.count(_id) == 0) {
+            return _default;
+          }
+          T _t;
+          QDataStream _s(properties_.at(_id));
+          deserialize(_s, _t);
+          return _t;
+        }
+
+        /// Read an object of type T with id from property map
+        template<typename FACTORY_FUNCTOR, typename ... ARGS>
+        PropertyMap const& getPtr(Id const& _id,
+                                  FACTORY_FUNCTOR _f,
+                                  ARGS&& ... _args) const {
+          if (properties_.count(_id) == 0) {
+            throw exception::PropertyNotExisting(_id);
+          }
+          QDataStream _s(properties_.at(_id));
+          deserializePtr(_s, _f, _args ...);
+          return *this;
+        }
+
+        /**@brief Get value from
+        **/
+        template<typename T, typename CLASS, typename MEM_FN>
+        PropertyMap const& get(Id const& _id,
+                               CLASS& _class,
+                               MEM_FN _memFn,
+                               T const& _default = T()) const {
+          T _value = _default;
+
+          try {
+            get<T>(_id, _value);
+            _memFn(_class, _value);
+          } catch (exception::PropertyNotExisting& e) {
+            return *this;
+          }
+          return *this;
+        }
+
+        /// Write an object into property map
+        template<typename T, typename ... ARGS>
+        PropertyMap& operator()(QString const& _id, T const& _t) {
+          return put(_id, _t);
+        }
+
+        /// Read an object from property map
+        template<typename T>
+        PropertyMap const& operator()(QString const& _id, T& _t) const {
+          return get(_id, _t);
+        }
+
+        /// Write property map to stream
+        void toStream(QDataStream&) const;
+
+        /// Read property map from stream
+        void fromStream(QDataStream&);
+
+      private:
+        typedef std::map<Id, QByteArray>property_map;
+
+        /// Make MD5 checksum from byte array
+        static QString makeChecksum(QByteArray const& _b);
+
+        /// Make MD5 checksum from byte array
+        static QString makeChecksum(QString const& _s);
+
+        /// Make MD5 checksum from property map
+        static QString makeChecksum(property_map const& _properties);
+
+        property_map properties_;
+    };
+  }
+
+  using serialization::PropertyMap;
 }
 
 OMNI_DECL_STREAM_OPERATORS(omni::serialization::PropertyMap)

@@ -26,32 +26,30 @@
 
 using namespace omni::ui;
 
-BrushPreview::BrushPreview(QWidget* _parent) :
+BrushPreview::BrushPreview(QWidget *_parent) :
   QWidget(_parent)
 {
-  update(brush_.feather(),brush_.opacity(),brush_.invert());
-  setMinimumSize(64 / devicePixelRatio(),64 / devicePixelRatio());
-  setMaximumSize(128 / devicePixelRatio(),128 / devicePixelRatio());
+  update(brush_.feather(), brush_.opacity(), brush_.invert());
+  setMinimumSize(64 / devicePixelRatio(), 64 / devicePixelRatio());
+  setMaximumSize(128 / devicePixelRatio(), 128 / devicePixelRatio());
 }
 
 void BrushPreview::update(float _feather, float _opacity, bool _invert)
 {
-  brush_.setBrush(std::min(width(),height()),_feather,_opacity,_invert);
+  brush_.setBrush(std::min(width(), height()), _feather, _opacity, _invert);
   image_ = brush_.buffer().toQImage();
 
-  if (_invert)
-    image_.invertPixels();
+  if (_invert) image_.invertPixels();
 
   QWidget::update();
 }
 
-
-void BrushPreview::resizeEvent(QResizeEvent* event)
+void BrushPreview::resizeEvent(QResizeEvent *event)
 {
-  update(brush_.feather(),brush_.opacity(),brush_.invert());
+  update(brush_.feather(), brush_.opacity(), brush_.invert());
 }
 
-void BrushPreview::paintEvent(QPaintEvent* event)
+void BrushPreview::paintEvent(QPaintEvent *event)
 {
   QPainter painter(this);
 

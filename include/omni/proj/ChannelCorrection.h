@@ -22,66 +22,69 @@
 #include <qglobal.h>
 
 namespace omni {
-    namespace proj {
-        /// Brightness, contrast and gamma correction for a single color channel
-        class ChannelCorrection {
-        public:
-            /// Return gamma value
-            double gamma() const;
+  namespace proj {
+    /// Brightness, contrast and gamma correction for a single color channel
+    class ChannelCorrection {
+      public:
+        /// Return gamma value
+        double      gamma() const;
 
-            /// Calculate gamma for given value
-            double gamma(double v) const;
+        /// Calculate gamma for given value
+        double      gamma(double v) const;
 
-            /// Set new gamma value, value is clamped between -1 and 1
-            void setGamma(double);
+        /// Set new gamma value, value is clamped between -1 and 1
+        void        setGamma(double);
 
-            /// Return brightness value
-            double brightness() const;
+        /// Return brightness value
+        double      brightness() const;
 
-            /// Calculate brightness for given value
-            double brightness(double v) const;
+        /// Calculate brightness for given value
+        double      brightness(double v) const;
 
-            /// Set new brightness value, value is clamped between -1 and 1
-            void setBrightness(double);
+        /// Set new brightness value, value is clamped between -1 and 1
+        void        setBrightness(double);
 
-            /// Return contrast value
-            double contrast() const;
+        /// Return contrast value
+        double      contrast() const;
 
-            /// Calculate contrast for given value
-            double contrast(double v) const;
+        /// Calculate contrast for given value
+        double      contrast(double v) const;
 
-            /// Set new contrast value, value is clamped between -1 and 1
-            void setContrast(double);
+        /// Set new contrast value, value is clamped between -1 and 1
+        void        setContrast(double);
 
-            /// Value contrast, brightness and gamma are multiplied
-            double multiplier() const;
+        /// Value contrast, brightness and gamma are multiplied
+        double      multiplier() const;
 
-            /// Set new multiplier value
-            void setMultiplier(double _multiplier);
+        /// Set new multiplier value
+        void        setMultiplier(double _multiplier);
 
-            /// Return corrected value, value is NOT clamped
-            double corrected(double _value) const;
+        /// Return corrected value, value is NOT clamped
+        double      corrected(double _value) const;
 
-            /// Test for equality
-            friend bool operator==(ChannelCorrection const&, ChannelCorrection const&);
+        /// Test for equality
+        friend bool operator==(ChannelCorrection const&,
+                               ChannelCorrection const&);
 
-        private:
-            // Gamma between -1 and 1
-            double gamma_ = 0.0;
+      private:
+        // Gamma between -1 and 1
+        double gamma_ = 0.0;
 
-            /// Brightness between -1 and 1
-            double brightness_ = 0.0;
+        /// Brightness between -1 and 1
+        double brightness_ = 0.0;
 
-            /// Contrast between -1 and 1
-            double contrast_ = 0.0;
+        /// Contrast between -1 and 1
+        double contrast_ = 0.0;
 
-            /// Multiplier between 0.0 and 1.0
-            double multiplier_ = 0.5;
-        };
-    }
+        /// Multiplier between 0.0 and 1.0
+        double multiplier_ = 0.5;
+    };
+  }
 }
 
-QDataStream& operator>>(QDataStream&, omni::proj::ChannelCorrection&);
-QDataStream& operator<<(QDataStream&, omni::proj::ChannelCorrection const&);
+QDataStream& operator>>(QDataStream&,
+                        omni::proj::ChannelCorrection&);
+QDataStream& operator<<(QDataStream&,
+                        omni::proj::ChannelCorrection const&);
 
 #endif /* OMNI_PROJ_CHANNELCORRECTION_H_ */

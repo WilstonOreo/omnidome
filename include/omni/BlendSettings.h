@@ -22,50 +22,50 @@
 
 #include <omni/serialization/Interface.h>
 
-namespace omni
-{
-    /// Common blend mask settings for the all tunings in a session
-    class BlendSettings {
+namespace omni {
+  /// Common blend mask settings for the all tunings in a session
+  class BlendSettings {
     public:
-        /// Blend Mask display colorColorMode
-        enum class ColorMode
-        {
-            COLORED, // Displays blend mask with color of tuning
-            WHITE  // Displays white blend mask
-        };
+      /// Blend Mask display colorColorMode
+      enum class ColorMode
+      {
+        COLORED, // Displays blend mask with color of tuning
+        WHITE    // Displays white blend mask
+      };
 
-        /// Return colorColorMode of blend mask colorColorMode
-        ColorMode colorMode() const;
+      /// Return colorColorMode of blend mask colorColorMode
+      ColorMode colorMode() const;
 
-        /// Set blend mask colorColorMode
-        void setColorMode(ColorMode);
+      /// Set blend mask colorColorMode
+      void setColorMode(ColorMode);
 
-        /// Return input opacity of blend mask
-        float inputOpacity() const;
+      /// Return input opacity of blend mask
+      float       inputOpacity() const;
 
-        /// Opacity of input when in blend mask colorColorMode
-        void setInputOpacity(float _input);
+      /// Opacity of input when in blend mask colorColorMode
+      void        setInputOpacity(float _input);
 
-        /// Show blend mask in warp colorColorMode
-        bool showInWarpMode() const;
+      /// Show blend mask in warp colorColorMode
+      bool        showInWarpMode() const;
 
-        /// Set flag if blend mask is visible in warp colorColorMode
-        void setShowInWarpMode(bool);
+      /// Set flag if blend mask is visible in warp colorColorMode
+      void        setShowInWarpMode(bool);
 
-        /// Deserialize from stream
-        void fromStream(QDataStream&);
+      /// Deserialize from stream
+      void        fromStream(QDataStream&);
 
-        /// Serialize to stream
-        void toStream(QDataStream&) const;
+      /// Serialize to stream
+      void        toStream(QDataStream&) const;
 
-        /// Test for equality.
-        friend bool operator==(BlendSettings const&,BlendSettings const&);
+      /// Test for equality.
+      friend bool operator==(BlendSettings const&,
+                             BlendSettings const&);
 
     private:
-        ColorMode colorMode_ = ColorMode::COLORED;
-        bool showInWarpMode_ = false;
-        float inputOpacity_ = 0.0;
-    };
+      ColorMode colorMode_  = ColorMode::COLORED;
+      bool  showInWarpMode_ = false;
+      float inputOpacity_   = 0.0;
+  };
 }
 
 OMNI_DECL_STREAM_OPERATORS(omni::BlendSettings)

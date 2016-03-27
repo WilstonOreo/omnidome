@@ -22,48 +22,47 @@
 
 #include <memory>
 #include <QWidget>
-#include <omni/RenderOptions.h>
 #include <omni/Session.h>
 #include <omni/ui/mixin/DataModel.h>
 
-namespace omni
-{
+namespace omni {
   class Session;
 
-  namespace ui
-  {
-    namespace Ui
-    {
+  namespace ui {
+    namespace Ui {
       class Export;
     }
 
     class Export :
-        public QWidget,
-        public mixin::SharedDataModel<Session>
-    {
+      public QWidget,
+      public mixin::SharedDataModel<Session>{
       Q_OBJECT
-      OMNI_UI_SHARED_DATAMODEL(Session)
-    public:
-      Export(QWidget* = nullptr);
-      ~Export();
+             OMNI_UI_SHARED_DATAMODEL(Session)
 
-    public slots:
-      void exportToFile();
-      void renderPreview();
+      public:
+        Export(QWidget * = nullptr);
+        ~Export();
 
-      void selectPlainImage(bool);
-      void selectOmniCalibration(bool);
+      public slots:
+        void exportToFile();
+        void renderPreview();
 
-    signals:
-      void dataModelChanged();
+        void selectPlainImage(bool);
+        void selectOmniCalibration(bool);
 
-    private:
-      void dataToFrontend();
-      inline bool frontendToData() { return false; }
-      void setup();
-      omni::RenderOptions getRenderOptions() const;
+      signals:
+        void dataModelChanged();
 
-      std::unique_ptr<Ui::Export> ui_;
+      private:
+        void dataToFrontend();
+        inline bool frontendToData() {
+          return false;
+        }
+
+        void                 setup();
+        omni::ExportSettings getExportSettings() const;
+
+        std::unique_ptr<Ui::Export> ui_;
     };
   }
 }

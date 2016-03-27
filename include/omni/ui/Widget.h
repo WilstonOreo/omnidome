@@ -25,40 +25,42 @@
 #include <QPalette>
 #include <omni/ui/ColorSet.h>
 
-namespace omni
-{
-        namespace ui {
-                class Widget : public QWidget
-                {
-                        Q_OBJECT
-                    public:
-                        Widget(QWidget* = nullptr);
-                        Widget(QString const& _label, QWidget* = nullptr);
-                        virtual ~Widget() {
-                        }
+namespace omni {
+  namespace ui {
+    /// A single parameter widget with a label and color set
+    class Widget : public QWidget {
+      Q_OBJECT
 
-                        /// Return label text of widget
-                        QString label() const;
+      public:
+        Widget(QWidget * = nullptr);
+        Widget(QString const& _label,
+               QWidget * = nullptr);
+        virtual ~Widget() {}
 
-                        /// Set label text of widget
-                        void setLabel(QString const&);
+        /// Return label text of widget
+        QString         label() const;
 
-                        ColorSet const& colorSet() const;
+        /// Set label text of widget
+        void            setLabel(QString const&);
 
-                        double zoomFactor() const;
+        ColorSet const& colorSet() const;
 
-                    protected:
-                        void drawBorder(QPainter&);
-                        void drawBorder(QPainter&,bool _focus);
-                        QLabel* label_;
+        /// Zoom factor of widget
+        double          zoomFactor() const;
 
-                    private:
-                        void init();
+      protected:
+        void            drawBorder(QPainter&);
+        void            drawBorder(QPainter&,
+                                   bool _focus);
+        QLabel *label_;
 
-                        ColorSet colorSet_;
-                        double zoomFactor_ = 1.0;
-                };
-        }
+      private:
+        void init();
+
+        ColorSet colorSet_;
+        double   zoomFactor_ = 1.0;
+    };
+  }
 }
 
 #endif /* OMNI_UI_WIDGET_H_ */

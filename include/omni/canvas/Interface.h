@@ -29,86 +29,85 @@
 #include <omni/visual/Interface.h>
 #include <omni/Box.h>
 
-namespace omni
-{
-  namespace canvas
-  {
+namespace omni {
+  namespace canvas {
     /**@brief Abstract interface for a canvas
-     * @detail A canvas represents the surface on which the projection is performed.
+     * @detail A canvas represents the surface on which the projection is
+     *performed.
      *         It might be a dome or a planar surface.
      **/
     class Interface :
       public SerializationInterface,
       public TypeIdInterface,
-      public visual::Interface
-    {
-    public:
-      Interface();
+      public visual::Interface {
+      public:
+        Interface();
 
-      /// Virtual destructor
-      virtual ~Interface();
+        /// Virtual destructor
+        virtual ~Interface();
 
-      /// Draws auxiliary elements which are not used for mapping (e.g. positioning grids)
-      inline virtual void drawAux() const
-      {
-      }
+        /// Draws auxiliary elements which are not used for mapping (e.g.
+        // positioning grids)
+        inline virtual void drawAux() const
+        {}
 
-      inline virtual Id defaultMappingMode() const {
+        inline virtual Id defaultMappingMode() const {
           return "TexCoords";
-      }
+        }
 
-      /// Abstract method for returning bounding box of canvas
-      virtual Box bounds() const = 0;
+        /// Abstract method for returning bounding box of canvas
+        virtual Box            bounds() const = 0;
 
-      /// Spectator's center of canvas (center of bounding box by default)
-      virtual QVector3D center() const;
+        /// Spectator's center of canvas (center of bounding box by default)
+        virtual QVector3D      center() const;
 
-      /// Canvas radius (is half of size by default)
-      virtual qreal radius() const;
+        /// Canvas radius (is half of size by default)
+        virtual qreal          radius() const;
 
-      /// Return const ref to affine transform
-      AffineTransform const& transform() const;
+        /// Return const ref to affine transform
+        AffineTransform const& transform() const;
 
-      /// Return ref to affine transform
-      AffineTransform& transform();
+        /// Return ref to affine transform
+        AffineTransform  & transform();
 
-      /// Set new affine transform
-      void setTransform(AffineTransform const& _transform);
+        /// Set new affine transform
+        void               setTransform(AffineTransform const& _transform);
 
-      /// Transformation matrix for canvas
-      virtual QMatrix4x4 matrix() const;
+        /// Transformation matrix for canvas
+        virtual QMatrix4x4 matrix() const;
 
-      /// Returns pointer to parameter widget
-      virtual QWidget* widget() = 0;
+        /// Returns pointer to parameter widget
+        virtual QWidget  * widget() = 0;
 
-      /// Write mapping to stream
-      virtual void toStream(QDataStream&) const;
+        /// Write mapping to stream
+        virtual void       toStream(QDataStream&) const;
 
-      /// Read mapping from stream
-      virtual void fromStream(QDataStream&);
+        /// Read mapping from stream
+        virtual void       fromStream(QDataStream&);
 
-    protected:
-      bool needsUpdate_ = true;
-    private:
-      AffineTransform transform_;
+      protected:
+        bool needsUpdate_ = true;
+
+      private:
+        AffineTransform transform_;
     };
 
     /// Our canvas factory
-    typedef AbstractFactory<Interface> Factory;
+    typedef AbstractFactory<Interface>Factory;
   }
 
   typedef canvas::Interface Canvas;
-  typedef canvas::Factory CanvasFactory;
+  typedef canvas::Factory   CanvasFactory;
 }
 
 #define OMNI_CANVAS_INTERFACE_IID  "org.omnidome.canvas.Interface"
 
 Q_DECLARE_INTERFACE(omni::canvas::Interface, OMNI_CANVAS_INTERFACE_IID)
 
-#define OMNI_CANVAS_PLUGIN_DECL \
-    Q_OBJECT \
-    Q_PLUGIN_METADATA(IID OMNI_CANVAS_INTERFACE_IID) \
-    Q_INTERFACES(omni::canvas::Interface) \
-    OMNI_PLUGIN_TYPE("Canvas")
+#define OMNI_CANVAS_PLUGIN_DECL                    \
+  Q_OBJECT                                         \
+  Q_PLUGIN_METADATA(IID OMNI_CANVAS_INTERFACE_IID) \
+  Q_INTERFACES(omni::canvas::Interface)            \
+  OMNI_PLUGIN_TYPE("Canvas")
 
 #endif /* OMNI_CANVAS_INTERFACE_H_ */

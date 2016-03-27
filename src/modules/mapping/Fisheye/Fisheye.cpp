@@ -28,7 +28,7 @@ namespace omni
 {
   namespace mapping
   {
-    Fisheye::Fisheye()
+    Fisheye::Fisheye()  
     {
     }
 

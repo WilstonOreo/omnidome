@@ -20,15 +20,15 @@
 #define OMNI_PROJ_CHANNEL_H_
 
 namespace omni {
-    namespace proj {
-        enum class Channel {
-            ALL,
-            RED,
-            GREEN,
-            BLUE
-        };
-    }
-    using proj::Channel;
+  namespace proj {
+    enum class Channel {
+      ALL,
+      RED,
+      GREEN,
+      BLUE
+    };
+  }
+  using proj::Channel;
 }
 
 #endif /* OMNI_PROJ_CHANNEL_H_ */

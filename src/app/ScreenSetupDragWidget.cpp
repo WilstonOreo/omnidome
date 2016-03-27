@@ -21,22 +21,19 @@
 
 #include <QPainter>
 
-namespace omni
-{
-  namespace ui
-  {
-    ScreenSetupDragWidget::ScreenSetupDragWidget(QWidget* _parent) :
+namespace omni {
+  namespace ui {
+    ScreenSetupDragWidget::ScreenSetupDragWidget(QWidget *_parent) :
       QWidget(_parent)
     {
-      setWindowFlags( Qt::CustomizeWindowHint);
+      setWindowFlags(Qt::CustomizeWindowHint);
       setWindowFlags(Qt::FramelessWindowHint);
       setFocusPolicy(Qt::NoFocus);
       hide();
     }
 
     ScreenSetupDragWidget::~ScreenSetupDragWidget()
-    {
-    }
+    {}
 
     QColor ScreenSetupDragWidget::color() const
     {
@@ -45,7 +42,7 @@ namespace omni
 
     void ScreenSetupDragWidget::setColor(QColor const& _color)
     {
-      color_=_color;
+      color_ = _color;
       update();
     }
 
@@ -55,9 +52,10 @@ namespace omni
       raise();
     }
 
-    void ScreenSetupDragWidget::paintEvent(QPaintEvent*)
+    void ScreenSetupDragWidget::paintEvent(QPaintEvent *)
     {
       QPainter _p(this);
+
       _p.setPen(Qt::NoPen);
       _p.setBrush(color());
       _p.drawRect(rect());

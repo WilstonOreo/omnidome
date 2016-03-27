@@ -23,48 +23,49 @@
 #include <QVector2D>
 
 namespace omni {
+  /// A Warp vertex is a geometry entity with a position, normal and texture
+  // coordinates
+  struct Vertex2D {
+    /// Default constructor
+    Vertex2D();
 
-        /// A Warp vertex is a geometry entity with a position, normal and texture coordinates
-        struct Vertex2D {
-                /// Default constructor
-                Vertex2D();
+    /// Construct with position and texture coordinates
+    Vertex2D(
+      const QVector2D& _pos,
+      const QVector2D& _texCoord);
 
-                /// Construct with position and texture coordinates
-                Vertex2D(
-                        const QVector2D& _pos,
-                        const QVector2D& _texCoord);
+    /// Set new position
+    void             setPos(QVector2D const& _pos);
 
-                /// Set new position
-                void setPos(QVector2D const& _pos);
+    /// Return reference to position
+    QVector2D      & pos();
 
-                /// Return reference to position
-                QVector2D& pos();
+    /// Return const reference to position
+    QVector2D const& pos() const;
 
-                /// Return const reference to position
-                QVector2D const& pos() const;
+    /// Set new texture coordinates
+    void             setTexCoord(QVector2D const& _texCoord);
 
-                /// Set new texture coordinates
-                void setTexCoord(QVector2D const& _texCoord);
+    /// Return reference to texture coordinates
+    QVector2D      & texCoord();
 
-                /// Return reference to texture coordinates
-                QVector2D& texCoord();
+    /// Return const reference to texture coordinates
+    QVector2D const& texCoord() const;
 
-                /// Return const reference to texture coordinates
-                QVector2D const& texCoord() const;
+    inline static constexpr size_t texCoordOffset()
+    {
+      return 0;
+    }
 
-                inline static constexpr size_t texCoordOffset()
-                {
-                        return 0;
-                }
+    inline static constexpr size_t posOffset()
+    {
+      return sizeof(QVector2D);
+    }
 
-                inline static constexpr size_t posOffset()
-                {
-                        return sizeof(QVector2D);
-                }
-        private:
-            QVector2D texCoord_;
-            QVector2D pos_;
-        };
+    private:
+      QVector2D texCoord_;
+      QVector2D pos_;
+  };
 }
 
 #endif /* OMNI_VERTEX2D_H_ */

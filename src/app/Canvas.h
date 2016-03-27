@@ -28,49 +28,47 @@
 #include <omni/TypeIdMemory.h>
 #include "DockWidget.h"
 
-namespace omni
-{
-        class Session;
+namespace omni {
+  class Session;
 
-        namespace ui
-        {
-                namespace Ui
-                {
-                    class Canvas;
-                }
+  namespace ui {
+    namespace Ui {
+      class Canvas;
+    }
 
-                class Canvas :
-                    public DockWidget,
-                    public mixin::SharedDataModel<Session>,
-                    private mixin::ParameterWidget
-                {
-                        Q_OBJECT
-                        OMNI_UI_SHARED_DATAMODEL(Session)
-                    public:
+    /// Dockwidget for editing canvas type and parameters
+    class Canvas :
+      public DockWidget,
+      public mixin::SharedDataModel<Session>,
+      private mixin::ParameterWidget {
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
+      public:
+        Canvas(QWidget * = nullptr);
+        ~Canvas();
 
-                        Canvas(QWidget* = nullptr);
-                        ~Canvas();
+      signals:
+        void dataModelChanged();
+        void canvasTypeChanged();
 
-                    signals:
-                        void dataModelChanged();
-                        void canvasTypeChanged();
+      public slots:
+        /// Select canvas type with id
+        void selectCanvasType(QString);
 
-                    public slots:
-                        void selectCanvasType(QString);
+      private:
+        /// Update widgets from current mapping
+        void dataToFrontend();
 
-                    private:
-                        /// Update widgets from current mapping
-                        void dataToFrontend();
+        /// Assign widget values to current mapping
+        bool frontendToData();
 
-                        /// Assign widget values to current mapping
-                        bool frontendToData();
+        void showParameterWidget();
+    
+        std::unique_ptr<Ui::Canvas> ui_;
 
-                        void showParameterWidget();
-                        std::unique_ptr<Ui::Canvas> ui_;
-
-                        TypeIdMemory<canvas::Interface> canvasMemory_;
-                };
-        }
+        TypeIdMemory<canvas::Interface> canvasMemory_;
+    };
+  }
 }
 
 #endif /* OMNI_UI_CANVAS_H_ */

@@ -27,139 +27,139 @@
 #include "ui_omni_ui_Export.h"
 
 namespace omni {
-    namespace ui {
-        Export::Export(QWidget *_parent) :
-            QWidget(_parent),
-            ui_(new Ui::Export)
-        {
-            setup();
-        }
-
-        Export::~Export()
-        {}
-
-        void Export::exportToFile()
-        {
-            if (!dataModel()) return;
-
-            RenderOptions _options = getRenderOptions();
-
-            QString _filename = QFileDialog::getSaveFileName(this,
-                                                             "Save Calibration Image...",
-                                                             ".",
-                                                             "Calibration Images (*.png)");
-
-            if (_filename.isEmpty()) return;
-
-            dataModel()->renderToFile(_filename, _options);
-            ui_->editExportFilename->setText(_filename);
-            QMessageBox::information(this, "Session exported.",
-                                     QString(
-                                         "Session has been exported to '%1'").arg(
-                                         _filename));
-        }
-
-        void Export::renderPreview() {
-            ui_->outputPreview->setRenderOptions(getRenderOptions());
-            ui_->outputPreview->render();
-        }
-
-        omni::RenderOptions Export::getRenderOptions() const
-        {
-            RenderOptions _renderOptions;
-
-            _renderOptions.setExcludeUnassignedProjectors(
-                ui_->chkExcludeNonSelectedScreens->isChecked());
-
-            if (ui_->rbOmniCalibration->isChecked()) {
-                _renderOptions.setOutputType(OutputType::OMNI_CALIBRATION);
-            } else
-            if (ui_->rbPlainImage->isChecked()) {
-                _renderOptions.setOutputType(OutputType::PLAIN_IMAGE);
-            }
-
-            if (ui_->rbSepNone->isChecked())
-            {
-                _renderOptions.setSeparationMode(SeparationMode::NONE);
-            } else
-            if (ui_->rbSepScreens->isChecked())
-            {
-                _renderOptions.setSeparationMode(SeparationMode::SCREENS);
-            } else
-            if (ui_->rbSepProj->isChecked())
-            {
-                _renderOptions.setSeparationMode(SeparationMode::PROJECTORS);
-            }
-
-            if (ui_->rbUVWMap->isChecked())
-            {
-                _renderOptions.setMappingOutputMode(mapping::OutputMode::UVW);
-            } else
-            if (ui_->rbTextureCoordinates->isChecked())
-            {
-                _renderOptions.setMappingOutputMode(mapping::OutputMode::TEXCOORDS);
-            } else
-            if (ui_->rbMappedInput->isChecked())
-            {
-                _renderOptions.setMappingOutputMode(
-                    mapping::OutputMode::MAPPED_INPUT);
-            }
-            return _renderOptions;
-        }
-
-        void Export::dataToFrontend() {
-            ui_->outputPreview->setDataModel(dataModel());
-            if (dataModel()->mapping()) {
-                bool _isUVW = dataModel()->mapping()->isUVW();
-                ui_->rbUVWMap->setEnabled(_isUVW);
-                if (!_isUVW && ui_->rbUVWMap->isChecked()) {
-                    ui_->rbTextureCoordinates->setChecked(true);
-                    ui_->rbUVWMap->setChecked(false);
-                }
-            }
-
-
-            renderPreview();
-        }
-
-        void Export::setup() {
-            ui_->setupUi(this);
-            connect(ui_->btnExport, SIGNAL(clicked()), this,
-                    SLOT(exportToFile()));
-
-            connect(ui_->rbOmniCalibration, SIGNAL(clicked(bool)), this,
-                    SLOT(selectOmniCalibration(bool)));
-            connect(ui_->rbPlainImage, SIGNAL(clicked(bool)), this,
-                    SLOT(selectPlainImage(bool)));
-
-            for (auto& _widget : std::vector<QWidget*>({ ui_->chkExcludeNonSelectedScreens,
-                ui_->rbSepNone,
-                ui_->rbSepScreens,
-                ui_->rbSepProj,
-                ui_->rbMappedInput,
-                ui_->rbTextureCoordinates,
-                ui_->rbUVWMap
-            })) {
-                connect(_widget,SIGNAL(clicked()),this,SLOT(renderPreview()));
-            }
-
-            selectOmniCalibration(true);
-        }
-
-        void Export::selectPlainImage(bool _selected) {
-            ui_->lbSeparateOutput->setVisible(_selected);
-            ui_->frameSeparation->setVisible(_selected);
-            ui_->lbCalibrationDataType->setVisible(_selected);
-            ui_->frameCalibrationDataType->setVisible(_selected);
-            renderPreview();
-        }
-
-        void Export::selectOmniCalibration(bool _selected) {
-            ui_->lbSeparateOutput->setVisible(!_selected);
-            ui_->frameSeparation->setVisible(!_selected);
-            ui_->lbCalibrationDataType->setVisible(!_selected);
-            ui_->frameCalibrationDataType->setVisible(!_selected);
-            renderPreview();
-        }
+  namespace ui {
+    Export::Export(QWidget *_parent) :
+      QWidget(_parent),
+      ui_(new Ui::Export)
+    {
+      setup();
     }
+
+    Export::~Export()
+    {}
+
+    void Export::exportToFile()
+    {
+      if (!dataModel()) return;
+
+      QString _filename = QFileDialog::getSaveFileName(this,
+                                                       "Save Calibration Image...",
+                                                       ".",
+                                                       "Calibration Images (*.png)");
+
+      if (_filename.isEmpty()) return;
+
+      dataModel()->renderToFile(_filename);
+      ui_->editExportFilename->setText(_filename);
+      QMessageBox::information(this, "Session exported.",
+                               QString(
+                                 "Session has been exported to '%1'").arg(
+                                 _filename));
+    }
+
+    void Export::renderPreview() {
+      ui_->outputPreview->render();
+    }
+
+    omni::ExportSettings Export::getExportSettings() const
+    {
+      using namespace omni::render;
+      auto& _exportSettings = dataModel()->exportSettings();
+
+      _exportSettings.setExcludeUnassignedProjectors(
+        ui_->chkExcludeNonSelectedScreens->isChecked());
+
+      if (ui_->rbOmniCalibration->isChecked()) {
+        _exportSettings.setOutputType(OutputType::OMNI_CALIBRATION);
+      } else
+      if (ui_->rbPlainImage->isChecked()) {
+        _exportSettings.setOutputType(OutputType::PLAIN_IMAGE);
+      }
+
+      if (ui_->rbSepNone->isChecked())
+      {
+        _exportSettings.setSeparationMode(SeparationMode::NONE);
+      } else
+      if (ui_->rbSepScreens->isChecked())
+      {
+        _exportSettings.setSeparationMode(SeparationMode::SCREENS);
+      } else
+      if (ui_->rbSepProj->isChecked())
+      {
+        _exportSettings.setSeparationMode(SeparationMode::PROJECTORS);
+      }
+
+      if (ui_->rbUVWMap->isChecked())
+      {
+        _exportSettings.setMappingOutputMode(mapping::OutputMode::UVW);
+      } else
+      if (ui_->rbTextureCoordinates->isChecked())
+      {
+        _exportSettings.setMappingOutputMode(mapping::OutputMode::TEXCOORDS);
+      } else
+      if (ui_->rbMappedInput->isChecked())
+      {
+        _exportSettings.setMappingOutputMode(
+          mapping::OutputMode::MAPPED_INPUT);
+      }
+      return _exportSettings;
+    }
+
+    void Export::dataToFrontend() {
+      ui_->outputPreview->setDataModel(dataModel());
+
+      if (dataModel()->mapping()) {
+        bool _isUVW = dataModel()->mapping()->isUVW();
+        ui_->rbUVWMap->setEnabled(_isUVW);
+
+        if (!_isUVW && ui_->rbUVWMap->isChecked()) {
+          ui_->rbTextureCoordinates->setChecked(true);
+          ui_->rbUVWMap->setChecked(false);
+        }
+      }
+
+
+      renderPreview();
+    }
+
+    void Export::setup() {
+      ui_->setupUi(this);
+      connect(ui_->btnExport, SIGNAL(clicked()), this,
+              SLOT(exportToFile()));
+
+      connect(ui_->rbOmniCalibration, SIGNAL(clicked(bool)), this,
+              SLOT(selectOmniCalibration(bool)));
+      connect(ui_->rbPlainImage, SIGNAL(clicked(bool)), this,
+              SLOT(selectPlainImage(bool)));
+
+      for (auto& _widget :
+           std::vector<QWidget *>({ ui_->chkExcludeNonSelectedScreens,
+                                    ui_->rbSepNone,
+                                    ui_->rbSepScreens,
+                                    ui_->rbSepProj,
+                                    ui_->rbMappedInput,
+                                    ui_->rbTextureCoordinates,
+                                    ui_->rbUVWMap })) {
+        connect(_widget, SIGNAL(clicked()), this, SLOT(renderPreview()));
+      }
+
+      selectOmniCalibration(true);
+    }
+
+    void Export::selectPlainImage(bool _selected) {
+      ui_->lbSeparateOutput->setVisible(_selected);
+      ui_->frameSeparation->setVisible(_selected);
+      ui_->lbCalibrationDataType->setVisible(_selected);
+      ui_->frameCalibrationDataType->setVisible(_selected);
+      renderPreview();
+    }
+
+    void Export::selectOmniCalibration(bool _selected) {
+      ui_->lbSeparateOutput->setVisible(!_selected);
+      ui_->frameSeparation->setVisible(!_selected);
+      ui_->lbCalibrationDataType->setVisible(!_selected);
+      ui_->frameCalibrationDataType->setVisible(!_selected);
+      renderPreview();
+    }
+  }
 }

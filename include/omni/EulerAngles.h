@@ -23,8 +23,7 @@
 #include <QMatrix4x4>
 #include <omni/Angle.h>
 
-namespace omni
-{
+namespace omni {
   /// Mixin class for a zyx Euler Angle Rotation system
   struct EulerAngles
   {
@@ -32,60 +31,66 @@ namespace omni
     EulerAngles();
 
     /// Constructor by values
-    EulerAngles(Angle _yaw, Angle _pitch, Angle _roll);
+    EulerAngles(Angle _yaw,
+                Angle _pitch,
+                Angle _roll);
 
     /// Reference to yaw angle (Angle in Z direction)
-    Angle& yaw();
+    Angle           & yaw();
 
     /// Reference to yaw angle (Angle in Z direction, const version)
-    Angle const& yaw() const;
+    Angle const     & yaw() const;
 
     /// Set yaw angle (Z direction angle) to new value
-    void setYaw(Angle _yaw);
+    void              setYaw(Angle _yaw);
 
     /// Reference to pitch angle (Angle in Y direction)
-    Angle& pitch();
+    Angle           & pitch();
 
     /// Reference to pitch angle (Angle in Y direction, const version)
-    Angle const& pitch() const;
+    Angle const     & pitch() const;
 
     /// Set pitch angle (Y direction angle) to new value
-    void setPitch(Angle _pitch);
+    void              setPitch(Angle _pitch);
 
     /// Reference to roll angle (Angle in X direction)
-    Angle& roll();
+    Angle           & roll();
 
     /// Reference to roll angle (Angle in X direction)
-    Angle const& roll() const;
+    Angle const     & roll() const;
 
     /// Set roll angle (X direction angle) to new value
-    void setRoll(Angle _roll);
+    void              setRoll(Angle _roll);
 
     /// Public Static function to get rotation matrix conveniently
-    static QMatrix4x4 matrix(Angle _yaw, Angle _pitch, Angle _roll);
+    static QMatrix4x4 matrix(Angle _yaw,
+                             Angle _pitch,
+                             Angle _roll);
 
     /// Calculate the rotation matrix
-    QMatrix4x4 matrix() const;
+    QMatrix4x4  matrix() const;
 
     /// Test for equality
-    friend bool operator==(EulerAngles const&,EulerAngles const&);
+    friend bool operator==(EulerAngles const&,
+                           EulerAngles const&);
 
-  private:
-    /// Yaw Angle (Z direction)
-    Angle yaw_;
+    private:
+      /// Yaw Angle (Z direction)
+      Angle yaw_;
 
-    /// Pitch Angle (Y direction)
-    Angle pitch_;
+      /// Pitch Angle (Y direction)
+      Angle pitch_;
 
-    /// Roll Angle (X direction)
-    Angle roll_;
+      /// Roll Angle (X direction)
+      Angle roll_;
   };
 }
 
 
-QDataStream& operator>>(QDataStream&, omni::EulerAngles&);
-QDataStream& operator<<(QDataStream&, omni::EulerAngles const&);
-
+QDataStream& operator>>(QDataStream&,
+                        omni::EulerAngles&);
+QDataStream& operator<<(QDataStream&,
+                        omni::EulerAngles const&);
 
 
 #endif /* OMNI_EULERANGLES_H_ */

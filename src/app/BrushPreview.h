@@ -24,27 +24,26 @@
 #include <QWidget>
 #include <omni/BlendBrush.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    class BrushPreview : public QWidget
-    {
+namespace omni {
+  namespace ui {
+    class BrushPreview : public QWidget {
       Q_OBJECT
-    public:
-      BrushPreview(QWidget* _parent = nullptr);
 
-      void update(float _feather, float _opacity, bool _invert);
+      public:
+        BrushPreview(QWidget *_parent = nullptr);
 
-    protected:
-      void paintEvent(QPaintEvent* event);
+        void update(float _feather,
+                    float _opacity,
+                    bool _invert);
 
-      void resizeEvent(QResizeEvent* event);
+      protected:
+        void paintEvent(QPaintEvent *event);
 
-    private:
-      BlendBrush brush_;
-      QImage image_;
+        void resizeEvent(QResizeEvent *event);
 
+      private:
+        BlendBrush brush_;
+        QImage     image_;
     };
   }
 }

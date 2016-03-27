@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -23,23 +23,20 @@
 #include <QDialog>
 #include <memory>
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace Ui
-    {
+namespace omni {
+  namespace ui {
+    namespace Ui {
       class About;
     }
 
-    class About : public QDialog
-    {
+    class About : public QDialog {
       Q_OBJECT
-    public:
-      About(QWidget* _parent = nullptr);
-      ~About();
 
-      std::unique_ptr<Ui::About> ui_;
+      public:
+        About(QWidget *_parent = nullptr);
+        ~About();
+
+        std::unique_ptr<Ui::About> ui_;
     };
   }
 }

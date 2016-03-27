@@ -26,26 +26,24 @@
 #include <omni/WarpGrid.h>
 #include <omni/util.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    Warp::Warp(QWidget* _parent) :
+namespace omni {
+  namespace ui {
+    Warp::Warp(QWidget *_parent) :
       DockWidget(_parent)
     {
-        this->setup(ui_);
+      this->setup(ui_);
 
-      auto setupSlider = [&](RangedInt* _slider)
-      {
-        _slider->hide();
-        _slider->setRange(2,12);
-        _slider->setSingleStep(1);
-        _slider->setPageStep(12);
-        _slider->setDefaultValue(6);
-        _slider->setUseDefaultValue(true);
-        connect(_slider,&RangedInt::valueChanged,
-            this,&Warp::updateDataModel);
-      };
+      auto setupSlider = [&](RangedInt *_slider)
+                         {
+                           _slider->hide();
+                           _slider->setRange(2, 12);
+                           _slider->setSingleStep(1);
+                           _slider->setPageStep(12);
+                           _slider->setDefaultValue(6);
+                           _slider->setUseDefaultValue(true);
+                           connect(_slider, &RangedInt::valueChanged,
+                                   this, &Warp::updateDataModel);
+                         };
 
       setupSlider(ui_->sliderHorz);
       ui_->sliderHorz->setLabel("Horizontal");
@@ -53,21 +51,21 @@ namespace omni
       setupSlider(ui_->sliderVert);
       ui_->sliderVert->setLabel("Vertical");
 
-      connect(this,&Warp::dataModelChanged,this,&Warp::updateFrontend);
+      connect(this, &Warp::dataModelChanged, this, &Warp::updateFrontend);
 
-      connect(ui_->btnResize,SIGNAL(clicked(bool)),this,SLOT(resizeWarpGrid(bool)));
-      connect(ui_->btnReset,SIGNAL(clicked()),this,
+      connect(ui_->btnResize, SIGNAL(clicked(bool)), this,
+              SLOT(resizeWarpGrid(bool)));
+      connect(ui_->btnReset, SIGNAL(clicked()), this,
               SLOT(resetWarpGrid()));
 
-      connect(ui_->boxInterpolation,SIGNAL(currentIndexChanged(int)),this,
+      connect(ui_->boxInterpolation, SIGNAL(currentIndexChanged(int)), this,
               SLOT(changeInterpolation(int)));
-      connect(ui_->chkShowBlendMask,&QCheckBox::clicked,
-          this,&Warp::updateDataModel);
+      connect(ui_->chkShowBlendMask, &QCheckBox::clicked,
+              this, &Warp::updateDataModel);
     }
 
     Warp::~Warp()
-    {
-    }
+    {}
 
     void Warp::dataToFrontend()
     {
@@ -75,26 +73,27 @@ namespace omni
 
       ui_->sliderHorz->setValue(warpGrid()->horizontal());
       ui_->sliderVert->setValue(warpGrid()->vertical());
-      ui_->chkShowBlendMask->setChecked(dataModel()->blendSettings().showInWarpMode());
+      ui_->chkShowBlendMask->setChecked(
+        dataModel()->blendSettings().showInWarpMode());
     }
 
     bool Warp::frontendToData() {
-        if (!warpGrid()) return false;
+      if (!warpGrid()) return false;
 
-        dataModel()->blendSettings().setShowInWarpMode(
-            ui_->chkShowBlendMask->isChecked());
-        warpGrid()->resize(ui_->sliderHorz->value(),ui_->sliderVert->value());
+      dataModel()->blendSettings().setShowInWarpMode(
+        ui_->chkShowBlendMask->isChecked());
+      warpGrid()->resize(ui_->sliderHorz->value(), ui_->sliderVert->value());
 
-        return true;
+      return true;
     }
 
     void Warp::changeInterpolation(int _index) {
-        if (!warpGrid()) return;
+      if (!warpGrid()) return;
 
-        auto _interp = util::intToEnum<WarpGrid::Interpolation>(_index);
-        warpGrid()->setInterpolation(_interp);
-        updateFrontend();
-        emit dataModelChanged();
+      auto _interp = util::intToEnum<WarpGrid::Interpolation>(_index);
+      warpGrid()->setInterpolation(_interp);
+      updateFrontend();
+      emit dataModelChanged();
     }
 
     void Warp::resetWarpGrid()
@@ -112,9 +111,12 @@ namespace omni
       if (_enabled && !warpGrid()->isReset())
       {
         QMessageBox::StandardButton _reply =
-          QMessageBox::question(this,"Reset warp grid",
+          QMessageBox::question(this,
+                                "Reset warp grid",
                                 "Changing the warp grid resolution resets all warp grid points. Do you want to continue?",
-                                QMessageBox::Yes|QMessageBox::No,QMessageBox::No);
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No);
+
         if (_reply == QMessageBox::No)
         {
           ui_->sliderVert->hide();
@@ -124,22 +126,24 @@ namespace omni
         }
       }
 
-       ui_->sliderVert->show();
-       ui_->sliderHorz->show();
+      ui_->sliderVert->show();
+      ui_->sliderHorz->show();
     }
 
-    omni::WarpGrid const* Warp::warpGrid() const
+    omni::WarpGrid const * Warp::warpGrid() const
     {
       if (!dataModel()) return nullptr;
 
-      return dataModel()->tunings().current() ? &dataModel()->tunings().current()->warpGrid() : nullptr;
+      return dataModel()->tunings().current() ? &dataModel()->tunings().current()
+             ->warpGrid() : nullptr;
     }
 
-    omni::WarpGrid* Warp::warpGrid()
+    omni::WarpGrid * Warp::warpGrid()
     {
       if (!dataModel()) return nullptr;
 
-      return dataModel()->tunings().current() ? &dataModel()->tunings().current()->warpGrid() : nullptr;
+      return dataModel()->tunings().current() ? &dataModel()->tunings().current()
+             ->warpGrid() : nullptr;
     }
   }
 }

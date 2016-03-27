@@ -22,8 +22,7 @@
 
 #include <QtGlobal>
 
-namespace omni
-{
+namespace omni {
   /// Struct for representing an angle (stored in degrees internally)
   struct Angle
   {
@@ -34,16 +33,16 @@ namespace omni
     Angle(qreal _angle);
 
     /// Set angle by given degrees
-    void setDegrees(qreal _angle);
+    void         setDegrees(qreal _angle);
 
     /// Set angle by radians
-    void setRadians(qreal _angle);
+    void         setRadians(qreal _angle);
 
     /// Return degrees
-    qreal degrees() const;
+    qreal        degrees() const;
 
     /// Returns radians
-    qreal radians() const;
+    qreal        radians() const;
 
     /// Constructs from degrees
     static Angle fromDeg(qreal _angle);
@@ -51,20 +50,24 @@ namespace omni
     /// Constructs angle from radians
     static Angle fromRad(qreal _angle);
 
+    /// Increment angle by another
     Angle const& operator+=(Angle const&);
+
+    /// Decrement angle by another
     Angle const& operator-=(Angle const&);
 
-    friend bool operator==(Angle const&,Angle const&);
+    /// Test for equality
+    friend bool  operator==(Angle const&,
+                            Angle const&);
 
-  private:
-    qreal angle_;
+    private:
+      qreal angle_;
   };
 }
 
-QDataStream& operator<<(QDataStream& _os, const omni::Angle& _angle);
-
-QDataStream& operator>>(QDataStream& _is, omni::Angle& _angle);
-
-
+QDataStream& operator<<(QDataStream& _os,
+                        const omni::Angle& _angle);
+QDataStream& operator>>(QDataStream& _is,
+                        omni::Angle& _angle);
 
 #endif /* OMNI_ANGLE_H_ */

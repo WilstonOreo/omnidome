@@ -28,65 +28,67 @@
 #include <QString>
 #include <omni/exception.h>
 
-namespace omni
-{
-  namespace util
-  {
+namespace omni {
+  namespace util {
     /// Pointer deleter functor
     struct QtDeleter
     {
       template<typename QOBJECT>
-      void operator()(QOBJECT* _obj)
+      void operator()(QOBJECT *_obj)
       {
-        if (!_obj->parent())
-          delete _obj;
+        if (!_obj->parent()) delete _obj;
       }
     };
 
     /// QUniquePtr for QObjects
     template<typename T>
-    using QUniquePtr = std::unique_ptr<T,QtDeleter>;
+    using QUniquePtr = std::unique_ptr<T, QtDeleter>;
 
     /// Linear interpolation between two values
     template<typename T, typename A>
     T mix(const T& _x, const T& _y, A _a)
     {
-      return _x*(1.0-_a) + _y * _a;
+      return _x * (1.0 - _a) + _y * _a;
     }
 
     /// Return content of file from a file name
     inline static QString fileToStr(const QString& _filename)
     {
       QFile _f(_filename);
-      _f.open(QIODevice::ReadOnly|QIODevice::Text);
+
+      _f.open(QIODevice::ReadOnly | QIODevice::Text);
       return _f.readAll();
     }
 
+    /// Remove file extension and return string without file extension
     template<typename STRING>
     STRING removeFileExt(STRING const& _filename)
     {
       int _lastIndex = _filename.lastIndexOf(".");
+
       if (_lastIndex == -1) return _filename;
 
       QString _rawName;
-      for (int i = 0; i < _lastIndex; ++i)
-        _rawName.push_back(_filename[i]);
+
+      for (int i = 0; i < _lastIndex; ++i) _rawName.push_back(_filename[i]);
       return _rawName;
     }
 
-
-    /// Test if two instances (which inherit from SerializationInterface) have equal data
+    /// Test if two instances (which inherit from SerializationInterface) have
+    // equal data
     template<typename T>
-    bool testPtrEqual(T const* _a, T const* _b)
+    bool testPtrEqual(T const *_a, T const *_b)
     {
       return _a && _b ?
-        // Call equal() member function from SerializationInterface
-        _a->equal(_b) : // Otherwise
-        // Compare pointer adresses
-        (_a == _b);
+
+             // Call equal() member function from SerializationInterface
+             _a->equal(_b) : // Otherwise
+             // Compare pointer adresses
+             (_a == _b);
     }
 
-    /// Test if two vectors which hold unique_ptr's of SerializationInterfaces are equal
+    /// Test if two vectors which hold unique_ptr's of SerializationInterfaces
+    // are equal
     template<typename T, typename F>
     bool testPtrVectorEqual(T const& _a, T const& _b, F f)
     {
@@ -95,10 +97,11 @@ namespace omni
 
       // Test each element for equality
       size_t _size = _a.size();
+
       for (size_t i = 0; i < _size; ++i)
       {
         // Call functor with pointers as arguments
-        if (!f(_a[i],_b[i])) return false;
+        if (!f(_a[i], _b[i])) return false;
       }
       return true;
     }
@@ -107,23 +110,23 @@ namespace omni
     template<typename T>
     bool testPtrVectorEqual(T const& _a, T const& _b)
     {
-      typedef typename T::value_type value_type;
+      typedef typename T::value_type            value_type;
       typedef typename value_type::element_type element_type;
-      return testPtrVectorEqual(_a,_b,testPtrEqual<element_type>);
+      return testPtrVectorEqual(_a, _b, testPtrEqual<element_type>);
     }
 
     /// Converts an enum class to integer
     template<typename ENUM>
-    auto enumToInt(ENUM const& _v)
-        -> typename std::underlying_type<ENUM>::type
+    auto enumToInt(ENUM const & _v)
+    ->typename std::underlying_type<ENUM>::type
     {
-        return static_cast<typename std::underlying_type<ENUM>::type>(_v);
+      return static_cast<typename std::underlying_type<ENUM>::type>(_v);
     }
 
     /// Converts an integer to enum
     template<typename ENUM, typename INT>
     ENUM intToEnum(INT _i) {
-        return static_cast<ENUM>(_i);
+      return static_cast<ENUM>(_i);
     }
   }
 
@@ -131,10 +134,11 @@ namespace omni
   using util::QUniquePtr;
 }
 
-#define OMNI_TEST_MEMBER_EQUAL(member)\
+#define OMNI_TEST_MEMBER_EQUAL(member) \
   (_lhs.member == _rhs.member)
 
-#define OMNI_TEST_PTR_MEMBER_EQUAL(member)\
-  omni::util::testPtrEqual(_lhs.member.get(),_rhs.member.get())
+#define OMNI_TEST_PTR_MEMBER_EQUAL(member) \
+  omni::util::testPtrEqual(_lhs.member.get(), _rhs.member.get())
+
 
 #endif /* OMNI_UTIL_H_ */

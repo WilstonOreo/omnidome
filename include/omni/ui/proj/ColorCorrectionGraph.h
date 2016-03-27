@@ -26,49 +26,69 @@
 #include <omni/ui/mixin/DataModel.h>
 
 namespace omni {
-    namespace ui {
-        namespace proj {
-            using omni::proj::Channel;
+  namespace ui {
+    namespace proj {
+      using omni::proj::Channel;
 
-            /// Widget which draws the graph for color corrections for each channel
-            class ColorCorrectionGraph :
-                public QWidget,
-                public mixin::UnsharedDataModel<omni::proj::ColorCorrection> {
-                Q_OBJECT
-                OMNI_UI_UNSHARED_DATAMODEL(omni::proj::ColorCorrection)
-            public:
+      /// Widget which draws the graph for color corrections for each channel
+      class ColorCorrectionGraph :
+        public QWidget,
+        public mixin::UnsharedDataModel<omni::proj::ColorCorrection>{
+          Q_OBJECT
+          OMNI_UI_UNSHARED_DATAMODEL(omni::proj::ColorCorrection)
 
-                ColorCorrectionGraph(QWidget* = nullptr);
-                ~ColorCorrectionGraph();
+        public:
+          ColorCorrectionGraph(QWidget * = nullptr);
+          ~ColorCorrectionGraph();
 
-                Channel channel() const;
-                void setChannel(Channel _channel);
+          /// Return selected channel
+          Channel channel() const;
 
-            protected:
-                void paintEvent(QPaintEvent*);
-                void resizeEvent(QResizeEvent*);
+          /// Set selected channel
+          void    setChannel(Channel _channel);
 
-            signals:
-                void dataModelChanged();
+        protected:
+          /// Paint graph event
+          void    paintEvent(QPaintEvent *);
 
-            private:
-                /// Update widget from current color correction
-                void dataToFrontend();
+          /// Re-paint on resize
+          void    resizeEvent(QResizeEvent *);
 
-                /// ColorCorrectionGraph cannot change data, hence there is nothing to do here
-                inline bool frontendToData() { return false; }
+        signals:
+          void    dataModelChanged();
 
-                void drawGraphs(QPainter& _p, bool _selected) const;
-                void drawGraphForChannel(QPainter&,
-                    omni::proj::ChannelCorrection const&,
-                    QColor _color, bool _selected) const;
-                void drawGraphForChannel(QPainter&, Channel _channel) const;
-                void drawGridLines(QPainter&);
+        private:
+          /// Update widget from current color correction
+          void dataToFrontend();
 
-                Channel channel_ = Channel::ALL;
-            };
-        }
+          /**@brief ColorCorrectionGraph cannot change data, hence there is nothing to
+                    do here
+          **/
+          inline bool frontendToData() {
+            return false;
+          }
+
+          /// Draw selected graphs
+          void drawGraphs(QPainter& _p,
+                          bool _selected) const;
+
+          /// Draw graph for a channel correction
+          void drawGraphForChannel(QPainter&,
+                                   omni::proj::ChannelCorrection const&,
+                                   QColor _color,
+                                   bool _selected) const;
+
+          /// Draw graph for a channel
+          void drawGraphForChannel(QPainter&,
+                                   Channel _channel) const;
+
+          /// Draw grid lines in background
+          void drawGridLines(QPainter&);
+
+          Channel channel_ = Channel::ALL;
+      };
     }
+  }
 }
 
 #endif /* OMNI_UI_PROJ_COLORCORRECTIONGRAPH_H_ */

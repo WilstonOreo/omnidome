@@ -27,7 +27,8 @@ namespace omni
 {
   namespace input
   {
-    CubeMapTestImage::CubeMapTestImage()
+    CubeMapTestImage::CubeMapTestImage(Interface const* _parent)  :
+      TestImage(_parent)
     {
     }
 

@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -20,6 +20,7 @@
 #include <omni/PolarVec.h>
 
 #include <math.h>
+#include <omni/util.h>
 
 namespace omni
 {
@@ -81,7 +82,7 @@ namespace omni
     radius_ = std::max<qreal>(0.0,radius_ + _vec.radius_);
     return *this;
   }
-  
+
   qreal PolarVec::x() const
   {
     return static_cast<QVector3D const&>(*this).x();
@@ -96,7 +97,7 @@ namespace omni
   {
     return static_cast<QVector3D const&>(*this).z();
   }
-    
+
   QVector3D PolarVec::vec() const
   {
     return static_cast<QVector3D const&>(*this);
@@ -135,5 +136,23 @@ namespace omni
   void PolarVec::setRadius(qreal _radius)
   {
     radius_=_radius;
+  }
+
+  /// Write transformation to stream
+  void PolarVec::toStream(QDataStream& _os) const {
+    _os << longitude_ << latitude_ << radius_;
+  }
+
+  /// Read transformation from stream
+  void PolarVec::fromStream(QDataStream& _is) {
+    _is >> longitude_ >> latitude_ >> radius_;
+  }
+
+  bool operator==(PolarVec const& _lhs, PolarVec const& _rhs)
+  {
+    return
+      OMNI_TEST_MEMBER_EQUAL(longitude_) &&
+      OMNI_TEST_MEMBER_EQUAL(latitude_) &&
+      OMNI_TEST_MEMBER_EQUAL(radius_);
   }
 }

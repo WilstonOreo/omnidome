@@ -31,37 +31,58 @@ namespace omni {
             ui_(new Ui::Scene)
         {
             this->setup(ui_);
+
+            connect(ui_->chkInput,&QCheckBox::clicked,this,&Scene::updateDataModel);
+            connect(ui_->chkGrid,&QCheckBox::clicked,this,&Scene::updateDataModel);
+            connect(ui_->chkProjectors,&QCheckBox::clicked,this,&Scene::updateDataModel);
+            connect(ui_->chkProjectedAreas,&QCheckBox::clicked,
+                    this,&Scene::updateDataModel);
+            connect(ui_->boxFrustumViewMode,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                    this,&Scene::updateDataModel);
+
+            connect(ui_->boxSize,SIGNAL(currentIndexChanged(int)),this,SLOT(setSceneScale()));
+            connect(ui_->boxUnit,SIGNAL(currentIndexChanged(int)),this,SLOT(setUnit()));
         }
 
         Scene::~Scene() {
 
         }
 
-        void Scene::registerView(GLView3D* _glView) {
-            if (views_.count(_glView) != 0) {
-                return;
-            }
+        void Scene::setSceneScale() {
+            if (!dataModel() || isLocked()) return;
 
-            connect(ui_->chkInput,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayInput(bool)));
-            connect(ui_->chkGrid,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayGrid(bool)));
-            connect(ui_->chkProjectors,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayProjectors(bool)));
-            connect(ui_->chkProjectedAreas,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayProjectedAreas(bool)));
-            connect(ui_->boxFrustumViewMode,SIGNAL(currentIndexChanged(int)),_glView,SLOT(setProjectorViewMode(int)));
+            auto& _scene = dataModel()->scene();
+            _scene.setScale(ui_->boxSize->currentText().toFloat());
 
-            views_.insert(_glView);
+            emit sceneScaleChanged();
         }
-        void Scene::unregisterView(GLView3D* _glView) {
-            if (views_.count(_glView) == 0) {
-                return;
-            }
 
-            disconnect(ui_->chkInput,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayInput(bool)));
-            disconnect(ui_->chkGrid,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayGrid(bool)));
-            disconnect(ui_->chkProjectors,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayProjectors(bool)));
-            disconnect(ui_->chkProjectedAreas,SIGNAL(clicked(bool)),_glView,SLOT(setDisplayProjectedAreas(bool)));
-            disconnect(ui_->boxFrustumViewMode,SIGNAL(currentIndexChanged(int)),_glView,SLOT(setProjectorViewMode(int)));
+        void Scene::setUnit() {
+            if (!dataModel() || isLocked()) return;
 
-            views_.erase(_glView);
+            emit unitChanged();
+        }
+
+        void Scene::dataToFrontend() {
+            auto& _scene = dataModel()->scene();
+
+            ui_->chkInput->setChecked(_scene.displayInput());
+            ui_->chkGrid->setChecked(_scene.displayGrid());
+            ui_->chkProjectors->setChecked(_scene.displayProjectors());
+            ui_->chkProjectedAreas->setChecked(_scene.displayProjectedAreas());
+            ui_->boxFrustumViewMode->setCurrentIndex(util::enumToInt(_scene.projectorViewMode()));
+        }
+
+        bool Scene::frontendToData() {
+            auto& _scene = dataModel()->scene();
+
+            _scene.setDisplayInput(ui_->chkInput->isChecked());
+            _scene.setDisplayGrid(ui_->chkGrid->isChecked());
+            _scene.setDisplayProjectors(ui_->chkProjectors->isChecked());
+            _scene.setDisplayProjectedAreas(ui_->chkProjectedAreas->isChecked());
+            _scene.setProjectorViewMode(util::intToEnum<ProjectorViewMode>(ui_->boxFrustumViewMode->currentIndex()));
+
+            return true;
         }
     }
 }

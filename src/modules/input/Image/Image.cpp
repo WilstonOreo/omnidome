@@ -27,39 +27,31 @@
 #include <omni/visual/util.h>
 #include <omni/ui/InputPreview.h>
 
-namespace omni
-{
-  namespace input
-  {
-    Image::Image()
-    {
-    }
-
-    Image::Image(QString const& _path)
-    {
-      load(_path);
-    }
+namespace omni {
+  namespace input {
+    Image::Image(Interface const *_parent) :
+      Interface(_parent)
+    {}
 
     Image::~Image()
-    {
-    }
+    {}
 
     void Image::free()
     {
-        needsUpdate_ = true;
-        texture_.reset();
+      needsUpdate_ = true;
+      texture_.reset();
     }
 
     void Image::update()
     {
-      if (!needsUpdate_ || image_.width() == 0) return;
+      if (!needsUpdate_ || (image_.width() == 0)) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _) {
-          texture_.reset(new QOpenGLTexture(image_));
-          texture_->setMinMagFilters(
-              QOpenGLTexture::Linear,
-              QOpenGLTexture::Linear);
-              needsUpdate_ = false;
+        texture_.reset(new QOpenGLTexture(image_));
+        texture_->setMinMagFilters(
+          QOpenGLTexture::Linear,
+          QOpenGLTexture::Linear);
+        needsUpdate_ = false;
       });
     }
 
@@ -70,8 +62,8 @@ namespace omni
 
     void Image::load(QString const& _path)
     {
-      image_ = QImage(_path).mirrored();
-      path_=_path;
+      image_       = QImage(_path).mirrored();
+      path_        = _path;
       needsUpdate_ = true;
     }
 
@@ -90,6 +82,7 @@ namespace omni
     QString Image::infoText() const
     {
       QFileInfo fi(path_);
+
       return fi.baseName();
     }
 
@@ -101,33 +94,36 @@ namespace omni
     void Image::toStream(QDataStream& _stream) const
     {
       input::Interface::toStream(_stream);
+
       _stream << path_;
     }
 
     void Image::fromStream(QDataStream& _stream)
     {
       input::Interface::fromStream(_stream);
+
       _stream >> path_;
       reload();
     }
 
     bool Image::canAdd() {
+      QString _filename = QFileDialog::getOpenFileName(
+        widget(), "Open image file...", ".", "Image files (*.png *.jpg *.jpeg)");
 
-        QString _filename = QFileDialog::getOpenFileName(widget(), "Open image file...", ".", "Image files (*.png *.jpg *.jpeg)");
-        if (_filename.isEmpty()) return false;
+      if (_filename.isEmpty()) return false;
 
-        try {
-          this->load(_filename);
-        } catch (...) {
-          QErrorMessage _errorMessageBox(widget());
-          _errorMessageBox.showMessage("Error loading image.");
-          return false;
-        }
-        return true;
+      try {
+        this->load(_filename);
+      } catch (...) {
+        QErrorMessage _errorMessageBox(widget());
+        _errorMessageBox.showMessage("Error loading image.");
+        return false;
+      }
+      return true;
     }
 
-    QWidget* Image::widget() {
-        return new ui::InputPreview(this);
+    QWidget * Image::widget() {
+      return new ui::InputPreview(this);
     }
   }
 }

@@ -116,11 +116,6 @@ namespace omni {
             return projector_.screen() != ScreenSetup::standardScreen();
         }
 
-        bool Tuning::resolutionToBeChanged(proj::Screen const *_screen) const
-        {
-            return false;
-        }
-
         int Tuning::width() const
         {
             if (!ScreenSetup::standardScreen()) {

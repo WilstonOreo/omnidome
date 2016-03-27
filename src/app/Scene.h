@@ -19,30 +19,41 @@
 
 #include <memory>
 #include <unordered_set>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 #include "DockWidget.h"
 
 namespace omni {
-    namespace ui {
-        class GLView3D;
-
-        namespace Ui {
-            class Scene;
-        }
-
-        /// Dock widget that contains view settings for the scene
-        class Scene : public DockWidget {
-            Q_OBJECT
-        public:
-            Scene(QWidget* _parent = nullptr);
-            ~Scene();
-
-            void registerView(GLView3D*);
-            void unregisterView(GLView3D*);
-
-        private:
-            std::unique_ptr<Ui::Scene> ui_;
-
-            std::unordered_set<GLView3D*> views_;
-        };
+  namespace ui {
+    namespace Ui {
+      class Scene;
     }
+
+    /// Dock widget that contains view settings for the scene
+    class Scene :
+      public DockWidget,
+      public mixin::SharedDataModel<Session>{
+      Q_OBJECT
+             OMNI_UI_SHARED_DATAMODEL(Session)
+
+      public:
+        Scene(QWidget *_parent = nullptr);
+        ~Scene();
+
+      signals:
+        void dataModelChanged();
+        void unitChanged();
+        void sceneScaleChanged();
+
+      private slots:
+        void setSceneScale();
+        void setUnit();
+
+      private:
+        std::unique_ptr<Ui::Scene> ui_;
+
+        void dataToFrontend();
+        bool frontendToData();
+    };
+  }
 }

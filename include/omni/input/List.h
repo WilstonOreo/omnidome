@@ -26,91 +26,86 @@
 #include <omni/Id.h>
 #include <omni/input/Interface.h>
 
-namespace omni
-{
-  namespace input
-  {
-    /**@brief Input List contains a list of inputs. A TestImage input is always present at index 0
-      *@detail Input List is serializable via QDataStream
+namespace omni {
+  namespace input {
+    /**@brief Input List contains a list of inputs. A TestImage input is always
+       present at index 0
+     *@detail Input List is serializable via QDataStream
      **/
-    class List : public input::Interface
-    {
-    public:
-      OMNI_REGISTER_CLASS(Factory,List)
+    class List : public input::Interface {
+      public:
+        OMNI_REGISTER_CLASS(Factory, List)
 
-      List(Interface* _parent = nullptr);
+        List(Interface const * = nullptr);
 
-      /**@brief Add new input with given type id. Returns nullptr if input with typeid does not exist
-         @param _id Id for the input
-        *@param _typeId Type id of input to determine which kind of input is created
-       **/
-      Input* add(QString const& _id, Id const& _typeId);
+        /**@brief Add new input with given type id. Returns nullptr if input
+           with typeid does not exist
+           @detail Id is automatically generated
+         *@param _typeId Type id of input to determine which kind of input is
+         *created
+         *@return Pair with input id and pointer to added input
+         **/
+        std::pair<QString, Input *>addInput(Id const& _typeId);
 
-      /**@brief Add new input with given type id. Returns nullptr if input with typeid does not exist
-         @detail Id is automatically generated
-        *@param _typeId Type id of input to determine which kind of input is created
-        *@return Pair with input id and pointer to added input
-       **/
-      std::pair<QString,Input*> add(Id const& _typeId);
+        /// Remove input and reset current index if necessary
+        void                       removeInput(QString const& _id);
 
-      inline bool canHaveChildren() const {
+        inline bool canHaveChildren() const {
           return true;
-      }
+        }
 
-      inline QSize size() const {
-          return QSize(0,0);
-      }
+        inline QSize size() const {
+          return QSize(0, 0);
+        }
 
-      inline GLuint textureId() const {
+        inline GLuint textureId() const {
           return 0;
-      }
+        }
 
-      inline QWidget* widget() {
+        inline QWidget* widget() {
           return nullptr;
-      }
+        }
 
-      /// Return input at index
-      Input* operator[](QString const& _id);
+        /// Return input at index
+        Input       * operator[](QString const& _id);
 
-      /// Returns input at index (const version)
-      Input const* operator[](QString const& _id) const;
+        /// Returns input at index (const version)
+        Input const * operator[](QString const& _id) const;
 
-      /// Removes input at index
-      void remove(QString const& _id);
+        /// Delete all inputs
+        void          clear();
 
-      /// Delete all inputs
-      void clear();
+        /**@brief Returns pointer to current input
+         * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
+         **/
+        Input       * current();
 
-      /**@brief Returns pointer to current input
-       * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
-       **/
-      Input* current();
+        /**@brief Returns pointer to current input (const version)
+         * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
+         **/
+        Input const * current() const;
 
-      /**@brief Returns pointer to current input (const version)
-       * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
-       **/
-      Input const* current() const;
+        /// Return ID of current input
+        QString       currentId() const;
 
-      /// Return ID of current input
-      QString currentId() const;
+        /// Set current input by ID
+        void          setCurrentId(QString const&);
 
-      /// Set current input by ID
-      void setCurrentId(QString const&);
+        /// Deserialize from stream
+        void          fromStream(QDataStream&);
 
-      /// Deserialize from stream
-      void fromStream(QDataStream&);
+        /// Serialize to stream
+        void          toStream(QDataStream&) const;
 
-      /// Serialize to stream
-      void toStream(QDataStream&) const;
+        /// Test for equality
+        friend bool   operator==(List const&,
+                                 List const&);
 
-      /// Test for equality
-      friend bool operator==(List const&,List const&);
+      private:
+        /// Generate a new id for input
+        QString generateId() const;
 
-    private:
-      /// Generate a new id for input
-      QString generateId() const;
-
-      QString currentId_;
+        QString currentId_;
     };
   }
 

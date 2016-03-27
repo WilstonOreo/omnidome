@@ -81,6 +81,8 @@ namespace omni
     {
       if (!dataModel() || this->isLocked()) return;
 
+      auto& _scene = dataModel()->scene();
+
       this->vizSession_->update();
       glEnable(GL_DEPTH_TEST);
 
@@ -93,15 +95,15 @@ namespace omni
       glLoadIdentity();
       updateLight();
 
-      this->vizSession_->drawCanvas(displayInput_ && dataModel()->hasOutput() ?
+      this->vizSession_->drawCanvas(_scene.displayInput() && dataModel()->hasOutput() ?
           mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
 
-      this->vizSession_->drawProjectors(!displayProjectors());
+      this->vizSession_->drawProjectors(!_scene.displayProjectors());
 
-      this->vizSession_->drawCanvasWithFrustumIntersections(projectorViewMode_,!displayProjectedAreas());
-      this->vizSession_->drawProjectorHalos(!displayProjectors());
+      this->vizSession_->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),!_scene.displayProjectedAreas());
+      this->vizSession_->drawProjectorHalos(!_scene.displayProjectors());
 
-      if (displayGrid()) {
+      if (_scene.displayGrid()) {
         grid_.draw(0.5);
         glDisable(GL_DEPTH_TEST);
         grid_.draw(0.5);
@@ -154,99 +156,6 @@ namespace omni
       }
 
       this->mousePosition_ = event->pos();
-    }
-
-    bool GLView3D::displayInput() const
-    {
-      return displayInput_;
-    }
-
-    bool GLView3D::displayMeasures() const
-    {
-      return displayMeasures_;
-    }
-
-    bool GLView3D::displayGrid() const
-    {
-      return displayGrid_;
-    }
-
-    bool GLView3D::displayProjectors() const
-    {
-      return displayProjectors_;
-    }
-
-    bool GLView3D::displayProjectedAreas() const
-    {
-      return displayProjectedAreas_;
-    }
-
-    EditMode GLView3D::editMode() const {
-        return editMode_;
-    }
-
-    RotateMode GLView3D::rotateMode() const {
-        return rotateMode_;
-    }
-
-    MoveMode GLView3D::moveMode() const {
-        return moveMode_;
-    }
-
-    void GLView3D::setDisplayInput(bool _displayInput)
-    {
-      displayInput_ = _displayInput;
-      update();
-    }
-
-    void GLView3D::setDisplayMeasures(bool _displayMeasures) {
-        displayMeasures_ = _displayMeasures;
-        update();
-    }
-
-    void GLView3D::setDisplayGrid(bool _displayGrid) {
-        displayGrid_ = _displayGrid;
-        update();
-    }
-
-    void GLView3D::setDisplayProjectors(bool _displayProjectors) {
-        displayProjectors_ = _displayProjectors;
-        update();
-    }
-
-    void GLView3D::setDisplayProjectedAreas(bool _displayProjectedAreas) {
-        displayProjectedAreas_ = _displayProjectedAreas;
-        update();
-    }
-
-    void GLView3D::setEditMode(EditMode _editMode) {
-        editMode_ = _editMode;
-        update();
-    }
-
-    void GLView3D::setRotateMode(RotateMode _rotateMode) {
-        rotateMode_ = _rotateMode;
-        update();
-    }
-
-    void GLView3D::setMoveMode(MoveMode _moveMode) {
-        moveMode_ = _moveMode;
-        update();
-    }
-
-    ProjectorViewMode GLView3D::projectorViewMode() const
-    {
-      return projectorViewMode_;
-    }
-
-    void GLView3D::setProjectorViewMode(ProjectorViewMode _projectorViewMode)
-    {
-      projectorViewMode_ = _projectorViewMode;
-      update();
-    }
-
-    void GLView3D::setProjectorViewMode(int _proj) {
-       setProjectorViewMode(util::intToEnum<ProjectorViewMode>(_proj));
     }
 
     void GLView3D::changeZoom(int _value)

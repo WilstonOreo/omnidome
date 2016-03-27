@@ -17,33 +17,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_LENGTHUNIT_H_
-#define OMNI_LENGTHUNIT_H_
+#ifndef OMNI_RENDER_CALIBRATEDPROJECTOR_H_
+#define OMNI_RENDER_CALIBRATEDPROJECTOR_H_
 
-#include <omnic/calibration.h>
+#include <QRect>
+#include <omni/RenderBuffer.h>
+#include <omni/proj/ColorCorrection.h>
 
 namespace omni {
+  namespace render {
     class CalibratedProjector {
-    private:
-        CalibratedProjector(proj::Tuning const*);
+      private:
+        CalibratedProjector(proj::Tuning const *);
 
+        QImage              toImage();
 
-    public:
-        bool virtualScreen_;
+        RenderBuffer const& buffer() const;
+        QRect const       & screenGeometry() const;
+        ColorCorrection     colorCorrection() const;
+        bool                virtualScreen() const;
+
+      public:
+        template<typename PROJECTION, typename MODELVIEW>
+        static void renderToBuffer(RenderBuffer& _buffer,
+                                   PROJECTION _proj,
+                                   MODELVIEW _mv);
+
+        bool  virtualScreen_;
         QRect screenGeometry_;
         ColorCorrection colorCorrection_;
-        RenderBuffer buffer_;
+        RenderBuffer    buffer_;
     };
-
-    class Calibration {
-    public:
-
-
-
-
-    private:
-        mapping::OutputType type_;
-        std::vector<CalibratedProjector> projectors_;
-    };
-
+  }
 }
+
+#endif /* OMNI_RENDER_CALIBRATEDPROJECTOR_H_ */

@@ -26,13 +26,11 @@
 #include <boostx/type_info.hpp>
 #include <boostx/factory.hpp>
 
-namespace omni
-{
-
+namespace omni {
   /**@brief Id type for classes
    * @detail An Id must only contain alpha numerical characters
    *         and must begin with a letter
-  **/
+   **/
   struct Id
   {
     /// Default constructor
@@ -42,7 +40,7 @@ namespace omni
     Id(QString const&);
 
     /// Constructor from const char*
-    Id(const char*);
+    Id(const char *);
 
     /// Returns string representation (const)
     QString const& str() const;
@@ -62,36 +60,30 @@ namespace omni
     /// Returns true if two ids match
     bool operator==(const Id&) const;
 
-  private:
-    /// Make Id from string
-    void make(QString const&);
+    private:
+      /// Make Id from string
+      void make(QString const&);
 
-    /// Internal string buffer
-    QString str_;
+      /// Internal string buffer
+      QString str_;
   };
 
   BOOSTX_DECL_TYPE_INFO(
-      TypeInfo,
-      Id,
-      typeId,
-      getTypeId
-  )
+    TypeInfo,
+    Id,
+    typeId,
+    getTypeId
+    )
 
   /// Alias template for factories
-  template<typename INTERFACE, typename...ARGS>
-  using AbstractFactory = boostx::factory<INTERFACE,TypeInfo,ARGS...>;
+  template<typename INTERFACE, typename ... ARGS>
+  using AbstractFactory = boostx::factory<INTERFACE, TypeInfo, ARGS ...>;
 
   /// Id set typedef
-  typedef std::set<Id> IdSet;
-
+  typedef std::set<Id>IdSet;
 }
 
-#define OMNI_TYPEID(type_id)\
-  BOOSTX_TYPE_ID(omni::Id,type_id,typeId,getTypeId)
-
-
-namespace std
-{
+namespace std {
   /// Template specialization for Id to make it hashable
   template<>
   struct hash<omni::Id>
@@ -106,9 +98,11 @@ namespace std
 
 
 /// Serialize omni::Id to stream
-QDataStream& operator<<(QDataStream&, omni::Id const&);
+QDataStream& operator<<(QDataStream&,
+                        omni::Id const&);
 
 /// Deserialize omni::Id from stream
-QDataStream& operator>>(QDataStream&, omni::Id&);
+QDataStream& operator>>(QDataStream&,
+                        omni::Id&);
 
 #endif /* OMNI_ID_H_ */

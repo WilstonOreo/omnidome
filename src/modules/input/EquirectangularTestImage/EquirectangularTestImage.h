@@ -26,6 +26,7 @@ namespace omni
 {
   namespace input
   {
+    /// Test image for equirectangular mappings
     class EquirectangularTestImage : public QObject, public TestImage
     {
       OMNI_INPUT_PLUGIN_DECL
@@ -33,7 +34,7 @@ namespace omni
     public:
       OMNI_REGISTER_CLASS(Factory,EquirectangularTestImage)
 
-      EquirectangularTestImage();
+      EquirectangularTestImage(Interface const* = nullptr);
       ~EquirectangularTestImage();
 
       QSize size() const;

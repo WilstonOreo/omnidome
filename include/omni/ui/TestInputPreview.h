@@ -25,6 +25,7 @@
 
 namespace omni {
     namespace ui {
+        /// An input preview for display a test image input
         class TestInputPreview : public InputPreview {
             Q_OBJECT
         public:

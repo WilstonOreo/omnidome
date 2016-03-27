@@ -26,170 +26,169 @@
 #include <omni/visual/Tuning.h>
 #include <omni/ui/mixin/TuningFromIndex.h>
 
-namespace omni
-{
-  namespace ui
-  {
+namespace omni {
+  namespace ui {
+    /// A GLView for visualizing all modes of a projector view (tuning)
     class TuningGLView :
-        public GLView,
-        public mixin::TuningFromIndex<TuningGLView>
-    {
+      public GLView,
+      public mixin::TuningFromIndex<TuningGLView>{
       Q_OBJECT
-    public:
-      TuningGLView(QWidget* = nullptr);
-      ~TuningGLView();
 
-      /// If disabled, this widget accepts user inputs
-      bool viewOnly() const;
+      public:
+        TuningGLView(QWidget * = nullptr);
+        ~TuningGLView();
 
-      /// If disabled, screen rect will be stretched over whole widget
-      bool keepAspectRatio() const;
+        /// If disabled, this widget accepts user inputs
+        bool                    viewOnly() const;
 
-      /// Flag for toggling drawing. Only black background is shown when false
-      bool isDrawingEnabled() const;
+        /// If disabled, screen rect will be stretched over whole widget
+        bool                    keepAspectRatio() const;
 
-      /// Returns true if cursor is visible
-      bool showCursor() const;
+        /// Flag for toggling drawing. Only black background is shown when false
+        bool                    isDrawingEnabled() const;
 
-      bool fullscreenMode() const;
+        /// Returns true if cursor is visible
+        bool                    showCursor() const;
 
-      /// Return relative border value
-      float border() const;
+        bool                    fullscreenMode() const;
 
-      void setChildViews(std::set<TuningGLView*> const&);
-      std::set<TuningGLView*> childViews() const;
+        /// Return relative border value
+        float                   border() const;
 
-      void updateContext(bool);
+        void                    setChildViews(std::set<TuningGLView *>const&);
+        std::set<TuningGLView *>childViews() const;
 
-    public slots:
-      /// Set tuning index from session
-      void setTuningIndex(int);
+        void                    updateContext(bool);
 
-      void destroy();
+      public slots:
+        /// Set tuning index from session
+        void setTuningIndex(int);
 
-      /// If disabled, screen rect will be stretched over whole widget
-      void setKeepAspectRatio(bool);
+        void destroy();
 
-      /// If true, this widget does NOT accept user inputs
-      void setViewOnly(bool);
+        /// If disabled, screen rect will be stretched over whole widget
+        void setKeepAspectRatio(bool);
 
-      void setShowCursor(bool);
+        /// If true, this widget does NOT accept user inputs
+        void setViewOnly(bool);
 
-      /**@brief Set flag which tells if projector view is actually drawn
-       * @detail Used for activate/deactivate fullscreen view
-      **/
-      void setDrawingEnabled(bool);
+        void setShowCursor(bool);
 
-      /// Set relative border distance
-      void setBorder(float);
+        /**@brief Set flag which tells if projector view is actually drawn
+         * @detail Used for activate/deactivate fullscreen view
+         **/
+        void setDrawingEnabled(bool);
 
-      /// Set fullscreen mode
-      void setFullScreenMode(bool);
+        /// Set relative border distance
+        void setBorder(float);
 
-      void updateWithChildViews(bool _updateContext = true);
-      void updateWithChildViews(QRect const&);
+        /// Set fullscreen mode
+        void setFullScreenMode(bool);
 
-    private slots:
-      void free();
+        void updateWithChildViews(bool _updateContext = true);
+        void updateWithChildViews(QRect const&);
 
-    protected:
-      void paintGL();
-      void mouseMoveEvent(QMouseEvent *event);
-      void mousePressEvent(QMouseEvent *event);
-      void mouseReleaseEvent(QMouseEvent *event);
-      void wheelEvent(QWheelEvent* event);
-      void keyPressEvent(QKeyEvent* event);
+      private slots:
+        void free();
 
-    private:
+      protected:
+        void paintGL();
+        void mouseMoveEvent(QMouseEvent *event);
+        void mousePressEvent(QMouseEvent *event);
+        void mouseReleaseEvent(QMouseEvent *event);
+        void wheelEvent(QWheelEvent *event);
+        void keyPressEvent(QKeyEvent *event);
 
-      void drawOutput(
-        float _blendMaskOpacity,
-        float _inputOpacity = 1.0,
-        QColor _color = Qt::white);
+      private:
+        void drawOutput(
+          float _blendMaskOpacity,
+          float _inputOpacity = 1.0,
+          QColor _color = Qt::white);
 
-      /// Draw Canvas from Projector's perspective
-      void drawCanvas();
+        /// Draw Canvas from Projector's perspective
+        void    drawCanvas();
 
-      /// Draw warp grid with handles while keeping aspect ratio
-      void drawWarpGrid();
+        /// Draw warp grid with handles while keeping aspect ratio
+        void    drawWarpGrid();
 
-      /// Draw blend mask with stroke buffer
-      void drawBlendMask();
+        /// Draw blend mask with stroke buffer
+        void    drawBlendMask();
 
-      /// Draw test card image
-      void drawTestCard();
+        /// Draw test card image
+        void    drawTestCard();
 
-      /// Draw screen border (only if widget is not in view only mode)
-      void drawScreenBorder();
+        /// Draw screen border (only if widget is not in view only mode)
+        void    drawScreenBorder();
 
-      /// Draw color corrected
-      void drawColorCorrected();
+        /// Draw color corrected
+        void    drawColorCorrected();
 
-      /// Draw export view
-      void drawExportView();
+        /// Draw export view
+        void    drawExportView();
 
-      /// Update warp buffer which contains image of projector perspective
-      void updateWarpBuffer();
+        /// Update warp buffer which contains image of projector perspective
+        void    updateWarpBuffer();
 
-      /// Get rectangle of orthogonal view frustum
-      QRectF viewRect() const;
+        /// Get rectangle of orthogonal view frustum
+        QRectF  viewRect() const;
 
-      /// Transform widget position to view position
-      QPointF screenPos(QPointF const& _pos) const;
+        /// Transform widget position to view position
+        QPointF screenPos(QPointF const& _pos) const;
 
-      // Transform widget position to position in tuning image
-      QPointF pixelPos(QPointF const& _pos) const;
+        // Transform widget position to position in tuning image
+        QPointF pixelPos(QPointF const& _pos) const;
 
-      /// Drawing function for drawing on orthogonal 2D surface within view rect
-      template<typename F>
-      void drawOnSurface(F f);
+        /// Drawing function for drawing on orthogonal 2D surface within view
+        // rect
+        template<typename F>
+        void drawOnSurface(F f);
 
-      /// Initialize OpenGL objects
-      bool initialize();
+        /// Initialize OpenGL objects
+        bool initialize();
 
-      /// Flags which determines if aspect ratio is used when drawing content
-      bool keepAspectRatio_ = false;
+        /// Flags which determines if aspect ratio is used when drawing content
+        bool keepAspectRatio_ = false;
 
-      /// Flag determines if user input is not accepted
-      bool viewOnly_ = false;
+        /// Flag determines if user input is not accepted
+        bool viewOnly_ = false;
 
-      /// Flag for toggling drawing. Only black background is shown when false
-      bool drawingEnabled_ = true;
+        /// Flag for toggling drawing. Only black background is shown when false
+        bool drawingEnabled_ = true;
 
-      /// Flag which tells if mouse button is down
-      bool mouseDown_ = false;
+        /// Flag which tells if mouse button is down
+        bool mouseDown_ = false;
 
-      /// Cursor position (is not mouse position when widget is view only)
-      QPointF cursorPosition_;
+        /// Cursor position (is not mouse position when widget is view only)
+        QPointF cursorPosition_;
 
-      /// Last stroke position
-      QPointF lastStrokePos_;
+        /// Last stroke position
+        QPointF lastStrokePos_;
 
-      /// Show cursor flag (cursor is also shown when widget is view only)
-      bool showCursor_ = true;
+        /// Show cursor flag (cursor is also shown when widget is view only)
+        bool showCursor_ = true;
 
-      /// Flag which is set to true before this widget is destroyed
-      bool aboutToBeDestroyed_ = false;
+        /// Flag which is set to true before this widget is destroyed
+        bool aboutToBeDestroyed_ = false;
 
-      /// Left over distance value for blend blush
-      float leftOverDistance_ = 0.0;
+        /// Left over distance value for blend blush
+        float leftOverDistance_ = 0.0;
 
-      /// Relative border
-      float border_ = 0.0;
+        /// Relative border
+        float border_ = 0.0;
 
-      /// True if this widget is shown in fullscreen mode
-      bool fullscreenMode_ = false;
+        /// True if this widget is shown in fullscreen mode
+        bool fullscreenMode_ = false;
 
-      /// Tuning visualizer
-      std::shared_ptr<visual::Tuning> vizTuning_;
+        /// Tuning visualizer
+        std::shared_ptr<visual::Tuning> vizTuning_;
 
-      /// Used for drawing grayscale
-      std::unique_ptr<QOpenGLFramebufferObject> frameBuffer_;
+        /// Used for drawing grayscale
+        std::unique_ptr<QOpenGLFramebufferObject> frameBuffer_;
 
-      /// Frame buffer which holds a texture with current view image
-      std::unique_ptr<QOpenGLFramebufferObject> warpGridBuffer_;
+        /// Frame buffer which holds a texture with current view image
+        std::unique_ptr<QOpenGLFramebufferObject> warpGridBuffer_;
 
-      std::set<TuningGLView*> childViews_;
+        std::set<TuningGLView *> childViews_;
     };
   }
 }

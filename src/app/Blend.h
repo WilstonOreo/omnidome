@@ -27,42 +27,40 @@
 #include <omni/ui/RangedFloat.h>
 #include "DockWidget.h"
 
-namespace omni
-{
+namespace omni {
   class Session;
   class BlendMask;
 
-  namespace ui
-  {
-    namespace Ui
-    {
+  namespace ui {
+    namespace Ui {
       class Blend;
     }
 
+    /// Dockwidget for editing the blend mask
     class Blend :
-        public DockWidget,
-        public mixin::SharedDataModel<Session>
-    {
+      public DockWidget,
+      public mixin::SharedDataModel<Session>{
       Q_OBJECT
-      OMNI_UI_SHARED_DATAMODEL(Session)
-    public:
-      Blend(QWidget* = nullptr);
-      ~Blend();
+             OMNI_UI_SHARED_DATAMODEL(Session)
 
-    signals:
+      public:
+        Blend(QWidget * = nullptr);
+        ~Blend();
+
+      signals:
         void dataModelChanged();
 
-    private:
-      /// Update sliders from given blend mask
-      void dataToFrontend();
+      private:
+        /// Update sliders from given blend mask
+        void                   dataToFrontend();
 
-      /// Assign slider values to blend mask
-      bool frontendToData();
+        /// Assign slider values to blend mask
+        bool                   frontendToData();
 
-      omni::BlendMask const* blendMask() const;
-      omni::BlendMask* blendMask();
+        omni::BlendMask const* blendMask() const;
+        omni::BlendMask      * blendMask();
 
-      std::unique_ptr<Ui::Blend> ui_;
+        std::unique_ptr<Ui::Blend> ui_;
     };
   }
 }

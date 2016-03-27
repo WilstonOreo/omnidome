@@ -28,54 +28,74 @@
 #include <omni/visual/Session.h>
 #include <omni/ui/mixin/DataModel.h>
 
-namespace omni
-{
+namespace omni {
   class Session;
 
-  namespace ui
-  {
+  namespace ui {
+    /**@brief GLView for visualizing tunings or session
+       @detail Holds shared_ptr to session as data model
+     **/
     class GLView :
       public QOpenGLWidget,
       public mixin::SharedDataModel<Session>,
-      protected QOpenGLFunctions
-    {
-      Q_OBJECT
-      OMNI_UI_SHARED_DATAMODEL(Session)
-    public:
-      explicit GLView(QWidget* _parent = nullptr);
-      GLView(std::shared_ptr<omni::Session>,QWidget* _parent = nullptr);
-      virtual ~GLView();
+      protected QOpenGLFunctions {
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
 
-      typedef std::set<GLView*> view_set_type;
+      public:
+        explicit GLView(QWidget *_parent = nullptr);
+        GLView(std::shared_ptr<omni::Session>,
+               QWidget *_parent = nullptr);
+        virtual ~GLView();
 
-      float aspect() const;
+        /// Set of child views
+        typedef std::set<GLView *>view_set_type;
 
-      QPointF mousePosition() const;
+        /// Return aspect ratio of widget
+        float   aspect() const;
 
-      bool initialized() const;
+        /// Return mouse position
+        QPointF mousePosition() const;
 
-    signals:
-      void dataModelChanged();
+        /// Return boolean value if widget has been initialized
+        bool    initialized() const;
 
-    private slots:
-      inline virtual void free() {}
+      signals:
+        void    dataModelChanged();
 
-    protected:
-      void initializeGL();
-      virtual void resizeGL(int _w, int _h);
-      virtual void paintGL();
+      private slots:
+        /// Free OpenGL contents stored in widget
+        inline virtual void free() {}
 
-      virtual void mousePressEvent(QMouseEvent*);
+      protected:
+        /// Initialize OpenGL contents
+        void         initializeGL();
 
-      QPointF mousePosition_;
-      std::unique_ptr<visual::Session> vizSession_;
+        /// Resize GL and viewport
+        virtual void resizeGL(int _w,
+                              int _h);
 
-    private:
-      virtual void dataToFrontend();
-      inline virtual bool frontendToData() { return false; }
+        /// Paint GL routine
+        virtual void paintGL();
 
-      virtual bool initialize() = 0;
-      bool initialized_ = false;
+        /// Mouse press event sets mouse position
+        virtual void mousePressEvent(QMouseEvent *);
+
+        /// Mouse position stored
+        QPointF mousePosition_;
+
+        /// Visualizer for session
+        std::unique_ptr<visual::Session> vizSession_;
+
+      private:
+        virtual void dataToFrontend();
+        inline virtual bool frontendToData() {
+          return false;
+        }
+
+        /// Pure virtual function to initialize GL contents
+        virtual bool initialize() = 0;
+        bool initialized_ = false;
     };
   }
 }

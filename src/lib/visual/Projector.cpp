@@ -21,6 +21,7 @@
 
 #include <omni/util.h>
 #include <omni/visual/util.h>
+#include <omni/proj/Frustum.h>
 
 namespace omni {
     namespace visual {
@@ -76,14 +77,13 @@ namespace omni {
                                                      _fragmentSrc);
                 haloShader_->link();
             }
-            qreal _a      = proj_.fov().radians() * 0.5;
-            qreal _width  = tan(_a);
-            qreal _height = _width / proj_.aspectRatio();
+
+            proj::Frustum _frustum(proj_);
             eye_         = QVector3D(0, 0, 0);
-            topLeft_     = QVector3D(1.0, -_width, _height);
-            topRight_    = QVector3D(1.0, _width, _height);
-            bottomLeft_  = QVector3D(1.0, -_width, -_height);
-            bottomRight_ = QVector3D(1.0, _width, -_height);
+            topLeft_     = _frustum.topLeft();
+            topRight_    = _frustum.topRight();
+            bottomLeft_  = _frustum.bottomLeft();
+            bottomRight_ = _frustum.bottomRight();
         }
 
         void Projector::draw() const

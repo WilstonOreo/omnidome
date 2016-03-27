@@ -30,12 +30,9 @@
 #include <omni/Session.h>
 #include <omni/ui/mixin/DataModel.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace Ui
-    {
+namespace omni {
+  namespace ui {
+    namespace Ui {
       class MainWindow;
     }
     class Arrange;
@@ -46,98 +43,97 @@ namespace omni
     class ToolBar;
 
     class MainWindow :
-        public QMainWindow
-    {
+      public QMainWindow {
       Q_OBJECT
-    public:
 
-      MainWindow (QMainWindow *parent = nullptr);
-      ~MainWindow();
+      public:
+        MainWindow(QMainWindow *parent = nullptr);
+        ~MainWindow();
 
-    public slots:
-      /// Initiaties a new session after dialog was confirmed
-      void newProjection();
+      public slots:
+        /// Initiaties a new session after dialog was confirmed
+        void newProjection();
 
-      /// Save current session
-      void saveProjection();
+        /// Save current session
+        void saveProjection();
 
-      /// Set current session under a new filename
-      void saveProjectionAs();
+        /// Set current session under a new filename
+        void saveProjectionAs();
 
-      /// Open a new session
-      void openProjection();
+        /// Open a new session
+        void openProjection();
 
-      /// Open a new session from filename
-      bool openProjection(const QString& _filename);
+        /// Open a new session from filename
+        bool openProjection(const QString& _filename);
 
-      /// Edit current session with a new filename
-      void editAsNew();
+        /// Edit current session with a new filename
+        void editAsNew();
 
-      /// Update all OpenGL views
-      void updateAllViews();
+        /// Update all OpenGL views
+        void updateAllViews();
 
-      /// Sets modified flag to true
-      void modified();
+        /// Sets modified flag to true
+        void modified();
 
-    protected:
-      void closeEvent(QCloseEvent* _event);
-      void showEvent(QShowEvent* _event);
+      protected:
+        void closeEvent(QCloseEvent *_event);
+        void showEvent(QShowEvent *_event);
 
-    private slots:
-      /// Sets enabled state of toolbar buttons
-      void buttonState();
+      private slots:
+        /// Sets enabled state of toolbar buttons
+        void                        buttonState();
 
-      /// Set current tuning index
-      void setTuningIndex();
+        /// Set current tuning index
+        void                        setTuningIndex();
 
-      void addProjector(QAction* _action);
+        void                        addProjector(QAction *_action);
 
-      /// Sets session mode
-      void setMode();
+        /// Sets session mode
+        void                        setMode();
 
-    private:
-      void readSettings();
+      private:
+        void                        readSettings();
 
-      /// Makes a new session
-      void setupSession();
+        /// Makes a new session
+        void                        setupSession();
 
-      /// Message Box for changing changes
-      QMessageBox::StandardButton saveChangesPrompt();
+        /// Message Box for changing changes
+        QMessageBox::StandardButton saveChangesPrompt();
 
-      /// Current filename
-      QString filename_;
+        /// Current filename
+        QString filename_;
 
-      /// Current projection session
-      std::shared_ptr<Session> session_;
+        /// Current projection session
+        std::shared_ptr<Session> session_;
 
-      /// Modified flag
-      bool modified_ = false;
+        /// Modified flag
+        bool modified_ = false;
 
-      /// Locked flag
-      bool locked_;
+        /// Locked flag
+        bool locked_;
 
-            /// Screen Setup page
-            QUniquePtr<ScreenSetup> screenSetup_;
+        /// Screen Setup page
+        QUniquePtr<ScreenSetup> screenSetup_;
 
-            /// ProjectionSetup/Canvas arrangement page
-            QUniquePtr<Arrange> arrange_;
+        /// ProjectionSetup/Canvas arrangement page
+        QUniquePtr<Arrange> arrange_;
 
-            /// Page for current warp grid
-            QUniquePtr<TuningGLView> tuningView_;
+        /// Page for current warp grid
+        QUniquePtr<TuningGLView> tuningView_;
 
-            /// Page for exporting projection
-            QUniquePtr<Export> export_;
+        /// Page for exporting projection
+        QUniquePtr<Export> export_;
 
-            /// Page for exporting projection
-            QUniquePtr<GLView3D> live_;
+        /// Page for exporting projection
+        QUniquePtr<GLView3D> live_;
 
-            /// MainWindow toolbar
-            QUniquePtr<ToolBar> toolBar_;
+        /// MainWindow toolbar
+        QUniquePtr<ToolBar> toolBar_;
 
-      /// UI containing designed widgets of this window
-      std::unique_ptr<Ui::MainWindow> ui_;
+        /// UI containing designed widgets of this window
+        std::unique_ptr<Ui::MainWindow> ui_;
 
-      QUniquePtr<QOpenGLContext> glContext_;
+        QUniquePtr<QOpenGLContext> glContext_;
     };
   }
 }

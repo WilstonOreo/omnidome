@@ -28,7 +28,7 @@
 #include <omni/proj/PeripheralSetup.h>
 #include <omni/proj/RingArray.h>
 
-#include <omni/Renderer.h>
+#include <omni/render/Renderer.h>
 
 namespace omni
 {
@@ -131,14 +131,21 @@ namespace omni
     mode_=_mode;
   }
 
-  float Session::sceneSize() const {
-      return sceneSize_;
+  Scene& Session::scene() {
+      return scene_;
   }
 
-  void Session::setSceneSize(float _size) {
-      sceneSize_ = _size;
+  Scene const& Session::scene() const {
+      return scene_;
   }
 
+  ExportSettings& Session::exportSettings() {
+      return exportSettings_;
+  }
+
+  ExportSettings const& Session::exportSettings() const {
+      return exportSettings_;
+  }
 
   bool Session::hasOutput() const
   {
@@ -146,9 +153,9 @@ namespace omni
   }
 
   /// Export calibration data of session to a file
-  void Session::renderToFile(QString const& _filename, RenderOptions const& _options)
+  void Session::renderToFile(QString const& _filename)
   {
-    Renderer _renderer(*this,_options);
+    render::Renderer _renderer(*this);
     _renderer.renderToFile(_filename);
   }
 
@@ -175,9 +182,10 @@ namespace omni
           ("mapping",mapping_)
           ("inputs",inputs_)
           ("canvas",canvas_)
-          ("sceneSize",sceneSize_)
-          ("mode",util::enumToInt(mode_))
-          ("blendSettings",blendSettings_);
+          ("mode",mode_)
+          ("scene",scene_)
+          ("blendSettings",blendSettings_)
+          ("exportSettings_",exportSettings_);
       _os << _map;
   }
 
@@ -192,9 +200,10 @@ namespace omni
       _map.getPtr("canvas",[&](Id const& _id) {
           return setCanvas(_id);
       });
-      _map.get("sceneSize",sceneSize_);
-      mode_ = util::intToEnum<Mode>(_map.getValue<int>("mode"));
+      _map.get("mode",mode_);
+      _map.get("scene",scene_);
       _map.get("blendSettings",blendSettings_);
+      _map.get("exportSettings",exportSettings_);
   }
 
   bool operator==(Session const& _lhs,Session const& _rhs)
@@ -204,8 +213,10 @@ namespace omni
       OMNI_TEST_PTR_MEMBER_EQUAL(mapping_) &&
       OMNI_TEST_MEMBER_EQUAL(inputs_) &&
       OMNI_TEST_PTR_MEMBER_EQUAL(canvas_) &&
-      OMNI_TEST_MEMBER_EQUAL(sceneSize_) &&
       OMNI_TEST_MEMBER_EQUAL(mode_) &&
-      OMNI_TEST_MEMBER_EQUAL(blendSettings_);
+      OMNI_TEST_MEMBER_EQUAL(scene_) &&
+      OMNI_TEST_MEMBER_EQUAL(blendSettings_) &&
+      OMNI_TEST_MEMBER_EQUAL(exportSettings_)
+      ;
   }
 }

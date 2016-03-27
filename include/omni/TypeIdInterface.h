@@ -22,23 +22,26 @@
 
 #include <omni/Id.h>
 
-namespace omni
-{
-  /// Abstract Interface with a single virtual member function which returns type id
-  class TypeIdInterface
-  {
-  public:
-    /// Returns type id of object
-    virtual Id getTypeId() const = 0;
+namespace omni {
+  /// Abstract Interface with a single virtual member function which returns
+  // type id
+  class TypeIdInterface {
+    public:
+      /// Returns type id of object
+      virtual Id   getTypeId() const = 0;
 
-    virtual void registerInFactory() const = 0;
+      /// Register the inherited class in factory
+      virtual void registerInFactory() const = 0;
   };
 }
 
-#define OMNI_REGISTER_CLASS(FACTORY,CLASS_NAME) \
-    OMNI_TYPEID(#CLASS_NAME) \
-    virtual void registerInFactory() const { \
-        FACTORY::template reg<CLASS_NAME>(); \
-    }
+#define OMNI_TYPEID(type_id) \
+  BOOSTX_TYPE_ID(omni::Id, type_id, typeId, getTypeId)
+
+#define OMNI_REGISTER_CLASS(FACTORY, CLASS_NAME) \
+  OMNI_TYPEID(# CLASS_NAME)                      \
+  virtual void registerInFactory() const {       \
+    FACTORY::template reg<CLASS_NAME>();         \
+  }
 
 #endif /* OMNI_TYPEIDINTERFACE_H_ */

@@ -21,14 +21,11 @@
 
 #include "ui_omni_ui_MultiSetupDialog.h"
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace proj
-    {
-      MultiSetupDialog::MultiSetupDialog(omni::proj::MultiSetup* _multiSetup,
-        std::shared_ptr<Session> _session) :
+namespace omni {
+  namespace ui {
+    namespace proj {
+      MultiSetupDialog::MultiSetupDialog(omni::proj::MultiSetup *_multiSetup,
+                                         std::shared_ptr<Session>_session) :
         QDialog(nullptr),
         session_(_session),
         multiSetup_(_multiSetup),
@@ -45,21 +42,23 @@ namespace omni
 
         ui_->groupSetup->setTitle(multiSetup_->getTypeId().str());
 
-        connect(ui_->parameters,SIGNAL(parametersUpdated()),ui_->preview,SLOT(updateProjectors()));
+        connect(ui_->parameters, SIGNAL(parametersUpdated()), ui_->preview,
+                SLOT(updateProjectors()));
 
-        connect(ui_->btnCancel,SIGNAL(clicked()),this,SLOT(cancel()));
-        connect(ui_->btnAppend,SIGNAL(clicked()),this,SLOT(append()));
-        connect(ui_->btnReplace,SIGNAL(clicked()),this,SLOT(replace()));
+        connect(ui_->btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
+        connect(ui_->btnAppend, SIGNAL(clicked()), this, SLOT(append()));
+        connect(ui_->btnReplace, SIGNAL(clicked()), this, SLOT(replace()));
       }
 
       MultiSetupDialog::~MultiSetupDialog()
-      {
-      }
+      {}
 
-      MultiSetupDialog::Result MultiSetupDialog::open(omni::proj::MultiSetup* _multiSetup,
-          std::shared_ptr<Session> _session)
+      MultiSetupDialog::Result MultiSetupDialog::open(
+        omni::proj::MultiSetup *_multiSetup,
+        std::shared_ptr<Session>_session)
       {
-        MultiSetupDialog _dialog(_multiSetup,_session);
+        MultiSetupDialog _dialog(_multiSetup, _session);
+
         _dialog.exec();
         return _dialog.result_;
       }

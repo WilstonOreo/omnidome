@@ -22,35 +22,34 @@
 #include <QScrollArea>
 
 namespace omni {
-    namespace ui {
-        /// DockWidget is scroll area with an embedded widget
-        class DockWidget : public QScrollArea
-        {
-            Q_OBJECT
-        public:
-            DockWidget(QWidget* = nullptr);
+  namespace ui {
+    /// DockWidget is scroll area with an embedded widget
+    class DockWidget : public QScrollArea {
+      Q_OBJECT
 
-            template<typename UI>
-            DockWidget(UI& _ui, QWidget* _parent = nullptr) :
-                QScrollArea(_parent) {
-            }
+      public:
+        DockWidget(QWidget * = nullptr);
 
-            virtual ~DockWidget() {}
+        template<typename UI>
+        DockWidget(UI& _ui, QWidget *_parent = nullptr) :
+          QScrollArea(_parent) {}
 
-        protected:
-            /**@brief Setup ui form
-               @detail UI parameter is smart pointer (e.g. unique_ptr) to UI form
-             **/
-            template<typename UI>
-            void setup(UI& _ui) {
-                _ui.reset(new typename UI::element_type);
-                auto* _widget = new QWidget(this);
-                this->setWidget(_widget);
-                this->setWidgetResizable(true);
-                _ui->setupUi(this->widget());
-            }
-        };
-    }
+        virtual ~DockWidget() {}
+
+      protected:
+        /**@brief Setup ui form
+           @detail UI parameter is smart pointer (e.g. unique_ptr) to UI form
+         **/
+        template<typename UI>
+        void setup(UI& _ui) {
+          _ui.reset(new typename UI::element_type);
+          auto *_widget = new QWidget(this);
+          this->setWidget(_widget);
+          this->setWidgetResizable(true);
+          _ui->setupUi(this->widget());
+        }
+    };
+  }
 }
 
 #endif /* OMNI_UI_DOCKWIDGET_H_ */

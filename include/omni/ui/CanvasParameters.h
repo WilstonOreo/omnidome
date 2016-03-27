@@ -24,31 +24,31 @@
 #include <omni/ui/ParameterWidget.h>
 #include <omni/ui/mixin/DataModel.h>
 
-namespace omni
-{
-  namespace ui
-  {
+namespace omni {
+  namespace ui {
     /**@brief Parameter widget for getting and setting canvas parameters
-     **/
+    **/
     class CanvasParameters :
-        public ParameterWidget,
-        public mixin::UnsharedDataModel<canvas::Interface>
-    {
-      Q_OBJECT
-      OMNI_UI_UNSHARED_DATAMODEL(canvas::Interface)
-    public:
-      CanvasParameters(QWidget* _parent = nullptr);
-      virtual ~CanvasParameters();
+      public ParameterWidget,
+      public mixin::UnsharedDataModel<canvas::Interface>{
+        Q_OBJECT
+        OMNI_UI_UNSHARED_DATAMODEL(canvas::Interface)
+      public:
+        CanvasParameters(QWidget *_parent = nullptr);
+        virtual ~CanvasParameters();
 
-    signals:
-        void dataModelChanged();
-  protected:
-      virtual void dataToFrontend();
+      signals:
+        void         dataModelChanged();
 
-                /// Return true if data has changed by front end
-      virtual bool frontendToData();
-    private:
-      omni::ui::AffineTransform* transform_ = nullptr;
+      protected:
+        virtual void dataToFrontend();
+
+        /// Return true if data has changed by front end
+        virtual bool frontendToData();
+
+      private:
+        /// Transform widget
+        omni::ui::AffineTransform *transform_ = nullptr;
     };
   }
 }

@@ -23,28 +23,32 @@
 #include <QVector3D>
 #include "AngleSetup.h"
 
-namespace omni
-{
-  namespace proj
-  {
+namespace omni {
+  namespace proj {
     class FreeSetup :
-      public AngleSetup
-    {
-    public:
-      OMNI_REGISTER_CLASS(SetupFactory,FreeSetup)
+      public AngleSetup {
+      public:
+        OMNI_REGISTER_CLASS(SetupFactory, FreeSetup)
 
-      FreeSetup();
+        FreeSetup();
 
-      void toStream(QDataStream&) const;
-      void fromStream(QDataStream&);
-      void setup(Projector&);
+        void      toStream(QDataStream&) const;
+        void      fromStream(QDataStream&);
+        void      setup(Projector&);
 
-      QVector3D pos() const;
-      void setPos(QVector3D const&);
-      void setPos(float _x, float _y, float _z);
+        /// Return projector position
+        QVector3D pos() const;
 
-    private:
-      QVector3D pos_;
+        /// Set position from QVector3D
+        void      setPos(QVector3D const&);
+
+        /// Set position from x,y,z position values
+        void      setPos(float _x,
+                         float _y,
+                         float _z);
+
+      private:
+        QVector3D pos_;
     };
   }
 }

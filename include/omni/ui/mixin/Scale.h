@@ -23,95 +23,112 @@
 #include <map>
 
 namespace omni {
-    namespace ui {
-        namespace mixin {
-        /// Scales a set of sliders and sets a common unit suffix
-        template<typename SLIDER, typename SCALAR = float>
-        class Scale {
+  namespace ui {
+    namespace mixin {
+      /// Scales a set of sliders and sets a common unit suffix
+      template<typename SLIDER, typename SCALAR = float>
+      class Scale {
         public:
-            typedef SLIDER slider_type;
-            typedef SCALAR scalar_type;
+          typedef SLIDER slider_type;
+          typedef SCALAR scalar_type;
 
-            /// Set scale and apply to sliders
-            virtual void setScale(float _scale) {
-                float _oldScale = scale_;
-                scale_ = _scale;
+          /// Set scale and apply to sliders
+          virtual void setScale(float _scale) {
+            float _oldScale = scale_;
 
-                for (auto& _slider_info : sliders_) {
-                    auto& _slider = _slider_info.first;
-                    auto& _info = _slider_info.second;
-                    auto _value = _slider->value() / _oldScale * scale_;
-                    _slider->setRange(_info.min_ * scale_, _info.max_ * scale_);
-                    _slider->setValue(_value);
-                    _slider->setSingleStep(_info.singleStep_ * scale_);
-                    _slider->setPageStep(_info.pageStep_ * scale_);
-                    _slider->setPrecision(getPrecision(scale_));
-                }
+            scale_ = _scale;
+
+            for (auto& _slider_info : sliders_) {
+              auto& _slider = _slider_info.first;
+              auto& _info   = _slider_info.second;
+              auto  _value  = _slider->value() / _oldScale * scale_;
+              _slider->setRange(_info.min_ * scale_, _info.max_ * scale_);
+              _slider->setValue(_value);
+              _slider->setSingleStep(_info.singleStep_ * scale_);
+              _slider->setPageStep(_info.pageStep_ * scale_);
+              _slider->setPrecision(getPrecision(scale_));
+            }
+          }
+
+          /// Return scale value
+          float scale() const {
+            return scale_;
+          }
+
+          /// Common unit of sliders
+          QString suffix() const {
+            return suffix_;
+          }
+
+          /// Set suffix (unit) of slider
+          void setSuffix(QString const& _suffix) {
+            suffix_ = _suffix;
+
+            for (auto& _slider_info : sliders_) {
+              _slider_info->setSuffix(suffix_);
+            }
+          }
+
+          /// Register slider to be scaled
+          void registerScaledSlider(slider_type *_slider) {
+            if (sliders_.count(_slider)) return;
+
+            sliders_[_slider] = SliderInfo(_slider->minimum(), _slider->maximum(),
+                                           _slider->pageStep(),
+                                           _slider->singleStep());
+          }
+
+          /// Remove slider from list, keep scale
+          void unregisterScaledSlider(slider_type *_slider) {
+            if (!sliders_.count(_slider)) return;
+
+            sliders_.erase(_slider);
+          }
+
+          /// Return precesion by scale
+          static int getPrecision(float _scale) {
+            if (_scale <= 0.1) {
+              return 4;
             }
 
-            /// Return scale value
-            float scale() const {
-                return scale_;
+            if (_scale <= 1) {
+              return 3;
             }
 
-            QString suffix() const {
-                return suffix_;
+            if (_scale <= 10) {
+              return 2;
             }
 
-            void setSuffix(QString const& _suffix) {
-                suffix_ = _suffix;
-                for (auto& _slider_info : sliders_) {
-                    _slider_info->setSuffix(suffix_);
-                }
+            if (_scale <= 100) {
+              return 1;
             }
-
-            void registerScaledSlider(slider_type* _slider) {
-                if (sliders_.count(_slider)) return;
-                sliders_[_slider] = SliderInfo(_slider->minimum(),_slider->maximum(),
-                    _slider->pageStep(),_slider->singleStep());
-            }
-
-            void unregisterScaledSlider(slider_type* _slider) {
-                if (!sliders_.count(_slider)) return;
-                sliders_.erase(_slider);
-            }
-
-            static int getPrecision(float _scale) {
-                if (_scale <= 0.1) {
-                    return 4;
-                }
-                if (_scale <= 1) {
-                    return 3;
-                }
-                if (_scale <= 10) {
-                    return 2;
-                }
-                if (_scale <= 100) {
-                    return 1;
-                }
-                return 2;
-            }
+            return 2;
+          }
 
         private:
-            struct SliderInfo {
-                SliderInfo() {}
-                SliderInfo(float _min, float _max, float _pageStep, float _singleStep) :
-                    min_(_min),
-                    max_(_max),
-                    pageStep_(_pageStep),
-                    singleStep_(_singleStep) {}
+          /// Slider Info struct saves min, max and step values
+          struct SliderInfo {
+            SliderInfo() {}
 
-                float min_, max_;
-                float pageStep_, singleStep_;
-            };
+            SliderInfo(float _min, float _max, float _pageStep,
+                       float _singleStep) :
+              min_(_min),
+              max_(_max),
+              pageStep_(_pageStep),
+              singleStep_(_singleStep) {}
 
-            QString suffix_ = "m";
-            int precision_ = 2;
-            float scale_ = 1.0;
-            std::map<slider_type*,SliderInfo> sliders_;
-        };
+            float min_, max_;
+            float pageStep_, singleStep_;
+          };
+
+          /// Common suffix is meter
+          QString suffix_    = "m";
+          int     precision_ = 2;
+          float   scale_     = 1.0;
+          std::map<slider_type *, SliderInfo> sliders_;
+      };
     }
-    }
+  }
 }
 
 #endif /* OMNI_UI_MIXIN_SCALE_H_ */

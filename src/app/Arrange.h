@@ -23,33 +23,37 @@
 #include <omni/ui/mixin/DataModel.h>
 
 namespace omni {
-    namespace ui {
-        class GLView3D;
+  namespace ui {
+    class GLView3D;
 
-        namespace Ui {
-            class Arrange;
-        }
-        class Arrange :
-            public QWidget,
-            public mixin::SharedDataModel<Session>
-        {
-            Q_OBJECT
-            OMNI_UI_SHARED_DATAMODEL(Session)
-        public:
-            Arrange(QWidget* = nullptr);
-            ~Arrange();
-
-            GLView3D* view();
-            GLView3D const* view() const;
-
-        signals:
-            void dataModelChanged();
-
-        private:
-            void dataToFrontend();
-            bool frontendToData();
-
-            std::unique_ptr<Ui::Arrange> ui_;
-        };
+    namespace Ui {
+      class Arrange;
     }
+
+    /// Arrange widget for positioning of elements and 3D view of scene
+    class Arrange :
+      public QWidget,
+      public mixin::SharedDataModel<Session>{
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
+      public:
+        Arrange(QWidget * = nullptr);
+        ~Arrange();
+
+        /// Return pointer to view
+        GLView3D      * view();
+
+        /// Return pointer to view (const version)
+        GLView3D const* view() const;
+
+      signals:
+        void            dataModelChanged();
+
+      private:
+        void            dataToFrontend();
+        bool            frontendToData();
+
+        std::unique_ptr<Ui::Arrange> ui_;
+    };
+  }
 }

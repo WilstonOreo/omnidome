@@ -21,6 +21,8 @@
 #ifndef OMNI_VISUAL_PROJECTORVIEWMODE_H_
 #define OMNI_VISUAL_PROJECTORVIEWMODE_H_
 
+#include <omni/serialization/Interface.h>
+
 namespace omni {
     namespace visual {
         enum class ProjectorViewMode {
@@ -32,5 +34,7 @@ namespace omni {
 
     using visual::ProjectorViewMode;
 }
+
+OMNI_DECL_ENUM_STREAM_OPERATORS(omni::visual::ProjectorViewMode)
 
 #endif /* OMNI_VISUAL_PROJECTORVIEWMODE_H_ */

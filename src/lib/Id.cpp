@@ -61,7 +61,7 @@ namespace omni
 
   bool Id::operator!=(const Id& _rhs) const
   {
-    return *this != _rhs;
+    return !(*this == _rhs);
   }
 
   bool Id::operator==(const Id& _rhs) const

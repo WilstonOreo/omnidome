@@ -24,49 +24,69 @@
 #include <omni/ui/mixin/Locked.h>
 #include "Dial.h"
 
-namespace omni
-{
-        namespace ui {
+namespace omni {
+  namespace ui {
+    /// Rotation widget has three dials for rotation in X,Y,Z direction
+    class Rotation :
+      public QWidget,
+      protected mixin::Locked {
+        Q_OBJECT
 
-                class Rotation :
-                    public QWidget,
-                    protected mixin::Locked
-                {
-                        Q_OBJECT
-                    public:
-                        Rotation(QWidget* = nullptr);
-                        Rotation(double _x, double _y, double _z, QWidget* = nullptr);
-                        ~Rotation();
+      public:
+        /// Construct from optional parent widget
+        Rotation(QWidget * = nullptr);
 
-                        double x() const;
-                        double y() const;
-                        double z() const;
-                        EulerAngles angles() const;
+        /// Construct from given x,y,z angle values
+        Rotation(double _x,
+                 double _y,
+                 double _z,
+                 QWidget * = nullptr);
+        ~Rotation();
 
-                    public slots:
-                        void setX(double);
-                        void setY(double);
-                        void setZ(double);
+        /// Return x angle (roll) value as double
+        double      x() const;
 
-                        void setRotation(EulerAngles const&);
+        /// Return y angle (pitch) value as double
+        double      y() const;
 
-                    signals:
-                        void xChanged();
-                        void yChanged();
-                        void zChanged();
-                        void rotationChanged();
+        /// Return z angle (yaw) value as double
+        double      z() const;
 
-                    private:
-                        void updateX();
-                        void updateY();
-                        void updateZ();
+        /// Return x,y,z values as euler angles
+        EulerAngles angles() const;
 
-                        void init(double,double,double);
-                        Dial* x_;
-                        Dial* y_;
-                        Dial* z_;
-                };
-        }
+      public slots:
+        /// Set value for X angle (roll angle)
+        void        setX(double);
+
+        /// Set value for Y angle (pitch angle)
+        void        setY(double);
+
+        /// Set value for Z angle (yaw angle)
+        void        setZ(double);
+
+        /// Set rotation from euler angles
+        void        setRotation(EulerAngles const&);
+
+      signals:
+        void        xChanged();
+        void        yChanged();
+        void        zChanged();
+        void        rotationChanged();
+
+      private:
+        void        updateX();
+        void        updateY();
+        void        updateZ();
+
+        void        init(double,
+                         double,
+                         double);
+        Dial *x_;
+        Dial *y_;
+        Dial *z_;
+    };
+  }
 }
 
 

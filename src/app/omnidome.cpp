@@ -29,95 +29,69 @@
 using namespace omni;
 
 class CommandLineParser {
-public:
+  public:
     void parse(QApplication const& _app) {
+      QString _argument;
 
-        QString _argument;
-        for (auto& _arg : _app.arguments()) {
-            if (_arg[0] == '+') {
-                _argument = "";
-                for (int i = 1; i < _arg.size(); ++i) {
-                    _argument += _arg[i];
-                }
-            } else {
-                keyValues_[_argument] += _arg + " ";
-            }
+      for (auto& _arg : _app.arguments()) {
+        if (_arg[0] == '+') {
+          _argument = "";
+
+          for (int i = 1; i < _arg.size(); ++i) {
+            _argument += _arg[i];
+          }
+        } else {
+          keyValues_[_argument] += _arg + " ";
         }
+      }
 
-        for (auto& _keyValue : keyValues_) {
-            _keyValue.second = _keyValue.second.trimmed();
-
-        }
+      for (auto& _keyValue : keyValues_) {
+        _keyValue.second = _keyValue.second.trimmed();
+      }
     }
 
     QString value(QString const& _key) const {
-        if (!keyValues_.count(_key)) {
-            return QString();
-        }
+      if (!keyValues_.count(_key)) {
+        return QString();
+      }
 
-        return keyValues_.at(_key);
+      return keyValues_.at(_key);
     }
 
-private:
-
-    std::map<QString,QString> keyValues_;
-
+  private:
+    std::map<QString, QString> keyValues_;
 };
 
 int main(int ac, char *av[])
 {
-    // This line is absolutely mandatory for being able to have multiple
-    // QOpenGLWidgets in different windows!!!
-    QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+  // This line is absolutely mandatory for being able to have multiple
+  // QOpenGLWidgets in different windows!!!
+  QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-    omni::ui::Application _a(ac, av);
+  omni::ui::Application _a(ac, av);
 
-/// Command line parser is only available in debug mode
+  /// Command line parser is only available in debug mode
 #ifdef DEBUG
+  CommandLineParser parser;
+  parser.parse(_a);
 
-    CommandLineParser parser;
-    parser.parse(_a);
+  if (!parser.value("stylesheet").isEmpty()) {
+    qDebug() << parser.value("stylesheet");
+    _a.setStyleSheetFile(parser.value("stylesheet"));
+  }
+#endif // ifdef DEBUG
 
-/*
-    parser.setApplicationDescription("Omnidome");
+  ui::MainWindow _w;
+  _w.move(QApplication::primaryScreen()->geometry().topLeft());
 
-    QCommandLineOption _pluginDirOption({"p", "plugin-directory"},
-            QCoreApplication::translate("main", "Plugin directory <directory>."),
-            QCoreApplication::translate("main", "plugin-directory"));
-
-    QCommandLineOption _styleSheetOption({"s", "stylesheet"},
-            QCoreApplication::translate("main", "Style sheet file <filename>."),
-            QCoreApplication::translate("main", "stylesheet"));
-
-    parser.addHelpOption();
-    parser.addVersionOption();
-    parser.addOption(_pluginDirOption);
-    parser.addOption(_styleSheetOption);
-
-    parser.process(_a);
-
-    //const QStringList args = parser.positionalArguments();
-
-    if (!parser.value(_pluginDirOption).isEmpty()) {
-        _pluginDirs.push_back(parser.value("plugin-directory"));
-    }
-*/
-    if (!parser.value("stylesheet").isEmpty()) {
-        qDebug() << parser.value("stylesheet");
-        _a.setStyleSheetFile(parser.value("stylesheet"));
-    }
-#endif
-
-    ui::MainWindow _w;
-    _w.move(QApplication::primaryScreen()->geometry().topLeft());
-
-// Load mapping session from given commandline argument when in release mode
+  // Load mapping session from given commandline argument when in release mode
 #ifndef DEBUG
-    if (ac == 2)
-    {
-        _w.openProjection(av[1]);
-    }
-#endif
 
-    return _a.exec();
+  if (ac == 2)
+  {
+    _w.openProjection(av[1]);
+  }
+#endif // ifndef DEBUG
+
+  return _a.exec();
 }

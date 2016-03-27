@@ -21,32 +21,30 @@
 #include "ui_omni_ui_Arrange.h"
 
 namespace omni {
-    namespace ui {
-        Arrange::Arrange(QWidget* _parent) :
-            QWidget(_parent),
-            ui_(new Ui::Arrange)
-        {
-            ui_->setupUi(this);
-        }
-
-        Arrange::~Arrange() {
-
-        }
-
-        void Arrange::dataToFrontend() {
-            ui_->view->setDataModel(dataModel());
-        }
-
-        GLView3D* Arrange::view() {
-            return ui_->view;
-        }
-
-        GLView3D const* Arrange::view() const {
-            return ui_->view;
-        }
-
-        bool Arrange::frontendToData() {
-            return false;
-        }
+  namespace ui {
+    Arrange::Arrange(QWidget *_parent) :
+      QWidget(_parent),
+      ui_(new Ui::Arrange)
+    {
+      ui_->setupUi(this);
     }
+
+    Arrange::~Arrange() {}
+
+    void Arrange::dataToFrontend() {
+      ui_->view->setDataModel(dataModel());
+    }
+
+    GLView3D * Arrange::view() {
+      return ui_->view;
+    }
+
+    GLView3D const * Arrange::view() const {
+      return ui_->view;
+    }
+
+    bool Arrange::frontendToData() {
+      return false;
+    }
+  }
 }

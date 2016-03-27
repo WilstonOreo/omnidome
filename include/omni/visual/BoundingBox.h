@@ -24,25 +24,23 @@
 #include <omni/visual/VertexVBO.h>
 #include <omni/Box.h>
 
-namespace omni
-{
-  namespace visual
-  {
-    class BoundingBox : public Interface
-    {
-    public:
-      BoundingBox(omni::Box const& _box);
-      ~BoundingBox();
+namespace omni {
+  namespace visual {
+    /// Visualizer for draing a bounding box from bounds
+    class BoundingBox : public Interface {
+      public:
+        BoundingBox(omni::Box const& _box);
+        ~BoundingBox();
 
-      void draw() const;
+        void        draw() const;
 
-      static void draw(omni::Box const& _box);
+        static void draw(omni::Box const& _box);
 
-      void update();
+        void        update();
 
-    private:
-      omni::Box const& box_;
-      VertexVBO vbo_;
+      private:
+        omni::Box const& box_;
+        VertexVBO vbo_;
     };
   }
 }

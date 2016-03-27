@@ -33,15 +33,6 @@ namespace omni
   {
     namespace util
     {
-      template<typename V>
-      QPointF map_spherical(const V& _normal)
-      {
-        QPointF _texCoord(
-               atan2(-_normal.y(),_normal.x()) / (2.0*M_PI),
-               acos(_normal.z()) / M_PI);
-        return _texCoord;
-      }
-
       template<typename F>
       void for_each_circle_point(size_t _numVertices, float _radius, F _f)
       {
@@ -69,6 +60,7 @@ namespace omni
         _f(i,QPointF(_cos*_radius,_sin*_radius));
       }
 
+      /// Draw on current context, if it exists
       template<typename F>
       void with_current_context(F f)
       {
@@ -86,7 +78,7 @@ namespace omni
         return _size.width() / qreal(_size.height());
       }
 
-      /// Draw into QOpenGLFramebufferObject
+      /// Draw into QOpenGLFramebufferObject with given projection and model view operations
       template<typename FRAMEBUFFER, typename PROJECTION, typename MODELVIEW>
       void draw_on_framebuffer(FRAMEBUFFER& _f, PROJECTION _p, MODELVIEW _m)
       {
@@ -125,7 +117,7 @@ namespace omni
       });
     }
 
-
+    /// Set viewport for widget
       template<typename WIDGET>
       void viewport(WIDGET* _widget)
       {

@@ -27,49 +27,55 @@
 class QPushButton;
 
 namespace omni {
-    namespace ui {
-        class RangedFloat;
-        using omni::proj::ChannelCorrection;
-        using omni::proj::Channel;
+  namespace ui {
+    class RangedFloat;
+    using omni::proj::ChannelCorrection;
+    using omni::proj::Channel;
 
-        namespace proj {
-            class ChannelCorrectionParameters :
-                public ParameterWidget,
-                public mixin::UnsharedDataModel<ChannelCorrection>
-            {
-                Q_OBJECT
-                OMNI_UI_UNSHARED_DATAMODEL(ChannelCorrection)
-            public:
-                ChannelCorrectionParameters(QWidget* = nullptr);
-                ~ChannelCorrectionParameters();
+    namespace proj {
+      /// Parameter widget for channel correction
+      class ChannelCorrectionParameters :
+        public ParameterWidget,
+        public mixin::UnsharedDataModel<ChannelCorrection>{
+          Q_OBJECT
+          OMNI_UI_UNSHARED_DATAMODEL(ChannelCorrection)
+        public:
+          ChannelCorrectionParameters(QWidget * = nullptr);
+          ~ChannelCorrectionParameters();
 
-                Channel channel() const;
-                void setChannel(Channel _channel);
+          /// Return channel
+          Channel channel() const;
 
-            public slots:
-                void reset();
+          /// Set selected channel
+          void    setChannel(Channel _channel);
 
-            signals:
-                void dataModelChanged();
+        public slots:
+          /// Reset color correction for channel
+          void    reset();
 
-            private:
-                void setup();
+        signals:
+          /// Is emitted when channel correction has changed
+          void    dataModelChanged();
 
-                /// Update sliders from current warp grid
-                void dataToFrontend();
+        private:
+          /// Setup widget
+          void    setup();
 
-                /// Assign slider values to current warp grid
-                bool frontendToData();
+          /// Update sliders from current warp grid
+          void    dataToFrontend();
 
-                RangedFloat* brightness_ = nullptr;
-                RangedFloat* contrast_ = nullptr;
-                RangedFloat* gamma_ = nullptr;
-                RangedFloat* multiplier_ = nullptr;
-                QPushButton* reset_ = nullptr;
-                Channel channel_ = Channel::ALL;
-            };
-        }
+          /// Assign slider values to current warp grid
+          bool    frontendToData();
+
+          RangedFloat *brightness_ = nullptr;
+          RangedFloat *contrast_   = nullptr;
+          RangedFloat *gamma_      = nullptr;
+          RangedFloat *multiplier_ = nullptr;
+          QPushButton *reset_      = nullptr;
+          Channel channel_         = Channel::ALL;
+      };
     }
+  }
 }
 
 #endif /* OMNI_UI_PROJ_CHANNELCORRECTIONPARAMETERS_H_ */

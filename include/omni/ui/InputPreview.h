@@ -27,6 +27,7 @@ namespace omni
 {
   namespace ui
   {
+    /// GLView for visualizing an input
     class InputPreview : public GLView
     {
       Q_OBJECT
@@ -38,10 +39,14 @@ namespace omni
       /// Return relative border value
       float border() const;
 
+      /// Return pointer to input
       input::Interface* input();
-      input::Interface const* input() const;
-      void setInput(input::Interface*);
 
+      /// Return pointer to input (const version)
+      input::Interface const* input() const;
+
+      /// Set pointer to input
+      void setInput(input::Interface*);
 
       /**@brief Transforms mouse position on widget to normalized position on input
        * @detail Position in range (0.0,0.0) and (1.0,1.0)
@@ -58,6 +63,7 @@ namespace omni
       void inputChanged();
 
     private:
+      /// Return view rect
       QRectF viewRect() const;
 
       bool initialize();

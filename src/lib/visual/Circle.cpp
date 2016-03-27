@@ -20,66 +20,63 @@
 #include <omni/visual/Circle.h>
 #include <omni/visual/util.h>
 
-namespace omni
-{
-  namespace visual
-  {
+namespace omni {
+  namespace visual {
     Circle::Circle()
     {
-        update();
+      update();
     }
 
     void Circle::drawLine(QPointF const& _pos, float _rX, float _rY) const
     {
-        with_current_context([&](QOpenGLFunctions& _) {
-            glPushMatrix();
-            glScalef(_rX,_rY,1.0);
-            glTranslatef(_pos.x()/_rX,_pos.y()/_rY,0.0);
-            glEnableClientState(GL_VERTEX_ARRAY);
-            _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
+      with_current_context([&](QOpenGLFunctions& _) {
+        glPushMatrix();
+        glScalef(_rX, _rY, 1.0);
+        glTranslatef(_pos.x() / _rX, _pos.y() / _rY, 0.0);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
 
-            glVertexPointer(2, GL_FLOAT, 0,nullptr);
-            _.glDrawArrays(GL_LINE_LOOP, 1, numberSegments);
+        glVertexPointer(2, GL_FLOAT, 0, nullptr);
+        _.glDrawArrays(GL_LINE_LOOP, 1, numberSegments);
 
-            _.glBindBuffer(GL_ARRAY_BUFFER,         0);
-            glDisableClientState(GL_VERTEX_ARRAY);
-            glPopMatrix();
-        });
+        _.glBindBuffer(GL_ARRAY_BUFFER,         0);
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glPopMatrix();
+      });
     }
 
     void Circle::drawFill(QPointF const& _pos, float _rX, float _rY) const
     {
-        with_current_context([&](QOpenGLFunctions& _) {
-            glPushMatrix();
-            glLoadIdentity();
-            glScalef(_rX,_rY,1.0);
-            glTranslatef(_pos.x()/_rX,_pos.y()/_rY,0.0);
-            glEnableClientState(GL_VERTEX_ARRAY);
-            _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
+      with_current_context([&](QOpenGLFunctions& _) {
+        glPushMatrix();
+        glLoadIdentity();
+        glScalef(_rX, _rY, 1.0);
+        glTranslatef(_pos.x() / _rX, _pos.y() / _rY, 0.0);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_.id());
 
-            glVertexPointer(2, GL_FLOAT, 0,nullptr);
-            _.glDrawArrays(GL_TRIANGLE_FAN, 0, numberSegments + 2);
+        glVertexPointer(2, GL_FLOAT, 0, nullptr);
+        _.glDrawArrays(GL_TRIANGLE_FAN, 0, numberSegments + 2);
 
-            _.glBindBuffer(GL_ARRAY_BUFFER,         0);
-            glDisableClientState(GL_VERTEX_ARRAY);
-            glPopMatrix();
-        });
+        _.glBindBuffer(GL_ARRAY_BUFFER,         0);
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glPopMatrix();
+      });
     }
 
     void Circle::update() {
-        vertexVbo_.gen();
-        glEnableClientState(GL_VERTEX_ARRAY);
+      vertexVbo_.gen();
+      glEnableClientState(GL_VERTEX_ARRAY);
 
-        vertices_[0] = QVector2D(0.0,0.0);
-        util::for_each_circle_point(numberSegments, 1.0,
-                                    [&](size_t i, const QPointF& _p)
-        {
-            vertices_[i+1] = QVector2D(_p);
-        });
-        vertices_[numberSegments+1] = vertices_[1];
+      vertices_[0] = QVector2D(0.0, 0.0);
+      util::for_each_circle_point(numberSegments, 1.0,
+                                  [&](size_t i, const QPointF& _p)
+      {
+        vertices_[i + 1] = QVector2D(_p);
+      });
+      vertices_[numberSegments + 1] = vertices_[1];
 
-        vertexVbo_.bufferStaticArray(vertices_);
-
+      vertexVbo_.bufferStaticArray(vertices_);
     }
   }
 }

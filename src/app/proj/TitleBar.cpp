@@ -26,33 +26,29 @@
 #include <QHBoxLayout>
 #include <QColorDialog>
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace proj
-    {
-      TitleBar::TitleBar(Tuning* _tuning) :
+namespace omni {
+  namespace ui {
+    namespace proj {
+      TitleBar::TitleBar(Tuning *_tuning) :
         Widget(_tuning),
         tuningWidget_(_tuning)
       {
         setup();
       }
 
-      TitleBar::TitleBar(QString const& _label, Tuning* _tuning) :
-        Widget(_label,_tuning),
+      TitleBar::TitleBar(QString const& _label, Tuning *_tuning) :
+        Widget(_label, _tuning),
         tuningWidget_(_tuning)
       {
         setup();
       }
 
       TitleBar::~TitleBar()
-      {
-      }
+      {}
 
       void TitleBar::setColor(QColor const& _color)
       {
-        color_=_color;
+        color_ = _color;
         emit colorChanged(_color);
         update();
       }
@@ -61,9 +57,7 @@ namespace omni
       {
         QColorDialog _colorDialog(color());
 
-        if (_colorDialog.exec())
-          setColor(_colorDialog.selectedColor());
-
+        if (_colorDialog.exec()) setColor(_colorDialog.selectedColor());
       }
 
       QColor TitleBar::color() const
@@ -79,14 +73,16 @@ namespace omni
       void TitleBar::setCloseButtonVisible(bool _visible)
       {
         if (!closeButton_) return;
+
         closeButton_->setVisible(_visible);
       }
 
-      void TitleBar::paintEvent(QPaintEvent* event)
+      void TitleBar::paintEvent(QPaintEvent *event)
       {
         QPainter _p(this);
 
-        auto _rect = rect().adjusted(1,1,-1,-1);
+        auto _rect = rect().adjusted(1, 1, -1, -1);
+
         _p.setPen(Qt::NoPen);
         _p.setBrush(color());
         _p.drawRect(_rect);
@@ -97,26 +93,26 @@ namespace omni
       {
         this->label_->setAlignment(Qt::AlignCenter);
         this->label_->setStyleSheet("QLabel {"
-        "  background: transparent; "
-        "  color : #0e0e0e; "
-        "  font-size : 10pt; "
-        "}");
+                                    "  background: transparent; "
+                                    "  color : #0e0e0e; "
+                                    "  font-size : 10pt; "
+                                    "}");
 
         layout()->removeWidget(this->label_);
 
         ///////////////////// Setup buttons
         auto setupToolButton = [this](QUniquePtr<QToolButton>& _btn)
-        {
-          _btn.reset(new QToolButton());
-          _btn->setAutoRaise(true);
-          _btn->setStyleSheet("QToolButton { "
-          "     background : transparent; "
-          "     border: 0px; "
-          " } "
-          "QToolButton::menu-indicator { image: none; }");
-          _btn->installEventFilter(this->parent());
-          _btn->installEventFilter(this);
-        };
+                               {
+                                 _btn.reset(new QToolButton());
+                                 _btn->setAutoRaise(true);
+                                 _btn->setStyleSheet("QToolButton { "
+                                                     "     background : transparent; "
+                                                     "     border: 0px; "
+                                                     " } "
+                                                     "QToolButton::menu-indicator { image: none; }");
+                                 _btn->installEventFilter(this->parent());
+                                 _btn->installEventFilter(this);
+                               };
 
         setupToolButton(menuButton_);
 
@@ -129,29 +125,33 @@ namespace omni
         menuButton_->setPopupMode(QToolButton::InstantPopup);
         menuButton_->setArrowType(Qt::NoArrow);
         menuButton_->setIcon(QIcon(":/arrows/212121_90.png"));
-        auto* _changeColor = menu_->addAction("Change color...");
-        connect(_changeColor,SIGNAL(triggered()),this,SLOT(selectColor()));
+        auto *_changeColor = menu_->addAction("Change color...");
+        connect(_changeColor, SIGNAL(triggered()), this, SLOT(selectColor()));
 
         menu_->addSeparator();
-        auto* _peripheral = menu_->addAction("Peripheral Setup");
-        connect(_peripheral,SIGNAL(triggered()),this,SIGNAL(peripheralSetupSelected()));
+        auto *_peripheral = menu_->addAction("Peripheral Setup");
+        connect(_peripheral, SIGNAL(triggered()), this,
+                SIGNAL(peripheralSetupSelected()));
 
-        auto* _free = menu_->addAction("Free Setup");
-        connect(_free,SIGNAL(triggered()),this,SIGNAL(freeSetupSelected()));
+        auto *_free = menu_->addAction("Free Setup");
+        connect(_free, SIGNAL(triggered()), this, SIGNAL(freeSetupSelected()));
 
         setupToolButton(displayButton_);
         displayButton_->setCheckable(true);
         displayButton_->setIcon(QIcon(":/icons/eye.png"));
 
-        connect(displayButton_.get(),SIGNAL(clicked(bool)),tuningWidget(),SLOT(fullscreenToggle(bool)));
+        connect(displayButton_.get(), SIGNAL(clicked(bool)), tuningWidget(),
+                SLOT(fullscreenToggle(bool)));
 
         setupToolButton(maximizeButton_);
         maximizeButton_->setIcon(QIcon(":/icons/maximize.png"));
-        connect(maximizeButton_.get(),SIGNAL(clicked()),tuningWidget(),SLOT(setNextWindowState()));
+        connect(maximizeButton_.get(), SIGNAL(clicked()), tuningWidget(),
+                SLOT(setNextWindowState()));
 
         setupToolButton(closeButton_);
         closeButton_->setIcon(QIcon(":/icons/close.png"));
-        connect(closeButton_.get(),SIGNAL(clicked()),this,SIGNAL(closeButtonClicked()));
+        connect(closeButton_.get(), SIGNAL(clicked()), this,
+                SIGNAL(closeButtonClicked()));
 
         ///////////////////// END Setup buttons
 
@@ -162,17 +162,16 @@ namespace omni
         layout()->addWidget(maximizeButton_.get());
         layout()->addWidget(closeButton_.get());
         layout()->setSpacing(0);
-        layout()->setContentsMargins(0,0,0,0);
+        layout()->setContentsMargins(0, 0, 0, 0);
 
-        if (tuningWidget_ && tuningWidget_->tuning())
-          setColor(tuningWidget_->tuning()->color());
+        if (tuningWidget_ && tuningWidget_->tuning()) setColor(
+            tuningWidget_->tuning()->color());
       }
 
-      Tuning* TitleBar::tuningWidget()
+      Tuning * TitleBar::tuningWidget()
       {
         return tuningWidget_;
       }
-
     }
   }
 }

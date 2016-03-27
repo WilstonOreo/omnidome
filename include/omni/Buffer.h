@@ -28,216 +28,215 @@
 #include <omni/serialization/container.h>
 
 namespace omni {
-        /// A buffer holds an w x h pixel array
-        template<typename T>
-        struct Buffer
+  /// A buffer holds an w x h pixel array
+  template<typename T>
+  struct Buffer
+  {
+    /// Our pixel type
+    typedef T pixel_type;
+
+    /// Our data type (a dynamic array)
+    typedef std::vector<pixel_type>data_type;
+
+    /// Standard constructor
+    Buffer() : width_(0), height_(0) {}
+
+    /// Constructor with automatic resize
+    Buffer(int _width, int _height) {
+      resize(_width, _height);
+    }
+
+    /// Write pixel value to position (x,y)
+    void put(int _x, int _y, const pixel_type& _pixel)
+    {
+      put(_y * width() + _x, _pixel);
+    }
+
+    /// Write pixel value to offset (= x * width + y)
+    void put(size_t _offset, const pixel_type& _pixel)
+    {
+      data_[_offset] = _pixel;
+    }
+
+    /// Return pixel on position (x,y)
+    pixel_type& operator()(int _x, int _y)
+    {
+      return pixel(_x, _y);
+    }
+
+    /// Return pixel on position (x,y) (const version)
+    pixel_type const& operator()(int _x, int _y) const
+    {
+      return pixel(_x, _y);
+    }
+
+    /// Return pixel on offset (= x * width + y)
+    pixel_type& operator()(size_t _offset)
+    {
+      return pixel(_offset);
+    }
+
+    /// Return pixel on offset (= x * width + y) (const version)
+    pixel_type const& operator()(size_t _offset) const
+    {
+      return pixel(_offset);
+    }
+
+    /// Subscript operator for accessing elements by index
+    pixel_type& operator[](size_t _offset) {
+      return pixel(_offset);
+    }
+
+    /// Subscript operator for accessing elements by index (const version)
+    pixel_type const& operator[](size_t _offset) const {
+      return pixel(_offset);
+    }
+
+    /// Return pixel on position (x,y)
+    pixel_type& pixel(int _x, int _y)
+    {
+      return pixel(_y * width() + _x);
+    }
+
+    Buffer cropRect(QRect const& _rect) const
+    {
+      Buffer _buffer(_rect.width(), _rect.height());
+
+      for (int y = 0; y < _rect.height(); ++y)
+        for (int x = 0; x < _rect.width(); ++x)
         {
-                /// Our pixel type
-                typedef T pixel_type;
+          _buffer(x, y) = pixel(x + _rect.x(), y + _rect.y());
+        }
 
-                /// Our data type (a dynamic array)
-                typedef std::vector<pixel_type> data_type;
+      return _buffer;
+    }
 
-                /// Standard constructor
-                Buffer() : width_(0), height_(0) {
-                }
+    /// Return pixel on position (x,y) (const version)
+    pixel_type const& pixel(int _x, int _y) const
+    {
+      return pixel(_y * width() + _x);
+    }
 
-                /// Constructor with automatic resize
-                Buffer(int _width, int _height) {
-                        resize(_width, _height);
-                }
+    /// Return pixel on offset (= x * width + y)
+    pixel_type& pixel(size_t _offset) {
+      return data_[_offset];
+    }
 
-                /// Write pixel value to position (x,y)
-                void put(int _x, int _y, const pixel_type& _pixel)
-                {
-                        put(_y*width()+_x,_pixel);
-                }
+    /// Return pixel on offset (= x * width + y) (const version)
+    pixel_type const& pixel(size_t _offset) const {
+      return data_[_offset];
+    }
 
-                /// Write pixel value to offset (= x * width + y)
-                void put(size_t _offset, const pixel_type& _pixel)
-                {
-                        data_[_offset] = _pixel;
-                }
+    /// Return width of the buffer
+    int width() const
+    {
+      return width_;
+    }
 
-                /// Return pixel on position (x,y)
-                pixel_type& operator()(int _x, int _y)
-                {
-                        return pixel(_x,_y);
-                }
+    /// Return height of the buffer
+    int height() const
+    {
+      return height_;
+    }
 
-                /// Return pixel on position (x,y) (const version)
-                pixel_type const& operator()(int _x, int _y) const
-                {
-                        return pixel(_x,_y);
-                }
+    /// Return const reference to data
+    data_type const& data() const
+    {
+      return data_;
+    }
 
-                /// Return pixel on offset (= x * width + y)
-                pixel_type& operator()(size_t _offset)
-                {
-                        return pixel(_offset);
-                }
+    /// Clear buffer with black color
+    void clear()
+    {
+      data_ = data_type(data_.size(), 0);
+    }
 
-                /// Return pixel on offset (= x * width + y) (const version)
-                pixel_type const& operator()(size_t _offset) const
-                {
-                        return pixel(_offset);
-                }
+    /// Clear buffer with specific pixel
+    void clear(const pixel_type& _pixel)
+    {
+      data_ = data_type(data_.size(), _pixel);
+    }
 
-                /// Subscript operator for accessing elements by index
-                pixel_type& operator[] (size_t _offset) {
-                        return pixel(_offset);
-                }
+    /// Returns true if width and height are zero
+    bool empty() const
+    {
+      return data_.empty();
+    }
 
-                /// Subscript operator for accessing elements by index (const version)
-                pixel_type const& operator[] (size_t _offset) const {
-                        return pixel(_offset);
-                }
+    /// Returns size of buffer (= width * height)
+    size_t size() const {
+      return data_.size();
+    }
 
-                /// Return pixel on position (x,y)
-                pixel_type& pixel(int _x, int _y)
-                {
-                        return pixel(_y*width()+_x);
-                }
+    /// Resize buffer to given width and height
+    void resize(int _width, int _height)
+    {
+      if (_width * _height <= 0) return;
 
-                Buffer cropRect(QRect const& _rect) const
-                {
-                        Buffer _buffer(_rect.width(),_rect.height());
+      width_  = _width;
+      height_ = _height;
+      data_.resize(width_ * height_);
+    }
 
-                        for (int y = 0; y < _rect.height(); ++y)
-                                for (int x = 0; x < _rect.width(); ++x)
-                                {
-                                        _buffer(x,y) = pixel(x + _rect.x(),y + _rect.y());
-                                }
+    QImage toQImage() const
+    {
+      QImage _output(width(), height(), QImage::Format_RGB32);
 
-                        return _buffer;
-                }
+      for (int y = 0; y < height(); ++y)
+        for (int x = 0; x < width(); ++x)
+        {
+          auto _p = pixel(x, y);
+          _output.setPixel(x, y, convertPixel<QColor>(_p).rgb());
+        }
 
-                /// Return pixel on position (x,y) (const version)
-                pixel_type const& pixel(int _x, int _y) const
-                {
-                        return pixel(_y*width()+_x);
-                }
+      return _output;
+    }
 
-                /// Return pixel on offset (= x * width + y)
-                pixel_type& pixel(size_t _offset) {
-                        return data_[_offset];
-                }
+    void* ptr()
+    {
+      return static_cast<void *>(data_.data());
+    }
 
-                /// Return pixel on offset (= x * width + y) (const version)
-                pixel_type const& pixel(size_t _offset) const {
-                        return data_[_offset];
-                }
+    /// Write blend mask to stream
+    void toStream(QDataStream& _os) const {
+      serialize(_os, width_);
+      serialize(_os, height_);
+      serialize(_os, data_);
+    }
 
-                /// Return width of the buffer
-                int width() const
-                {
-                        return width_;
-                }
+    /// Read blend mask from stream
+    void fromStream(QDataStream& _is) {
+      deserialize(_is, width_);
+      deserialize(_is, height_);
+      deserialize(_is, data_);
+    }
 
+    /// Test for equality, buffer is ignored
+    friend bool operator==(Buffer const& _lhs, Buffer const& _rhs) {
+      return
+        OMNI_TEST_MEMBER_EQUAL(width_) &&
+        OMNI_TEST_MEMBER_EQUAL(height_) &&
+        OMNI_TEST_MEMBER_EQUAL(data_);
+    }
 
-                /// Return height of the buffer
-                int height() const
-                {
-                        return height_;
-                }
-
-                /// Return const reference to data
-                data_type const& data() const
-                {
-                        return data_;
-                }
-
-                /// Clear buffer with black color
-                void clear()
-                {
-                        data_ = data_type(data_.size(),0);
-                }
-
-                /// Clear buffer with specific pixel
-                void clear(const pixel_type& _pixel)
-                {
-                        data_ = data_type(data_.size(),_pixel);
-                }
-
-                /// Returns true if width and height are zero
-                bool empty() const
-                {
-                        return data_.empty();
-                }
-
-                /// Returns size of buffer (= width * height)
-                size_t size() const {
-                        return data_.size();
-                }
-
-                /// Resize buffer to given width and height
-                void resize(int _width, int _height)
-                {
-                        if (_width*_height <= 0) return;
-                        width_ = _width;
-                        height_ = _height;
-                        data_.resize(width_*height_);
-                }
-
-                QImage toQImage() const
-                {
-                        QImage _output(width(),height(),QImage::Format_RGB32);
-                        for (int y = 0; y < height(); ++y)
-                                for (int x = 0; x < width(); ++x)
-                                {
-                                        auto _p = pixel(x,y);
-                                        _output.setPixel(x,y, convertPixel<QColor>(_p).rgb());
-                                }
-
-                        return _output;
-                }
-
-                void* ptr()
-                {
-                        return static_cast<void*>(data_.data());
-                }
-
-                /// Write blend mask to stream
-                void toStream(QDataStream& _os) const {
-                    serialize(_os,width_);
-                    serialize(_os,height_);
-                    serialize(_os,data_);
-                }
-
-                /// Read blend mask from stream
-                void fromStream(QDataStream& _is) {
-                    deserialize(_is,width_);
-                    deserialize(_is,height_);
-                    deserialize(_is,data_);
-                }
-
-                /// Test for equality, buffer is ignored
-                friend bool operator==(Buffer const& _lhs, Buffer const& _rhs) {
-                    return
-                        OMNI_TEST_MEMBER_EQUAL(width_) &&
-                        OMNI_TEST_MEMBER_EQUAL(height_) &&
-                        OMNI_TEST_MEMBER_EQUAL(data_);
-                }
-
-            private:
-                int width_, height_;
-                data_type data_;
-        };
+    private:
+      int       width_, height_;
+      data_type data_;
+  };
 }
 
 /// Deserialize buffer from stream
 template<typename T>
 QDataStream& operator>>(QDataStream& _is, omni::Buffer<T>& _buf) {
-    _buf.fromStream(_is);
-    return _is;
+  _buf.fromStream(_is);
+  return _is;
 }
 
 /// Serialize buffer to stream
 template<typename T>
-QDataStream& operator<<(QDataStream& _os, omni::Buffer<T> const& _buf) {
-    _buf.toStream(_os);
-    return _os;
+QDataStream& operator<<(QDataStream& _os, omni::Buffer<T>const& _buf) {
+  _buf.toStream(_os);
+  return _os;
 }
-
 
 #endif /* OMNI_BUFFER_H_ */

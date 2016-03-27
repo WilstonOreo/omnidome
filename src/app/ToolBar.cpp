@@ -30,193 +30,206 @@
 #include "About.h"
 
 namespace omni {
-    namespace ui {
-        ToolBar::ToolBar(QWidget* _widget) :
-            QToolBar(_widget) {
-
-            setStyleSheet("QToolBar {"
-              "border-bottom: 0px solid #080808 ;"
-              "}"
-            );
-
-            setFloatable(false);
-            setMovable(false);
-            setIconSize(QSize(28,28));
-
-            auto _makeButton = [&](QString const& _iconId,
-                    QString const& _caption = QString(), int _iconSize = 24 ) ->
-                QToolButton* {
-
-                auto* _button = new QToolButton();
-                _button->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
-                _button->setMinimumSize(QSize(120,40));
-                _button->setCheckable(true);
-                _button->setText(_caption);
-                _button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-                _button->setIconSize(QSize(_iconSize,_iconSize));
-
-                auto _makeIconFile = [&](QString const& _s, QString const& _suffix = QString()) {
-
-                    return QString(":/icons/") + _s + _suffix + ".png";
-                };
-
-                QIcon _icon(_makeIconFile(_iconId));
-                _icon.addPixmap(QPixmap(_makeIconFile(_iconId,"_disabled")),QIcon::Disabled,QIcon::On);
-                _icon.addPixmap(QPixmap(_makeIconFile(_iconId,"_disabled")),QIcon::Disabled,QIcon::Off);
-                _button->setIcon(_icon);
-
-                _button->setStyleSheet(
-                    "QToolButton {"
-                    " border: 0px solid #080808; "
-                    " margin: 4px 4px 4px 0px; "
+  namespace ui {
+    ToolBar::ToolBar(QWidget *_widget) :
+      QToolBar(_widget) {
+      setStyleSheet("QToolBar {"
+                    "border-bottom: 0px solid #080808 ;"
                     "}"
-                    "QToolButton:checked {"
-                    " border: 2.5px solid #5e5e5e ;"
-                    " background-color: #5e5e5e ;"
-                    " color : #f8f8f8 ; "
-                    "}"
-                );
+                    );
 
-                return _button;
-            };
+      setFloatable(false);
+      setMovable(false);
+      setIconSize(QSize(28, 28));
 
-            auto _makeAction = [&](QToolButton* _btn, QString const& _shortCut = QString()) {
-                addSeparator();
-                auto* _action = this->addWidget(_btn);
-                this->connect(_action,SIGNAL(triggered()),_btn,SIGNAL(clicked()));
-                _action->setShortcut(QKeySequence(_shortCut));
-                return _action;
-            };
+      auto _makeButton = [&](QString const& _iconId,
+                             QString const& _caption = QString(),
+                             int _iconSize = 24) ->
+                         QToolButton * {
+                           auto *_button = new QToolButton();
 
-            btnSettings_ = _makeButton("logo","O M N I D O M E",40);
-                btnSettings_->setStyleSheet(
-                    "QToolButton {"
-                    " border: 0px solid #080808; "
-                    " margin: 4px 4px 4px 0px; "
-                    " font-size: 16px; "
-                    "}"
-                    "QToolButton:checked {"
-                    " border: 2.5px solid #5e5e5e ;"
-                    " background-color: #5e5e5e ;"
-                    " color : #f8f8f8 ; "
-                    "}");
-            btnSettings_->setMinimumSize(QSize(160,40));
-            btnSettings_->setCheckable(false);
-            btnSettings_->setIconSize(QSize(48,48));
-            btnSettings_->setToolTip("About Omnidome");
-            connect(btnSettings_,SIGNAL(clicked()),this,SLOT(showSettings()));
-            auto* _actionSettings = addWidget(btnSettings_);
-            this->connect(_actionSettings,SIGNAL(triggered()),btnSettings_,SIGNAL(clicked()));
-            _actionSettings->setShortcut(QKeySequence("Ctrl+F1"));
+                           _button->setSizePolicy(QSizePolicy::Maximum,
+                                                  QSizePolicy::Expanding);
+                           _button->setMinimumSize(QSize(120, 40));
+                           _button->setCheckable(true);
+                           _button->setText(_caption);
+                           _button->setToolButtonStyle(
+                             Qt::ToolButtonTextBesideIcon);
+                           _button->setIconSize(QSize(_iconSize, _iconSize));
 
-            QWidget* empty = new QWidget();
-            empty->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-            addWidget(empty);
+                           auto _makeIconFile =
+                             [&](QString const& _s,
+                                 QString const& _suffix = QString()) {
+                               return QString(":/icons/") +
+                                      _s + _suffix + ".png";
+                             };
 
-            btnScreenSetup_ = _makeButton("screens","SCREEN SETUP");
-            btnScreenSetup_->setToolTip("Setup projector screens (Ctrl + 1)");
-            connect(btnScreenSetup_,SIGNAL(clicked()),this,SLOT(setScreenSetupMode()));
-            _makeAction(btnScreenSetup_,"Ctrl+1");
+                           QIcon _icon(_makeIconFile(_iconId));
+                           _icon.addPixmap(QPixmap(_makeIconFile(_iconId,
+                                                                 "_disabled")), QIcon::Disabled,
+                                           QIcon::On);
+                           _icon.addPixmap(QPixmap(_makeIconFile(_iconId,
+                                                                 "_disabled")), QIcon::Disabled,
+                                           QIcon::Off);
+                           _button->setIcon(_icon);
 
-            btnArrange_ = _makeButton("arrange","ARRANGE");
-            btnArrange_->setToolTip("Arrange projectors, mapping and canvas (Ctrl + 2)");
-            connect(btnArrange_,SIGNAL(clicked()),this,SLOT(setArrangeMode()));
-            _makeAction(btnArrange_,"Ctrl+2");
+                           _button->setStyleSheet(
+                             "QToolButton {"
+                             " border: 0px solid #080808; "
+                             " margin: 4px 4px 4px 0px; "
+                             "}"
+                             "QToolButton:checked {"
+                             " border: 2.5px solid #5e5e5e ;"
+                             " background-color: #5e5e5e ;"
+                             " color : #f8f8f8 ; "
+                             "}"
+                             );
 
-            btnWarp_ = _makeButton("warp","WARP");
-            btnWarp_->setToolTip("Edit warp grid (Ctrl + 3)");
-            connect(btnWarp_,SIGNAL(clicked()),this,SLOT(setWarpMode()));
-            _makeAction(btnWarp_,"Ctrl+3");
+                           return _button;
+                         };
 
-            btnBlend_ = _makeButton("blend","BLEND");
-            btnBlend_->setToolTip("Edit blend mask with blend brush (Ctrl + 4)");
-            connect(btnBlend_,SIGNAL(clicked()),this,SLOT(setBlendMode()));
-            _makeAction(btnBlend_,"Ctrl+4");
+      auto _makeAction =
+        [&](QToolButton *_btn, QString const& _shortCut = QString()) {
+          addSeparator();
+          auto *_action = this->addWidget(_btn);
+          this->connect(_action, SIGNAL(
+                          triggered()), _btn, SIGNAL(clicked()));
+          _action->setShortcut(QKeySequence(_shortCut));
+          return _action;
+        };
 
-            btnColorCorrection_ = _makeButton("color_correction","COLOR CORRECTION");
-            btnColorCorrection_->setToolTip("Color Correction with brightness, gamma and contrast (Ctrl + 5)");
-            connect(btnColorCorrection_,SIGNAL(clicked()),this,SLOT(setColorCorrectionMode()));
-            _makeAction(btnColorCorrection_,"Ctrl+5");
+      btnSettings_ = _makeButton("logo", "O M N I D O M E", 40);
+      btnSettings_->setStyleSheet(
+        "QToolButton {"
+        " border: 0px solid #080808; "
+        " margin: 4px 4px 4px 0px; "
+        " font-size: 16px; "
+        "}"
+        "QToolButton:checked {"
+        " border: 2.5px solid #5e5e5e ;"
+        " background-color: #5e5e5e ;"
+        " color : #f8f8f8 ; "
+        "}");
+      btnSettings_->setMinimumSize(QSize(160, 40));
+      btnSettings_->setCheckable(false);
+      btnSettings_->setIconSize(QSize(48, 48));
+      btnSettings_->setToolTip("About Omnidome");
+      connect(btnSettings_, SIGNAL(clicked()), this, SLOT(showSettings()));
+      auto *_actionSettings = addWidget(btnSettings_);
+      this->connect(_actionSettings, SIGNAL(triggered()), btnSettings_,
+                    SIGNAL(clicked()));
+      _actionSettings->setShortcut(QKeySequence("Ctrl+F1"));
 
-            btnExport_ = _makeButton("export","EXPORT");
-            btnExport_->setToolTip("Export calibration data (Ctrl + 6)");
-            connect(btnExport_,SIGNAL(clicked()),this,SLOT(setExportMode()));
-            _makeAction(btnExport_,"Ctrl+6");
+      QWidget *empty = new QWidget();
+      empty->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+      addWidget(empty);
 
-            btnLive_ = _makeButton("live","LIVE");
-            btnLive_->setToolTip("Play input live (Ctrl + 7)");
-            connect(btnLive_,SIGNAL(clicked()),this,SLOT(setLiveMode()));
-            _makeAction(btnLive_,"Ctrl+7");
+      btnScreenSetup_ = _makeButton("screens", "SCREEN SETUP");
+      btnScreenSetup_->setToolTip("Setup projector screens (Ctrl + 1)");
+      connect(btnScreenSetup_, SIGNAL(clicked()), this,
+              SLOT(setScreenSetupMode()));
+      _makeAction(btnScreenSetup_, "Ctrl+1");
 
-            connect(this,&ToolBar::dataModelChanged,this,&ToolBar::updateFrontend);
-        }
+      btnArrange_ = _makeButton("arrange", "ARRANGE");
+      btnArrange_->setToolTip("Arrange projectors, mapping and canvas (Ctrl + 2)");
+      connect(btnArrange_, SIGNAL(clicked()), this, SLOT(setArrangeMode()));
+      _makeAction(btnArrange_, "Ctrl+2");
 
-        ToolBar::~ToolBar() {
+      btnWarp_ = _makeButton("warp", "WARP");
+      btnWarp_->setToolTip("Edit warp grid (Ctrl + 3)");
+      connect(btnWarp_, SIGNAL(clicked()), this, SLOT(setWarpMode()));
+      _makeAction(btnWarp_, "Ctrl+3");
 
-        }
+      btnBlend_ = _makeButton("blend", "BLEND");
+      btnBlend_->setToolTip("Edit blend mask with blend brush (Ctrl + 4)");
+      connect(btnBlend_, SIGNAL(clicked()), this, SLOT(setBlendMode()));
+      _makeAction(btnBlend_, "Ctrl+4");
 
-        void ToolBar::setScreenSetupMode() {
-            setMode(Session::Mode::SCREENSETUP);
-        }
+      btnColorCorrection_ = _makeButton("color_correction", "COLOR CORRECTION");
+      btnColorCorrection_->setToolTip(
+        "Color Correction with brightness, gamma and contrast (Ctrl + 5)");
+      connect(btnColorCorrection_, SIGNAL(clicked()), this,
+              SLOT(setColorCorrectionMode()));
+      _makeAction(btnColorCorrection_, "Ctrl+5");
 
-        void ToolBar::setArrangeMode() {
-            setMode(Session::Mode::ARRANGE);
-        }
+      btnExport_ = _makeButton("export", "EXPORT");
+      btnExport_->setToolTip("Export calibration data (Ctrl + 6)");
+      connect(btnExport_, SIGNAL(clicked()), this, SLOT(setExportMode()));
+      _makeAction(btnExport_, "Ctrl+6");
 
-        void ToolBar::setWarpMode() {
-            setMode(Session::Mode::WARP);
-        }
+      btnLive_ = _makeButton("live", "LIVE");
+      btnLive_->setToolTip("Play input live (Ctrl + 7)");
+      connect(btnLive_, SIGNAL(clicked()), this, SLOT(setLiveMode()));
+      _makeAction(btnLive_, "Ctrl+7");
 
-        void ToolBar::setBlendMode() {
-            setMode(Session::Mode::BLEND);
-        }
-
-        void ToolBar::setColorCorrectionMode() {
-            setMode(Session::Mode::COLORCORRECTION);
-        }
-
-        void ToolBar::setExportMode() {
-            setMode(Session::Mode::EXPORT);
-        }
-
-        void ToolBar::setLiveMode() {
-            setMode(Session::Mode::LIVE);
-        }
-
-        void ToolBar::setMode(Session::Mode _mode) {
-            if (!dataModel()) return;
-            dataModel()->setMode(_mode);
-            emit dataModelChanged();
-        }
-
-        void ToolBar::dataToFrontend() {
-            auto _mode = dataModel()->mode();
-
-            btnScreenSetup_->setChecked(_mode == Session::Mode::SCREENSETUP);
-            btnArrange_->setChecked(_mode == Session::Mode::ARRANGE);
-            btnWarp_->setChecked(_mode == Session::Mode::WARP);
-            btnBlend_->setChecked(_mode == Session::Mode::BLEND);
-            btnColorCorrection_->setChecked(_mode == Session::Mode::COLORCORRECTION);
-            btnExport_->setChecked(_mode == Session::Mode::EXPORT);
-            btnLive_->setChecked(_mode == Session::Mode::LIVE);
-            buttonStates();
-        }
-
-        void ToolBar::buttonStates() {
-
-            bool _hasOutput = dataModel()->hasOutput();
-
-            btnWarp_->setEnabled(_hasOutput);
-            btnBlend_->setEnabled(_hasOutput);
-            btnColorCorrection_->setEnabled(_hasOutput);
-            btnExport_->setEnabled(_hasOutput);
-            btnLive_->setEnabled(_hasOutput);
-        }
-
-        void ToolBar::showSettings()
-        {
-            std::unique_ptr<About> _about(new About());
-            _about->exec();
-        }
+      connect(this, &ToolBar::dataModelChanged, this, &ToolBar::updateFrontend);
     }
+
+    ToolBar::~ToolBar() {}
+
+    void ToolBar::setScreenSetupMode() {
+      setMode(Session::Mode::SCREENSETUP);
+    }
+
+    void ToolBar::setArrangeMode() {
+      setMode(Session::Mode::ARRANGE);
+    }
+
+    void ToolBar::setWarpMode() {
+      setMode(Session::Mode::WARP);
+    }
+
+    void ToolBar::setBlendMode() {
+      setMode(Session::Mode::BLEND);
+    }
+
+    void ToolBar::setColorCorrectionMode() {
+      setMode(Session::Mode::COLORCORRECTION);
+    }
+
+    void ToolBar::setExportMode() {
+      setMode(Session::Mode::EXPORT);
+    }
+
+    void ToolBar::setLiveMode() {
+      setMode(Session::Mode::LIVE);
+    }
+
+    void ToolBar::setMode(Session::Mode _mode) {
+      if (!dataModel()) return;
+
+      dataModel()->setMode(_mode);
+      emit dataModelChanged();
+    }
+
+    void ToolBar::dataToFrontend() {
+      auto _mode = dataModel()->mode();
+
+      btnScreenSetup_->setChecked(_mode == Session::Mode::SCREENSETUP);
+      btnArrange_->setChecked(_mode == Session::Mode::ARRANGE);
+      btnWarp_->setChecked(_mode == Session::Mode::WARP);
+      btnBlend_->setChecked(_mode == Session::Mode::BLEND);
+      btnColorCorrection_->setChecked(_mode == Session::Mode::COLORCORRECTION);
+      btnExport_->setChecked(_mode == Session::Mode::EXPORT);
+      btnLive_->setChecked(_mode == Session::Mode::LIVE);
+      buttonStates();
+    }
+
+    void ToolBar::buttonStates() {
+      bool _hasOutput = dataModel()->hasOutput();
+
+      btnWarp_->setEnabled(_hasOutput);
+      btnBlend_->setEnabled(_hasOutput);
+      btnColorCorrection_->setEnabled(_hasOutput);
+      btnExport_->setEnabled(_hasOutput);
+      btnLive_->setEnabled(_hasOutput);
+    }
+
+    void ToolBar::showSettings()
+    {
+      std::unique_ptr<About> _about(new About());
+
+      _about->exec();
+    }
+  }
 }

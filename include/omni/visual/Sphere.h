@@ -40,7 +40,10 @@ namespace omni
       Sphere(qreal _radius = 1.0);
       ~Sphere();
 
+      /// Return radius of sphere
       qreal radius() const;
+
+      /// Set new sphere radius
       void setRadius(qreal);
 
       /// Return number of stacks (in Z direction)
@@ -49,16 +52,28 @@ namespace omni
       /// Set number of stacks
       void setStacks(int _stacks);
 
+      /// Return slices of sphere
       int slices() const;
+
+      /// Set number of slices and update mesh
       void setSlices(int _slices);
 
+      /// Return top position where to cut off sphere
       float top() const;
+
+      /// Set new top position where to cut off sphere
       void setTop(float);
 
+      /// Return bottom position where to cut off sphere
       float bottom() const;
+
+      /// Set new bottom position where to cut off sphere
       void setBottom(float);
 
+      /// Return tex coords mode; fisheye or equirectangular
       TexCoordsMode texCoordsMode() const;
+
+      /// Set tex coords mode, fisheye or equirectangular
       void setTexCoordsMode(TexCoordsMode);
 
       /// Draws sphere from vertex buffer object

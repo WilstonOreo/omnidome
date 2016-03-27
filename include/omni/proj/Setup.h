@@ -23,22 +23,21 @@
 #include <QDataStream>
 #include <omni/serialization/Interface.h>
 
-namespace omni
-{
-  namespace proj
-  {
+namespace omni {
+  namespace proj {
     class Projector;
 
+    /// Interface for a projector setup
     class Setup :
-        public SerializationInterface,
-        public TypeIdInterface
-    {
-    public:
-      virtual void setup(Projector&) = 0;
+      public SerializationInterface,
+      public TypeIdInterface {
+      public:
+        /// Setup projector
+        virtual void setup(Projector&) = 0;
     };
 
     /// Typedef for our factory
-    typedef AbstractFactory<Setup> SetupFactory;
+    typedef AbstractFactory<Setup>SetupFactory;
   }
 
   typedef proj::Setup ProjectorSetup;

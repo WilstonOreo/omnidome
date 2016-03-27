@@ -24,144 +24,145 @@
 #include "mixin/RangedValue.h"
 #include "AbstractInputWidget.h"
 
-namespace omni
-{
-        namespace ui
-        {
-                /// A slider with float value within a minimum and maximum
-                class RangedFloat :
-                public AbstractInputWidget,
-                private mixin::RangedValue<RangedFloat,double>
-                {
-                        Q_OBJECT
-                    public:
-                        enum class Scale {
-                            LINEAR,
-                            RECIPROCAL
-                        };
+namespace omni {
+  namespace ui {
+    /// A slider with float value within a minimum and maximum
+    class RangedFloat :
+      public AbstractInputWidget,
+      private mixin::RangedValue<RangedFloat, double>{
+        Q_OBJECT
+      public:
+        enum class Scale {
+          LINEAR,
+          RECIPROCAL
+        };
 
-                        typedef mixin::RangedValue<RangedFloat,double> mixin_range_type;
-                        typedef QDoubleSpinBox editor_type;
-                        using mixin_range_type::minimum;
-                        using mixin_range_type::maximum;
-                        using mixin_range_type::pageStep;
-                        using mixin_range_type::singleStep;
+        typedef mixin::RangedValue<RangedFloat, double>mixin_range_type;
+        typedef QDoubleSpinBox                         editor_type;
+        using mixin_range_type::minimum;
+        using mixin_range_type::maximum;
+        using mixin_range_type::pageStep;
+        using mixin_range_type::singleStep;
 
-                        /// Construct from parent widget
-                        RangedFloat(QWidget* = nullptr);
+        /// Construct from parent widget
+        RangedFloat(QWidget * = nullptr);
 
-                        /**@brief Construct with input parameters
-                         * @param _label Label of widget
-                         * @param _value Initial value
-                         * @param _min   Minimal value
-                         * @param _max   Maximal value
-                         **/
-                        RangedFloat(QString const& _label, double _value, double _min, double _max, QWidget* = nullptr);
-                        virtual ~RangedFloat();
+        /**@brief Construct with input parameters
+         * @param _label Label of widget
+         * @param _value Initial value
+         * @param _min   Minimal value
+         * @param _max   Maximal value
+         **/
+        RangedFloat(QString const& _label,
+                    double _value,
+                    double _min,
+                    double _max,
+                    QWidget * = nullptr);
+        virtual ~RangedFloat();
 
-                        using mixin_range_type::value;
-                        using mixin_range_type::defaultValue;
-                        using mixin_range_type::snap;
-                        using mixin_range_type::pivot;
+        using mixin_range_type::value;
+        using mixin_range_type::defaultValue;
+        using mixin_range_type::snap;
+        using mixin_range_type::pivot;
 
-                        /// Return suffix
-                        QString suffix() const;
+        /// Return suffix
+        QString suffix() const;
 
-                        /// Return precision
-                        int precision() const;
+        /// Return precision
+        int     precision() const;
 
-                        /// Return grip size
-                        int gripSize() const;
+        /// Return grip size
+        int     gripSize() const;
 
-                        /// Return flag if default value is used
-                        bool useDefaultValue() const;
+        /// Return flag if default value is used
+        bool    useDefaultValue() const;
 
-                        bool drawTicks() const;
+        bool    drawTicks() const;
 
-                        Scale scale() const;
+        Scale   scale() const;
 
-                    public slots:
-                        /// Set value, valueChanged() signal will be emitted
-                        void setValue(double);
+      public slots:
+        /// Set value, valueChanged() signal will be emitted
+        void setValue(double);
 
-                        /// Set minimal value, rangeChanged() signal will be emitted
-                        void setMinimum(double);
+        /// Set minimal value, rangeChanged() signal will be emitted
+        void setMinimum(double);
 
-                        /// Set maximum value, rangeChanged() signal will be emitted
-                        void setMaximum(double);
+        /// Set maximum value, rangeChanged() signal will be emitted
+        void setMaximum(double);
 
-                        /// Set range (minimum/maximum), rangeChanged() signel will be emitted
-                        void setRange(double,double);
+        /// Set range (minimum/maximum), rangeChanged() signel will be emitted
+        void setRange(double,
+                      double);
 
-                        /// Show/hide editor
-                        void setEditorVisible(bool);
+        /// Show/hide editor
+        void setEditorVisible(bool);
 
-                        /// Toggle value snap on/off
-                        void setSnap(bool);
+        /// Toggle value snap on/off
+        void setSnap(bool);
 
-                        void setGripSize(int);
+        void setGripSize(int);
 
-                        /// Use Default Value and show it
-                        void setUseDefaultValue(bool);
+        /// Use Default Value and show it
+        void setUseDefaultValue(bool);
 
-                        void setDrawTicks(bool);
+        void setDrawTicks(bool);
 
-                        /// Set precision
-                        void setPrecision(int);
+        /// Set precision
+        void setPrecision(int);
 
-                        /// Set Suffix
-                        void setSuffix(QString const&);
+        /// Set Suffix
+        void setSuffix(QString const&);
 
-                        /// Set pivot
-                        void setPivot(double);
+        /// Set pivot
+        void setPivot(double);
 
-                        void setDefaultValue(double);
+        void setDefaultValue(double);
 
-                        void setSingleStep(double);
+        void setSingleStep(double);
 
-                        void setPageStep(double);
+        void setPageStep(double);
 
-                        void setScale(Scale);
+        void setScale(Scale);
 
+      signals:
+        void   valueChanged();
+        void   rangeChanged();
 
-                    signals:
-                        void valueChanged();
-                        void rangeChanged();
+      protected:
+        void   paintEvent(QPaintEvent *);
+        void   keyPressEvent(QKeyEvent *);
+        void   mouseMoveEvent(QMouseEvent *);
+        void   mousePressEvent(QMouseEvent *);
+        void   mouseReleaseEvent(QMouseEvent *);
+        void   mouseDoubleClickEvent(QMouseEvent *);
+        void   wheelEvent(QWheelEvent *);
 
-                    protected:
-                        void paintEvent(QPaintEvent*);
-                        void keyPressEvent(QKeyEvent*);
-                        void mouseMoveEvent(QMouseEvent*);
-                        void mousePressEvent(QMouseEvent*);
-                        void mouseReleaseEvent(QMouseEvent*);
-                        void mouseDoubleClickEvent(QMouseEvent*);
-                        void wheelEvent(QWheelEvent*);
+        void   valueChangedEvent();
+        void   rangeChangedEvent();
 
-                        void valueChangedEvent();
-                        void rangeChangedEvent();
+      private:
+        void   init();
+        void   editorSetup();
 
-                    private:
-                        void init();
-                        void editorSetup();
+        /// Get value from x mouse position
+        double valueFromPos(double) const;
 
-                        /// Get value from x mouse position
-                        double valueFromPos(double) const;
+        /// Calculate position from value
+        double valueToPos() const;
 
-                        /// Calculate position from value
-                        double valueToPos() const;
+        /// Calculate position from value
+        double valueToPos(double) const;
 
-                        /// Calculate position from value
-                        double valueToPos(double) const;
-
-                        Scale scale_ = Scale::LINEAR;
-                        bool moving_ = false;
-                        bool drawTicks_ = false;
-                        bool useDefaultValue_ = false;
-                        QString suffix_;
-                        int gripSize_ = 10;
-                        int precision_ = 2;
-                };
-        }
+        Scale   scale_           = Scale::LINEAR;
+        bool    moving_          = false;
+        bool    drawTicks_       = false;
+        bool    useDefaultValue_ = false;
+        QString suffix_;
+        int     gripSize_  = 10;
+        int     precision_ = 2;
+    };
+  }
 }
 
 #endif /* OMNI_UI_RANGEDFLOAT_H_ */

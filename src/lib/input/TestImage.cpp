@@ -28,7 +28,8 @@ namespace omni
 {
   namespace input
   {
-    TestImage::TestImage() :
+    TestImage::TestImage(Interface const* _parent) :
+      Interface(_parent),
       rulerPos_(-1.0,-1.0)
     {
     }

@@ -24,69 +24,84 @@
 #include <omni/ui/mixin/DataModel.h>
 
 namespace omni {
-    namespace ui {
-        namespace mixin {
-            template<typename WIDGET>
-            class TuningFromIndex {
-            public:
-                TuningFromIndex(WIDGET& _widget) :
-                    widget_(_widget) {}
+  namespace ui {
+    namespace mixin {
+      template<typename WIDGET>
+      class TuningFromIndex {
+        public:
+          TuningFromIndex(WIDGET& _widget) :
+            widget_(_widget) {}
 
-                int index() const {
-                    if (index_ >= 0) return index_;
-                    if (!widget_.dataModel()) return -1;
+          int index() const {
+            if (index_ >= 0) return index_;
 
-                    return widget_.dataModel()->tunings().currentIndex();
-                }
+            if (!widget_.dataModel()) return -1;
 
-                void setIndex(int _index) {
-                    index_=_index;
-                }
+            return widget_.dataModel()->tunings().currentIndex();
+          }
 
-                void setIndexToCurrent() {
-                    index_ = -1;
-                }
+          /// Set index of tuning
+          void setIndex(int _index) {
+            index_ = _index;
+          }
 
-                omni::proj::Tuning* tuning() {
-                    return widget_.dataModel() ?
-                        widget_.dataModel()->tunings()[index()] : nullptr;
-                }
+          /// Set index to current index
+          void setIndexToCurrent() {
+            index_ = -1;
+          }
 
-                omni::proj::Tuning const* tuning() const {
-                    return widget_.dataModel() ?
-                        widget_.dataModel()->tunings()[index()] : nullptr;
-                }
+          /// Return pointer to tuning
+          omni::proj::Tuning* tuning() {
+            return widget_.dataModel() ?
+                   widget_.dataModel()->tunings()[index()] :
+                   nullptr;
+          }
 
-                omni::BlendMask* blendMask()
-                {
-                    if (!tuning()) return nullptr;
-                    return tuning() ? &tuning()->blendMask() : nullptr;
-                }
+          /// Return pointer to tuning (const version)
+          omni::proj::Tuning const* tuning() const {
+            return widget_.dataModel() ?
+                   widget_.dataModel()->tunings()[index()] :
+                   nullptr;
+          }
 
-                omni::BlendMask const* blendMask() const
-                {
-                    if (!tuning()) return nullptr;
-                    return tuning() ? &tuning()->blendMask() : nullptr;
-                }
+          /// Return pointer to blend mask
+          omni::BlendMask* blendMask()
+          {
+            if (!tuning()) return nullptr;
 
-                omni::WarpGrid* warpGrid()
-                {
-                    if (!tuning()) return nullptr;
-                    return tuning() ? &tuning()->warpGrid() : nullptr;
-                }
+            return tuning() ? &tuning()->blendMask() : nullptr;
+          }
 
-                omni::WarpGrid const* warpGrid() const
-                {
-                    if (!tuning()) return nullptr;
-                    return tuning() ? &tuning()->warpGrid() : nullptr;
-                }
+          /// Return pointer to blend mask (const version)
+          omni::BlendMask const* blendMask() const
+          {
+            if (!tuning()) return nullptr;
 
-            private:
-                int index_ = -1;
-                WIDGET& widget_;
-            };
-        }
+            return tuning() ? &tuning()->blendMask() : nullptr;
+          }
+
+          /// Return pointer to warp grid
+          omni::WarpGrid* warpGrid()
+          {
+            if (!tuning()) return nullptr;
+
+            return tuning() ? &tuning()->warpGrid() : nullptr;
+          }
+
+          /// Return pointer to warp grid (const version)
+          omni::WarpGrid const* warpGrid() const
+          {
+            if (!tuning()) return nullptr;
+
+            return tuning() ? &tuning()->warpGrid() : nullptr;
+          }
+
+        private:
+          int index_ = -1;
+          WIDGET& widget_;
+      };
     }
+  }
 }
 
 #endif /* OMNI_UI_MIXIN_TUNINGFROMINDEX_H_ */

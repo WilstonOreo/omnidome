@@ -23,14 +23,12 @@
 #include <QOpenGLContext>
 #include <omni/visual/util.h>
 
-namespace omni
-{
-  namespace visual
-  {
+namespace omni {
+  namespace visual {
     /// A small Vertex Buffer Object class
     struct VBO
     {
-      VBO(QOpenGLContext* = nullptr);
+      VBO(QOpenGLContext * = nullptr);
 
       /// Destructor. Frees VBO if necessary
       ~VBO();
@@ -41,46 +39,44 @@ namespace omni
       /// Free the existing buffer generates a new one
       void freeAndGen();
 
+      /// Copy static vertex array onto GPU
       template<typename BUF>
       void bufferStaticArray(BUF const& _buf) {
-
-          with_current_context([&](QOpenGLFunctions& _) {
+        with_current_context([&](QOpenGLFunctions& _) {
           _.glBindBuffer(GL_ARRAY_BUFFER, id());
           {
-              _.glBufferData(GL_ARRAY_BUFFER,
-                  _buf.size() * sizeof(typename BUF::value_type),
-                  _buf.data(),
-                  GL_STATIC_DRAW);
+            _.glBufferData(GL_ARRAY_BUFFER,
+                           _buf.size() * sizeof(typename BUF::value_type),
+                           _buf.data(),
+                           GL_STATIC_DRAW);
           }
           _.glBindBuffer(GL_ARRAY_BUFFER, 0);
-         });
+        });
       }
 
+      /// Copy static index array onto GPU
       template<typename BUF>
       void bufferStaticElementArray(BUF const& _buf) {
-          with_current_context([&](QOpenGLFunctions& _) {
+        with_current_context([&](QOpenGLFunctions& _) {
           _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id());
           {
-              _.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                  _buf.size() * sizeof(typename BUF::value_type),
-                  _buf.data(),
-                  GL_STATIC_DRAW);
+            _.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                           _buf.size() * sizeof(typename BUF::value_type),
+                           _buf.data(),
+                           GL_STATIC_DRAW);
           }
           _.glBindBuffer(GL_ARRAY_BUFFER, 0);
-          });
+        });
       }
 
-
-
-
       /// Free VBO via glDeleteBuffers
-      void free();
+      void   free();
 
       /// Return buffer id
       GLuint id() const;
 
-    private:
-      GLuint id_;
+      private:
+        GLuint id_;
     };
   }
 }

@@ -23,45 +23,61 @@
 #include <omni/proj/MultiSetup.h>
 #include <omni/Angle.h>
 
-namespace omni
-{
-  namespace proj
-  {
-    class RingArray : public MultiSetup
-    {
-    public:
-      OMNI_REGISTER_CLASS(MultiSetupFactory,RingArray)
+namespace omni {
+  namespace proj {
+    /// A multisetup in projectors are arranged on a circle
+    class RingArray : public MultiSetup {
+      public:
+        OMNI_REGISTER_CLASS(MultiSetupFactory, RingArray)
 
-      RingArray();
-      ~RingArray();
+        RingArray();
+        ~RingArray();
 
-      int numberOfProjectors() const;
-      void setNumberOfProjectors(int);
+        /// Number of projector
+        int                   numberOfProjectors() const;
 
-      float distanceCenter() const;
-      void setDistanceCenter(float);
+        /// Set number of projectors (min 0, max 16)
+        void                  setNumberOfProjectors(int);
 
-      float towerHeight() const;
-      void setTowerHeight(float);
+        /// Return distance to center
+        float                 distanceCenter() const;
 
-      Angle pitch() const;
-      void setPitch(Angle const&);
+        /// Set distance to center
+        void                  setDistanceCenter(float);
 
-      Angle yaw() const;
-      void setYaw(Angle const&);
+        /// Return tower height (z position)
+        float                 towerHeight() const;
 
-      Angle fov() const;
-      void setFov(Angle const&);
+        /// Set tower height (z position)
+        void                  setTowerHeight(float);
 
-      std::vector<Projector> projectors() const;
+        /// Return pitch angle
+        Angle                 pitch() const;
 
+        /// Set pitch angle
+        void                  setPitch(Angle const&);
 
-    private:
-      int numberOfProjectors_ = 4;
-      float distanceCenter_ = 4.0;
-      float towerHeight_ = 0.0;
-      Angle pitch_, yaw_;
-      Angle fov_;
+        /// Return overall yaw angle
+        Angle                 yaw() const;
+
+        /// Set overall yaw angle
+        void                  setYaw(Angle const&);
+
+        /// Return common FOV for all projectors
+        Angle                 fov() const;
+
+        /// Set FOV for all projectors
+        void                  setFov(Angle const&);
+
+        /// Return list of generated projectors
+        std::vector<Projector>projectors() const;
+
+      private:
+        int   numberOfProjectors_ = 4;
+        float distanceCenter_     = 4.0;
+        float towerHeight_        = 0.0;
+        Angle pitch_, yaw_;
+        Angle fov_;
     };
   }
 }

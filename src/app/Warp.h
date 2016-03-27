@@ -25,46 +25,44 @@
 #include "DockWidget.h"
 #include <omni/ui/mixin/DataModel.h>
 
-namespace omni
-{
+namespace omni {
   class WarpGrid;
 
-  namespace ui
-  {
-    namespace Ui
-    {
+  namespace ui {
+    namespace Ui {
       class Warp;
     }
 
+    /// Dock widget for editing warp grid parameters
     class Warp :
-        public DockWidget,
-        public mixin::SharedDataModel<Session>
-    {
-      Q_OBJECT
-      OMNI_UI_SHARED_DATAMODEL(Session)
-    public:
-      Warp(QWidget* = nullptr);
-      ~Warp();
+      public DockWidget,
+      public mixin::SharedDataModel<Session>{
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
 
-    public slots:
-      void resetWarpGrid();
-      void resizeWarpGrid(bool);
-      void changeInterpolation(int);
+      public:
+        Warp(QWidget * = nullptr);
+        ~Warp();
 
-    signals:
-      void dataModelChanged();
+      public slots:
+        void resetWarpGrid();
+        void resizeWarpGrid(bool);
+        void changeInterpolation(int);
 
-    private:
-      /// Update sliders from current warp grid
-      void dataToFrontend();
+      signals:
+        void dataModelChanged();
 
-      /// Assign slider values to current warp grid
-      bool frontendToData();
+      private:
+        /// Update sliders from current warp grid
+        void                  dataToFrontend();
 
-      omni::WarpGrid const* warpGrid() const;
-      omni::WarpGrid* warpGrid();
+        /// Assign slider values to current warp grid
+        bool                  frontendToData();
 
-      std::unique_ptr<Ui::Warp> ui_;
+        omni::WarpGrid const* warpGrid() const;
+        omni::WarpGrid      * warpGrid();
+
+        std::unique_ptr<Ui::Warp> ui_;
     };
   }
 }

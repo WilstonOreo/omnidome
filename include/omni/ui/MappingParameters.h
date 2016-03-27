@@ -48,6 +48,8 @@ namespace omni
 
                 /// Return true if data has changed by front end
       virtual bool frontendToData();
+
+      /// Add flip and bound to canvas parameters
       void addDefaultParameters();
 
       omni::ui::AffineTransform* transform_ = nullptr;

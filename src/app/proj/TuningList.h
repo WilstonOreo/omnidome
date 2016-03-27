@@ -87,6 +87,9 @@ namespace omni
         /// Updates/Repaints GL Views of all tunings widgets
         void updateViews();
 
+        /// Adjust sliders to scene scale
+        void updateSceneScale();
+
       protected:
         void resizeEvent(QResizeEvent*);
         void keyPressEvent(QKeyEvent*);

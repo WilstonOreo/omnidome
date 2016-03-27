@@ -23,31 +23,27 @@
 #include <omni/visual/Projector.h>
 #include <omni/proj/PeripheralSetup.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace proj
-    {
-      MultiSetupPreview::MultiSetupPreview(QWidget* _parent) :
+namespace omni {
+  namespace ui {
+    namespace proj {
+      MultiSetupPreview::MultiSetupPreview(QWidget *_parent) :
         GLView3D(_parent)
-      {
-      }
+      {}
 
       MultiSetupPreview::~MultiSetupPreview()
-      {
-      }
+      {}
 
-      omni::proj::MultiSetup* MultiSetupPreview::multiSetup()
+      omni::proj::MultiSetup * MultiSetupPreview::multiSetup()
       {
         return multiSetup_;
       }
 
-      omni::proj::MultiSetup const* MultiSetupPreview::multiSetup() const
+      omni::proj::MultiSetup const * MultiSetupPreview::multiSetup() const
       {
         return multiSetup_;
       }
-      void MultiSetupPreview::setMultiSetup(omni::proj::MultiSetup* _multiSetup)
+
+      void MultiSetupPreview::setMultiSetup(omni::proj::MultiSetup *_multiSetup)
       {
         multiSetup_ = _multiSetup;
         updateProjectors();
@@ -60,10 +56,12 @@ namespace omni
         projectorViz_.clear();
 
         projectors_ = multiSetup_->projectors();
+
         for (auto& _projector : projectors_)
         {
           visual::Projector _projViz(_projector);
           _projViz.setColor("#00ccff");
+
           /// Make new projector visualizer
           projectorViz_.emplace_back(_projViz);
         }
@@ -74,7 +72,8 @@ namespace omni
       {
         if (!dataModel()) return;
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+                GL_STENCIL_BUFFER_BIT);
         visual::viewport(this);
 
         this->setupCamera();
@@ -86,11 +85,12 @@ namespace omni
 
         visual::with_current_context([&](QOpenGLFunctions& _)
         {
-          auto* _canvas = dataModel()->canvas();
+          auto *_canvas = dataModel()->canvas();
 
           _.glEnable(GL_LIGHTING);
           _.glEnable(GL_COLOR_MATERIAL);
           _.glEnable(GL_DEPTH_TEST);
+
           if (_canvas)
           {
             this->vizSession_->drawCanvas(mapping::OutputMode::LIGHTING_ONLY);
@@ -98,19 +98,24 @@ namespace omni
 
           _.glDisable(GL_DEPTH_TEST);
           _.glDisable(GL_LIGHTING);
+
           for (auto& _projector : projectorViz_)
           {
             _projector.draw();
-            _projector.drawPositioning(_canvas ? _canvas->center() : QVector3D(0,0,0));
+            _projector.drawPositioning(_canvas ? _canvas->center() : QVector3D(0,
+                                                                               0,
+                                                                               0));
           }
 
-          for (auto& _projector : projectors_)
-            vizSession_->drawFrustumIntersection(_projector,"#0088cc",ProjectorViewMode::BOTH);
+          for (auto& _projector :
+               projectors_) vizSession_->drawFrustumIntersection(_projector,
+                                                                 "#0088cc",
+                                                                 ProjectorViewMode
+                                                                 ::BOTH);
 
           _.glEnable(GL_DEPTH_TEST);
 
-          for (auto& _projector : projectorViz_)
-            _projector.drawHalo();
+          for (auto& _projector : projectorViz_) _projector.drawHalo();
         });
       }
     }

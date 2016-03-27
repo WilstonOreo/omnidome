@@ -25,102 +25,114 @@
 #include <QVector2D>
 #include <omni/WarpPoint.h>
 
-namespace omni
-{
+namespace omni {
   /**@brief A warp grid is a 2D bezier grid with MxN points
      @detail Default size 6x6 points. Selected points are also stored:
    **/
-  class WarpGrid
-  {
-  public:
-    enum class Interpolation {
+  class WarpGrid {
+    public:
+      enum class Interpolation {
         BICUBIC,
         LINEAR
-    };
-    /// Default constructor
-    WarpGrid();
+      };
 
-    /// Resets all points to form a regular grid
-    void reset();
+      /// Default constructor
+      WarpGrid();
 
-    /// Resize grid with given horizontal and vertical resolution
-    void resize(int _horz, int _vert);
+      /// Resets all points to form a regular grid
+      void reset();
 
-    /// Return vertical resolution
-    int vertical() const;
+      /// Resize grid with given horizontal and vertical resolution
+      void resize(int _horz,
+                  int _vert);
 
-    /// Return horizontal resolution
-    int horizontal() const;
+      /// Return vertical resolution
+      int           vertical() const;
 
-    /// Return interpolation type (BICUBIC is default)
-    Interpolation interpolation() const;
+      /// Return horizontal resolution
+      int           horizontal() const;
 
-    /// Interpolation value
-    void setInterpolation(Interpolation);
+      /// Return interpolation type (BICUBIC is default)
+      Interpolation interpolation() const;
 
-    /// Returns true if all warp points are in regular position
-    bool isReset() const;
+      /// Interpolation value
+      void setInterpolation(Interpolation);
 
-    /// Return true if warp grid has changed
-    bool hasChanged() const;
+      /// Returns true if all warp points are in regular position
+      bool                       isReset() const;
 
-    /// Select all points
-    void selectAll();
+      /// Return true if warp grid has changed
+      bool                       hasChanged() const;
 
-    /// Select nearest point, does not clear selection, returns pointer to nearest
-    WarpPoint* selectNearest(const QPointF& _p);
+      /// Select all points
+      void                       selectAll();
 
-    /// Clear selection
-    void selectNone();
+      /// Select nearest point, does not clear selection, returns pointer to
+      // nearest
+      WarpPoint                * selectNearest(const QPointF& _p);
 
-    /// Returns pointer set of selected points
-    std::set<WarpPoint*> getSelected();
+      /// Clear selection
+      void                       selectNone();
 
-    /// Returns pointer set of selected points (const version)
-    std::set<WarpPoint const*> getSelected() const;
+      /// Returns pointer set of selected points
+      std::set<WarpPoint *>      getSelected();
 
-    /// Get point with x and y index
-    WarpPoint* getPoint(int x, int y);
+      /// Returns pointer set of selected points (const version)
+      std::set<WarpPoint const *>getSelected() const;
 
-    /// Get point with x and y index (const version)
-    WarpPoint const* getPoint(int x, int y) const;
+      /// Get point with x and y index
+      WarpPoint                * getPoint(int x,
+                                          int y);
 
-    /// Return position of warp point
-    QVector2D getWarpPointPos(int x, int y) const;
+      /// Get point with x and y index (const version)
+      WarpPoint const* getPoint(int x,
+                                int y) const;
 
-    /// Return interpolated position of warp point x, y
-    QVector2D getWarpPointPos(int x, int y, float u, float v) const;
+      /// Return position of warp point
+      QVector2D getWarpPointPos(int x,
+                                int y) const;
 
-    /// Return texture coordinate on x,y index
-    QVector2D getTexCoord(int _x, int _y) const;
+      /// Return interpolated position of warp point x, y
+      QVector2D getWarpPointPos(int x,
+                                int y,
+                                float u,
+                                float v) const;
 
-    /// Return const reference to warp points
-    std::vector<WarpPoint> const& points() const;
+      /// Return texture coordinate on x,y index
+      QVector2D getTexCoord(int _x,
+                            int _y) const;
 
-    /// Test for equality (is equal if all warp points are equal
-    friend bool operator==(WarpGrid const&,WarpGrid const&);
+      /// Return const reference to warp points
+      std::vector<WarpPoint>const& points() const;
 
-  private:
-    /// Return index to nearest point
-    size_t getNearest(const QPointF& _p) const;
+      /// Test for equality (is equal if all warp points are equal
+      friend bool                  operator==(WarpGrid const&,
+                                              WarpGrid const&);
 
-    typedef std::array<QVector2D,4> array4_type;
+    private:
+      /// Return index to nearest point
+      size_t getNearest(const QPointF& _p) const;
 
-    /// Interpolate four points
-    QVector2D cubicInterpolate(const array4_type& _points, float t) const;
+      typedef std::array<QVector2D, 4>array4_type;
 
-    int horizontal_ = 4;
-    int vertical_ = 4;
-    bool hasChanged_ = true;
-    Interpolation interpolation_ = Interpolation::BICUBIC;
-    std::vector<WarpPoint> points_;
+      /// Interpolate four points
+      QVector2D cubicInterpolate(const array4_type& _points,
+                                 float t) const;
+
+      int  horizontal_             = 4;
+      int  vertical_               = 4;
+      bool hasChanged_             = true;
+      Interpolation interpolation_ = Interpolation::BICUBIC;
+      std::vector<WarpPoint> points_;
   };
 }
 
 /// Serialize omni::WarpGrid to stream
-QDataStream& operator<<(QDataStream& _os, const omni::WarpGrid& _p);
+QDataStream& operator<<(QDataStream& _os,
+                        const omni::WarpGrid& _p);
 
 /// Deserialize omni::WarpGrid from stream
-QDataStream& operator>>(QDataStream& _is, omni::WarpGrid& _p);
+QDataStream& operator>>(QDataStream& _is,
+                        omni::WarpGrid& _p);
 
 #endif /* OMNI_WARPGRID_H_ */

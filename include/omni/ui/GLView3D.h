@@ -25,107 +25,37 @@
 #include <omni/visual/Light.h>
 #include <omni/visual/Grid.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    enum class EditMode {
-        CAMERA,
-        MOVE,
-        ROTATE,
-    };
-
-    enum class MoveMode {
-        MOVE_X,
-        MOVE_Y,
-        MOVE_Z,
-        MOVE_XY
-    };
-
-    enum class RotateMode {
-        PITCH,
-        YAW,
-        ROLL
-    };
-
-    /**@brief An OpenGL view with a camera and perspective view
-     * @detail Also holds three lights
+namespace omni {
+  namespace ui {
+    /**@brief An OpenGL view for visualizing the scene of a session
      **/
-    class GLView3D : public GLView
-    {
+    class GLView3D : public GLView {
       Q_OBJECT
-    public:
-      GLView3D(QWidget* _parent = nullptr);
-      ~GLView3D();
 
-      /// Input is shown on canvas
-      bool displayInput() const;
+      public:
+        GLView3D(QWidget *_parent = nullptr);
+        ~GLView3D();
 
-      /// Display measurements on elements
-      bool displayMeasures() const;
+      public slots:
+        void         changeZoom(int _value);
 
-      /// Display line grid
-      bool displayGrid() const;
+      protected:
+        virtual void paintGL();
 
-      /// Display projector frustra (selected projector is always shown)
-      bool displayProjectors() const;
+        /// Change zoom on mouse wheel event
+        virtual void wheelEvent(QWheelEvent *event);
+        virtual void keyPressEvent(QKeyEvent *event);
+        virtual void mouseMoveEvent(QMouseEvent *event);
 
-      /// Display projected areas
-      bool displayProjectedAreas() const;
+        void         setupCamera();
+        void         updateLight();
 
-      /// Set edit mode (CAMERA, ROTATE or MOVE)
-      EditMode editMode() const;
+      private:
+        bool         initialize();
 
-      /// Set rotation axis when edit mode is ROTATE
-      RotateMode rotateMode() const;
-
-      /// Set movement axis when edit mode is MOVE
-      MoveMode moveMode() const;
-
-      /// Set projector view mode (INSIDE, OUTSIDE or BOTH)
-      ProjectorViewMode projectorViewMode() const;
-      void setProjectorViewMode(ProjectorViewMode);
-
-    public slots:
-      void setDisplayInput(bool);
-      void setDisplayMeasures(bool);
-      void setDisplayGrid(bool);
-      void setDisplayProjectors(bool);
-      void setDisplayProjectedAreas(bool);
-      void setEditMode(EditMode);
-      void setRotateMode(RotateMode);
-      void setMoveMode(MoveMode);
-
-      void setProjectorViewMode(int);
-      void changeZoom(int _value);
-
-    protected:
-      virtual void paintGL();
-
-      virtual void wheelEvent(QWheelEvent* event);
-      virtual void keyPressEvent(QKeyEvent* event);
-      virtual void mouseMoveEvent(QMouseEvent *event);
-
-      void setupCamera();
-      void updateLight();
-
-    private:
-      bool initialize();
-
-      visual::Camera camera_;
-      visual::Grid grid_;
-      std::array<visual::Light,3> lights_;
-      bool displayInput_ = true;
-      bool displayMeasures_ = true;
-      bool displayGrid_ = true;
-      bool displayProjectors_ = true;
-      bool displayProjectedAreas_ = true;
-
-      EditMode editMode_ = EditMode::CAMERA;
-      RotateMode rotateMode_ = RotateMode::YAW;
-      MoveMode moveMode_ = MoveMode::MOVE_XY;
-
-      ProjectorViewMode projectorViewMode_ = ProjectorViewMode::INSIDE;
+        visual::Camera camera_;
+        visual::Grid   grid_;
+        std::array<visual::Light, 3> lights_;
     };
   }
 }

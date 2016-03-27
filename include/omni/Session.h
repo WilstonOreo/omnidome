@@ -24,136 +24,146 @@
 #include <omni/input/List.h>
 #include <omni/canvas/Interface.h>
 #include <omni/proj/ScreenSetup.h>
-#include <omni/RenderOptions.h>
+#include <omni/render/ExportSettings.h>
 #include <omni/BlendSettings.h>
+#include <omni/visual/Scene.h>
 
-namespace omni
-{
+namespace omni {
   class TuningList;
 
-  /**@brief A session consists of a canvas, a mapping, a list of tunings and one or several inputs
+  /**@brief A session consists of a canvas, a mapping, a list of tunings and one
+     or several inputs
    */
-  class Session
-  {
-  public:
-    /// General mode of the User Interface
-    enum class Mode
-    {
-      SCREENSETUP, // Mode for setup screens
-      ARRANGE, // Mode for setting up projectors and canvas
-      WARP, // Mode for adjusting warp grid
-      BLEND, // Mode for editing the blend mask
-      COLORCORRECTION, // Mode for color correction for each projector
-      EXPORT, // Export mode
-      LIVE, // Live mode. Output is locked for faster display
-      NUM_MODES
-    };
+  class Session {
+    public:
+      /// General mode of the User Interface
+      enum class Mode
+      {
+        SCREENSETUP,     // Mode for setup screens
+        ARRANGE,         // Mode for setting up projectors and canvas
+        WARP,            // Mode for adjusting warp grid
+        BLEND,           // Mode for editing the blend mask
+        COLORCORRECTION, // Mode for color correction for each projector
+        EXPORT,          // Export mode
+        LIVE,            // Live mode. Output is locked for faster display
+        NUM_MODES
+      };
 
 
-    /// Default constructor
-    Session();
-    ~Session();
+      /// Default constructor
+      Session();
+      ~Session();
 
-    /// Returns reference to projector tunings
-    proj::TuningList& tunings();
+      /// Returns reference to projector tunings
+      proj::TuningList      & tunings();
 
-    /// Returns const reference to projector tunings
-    proj::TuningList const& tunings() const;
+      /// Returns const reference to projector tunings
+      proj::TuningList const& tunings() const;
 
-    /// Makes new mapping with given type Id
-    Mapping* setMapping(Id const& _typeId);
+      /// Makes new mapping with given type Id
+      Mapping               * setMapping(Id const& _typeId);
 
-    /// Returns pointer to mapping
-    Mapping* mapping();
+      /// Returns pointer to mapping
+      Mapping               * mapping();
 
-    /// Returns pointer to mapping (const version)
-    Mapping const* mapping() const;
+      /// Returns pointer to mapping (const version)
+      Mapping const         * mapping() const;
 
-    /// Returns reference to list of inputs
-    InputList& inputs();
+      /// Returns reference to list of inputs
+      InputList           & inputs();
 
-    /// Returns const reference to list of inputs
-    InputList const& inputs() const;
+      /// Returns const reference to list of inputs
+      InputList const     & inputs() const;
 
-    /// Makes new canvas with given type id and returns pointer if successful
-    Canvas* setCanvas(Id const& _typeId);
+      /// Makes new canvas with given type id and returns pointer if successful
+      Canvas              * setCanvas(Id const& _typeId);
 
-    /// Return pointer to canvas
-    Canvas* canvas();
+      /// Return pointer to canvas
+      Canvas              * canvas();
 
-    /// Return pointer to canvas (const version)
-    Canvas const* canvas() const;
+      /// Return pointer to canvas (const version)
+      Canvas const        * canvas() const;
 
-    /// Return reference to current screen setup
-    ScreenSetup& screenSetup();
+      /// Return reference to current screen setup
+      ScreenSetup         & screenSetup();
 
-    /// Return const reference to current screen setup
-    ScreenSetup const& screenSetup() const;
+      /// Return const reference to current screen setup
+      ScreenSetup const   & screenSetup() const;
 
-    /// Return reference to blend settings
-    BlendSettings& blendSettings();
+      /// Return reference to export settings
+      Scene               & scene();
 
-    /// Return reference to blend settings
-    BlendSettings const& blendSettings() const;
+      /// Return reference to export settings
+      Scene const         & scene() const;
 
-    /// Return current mode
-    Mode mode() const;
+      /// Return reference to blend settings
+      BlendSettings       & blendSettings();
 
-    /// Set mode of this session
-    void setMode(Mode);
+      /// Return reference to blend settings
+      BlendSettings const & blendSettings() const;
 
-    /// Size of scene (affects canvas sizes and projector offsets)
-    float sceneSize() const;
+      /// Return reference to export settings
+      ExportSettings      & exportSettings();
 
-    /// Set size of scene
-    void setSceneSize(float _size);
+      /// Return reference to export settings
+      ExportSettings const& exportSettings() const;
 
-    /// A session has an output when there is an input, a canvas and a mapping
-    bool hasOutput() const;
 
-    /// Export calibration data of session to a file
-    void renderToFile(QString const& _filename, RenderOptions const& _opt);
+      /// Return current mode
+      Mode mode() const;
 
-    /// Save session to file
-    void save(QString const& _filename) const;
+      /// Set mode of this session
+      void setMode(Mode);
 
-    /// Load session to file
-    void load(QString const& _filename);
+      /// A session has an output when there is an input, a canvas and a mapping
+      bool hasOutput() const;
 
-    /// Deserialize from stream
-    void fromStream(QDataStream&);
+      /// Export calibration data of session to a file
+      void renderToFile(QString const& _filename);
 
-    /// Serialize to stream
-    void toStream(QDataStream&) const;
+      /// Save session to file
+      void        save(QString const& _filename) const;
 
-    /// Test for equality. ScreenSetup is ignored
-    friend bool operator==(Session const&,Session const&);
-  private:
-    /// List with all projector tunings
-    proj::TuningList tunings_;
+      /// Load session to file
+      void        load(QString const& _filename);
 
-    /// Owning pointer for mapping
-    std::unique_ptr<Mapping> mapping_;
+      /// Deserialize from stream
+      void        fromStream(QDataStream&);
 
-    /// List with all inputs (e.g. images, videos etc)
-    InputList inputs_;
+      /// Serialize to stream
+      void        toStream(QDataStream&) const;
 
-    /// Owning pointer for canvas
-    std::unique_ptr<Canvas> canvas_;
+      /// Test for equality. ScreenSetup is ignored
+      friend bool operator==(Session const&,
+                             Session const&);
 
-    /// Current screen setup
-    ScreenSetup screenSetup_;
+    private:
+      /// List with all projector tunings
+      proj::TuningList tunings_;
 
-    /// Current session mode
-    Mode mode_ = Mode::SCREENSETUP;
+      /// Owning pointer for mapping
+      std::unique_ptr<Mapping> mapping_;
 
-    /// Scene size
-    float sceneSize_ = 10.0;
+      /// List with all inputs (e.g. images, videos etc)
+      InputList inputs_;
 
-    BlendSettings blendSettings_;
+      /// Owning pointer for canvas
+      std::unique_ptr<Canvas> canvas_;
+
+      /// Current screen setup
+      ScreenSetup screenSetup_;
+
+      /// Current session mode
+      Mode mode_ = Mode::SCREENSETUP;
+
+      visual::Scene  scene_;
+      BlendSettings  blendSettings_;
+      ExportSettings exportSettings_;
   };
 }
 
 OMNI_DECL_STREAM_OPERATORS(omni::Session)
+
+OMNI_DECL_ENUM_STREAM_OPERATORS(omni::Session::Mode)
 
 #endif /* OMNI_SESSION_H_ */

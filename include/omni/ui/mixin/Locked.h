@@ -19,34 +19,35 @@
 #ifndef OMNI_UI_MIXIN_LOCKED_H_
 #define OMNI_UI_MIXIN_LOCKED_H_
 
-namespace omni
-{
-        namespace ui
-        {
-                namespace mixin
-                {
-                        /// Mixin with a function to lock the widget temporarily
-                        class Locked {
-                        public:
-                                template<typename F>
-                                inline void locked(F f)
-                                {
-                                        bool _oldLocked = locked_;
-                                        locked_ = true;
-                                        f();
-                                        locked_ = _oldLocked;
-                                }
+namespace omni {
+  namespace ui {
+    namespace mixin {
+      /// Mixin with a function to lock the widget temporarily
+      class Locked {
+        public:
+          /// Lock widget and execute given functor
+          template<typename F>
+          inline void locked(F f)
+          {
+            bool _oldLocked = locked_;
 
-                                inline bool isLocked() const
-                                {
-                                        return locked_;
-                                }
-                        private:
-                                /// Flag which sets if widgets are currently locked
-                                bool locked_ = false;
-                        };
-                }
-        }
+            locked_ = true;
+            f();
+            locked_ = _oldLocked;
+          }
+
+          /// Return true if widget is locked
+          inline bool isLocked() const
+          {
+            return locked_;
+          }
+
+        private:
+          /// Flag which sets if widgets are currently locked
+          bool locked_ = false;
+      };
+    }
+  }
 }
 
 #endif /* OMNI_UI_MIXIN_LOCKED_H_ */

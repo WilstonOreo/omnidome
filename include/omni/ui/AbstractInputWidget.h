@@ -24,45 +24,60 @@
 #include <omni/ui/mixin/Editor.h>
 #include "Widget.h"
 
-namespace omni
-{
-        namespace ui
-        {
-                class AbstractInputWidget :
-                    public Widget,
-                    protected mixin::Editor<AbstractInputWidget,QWidget>
-                {
-                        Q_OBJECT
-                    public:
-                        typedef mixin::Editor<AbstractInputWidget,QWidget> mixin_editor_type;
-                        AbstractInputWidget(QWidget* = nullptr);
-                        virtual ~AbstractInputWidget() {
-                        }
+namespace omni {
+  namespace ui {
+    /// Input widget with an editor widget
+    class AbstractInputWidget :
+      public Widget,
+      protected mixin::Editor<AbstractInputWidget, QWidget>{
+      Q_OBJECT
 
-                    public slots:
-                        virtual void setEditorVisible(bool);
-                        void showEditor();
-                        void hideEditor();
+      public:
+        typedef mixin::Editor<AbstractInputWidget, QWidget>mixin_editor_type;
+        AbstractInputWidget(QWidget * = nullptr);
+        virtual ~AbstractInputWidget() {}
 
-                    signals:
-                        void valueChanged();
+      public slots:
+        /// Set editor visible
+        virtual void setEditorVisible(bool);
 
-                    protected:
-                        virtual void mouseDoubleClickEvent(QMouseEvent*);
-                        virtual void mousePressEvent(QMouseEvent*);
-                        virtual void keyPressEvent(QKeyEvent*);
+        /// Show editor
+        void         showEditor();
 
-                        void drawHandle(QPainter& _p, double _pos, double _heightFactor = 1.0) const;
+        /// Hide editor
+        void         hideEditor();
 
-                        void drawTrack(QPainter& _p, double _pos) const;
+      signals:
+        /// Value changed event
+        void         valueChanged();
 
-                        void drawTrack(QPainter& _p, double _left, double _right) const;
+      protected:
+        /// Show editor on double click
+        virtual void mouseDoubleClickEvent(QMouseEvent *);
 
-                        void init();
+        /// Hide editor and set focus on click
+        virtual void mousePressEvent(QMouseEvent *);
 
-                        QLabel* valueLabel_ = nullptr;
-                };
-        }
+        /// Show editor when enter key is pressed
+        virtual void keyPressEvent(QKeyEvent *);
+
+        /// Draw slider handle
+        void         drawHandle(QPainter& _p,
+                                double _pos,
+                                double _heightFactor = 1.0) const;
+
+        void drawTrack(QPainter& _p,
+                       double _pos) const;
+
+        void drawTrack(QPainter& _p,
+                       double _left,
+                       double _right) const;
+
+        void init();
+
+        QLabel *valueLabel_ = nullptr;
+    };
+  }
 }
 
 #endif /* OMNI_UI_ABSTRACTINPUTWIDGET_H_ */

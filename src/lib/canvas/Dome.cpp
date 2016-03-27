@@ -21,18 +21,15 @@
 
 #include <omni/serialization/PropertyMap.h>
 
-namespace omni
-{
-  namespace canvas
-  {
-    Dome::Dome() : center_(0.0,0.0,0.0)
+namespace omni {
+  namespace canvas {
+    Dome::Dome() : center_(0.0, 0.0, 0.0)
     {
       update();
     }
 
     Dome::~Dome()
-    {
-    }
+    {}
 
     void Dome::draw() const
     {
@@ -42,8 +39,7 @@ namespace omni
     }
 
     void Dome::drawAux() const
-    {
-    }
+    {}
 
     qreal Dome::radius() const
     {
@@ -77,8 +73,8 @@ namespace omni
       if (!this->needsUpdate_) return;
 
       auto _r = radius();
-      QVector3D _vr(_r,_r,_r);
-      this->bounds_ = Box(-_vr + center_,_vr + center_);
+      QVector3D _vr(_r, _r, _r);
+      this->bounds_ = Box(-_vr + center_, _vr + center_);
       sphere_.update();
     }
 
@@ -86,7 +82,8 @@ namespace omni
     {
       Envelope::toStream(_stream);
       PropertyMap _map;
-      _map("radius",radius());
+
+      _map("radius", radius());
       _stream << _map;
     }
 
@@ -94,7 +91,8 @@ namespace omni
     {
       Envelope::fromStream(_stream);
       PropertyMap _map;
-      qreal _radius = _map.getValue<qreal>("radius",qreal(5.0));
+      qreal _radius = _map.getValue<qreal>("radius", qreal(5.0));
+
       setRadius(_radius);
     }
   }

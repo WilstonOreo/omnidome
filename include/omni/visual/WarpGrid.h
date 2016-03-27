@@ -28,46 +28,44 @@
 #include <omni/visual/VBO.h>
 
 
-namespace omni
-{
-  namespace visual
-  {
+namespace omni {
+  namespace visual {
     /// Draw Handler for WarpGrid
-    class WarpGrid : public Interface
-    {
-    public:
-      WarpGrid(omni::WarpGrid const& _warpGrid);
-      ~WarpGrid();
+    class WarpGrid : public Interface {
+      public:
+        WarpGrid(omni::WarpGrid const& _warpGrid);
+        ~WarpGrid();
 
-      /// Draw warp grid
-      void draw() const;
+        /// Draw warp grid
+        void draw() const;
 
-      /// Draw lines for warp grid
-      void drawLines();
+        /// Draw lines for warp grid
+        void drawLines();
 
-      /// Draw handles for warp grid
-      void drawHandles(QColor const& _color, QRectF const& _rect);
+        /// Draw handles for warp grid
+        void drawHandles(QColor const& _color,
+                         QRectF const& _rect);
 
-      /// Generate geometry
-      void update();
+        /// Generate geometry
+        void update();
 
-      /// Return number of subdivisions
-      int subdivisions() const;
+        /// Return number of subdivisions
+        int  subdivisions() const;
 
-      /// Set number of subdivisions
-      void setSubdivisions(int _subDiv);
+        /// Set number of subdivisions
+        void setSubdivisions(int _subDiv);
 
-    private:
-      std::unique_ptr<Circle> circle_;
-      std::vector<Vertex2D> vertices_;
-      std::vector<QVector2D> gridVertices_;
-      std::vector<GLuint> indices_;
-      std::vector<GLuint> gridIndices_;
-      VBO vertexVbo_, indexVbo_;
-      VBO gridVertexVbo_, gridIndexVbo_;
+      private:
+        std::unique_ptr<Circle> circle_;
+        std::vector<Vertex2D>   vertices_;
+        std::vector<QVector2D>  gridVertices_;
+        std::vector<GLuint> indices_;
+        std::vector<GLuint> gridIndices_;
+        VBO vertexVbo_, indexVbo_;
+        VBO gridVertexVbo_, gridIndexVbo_;
 
-      omni::WarpGrid const& warpGrid_;
-      int subdivisions_ = 8;
+        omni::WarpGrid const& warpGrid_;
+        int subdivisions_ = 8;
     };
   }
 }

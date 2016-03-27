@@ -21,16 +21,14 @@
 #include "ScreenSetup.h"
 #include <omni/proj/ScreenSetup.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    FullScreen::FullScreen(const QScreen* _screen) :
+namespace omni {
+  namespace ui {
+    FullScreen::FullScreen(const QScreen *_screen) :
       screen_(_screen),
       dragWidget_(new ScreenSetupDragWidget(this))
     {
       setStyleSheet("* { background:black; }");
-      setWindowFlags( Qt::CustomizeWindowHint );
+      setWindowFlags(Qt::CustomizeWindowHint);
       setWindowFlags(Qt::FramelessWindowHint);
       QWidget::setGeometry(_screen->geometry());
       this->hide();
@@ -59,11 +57,11 @@ namespace omni
       widgets_[_subIndex]->hide();
       widgets_[_subIndex]->setParent(nullptr);
       widgets_.erase(_subIndex);
-      if (widgets_.empty())
-        hide();
+
+      if (widgets_.empty()) hide();
     }
 
-    void FullScreen::attach(int _subIndex, QWidget* _widget)
+    void FullScreen::attach(int _subIndex, QWidget *_widget)
     {
       if (widgets_.count(_subIndex) > 0)
       {
@@ -72,7 +70,7 @@ namespace omni
 
       widgets_[_subIndex] = _widget;
 
-      setGeometry(_widget,_subIndex);
+      setGeometry(_widget, _subIndex);
       _widget->setParent(this);
       _widget->show();
       showFullScreen();
@@ -81,30 +79,33 @@ namespace omni
     void FullScreen::hideDragWidget()
     {
       dragWidget_->hide();
-      if (widgets_.empty())
-        hide();
+
+      if (widgets_.empty()) hide();
     }
 
-    void FullScreen::setGeometry(QWidget* _widget, int _subIndex) const
+    void FullScreen::setGeometry(QWidget *_widget, int _subIndex) const
     {
       int _subScreenCount = omni::proj::ScreenSetup::subScreenCount(screen_);
 
       if (_subIndex <  0) _subIndex = 0;
+
       if (_subIndex >= _subScreenCount) _subIndex = _subScreenCount - 1;
 
-      _widget->setGeometry(omni::proj::ScreenSetup::subScreenRect(screen_,_subIndex));
+      using omni::proj::ScreenSetup;
+      _widget->setGeometry(ScreenSetup::subScreenRect(screen_,
+                                                      _subIndex));
     }
 
     void FullScreen::showDragWidget(int _subIndex, QColor const& _color)
     {
-      setGeometry(dragWidget_.get(),_subIndex);
+      setGeometry(dragWidget_.get(), _subIndex);
       dragWidget_->setColor(_color);
       dragWidget_->show();
       dragWidget_->raise();
       showFullScreen();
     }
 
-    void FullScreen::closeEvent(QCloseEvent* _event)
+    void FullScreen::closeEvent(QCloseEvent *_event)
     {
       detachAll();
     }

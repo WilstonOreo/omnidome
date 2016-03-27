@@ -23,7 +23,7 @@
 
 using namespace omni::ui;
 
-About::About(QWidget* _parent) :
+About::About(QWidget *_parent) :
   QDialog(_parent),
   ui_(new Ui::About())
 {
@@ -31,5 +31,4 @@ About::About(QWidget* _parent) :
 }
 
 About::~About()
-{
-}
+{}

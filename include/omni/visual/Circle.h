@@ -23,25 +23,32 @@
 #include <array>
 #include <omni/visual/VBO.h>
 
-namespace omni
-{
-  namespace visual
-  {
-    class Circle
-    {
-    public:
-      Circle();
+namespace omni {
+  namespace visual {
+    /// Visualizer for drawing a circle with VBO
+    class Circle {
+      public:
+        Circle();
 
-      static constexpr std::size_t numberSegments = 24;
+        /// Standard number of segments
+        static constexpr std::size_t numberSegments = 32;
 
-      void drawLine(QPointF const& _pos, float _rX, float _rY) const;
-      void drawFill(QPointF const& _pos, float _rX, float _rY) const;
+        /// Draw lined circle
+        void drawLine(QPointF const& _pos,
+                      float _rX,
+                      float _rY) const;
 
-      void update();
+        /// Draw filled circle with triangle fan
+        void drawFill(QPointF const& _pos,
+                      float _rX,
+                      float _rY) const;
 
-    private:
-       VBO vertexVbo_;
-       std::array<QVector2D,numberSegments+2> vertices_;
+        /// Update circle mesh
+        void update();
+
+      private:
+        VBO vertexVbo_;
+        std::array<QVector2D, numberSegments + 2> vertices_;
     };
   }
 }

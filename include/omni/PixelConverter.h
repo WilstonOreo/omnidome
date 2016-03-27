@@ -22,47 +22,55 @@
 #include <QColor>
 
 namespace omni {
-    template<typename IN, typename OUT>
-    struct PixelConverter {
-        void operator()(IN const& _in, OUT& _out) {
+  /// Template for converting IN pixel type to OUT pixel type
+  template<typename IN, typename OUT>
+  struct PixelConverter {
+    void operator()(IN const& _in, OUT& _out) {}
+  };
 
-        }
-    };
+  /// Convert to QColor
+  template<typename IN>
+  struct PixelConverter<IN, QColor>{
+    template<typename T>
+    void operator()(T const& _in, QColor& _out) {
+      int _v = qBound(0, int(255.0 * _in), 255);
 
-    template<typename IN>
-    struct PixelConverter<IN,QColor> {
-        template<typename T>
-        void operator()(T const& _in, QColor& _out) {
-            int _v = qBound(0,int(255.0*_in),255);
-            _out = QColor(_v,_v,_v);
-        }
-    };
-
-    template<>
-    struct PixelConverter<uint8_t,QColor> {
-        template<typename T>
-        void operator()(T const& _in, QColor& _out) {
-            _out = QColor(_in,_in,_in);
-        }
-    };
-
-    template<>
-    struct PixelConverter<int,QColor> : PixelConverter<uint8_t,QColor> {};
-
-    template<>
-    struct PixelConverter<unsigned int,QColor> : PixelConverter<uint8_t,QColor> {};
-
-    template<typename OUT, typename IN>
-    void convertPixel(const IN& _in, OUT& _out) {
-        PixelConverter<IN,OUT>()(_in,_out);
+      _out = QColor(_v, _v, _v);
     }
+  };
 
-    template<typename OUT, typename IN>
-    OUT convertPixel(const IN& _in) {
-        OUT _out;
-        convertPixel(_in,_out);
-        return _out;
+  /// Convert byte value to grayscale QColor
+  template<>
+  struct PixelConverter<uint8_t, QColor>{
+    template<typename T>
+    void operator()(T const& _in, QColor& _out) {
+      _out = QColor(_in, _in, _in);
     }
+  };
+
+  /// Convert int value to grayscale QColor
+  template<>
+  struct PixelConverter<int, QColor>: PixelConverter<uint8_t, QColor>{};
+
+  /// Convert int value to grayscale QColor
+  template<>
+  struct PixelConverter<unsigned int, QColor>: PixelConverter<uint8_t, QColor>{};
+
+
+  /// Convert IN to OUT pixel
+  template<typename IN, typename OUT>
+  void convertPixel(const IN& _in, OUT& _out) {
+    PixelConverter<IN, OUT>()(_in, _out);
+  }
+
+  /// Convert pixel IN to OUT pixel and return OUT
+  template<typename OUT, typename IN>
+  OUT convertPixel(const IN& _in) {
+    OUT _out;
+
+    convertPixel(_in, _out);
+    return _out;
+  }
 }
 
 #endif /* OMNI_PIXELCONVERTER_H_ */

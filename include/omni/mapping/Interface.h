@@ -29,141 +29,152 @@
 
 class QOpenGLShaderProgram;
 
-namespace omni
-{
-  namespace input
-  {
+namespace omni {
+  namespace input {
     class Interface;
     class List;
   }
 
-  namespace mapping
-  {
+  namespace mapping {
     enum class OutputMode
     {
-      MAPPED_INPUT, // Draws actual input texture on mapping
-      TEXCOORDS, // Draw texture coordinates of mapping
-      UVW, // Draws uvw coordinates of mapping
+      MAPPED_INPUT,  // Draws actual input texture on mapping
+      TEXCOORDS,     // Draw texture coordinates of mapping
+      UVW,           // Draws uvw coordinates of mapping
       LIGHTING_ONLY, // Draw plain canvas with lighting
-      LIGHTING_TEX // Draw canvas with
+      LIGHTING_TEX   // Draw canvas with
     };
 
     /**@brief Mapping interface with one or several inputs and shader
      * @detail Holds inputs and shader
      */
     class Interface :
-        public SerializationInterface,
-        public TypeIdInterface,
-        public visual::Interface
-    {
-    public:
-      Interface();
+      public SerializationInterface,
+      public TypeIdInterface,
+      public visual::Interface {
+      public:
+        Interface();
 
-      virtual ~Interface();
+        virtual ~Interface();
 
-      /// Initialized OpenGL shader
-      void initialize();
+        /// Initialized OpenGL shader
+        void         initialize();
 
-      /// Bind shaders and set uniforms
-      virtual void bind();
-      void bind(OutputMode, bool _grayscale);
+        /// Bind shaders and set uniforms
+        virtual void bind();
+        void bind(OutputMode, bool _grayscale);
 
-      /// Release shader
-      void release();
+        /// Release shader
+        void release();
 
+        /// Flip horizontally
+        bool flipHorizontal() const;
 
-      bool flipHorizontal() const;
-      void setFlipHorizontal(bool);
+        /// Flip horizontally
+        void setFlipHorizontal(bool);
 
-      bool flipVertical() const;
-      void setFlipVertical(bool);
+        /// Flip vertically
+        bool flipVertical() const;
 
-      /**@brief Flag which tells if this mapping uses UVW texture coordinates (true by default)
-         @detail
-       **/
-      inline virtual bool isUVW() const
-      {
-        return true;
-      }
+        /// Flip vertically
+        void setFlipVertical(bool);
 
-      /// Static function to retrieve all registered mappings that support UVW coords
-      static IdSet getUVWMappings();
+        /**@brief Flag which tells if this mapping uses UVW texture coordinates
+           (true by default)
+           @detail
+         **/
+        inline virtual bool isUVW() const
+        {
+          return true;
+        }
 
-      /// Static function to retrieve all registered mappings that dont support UVW coords
-      static IdSet getPlanarMappings();
+        /// Static function to retrieve all registered mappings that support UVW
+        // coords
+        static IdSet     getUVWMappings();
 
-      /// Return pointer to parameter widget
-      virtual QWidget* widget() = 0;
+        /// Static function to retrieve all registered mappings that dont
+        // support UVW coords
+        static IdSet     getPlanarMappings();
 
-      inline void draw() const { draw(1.0); }
+        /// Return pointer to parameter widget
+        virtual QWidget* widget() = 0;
 
-      inline virtual void draw(float _opacity) const {}
-      inline virtual void update() {}
+        inline void draw() const {
+          draw(1.0);
+        }
 
-      /// Return const ref to affine transform
-      AffineTransform const& transform() const;
+        /// Draw mapping with opacity
+        inline virtual void draw(float _opacity) const {}
 
-      /// Return ref to affine transform
-      AffineTransform& transform();
+        /// Update mapping visualizer
+        inline virtual void update() {}
 
-      /// Set new affine transform
-      void setTransform(AffineTransform const& _transform);
+        /// Return const ref to affine transform
+        AffineTransform const& transform() const;
 
-      /// Return matrix of transform
-      virtual QMatrix4x4 matrix() const;
+        /// Return ref to affine transform
+        AffineTransform  & transform();
 
-      /**@brief If true, mapping transform is attached to canvas transform
-         @detail Is true by default
-       **/
-      bool isBoundToCanvas() const;
+        /// Set new affine transform
+        void               setTransform(AffineTransform const& _transform);
 
-      /// Set whether mapping transform is attached to canvas transform
-      void setBoundToCanvas(bool);
+        /// Return matrix of transform
+        virtual QMatrix4x4 matrix() const;
 
-      /// Write mapping to stream
-      virtual void toStream(QDataStream&) const;
+        /**@brief If true, mapping transform is attached to canvas transform
+           @detail Is true by default
+         **/
+        bool               isBoundToCanvas() const;
 
-      /// Read mapping from stream
-      virtual void fromStream(QDataStream&);
+        /// Set whether mapping transform is attached to canvas transform
+        void               setBoundToCanvas(bool);
 
-    protected:
-      std::unique_ptr<QOpenGLShaderProgram> shader_;
+        /// Write mapping to stream
+        virtual void       toStream(QDataStream&) const;
 
-    private:
-      /**@brief Returns vertex shader source code
-       * @detail Is taken from file :/shaders/mapping/common.vert by default)
-      **/
-      virtual QString vertexShaderSourceCode() const;
+        /// Read mapping from stream
+        virtual void       fromStream(QDataStream&);
 
-      /**@brief Returns fragment shader source code
-       * @detail Is taken from file :/shaders/mapping/$MAPPING_TYPEID by default)
-      **/
-      virtual QString fragmentShaderSourceCode() const;
+      protected:
+        std::unique_ptr<QOpenGLShaderProgram> shader_;
 
-      AffineTransform transform_;
-      bool boundToCanvas_ = true;
-      bool flipHorizontal_ = false;
-      bool flipVertical_ = false;
+      private:
+        /**@brief Returns vertex shader source code
+         * @detail Is taken from file :/shaders/mapping/common.vert by default)
+         **/
+        virtual QString vertexShaderSourceCode() const;
+
+        /**@brief Returns fragment shader source code
+         * @detail Is taken from file :/shaders/mapping/$MAPPING_TYPEID by
+         *default)
+         **/
+        virtual QString fragmentShaderSourceCode() const;
+
+        AffineTransform transform_;
+        bool boundToCanvas_  = true;
+        bool flipHorizontal_ = false;
+        bool flipVertical_   = false;
     };
 
     /// Abstract mapping factory
-    typedef AbstractFactory<Interface> Factory;
+    typedef AbstractFactory<Interface>Factory;
   }
 
   typedef mapping::Interface Mapping;
-  typedef mapping::Factory MappingFactory;
+  typedef mapping::Factory   MappingFactory;
 }
 
+OMNI_DECL_ENUM_STREAM_OPERATORS(omni::mapping::OutputMode)
 
 #define OMNI_MAPPING_INTERFACE_IID  "org.omnidome.mapping.Interface"
 
 Q_DECLARE_INTERFACE(omni::mapping::Interface, OMNI_MAPPING_INTERFACE_IID)
 
-#define OMNI_MAPPING_PLUGIN_DECL \
-    Q_OBJECT \
-    Q_PLUGIN_METADATA(IID OMNI_MAPPING_INTERFACE_IID) \
-    Q_INTERFACES(omni::mapping::Interface) \
-    OMNI_PLUGIN_TYPE("Mapping")
+#define OMNI_MAPPING_PLUGIN_DECL                    \
+  Q_OBJECT                                          \
+  Q_PLUGIN_METADATA(IID OMNI_MAPPING_INTERFACE_IID) \
+  Q_INTERFACES(omni::mapping::Interface)            \
+  OMNI_PLUGIN_TYPE("Mapping")
 
 
 #endif /* OMNI_MAPPING_INTERFACE_H_ */

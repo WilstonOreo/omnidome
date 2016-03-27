@@ -28,69 +28,69 @@
 #include <omni/ui/mixin/DataModel.h>
 #include <omni/ui/mixin/ParameterWidget.h>
 
-namespace omni
-{
+namespace omni {
   class Session;
 
-  namespace ui
-  {
-    namespace Ui
-    {
+  namespace ui {
+    namespace Ui {
       class Input;
     }
 
     /// Input List widget
     class Input :
-        public DockWidget,
-        public mixin::SharedDataModel<Session>,
-        private mixin::ParameterWidget
-    {
-      Q_OBJECT
-      OMNI_UI_SHARED_DATAMODEL(Session)
-    public:
-      Input(QWidget* = nullptr);
-      ~Input();
+      public DockWidget,
+      public mixin::SharedDataModel<Session>,
+      private mixin::ParameterWidget {
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
 
-    public slots:
-      void addInput(QAction*);
+      public:
+        Input(QWidget * = nullptr);
+        ~Input();
 
-      /// Removes all selected inputs
-      void removeSelection();
+      public slots:
+        void addInput(QAction *);
 
-      /// Removes all inputs
-      void clear();
+        /// Removes all selected inputs
+        void removeSelection();
 
-      /// Select input at model index
-      void changeSelection(QModelIndex);
+        /// Removes all inputs
+        void clear();
 
-    signals:
-      void inputChanged();
-      void dataModelChanged();
-      void inputIndexChanged();
+        /// Select input at model index
+        void changeSelection(QModelIndex);
 
-    private:
-      /// Update sliders from given blend mask
-      void dataToFrontend();
+      signals:
+        void inputChanged();
+        void dataModelChanged();
+        void inputIndexChanged();
 
-      /// Assign slider values to blend mask
-      inline bool frontendToData() { return false; }
+      private:
+        /// Update sliders from given blend mask
+        void dataToFrontend();
 
-      /// Setup the item model with columns etc
-      void prepareModel();
+        /// Assign slider values to blend mask
+        inline bool frontendToData() {
+          return false;
+        }
 
-      bool showSettingsDialog(input::Interface*);
+        /// Setup the item model with columns etc
+        void    prepareModel();
 
-      QString itemId(int _row) const;
+        bool    showSettingsDialog(input::Interface *);
 
-      /// Add an item to input list widget
-      void addItem(QString const& _id, input::Interface const*);
+        QString itemId(int _row) const;
 
-      void parameterWidgetSetupOptions(QWidget* _paramWidget) const;
+        /// Add an item to input list widget
+        void    addItem(QString const& _id,
+                        input::Interface const *);
 
-      void showParameterWidget();
+        void    parameterWidgetSetupOptions(QWidget *_paramWidget) const;
 
-      std::unique_ptr<Ui::Input> ui_;
-      std::unique_ptr<QStandardItemModel> model_;
+        void    showParameterWidget();
+
+        std::unique_ptr<Ui::Input> ui_;
+        std::unique_ptr<QStandardItemModel> model_;
     };
   }
 }

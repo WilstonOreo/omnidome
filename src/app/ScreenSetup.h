@@ -30,145 +30,150 @@
 #include "ScreenSetupDragWidget.h"
 #include "FullScreen.h"
 
-namespace omni
-{
+namespace omni {
   class Session;
 
-  namespace ui
-  {
+  namespace ui {
     /**@brief A widget for seting up fullscreen windows
      * @details Holds fullscreen widgets
      **/
     class ScreenSetup :
-        public QWidget,
-        public mixin::SharedDataModel<Session>,
-        public mixin::TransformedRect<ScreenSetup>
-    {
-      Q_OBJECT
-      OMNI_UI_SHARED_DATAMODEL(Session)
-    public:
-      ScreenSetup(QWidget* = nullptr);
-      ~ScreenSetup();
+      public QWidget,
+      public mixin::SharedDataModel<Session>,
+      public mixin::TransformedRect<ScreenSetup>{
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
 
-      inline QRect desktopRect() const {
+      public:
+        ScreenSetup(QWidget * = nullptr);
+        ~ScreenSetup();
+
+        inline QRect desktopRect() const {
           return omni::proj::ScreenSetup::desktopRect();
-      }
+        }
 
-    public slots:
-      /// Update screen dimensions
-      void updateScreens();
+      public slots:
+        /// Update screen dimensions
+        void updateScreens();
 
-      void detachTuning(omni::ui::proj::Tuning*);
-    signals:
-      void dataModelChanged();
+        void detachTuning(omni::ui::proj::Tuning *);
 
-    protected:
-      void paintEvent(QPaintEvent*);
+      signals:
+        void dataModelChanged();
 
-      void mouseMoveEvent(QMouseEvent*);
+      protected:
+        void paintEvent(QPaintEvent *);
 
-      /// Detach tuning on double click on screen event
-      void mouseDoubleClickEvent(QMouseEvent*);
-      void dragEnterEvent(QDragEnterEvent*);
-      void dragMoveEvent(QDragMoveEvent*);
-      void dropEvent(QDropEvent*);
+        void mouseMoveEvent(QMouseEvent *);
 
-    private:
-      friend class Item;
-
-      friend class SubScreenItem;
-
-      class Item;
-
-      class SubScreenItem
-      {
-      public:
-        SubScreenItem();
-        SubScreenItem(Item const* _parent, int _index);
-
-        omni::ui::proj::Tuning* tuning();
-        omni::ui::proj::Tuning const* tuning() const;
-        void setTuning(omni::ui::proj::Tuning* _tuning);
-
-        QRect rect() const;
-        QSize size() const;
-
-        void paint(bool _hover, bool _drop, QColor _dropColor, QPainter&);
+        /// Detach tuning on double click on screen event
+        void mouseDoubleClickEvent(QMouseEvent *);
+        void dragEnterEvent(QDragEnterEvent *);
+        void dragMoveEvent(QDragMoveEvent *);
+        void dropEvent(QDropEvent *);
 
       private:
-        Item const* parent_ = nullptr;
-        int index_ = -1;
-        omni::ui::proj::Tuning* tuning_ = nullptr;
-      };
+        friend class Item;
 
-      /// A screen rectangle item with drawing functionality
-      class Item
-      {
-      public:
-        Item(ScreenSetup&,QScreen const* _screen);
-        ~Item();
+        friend class SubScreenItem;
 
-        QScreen const* screen() const;
+        class Item;
 
-        void paint(QPainter&);
+        class SubScreenItem {
+          public:
+            SubScreenItem();
+            SubScreenItem(Item const *_parent,
+                          int _index);
 
-        /// Attach projector to screen on current hover index
-        void attachTuning(omni::ui::proj::Tuning*);
+            omni::ui::proj::Tuning      * tuning();
+            omni::ui::proj::Tuning const* tuning() const;
+            void                          setTuning(
+              omni::ui::proj::Tuning *_tuning);
 
-        /// Detach projector from screen
-        void detachTuning(omni::ui::proj::Tuning*);
+            QRect                         rect() const;
+            QSize                         size() const;
 
-        /// Detach projector from item on current hover index
-        void detachCurrentTuning();
+            void                          paint(bool _hover,
+                                                bool _drop,
+                                                QColor _dropColor,
+                                                QPainter&);
 
-        /// Detach all tunings/projectors
-        void detachTunings();
+          private:
+            Item const *parent_             = nullptr;
+            int index_                      = -1;
+            omni::ui::proj::Tuning *tuning_ = nullptr;
+        };
 
-        /// Returns flag whether mouse is currently over this item
-        int hoverIndex() const;
+        /// A screen rectangle item with drawing functionality
+        class Item {
+          public:
+            Item(ScreenSetup&,
+                 QScreen const *_screen);
+            ~Item();
 
-        /// Set index of current hovered subscreen
-        void setHoverIndex(int);
+            QScreen const* screen() const;
 
-        /// Set hover index from mouse position
-        void setHoverIndex(QPoint const&);
+            void           paint(QPainter&);
 
-        /// Flag whether a drop is supposed to happen on this item
-        bool drop() const;
+            /// Attach projector to screen on current hover index
+            void           attachTuning(omni::ui::proj::Tuning *);
 
-        /// Drop and color of drop
-        void setDrop(bool, QColor const& _color = QColor("#FFFFFF"));
+            /// Detach projector from screen
+            void           detachTuning(omni::ui::proj::Tuning *);
 
-        /// Hides fullscreen widget if no tunings are attached
-        void endDrop();
+            /// Detach projector from item on current hover index
+            void           detachCurrentTuning();
 
-        QRect rect() const;
+            /// Detach all tunings/projectors
+            void           detachTunings();
 
-      private:
-        int hoverIndex_ = -1;
-        bool drop_ = false;
-        QColor dropColor_;
-        ScreenSetup& screenSetup_;
-        QScreen const* screen_;
-        FullScreen* fullscreen_;
-        std::vector<SubScreenItem> subScreens_;
-      };
+            /// Returns flag whether mouse is currently over this item
+            int            hoverIndex() const;
 
-      /// Set session parameters
-      void dataToFrontend();
+            /// Set index of current hovered subscreen
+            void           setHoverIndex(int);
 
-      bool frontendToData() { return false; }
+            /// Set hover index from mouse position
+            void           setHoverIndex(QPoint const&);
 
-      /**@brief Returns pointer to a ScreenSetup::Item under given position
-        *@detail Returns null otherwise
-      **/
-      Item* getItemAtPos(QPoint const&);
+            /// Flag whether a drop is supposed to happen on this item
+            bool           drop() const;
 
-      std::map<QScreen const*,std::unique_ptr<Item>> screenItems_;
-      omni::proj::ScreenSetup* setup_;
-      Session* session_ = nullptr;
+            /// Drop and color of drop
+            void           setDrop(bool,
+                                   QColor const& _color = QColor("#FFFFFF"));
+
+            /// Hides fullscreen widget if no tunings are attached
+            void  endDrop();
+
+            QRect rect() const;
+
+          private:
+            int hoverIndex_ = -1;
+            bool   drop_    = false;
+            QColor dropColor_;
+            ScreenSetup  & screenSetup_;
+            QScreen const *screen_;
+            FullScreen    *fullscreen_;
+            std::vector<SubScreenItem> subScreens_;
+        };
+
+        /// Set session parameters
+        void dataToFrontend();
+
+        bool frontendToData() {
+          return false;
+        }
+
+        /**@brief Returns pointer to a ScreenSetup::Item under given position
+         *@detail Returns null otherwise
+         **/
+        Item* getItemAtPos(QPoint const&);
+
+        std::map<QScreen const *, std::unique_ptr<Item> > screenItems_;
+        omni::proj::ScreenSetup *setup_;
+        Session *session_ = nullptr;
     };
-
   }
 }
 

@@ -26,12 +26,9 @@
 #include <omni/ui/mixin/RangedValue.h>
 #include <omni/util.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace proj
-    {
+namespace omni {
+  namespace ui {
+    namespace proj {
       class Tuning;
 
       /**@brief TitleBar for projector tuning widget
@@ -42,70 +39,71 @@ namespace omni
        *         * Close tuning widget for deleting a projector tuning
        **/
       class TitleBar :
-        public omni::ui::Widget
-      {
+        public omni::ui::Widget {
         Q_OBJECT
-      public:
-        /// Construct with tuning widget as parent (is mandatory)
-        TitleBar(Tuning*);
 
-        /// Construct with label and tuning widget as parent
-        TitleBar(QString const& _label, Tuning*);
-        ~TitleBar();
+        public:
+          /// Construct with tuning widget as parent (is mandatory)
+          TitleBar(Tuning *);
 
-        /// Return color
-        QColor color() const;
+          /// Construct with label and tuning widget as parent
+          TitleBar(QString const& _label,
+                   Tuning *);
+          ~TitleBar();
 
-        /// Returns true if close button is visible
-        bool closeButtonVisible() const;
+          /// Return color
+          QColor color() const;
 
-      public slots:
-        /// Set color from gradient pos (between 0.0 and 1.0)
-        void setColor(QColor const&);
+          /// Returns true if close button is visible
+          bool   closeButtonVisible() const;
 
-        /// Select color from color picker
-        void selectColor();
+        public slots:
+          /// Set color from gradient pos (between 0.0 and 1.0)
+          void    setColor(QColor const&);
 
-        /// Toggle visibility of close button
-        void setCloseButtonVisible(bool);
+          /// Select color from color picker
+          void    selectColor();
 
-      signals:
-        void closeButtonClicked();
-        void maximizeButtonClicked();
-        void colorChanged(QColor const&);
-        void freeSetupSelected();
-        void peripheralSetupSelected();
+          /// Toggle visibility of close button
+          void    setCloseButtonVisible(bool);
 
-      protected:
-        void paintEvent(QPaintEvent*);
+        signals:
+          void    closeButtonClicked();
+          void    maximizeButtonClicked();
+          void    colorChanged(QColor const&);
+          void    freeSetupSelected();
+          void    peripheralSetupSelected();
 
-      private:
-        void setup();
+        protected:
+          void    paintEvent(QPaintEvent *);
 
-        /// Set moving flag to value and handle visibility of buttons
-        Tuning* tuningWidget();
+        private:
+          void    setup();
 
-        /// Button for resetting and projector setup selection
-        QUniquePtr<QToolButton> menuButton_;
+          /// Set moving flag to value and handle visibility of buttons
+          Tuning* tuningWidget();
 
-        /// Button for toggling fullscreen display
-        QUniquePtr<QToolButton> displayButton_;
+          /// Button for resetting and projector setup selection
+          QUniquePtr<QToolButton> menuButton_;
 
-        /// Button for Minimizing/Maximizing widget
-        QUniquePtr<QToolButton> maximizeButton_;
+          /// Button for toggling fullscreen display
+          QUniquePtr<QToolButton> displayButton_;
 
-        /// Button for closing widget
-        QUniquePtr<QToolButton> closeButton_;
+          /// Button for Minimizing/Maximizing widget
+          QUniquePtr<QToolButton> maximizeButton_;
 
-        /// Context menu widget
-        QUniquePtr<QMenu> menu_;
+          /// Button for closing widget
+          QUniquePtr<QToolButton> closeButton_;
 
-        /// Parent tuning widget
-        Tuning* tuningWidget_ = nullptr;
+          /// Context menu widget
+          QUniquePtr<QMenu> menu_;
 
-        QColor color_;
+          /// Parent tuning widget
+          Tuning *tuningWidget_ = nullptr;
+
+          QColor color_;
       };
-    };
+    }
   }
 }
 

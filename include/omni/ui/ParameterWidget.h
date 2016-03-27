@@ -30,114 +30,129 @@
 #include <omni/ui/AffineTransform.h>
 #include <omni/util.h>
 
-namespace omni
-{
-  namespace ui
-  {
+namespace omni {
+  namespace ui {
     /**@brief A widget which holds sub-widgets for manipulating parameters
     **/
     class ParameterWidget :
-        public QWidget,
-        public mixin::Scale<omni::ui::RangedFloat>
-    {
-      Q_OBJECT
-    public:
-      /// Default constructor
-      ParameterWidget(QWidget* _parent = nullptr);
+      public QWidget,
+      public mixin::Scale<omni::ui::RangedFloat>{
+        Q_OBJECT
+      public:
+        /// Default constructor
+        ParameterWidget(QWidget *_parent = nullptr);
 
-      /// Default Constructor
-      virtual ~ParameterWidget();
+        /// Default Constructor
+        virtual ~ParameterWidget();
 
-      /// Adds a widget with a name, a value and min-max range
-      RangedFloat* addWidget(QString const&,float,float,float);
+        /// Adds a widget with a name, a value and min-max range
+        RangedFloat* addWidget(QString const&,
+                               float,
+                               float,
+                               float);
 
-      /// Adds a integer widget with a name, a value and min-max range
-      RangedInt* addIntegerWidget(QString const&,int,int,int);
+        /// Adds a integer widget with a name, a value and min-max range
+        RangedInt* addIntegerWidget(QString const&,
+                                    int,
+                                    int,
+                                    int);
 
-      /// Adds an angle widget with a name, a value and min-max range
-      RangedFloat* addAngleWidget(QString const&,float,float,float);
+        /// Adds an angle widget with a name, a value and min-max range
+        RangedFloat* addAngleWidget(QString const&,
+                                    float,
+                                    float,
+                                    float);
 
-      /// Adds an offset widget with a name, a value and min-max range
-      RangedFloat* addOffsetWidget(QString const&,float,float,float);
+        /// Adds an offset widget with a name, a value and min-max range
+        RangedFloat* addOffsetWidget(QString const&,
+                                     float,
+                                     float,
+                                     float);
 
-      /// Adds an Rotation widget with three dials for X,Y and Z axis
-      Rotation* addRotationWidget(QString const&);
+        /// Adds an Rotation widget with three dials for X,Y and Z axis
+        Rotation                 * addRotationWidget(QString const&);
 
-      /// Add a new affine transform widget with an id
-      omni::ui::AffineTransform* addAffineTransformWidget(QString const&, omni::AffineTransform*);
+        /// Add a new affine transform widget with an id
+        omni::ui::AffineTransform* addAffineTransformWidget(QString const&,
+                                                            omni::AffineTransform *);
 
-      /// Adds a checkbox
-      QCheckBox* addCheckBox(QString const&, bool _checked = false);
+        /// Adds a checkbox
+        QCheckBox* addCheckBox(QString const&,
+                               bool _checked = false);
 
-      /// Return id of focused parameter, -1 if no parameter is focused
-      int focusId() const;
+        /// Return id of focused parameter, -1 if no parameter is focused
+        int focusId() const;
 
-    public slots:
-      /// Removes all parameter widgets
-      void clear();
+      public slots:
+        /// Removes all parameter widgets
+        void         clear();
 
-      virtual void updateParameters();
+        virtual void updateParameters();
 
-      /// Utility method for retrieving the value from a slider with id
-      double getParamAsFloat(QString const&) const;
+        /// Utility method for retrieving the value from a slider with id
+        double       getParamAsFloat(QString const&) const;
 
-      /// Set slider value from given value
-      void setParamAsFloat(QString const& _str, double _value);
+        /// Set slider value from given value
+        void         setParamAsFloat(QString const& _str,
+                                     double _value);
 
-      /// Utility method for retrieving the value from a slider with id
-      int getParamAsInt(QString const&) const;
+        /// Utility method for retrieving the value from a slider with id
+        int  getParamAsInt(QString const&) const;
 
-      /// Set slider value from given value
-      void setParamAsInt(QString const& _str, int _value);
+        /// Set slider value from given value
+        void setParamAsInt(QString const& _str,
+                           int _value);
 
-      /// Utility method for retrieving the value from checkbox with id
-      bool getParamAsBool(QString const&) const;
+        /// Utility method for retrieving the value from checkbox with id
+        bool     getParamAsBool(QString const&) const;
 
-      /// Get parameter widget from parameter map with Id
-      QWidget* getWidget(QString const&);
+        /// Get parameter widget from parameter map with Id
+        QWidget* getWidget(QString const&);
 
-      void setParametersVisible(bool);
+        void     setParametersVisible(bool);
 
-      /**@brief Put focus on next element
-         @param _circular Selects first parameter when last parameter has been
-                          reached
-         @returns True if last parameter has been reached, always returns true
-                  when in circular mode
-       **/
-      bool focusNext(bool _circular = false);
+        /**@brief Put focus on next element
+           @param _circular Selects first parameter when last parameter has been
+                            reached
+           @returns True if last parameter has been reached, always returns true
+                    when in circular mode
+         **/
+        bool     focusNext(bool _circular = false);
 
-      /**@brief Put focus on prev element
-         @param _circular Selects last parameter when first parameter has been
-                          reached
-         @returns True if first parameter has been reached, always returns true
-                  when in circular mode
-       **/
-      bool focusPrev(bool _circular = false);
+        /**@brief Put focus on prev element
+           @param _circular Selects last parameter when first parameter has been
+                            reached
+           @returns True if first parameter has been reached, always returns
+              true
+                    when in circular mode
+         **/
+        bool     focusPrev(bool _circular = false);
 
-      /// Focus item in layout with index
-      void focus(int _index);
+        /// Focus item in layout with index
+        void     focus(int _index);
 
-      /// Set focus on first widget in parameter list
-      void focusFirst();
+        /// Set focus on first widget in parameter list
+        void     focusFirst();
 
-      /// Set focus on last widget in parameter list
-      void focusLast();
+        /// Set focus on last widget in parameter list
+        void     focusLast();
 
-    signals:
-      void parametersUpdated();
+      signals:
+        void     parametersUpdated();
 
-    protected:
-      /// Id of first focussed widget
-      inline virtual int firstFocusId() const {
+      protected:
+        /// Id of first focussed widget
+        inline virtual int firstFocusId() const {
           return 0;
-      }
-      void keyPressEvent(QKeyEvent* _event);
+        }
 
-      /// Slider parameter widgets
-      std::vector<QUniquePtr<QWidget>> parameters_;
+        void keyPressEvent(QKeyEvent *_event);
 
-      /// Slider widgets, sorted by their label
-      std::map<QString,QWidget*> parameterMap_;
+        /// Slider parameter widgets
+        std::vector<QUniquePtr<QWidget> > parameters_;
+
+        /// Slider widgets, sorted by their label
+        std::map<QString, QWidget *> parameterMap_;
     };
   }
 }

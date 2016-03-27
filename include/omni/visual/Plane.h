@@ -25,49 +25,51 @@
 #include <omni/EulerAngles.h>
 
 namespace omni {
-    namespace visual {
-        /**@brief A plane with n x m grid points
-           @detail Vertex data is not stored on host, it is copied to GPU directly.
-                   Plane has dimensions [-0.5,-0.5] - [0.5,0.5]
-         **/
-        class Plane : public visual::Interface {
-        public:
-            typedef std::function<void(QVector2D&, size_t, size_t)>
-                texcoord_transform_functor_type;
+  namespace visual {
+    /**@brief A plane with n x m grid points
+       @detail Vertex data is not stored on host, it is copied to GPU directly.
+               Plane has dimensions [-0.5,-0.5] - [0.5,0.5]
+     **/
+    class Plane : public visual::Interface {
+      public:
+        typedef std::function<void (QVector2D&, size_t, size_t)>
+          texcoord_transform_functor_type;
 
-            Plane();
-            ~Plane();
+        Plane();
+        ~Plane();
 
-            /// Draw plane
-            void draw() const;
+        /// Draw plane
+        void   draw() const;
 
-            /// Update mesh with texcoord transformation
-            void update(texcoord_transform_functor_type _f);
+        /// Update mesh with texcoord transformation
+        void   update(texcoord_transform_functor_type _f);
 
-            /// Update mesh (without transforming texture coordinates)
-            void update();
+        /// Update mesh (without transforming texture coordinates)
+        void   update();
 
-            /// Return number of horizontal subdivisions
-            size_t horizontal() const;
+        /// Return number of horizontal subdivisions
+        size_t horizontal() const;
 
-            /// Set horizontal subdivisions (does not regenerate the mesh)
-            void setHorizontal(size_t _horizontal);
+        /// Set horizontal subdivisions (does not regenerate the mesh)
+        void   setHorizontal(size_t _horizontal);
 
-            /// Return number of vertical subdivisions
-            size_t vertical() const;
+        /// Return number of vertical subdivisions
+        size_t vertical() const;
 
-            /// Set vertical subdivisions (does not regenerate the mesh)
-            void setVertical(size_t _vertical);
+        /// Set vertical subdivisions (does not regenerate the mesh)
+        void   setVertical(size_t _vertical);
 
-            /// Set horizontal and vertical subdivisions (does not regenerate the mesh)
-            void resize(size_t _horizontal, size_t _vertical);
+        /// Set horizontal and vertical subdivisions (does not regenerate the
+        // mesh)
+        void   resize(size_t _horizontal,
+                      size_t _vertical);
 
-        private:
-            size_t horizontal_ = 10;
-            size_t vertical_ = 10;
-            VertexVBO vbo_;
-        };
-    }
+      private:
+        size_t horizontal_ = 10;
+        size_t vertical_   = 10;
+        VertexVBO vbo_;
+    };
+  }
 }
 
 #endif /* OMNI_VISUAL_PLANE_H_ */

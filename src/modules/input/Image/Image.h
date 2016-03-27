@@ -22,66 +22,61 @@
 
 #include <omni/input/Interface.h>
 
-namespace omni
-{
-  namespace input
-  {
+namespace omni {
+  namespace input {
     /// Still image input
-    class Image : public QObject, public Interface
-    {
+    class Image : public QObject, public Interface {
       OMNI_INPUT_PLUGIN_DECL
-      OMNI_PLUGIN_CR8TR("Input image","Copyright (C) 2016")
-    public:
-      OMNI_REGISTER_CLASS(Factory,Image)
+                         OMNI_PLUGIN_CR8TR("Input image", "Copyright (C) 2016")
 
-      /// Default Constructor
-      Image();
+      public:
+        OMNI_REGISTER_CLASS(Factory, Image)
 
-      /// Construct from path and load image
-      Image(QString const& _path);
+        /// Default Constructor
+        Image(Interface const * = nullptr);
 
-      /// Destructor
-      ~Image();
+        /// Destructor
+        ~Image();
 
-      /// Free image from OpenGL context
-      void free();
+        /// Free image from OpenGL context
+        void     free();
 
-      /// Update image
-      void update();
+        /// Update image
+        void     update();
 
-      /// Returns texture ID of image
-      GLuint textureId() const;
+        /// Returns texture ID of image
+        GLuint   textureId() const;
 
-      /// Load image from file and stores path
-      void load(QString const& _path);
+        /// Load image from file and stores path
+        void     load(QString const& _path);
 
-      /// Reload image from stored path name
-      void reload();
+        /// Reload image from stored path name
+        void     reload();
 
-      /// Return stored path
-      QString path() const;
+        /// Return stored path
+        QString  path() const;
 
-      /// InfoText is basename of stored path
-      QString infoText() const;
+        /// InfoText is basename of stored path
+        QString  infoText() const;
 
-      /// Return image dimensions in pixels
-      QSize size() const;
+        /// Return image dimensions in pixels
+        QSize    size() const;
 
-      /// Serialize image path to stream
-      void toStream(QDataStream&) const;
+        /// Serialize image path to stream
+        void     toStream(QDataStream&) const;
 
-      /// Deserialize from stream and load image
-      void fromStream(QDataStream&);
+        /// Deserialize from stream and load image
+        void     fromStream(QDataStream&);
 
-      QWidget* widget();
+        QWidget* widget();
 
-      bool canAdd();
+        bool     canAdd();
 
-    private:
-      QImage image_;
-      bool needsUpdate_ = true;
-      std::unique_ptr<QOpenGLTexture> texture_;
-      QString path_;
+      private:
+        QImage image_;
+        bool   needsUpdate_ = true;
+        std::unique_ptr<QOpenGLTexture> texture_;
+        QString path_;
     };
   }
 }

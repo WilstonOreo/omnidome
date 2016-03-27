@@ -24,67 +24,72 @@
 #include "AbstractInputWidget.h"
 #include "mixin/RangedValue.h"
 
-namespace omni
-{
-        namespace ui {
-                class RangedInt :
-                public AbstractInputWidget,
-                public mixin::RangedValue<RangedInt,int>
-                {
-                        Q_OBJECT
-                    public:
-                        typedef QSpinBox editor_type;
-                        typedef mixin::RangedValue<RangedInt,int> mixin_range_type;
+namespace omni {
+  namespace ui {
+    /// Integer slider
+    class RangedInt :
+      public AbstractInputWidget,
+      public mixin::RangedValue<RangedInt, int>{
+        Q_OBJECT
+      public:
+        typedef QSpinBox                          editor_type;
+        typedef mixin::RangedValue<RangedInt, int>mixin_range_type;
 
-                        RangedInt(QWidget* = nullptr);
-                        RangedInt(QString const& _label, int _value, int _min, int _max, QWidget* = nullptr);
-                        ~RangedInt();
+        RangedInt(QWidget * = nullptr);
+        RangedInt(QString const& _label,
+                  int _value,
+                  int _min,
+                  int _max,
+                  QWidget * = nullptr);
+        ~RangedInt();
 
-                        /// Return flag if default value is used
-                        bool useDefaultValue() const;
+        /// Return flag if default value is used
+        bool   useDefaultValue() const;
 
-                        bool drawTicks() const;
+        bool   drawTicks() const;
 
-                    public slots:
-                        void setValue(int);
-                        void setMinimum(int);
-                        void setMaximum(int);
-                        void setRange(int,int);
-                        void setEditorVisible(bool);
+      public slots:
+        void   setValue(int);
+        void   setMinimum(int);
+        void   setMaximum(int);
+        void   setRange(int,
+                        int);
+        void   setEditorVisible(bool);
 
-                        /// Use Default Value and show it
-                        void setUseDefaultValue(bool);
+        /// Use Default Value and show it
+        void   setUseDefaultValue(bool);
 
-                        void setDrawTicks(bool);
-                        signals:
-                        void valueChanged();
-                        void rangeChanged();
+        void   setDrawTicks(bool);
 
-                    protected:
-                        void paintEvent(QPaintEvent*);
-                        void keyPressEvent(QKeyEvent*);
-                        void mouseMoveEvent(QMouseEvent*);
-                        void mousePressEvent(QMouseEvent*);
-                        void mouseReleaseEvent(QMouseEvent*);
-                        void wheelEvent(QWheelEvent*);
+      signals:
+        void   valueChanged();
+        void   rangeChanged();
 
-                        void valueChangedEvent();
-                        void rangeChangedEvent();
+      protected:
+        void   paintEvent(QPaintEvent *);
+        void   keyPressEvent(QKeyEvent *);
+        void   mouseMoveEvent(QMouseEvent *);
+        void   mousePressEvent(QMouseEvent *);
+        void   mouseReleaseEvent(QMouseEvent *);
+        void   wheelEvent(QWheelEvent *);
 
-                    private:
-                        void init();
-                        void editorSetup();
-                        int valueFromPos(double) const;
-                        int valueToPos() const;
+        void   valueChangedEvent();
+        void   rangeChangedEvent();
 
-                        /// Calculate position from value
-                        double valueToPos(int) const;
+      private:
+        void   init();
+        void   editorSetup();
+        int    valueFromPos(double) const;
+        int    valueToPos() const;
 
-                        bool drawTicks_ = true;
-                        bool useDefaultValue_ = false;
-                        bool moving_ = false;
-                };
-        }
+        /// Calculate position from value
+        double valueToPos(int) const;
+
+        bool drawTicks_       = true;
+        bool useDefaultValue_ = false;
+        bool moving_          = false;
+    };
+  }
 }
 
 #endif /* OMNI_UI_RANGEDINT_H_ */

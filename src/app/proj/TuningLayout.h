@@ -23,100 +23,98 @@
 #include <QLayout>
 #include <omni/proj/Tuning.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace proj
-    {
+namespace omni {
+  namespace ui {
+    namespace proj {
       class Tuning;
 
       /**@brief Tuning Layout
        * @detail Similar to VBoxLayout, except that widgets with a PREVIEW Role
        *         have a size with aspect ratio of associated tuning
        **/
-      class TuningLayout: public QLayout
-      {
+      class TuningLayout : public QLayout {
         Q_OBJECT
-      public:
-        /// Role of a widget defines resize behaviour
-        enum class Role {
-          TITLE, // Fixed size
-          PARAMETER, // Fixed size
-          PREVIEW // Size with aspect ratio of tuning
-        };
 
-        typedef std::vector<std::pair<QWidget*,Role>> widgetgroup_type;
+        public:
+          /// Role of a widget defines resize behaviour
+          enum class Role {
+            TITLE,     // Fixed size
+            PARAMETER, // Fixed size
+            PREVIEW    // Size with aspect ratio of tuning
+          };
 
-        TuningLayout(Tuning* parent);
-        ~TuningLayout();
+          typedef std::vector<std::pair<QWidget *, Role> >widgetgroup_type;
 
-        /// Add item, with PARAMETER Role
-        void addItem(QLayoutItem *item);
+          TuningLayout(Tuning *parent);
+          ~TuningLayout();
 
-        /// Add widget with PARAMETER Role
-        void addWidget(QWidget *widget);
+          /// Add item, with PARAMETER Role
+          void addItem(QLayoutItem *item);
 
-        /// Add widget with Role
-        void addWidget(QWidget *widget, Role);
+          /// Add widget with PARAMETER Role
+          void addWidget(QWidget *widget);
 
-        /// Return number of widgets
-        int count() const;
+          /// Add widget with Role
+          void addWidget(QWidget * widget, Role);
 
-        /// Get index of given widget
-        int indexOf(QWidget* widget) const;
+          /// Return number of widgets
+          int                       count() const;
 
-        /// Return item at index
-        QLayoutItem* itemAt(int index) const;
+          /// Get index of given widget
+          int                       indexOf(QWidget *widget) const;
 
-        /// Remove widget at index
-        QLayoutItem* takeAt(int index);
+          /// Return item at index
+          QLayoutItem             * itemAt(int index) const;
 
-        /// Set geometry of all widgets
-        void setGeometry(const QRect &rect);
+          /// Remove widget at index
+          QLayoutItem             * takeAt(int index);
 
-        QRect geometry() const;
+          /// Set geometry of all widgets
+          void                      setGeometry(const QRect& rect);
 
-        /// Clears layout and inserts the given widgets
-        void setWidgets(widgetgroup_type const& _widgets);
+          QRect                     geometry() const;
 
-        /// Clear layout
-        void clear();
+          /// Clears layout and inserts the given widgets
+          void                      setWidgets(widgetgroup_type const& _widgets);
 
-        /// Return minimum size
-        QSize minimumSize() const;
+          /// Clear layout
+          void                      clear();
 
-        /// Return size hint, is equal to minimum size
-        QSize sizeHint() const;
+          /// Return minimum size
+          QSize                     minimumSize() const;
 
-      private:
-        omni::proj::Tuning* tuning();
-        omni::proj::Tuning const* tuning() const;
+          /// Return size hint, is equal to minimum size
+          QSize                     sizeHint() const;
 
-        struct ItemWrapper
-        {
-          ItemWrapper(QLayoutItem* _item = nullptr, Role _role = Role::PARAMETER) :
-            item_(_item),
-            role_(_role)
+        private:
+          omni::proj::Tuning      * tuning();
+          omni::proj::Tuning const* tuning() const;
+
+          struct ItemWrapper
           {
-          }
+            ItemWrapper(QLayoutItem *_item = nullptr,
+                        Role _role = Role::PARAMETER) :
+              item_(_item),
+              role_(_role)
+            {}
 
-          QLayoutItem* item_;
-          Role role_;
+            QLayoutItem *item_;
+            Role         role_;
 
-          QWidget* widget() const
-          {
-            return item_->widget();
-          }
-        };
+            QWidget* widget() const
+            {
+              return item_->widget();
+            }
+          };
 
-        /// Add a layout item with Role
-        void add(QLayoutItem* _item, Role _role);
+          /// Add a layout item with Role
+          void add(QLayoutItem *_item,
+                   Role _role);
 
-        enum SizeType { MINIMUMSIZE, SIZEHINT };
-        QSize calculateSize(SizeType sizeType) const;
+          enum SizeType { MINIMUMSIZE, SIZEHINT };
+          QSize calculateSize(SizeType sizeType) const;
 
-        std::vector<ItemWrapper> items_;
+          std::vector<ItemWrapper> items_;
       };
     }
   }

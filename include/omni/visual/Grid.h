@@ -29,40 +29,40 @@
 class QOpenGLShaderProgram;
 
 namespace omni {
-    namespace visual {
-        /**@brief A cartesian grid with lining adapted to distance
-         **/
-        class Grid : public visual::Interface {
-        public:
-            Grid(Camera const&);
-            ~Grid();
+  namespace visual {
+    /**@brief A cartesian grid with lining adapted to distance
+    **/
+    class Grid : public visual::Interface {
+      public:
+        Grid(Camera const&);
+        ~Grid();
 
-            /// Draw grid
-            void draw() const;
+        /// Draw grid
+        void         draw() const;
 
-            /// Draw grid with alpha value
-            void draw(float _alpha) const;
+        /// Draw grid with alpha value
+        void         draw(float _alpha) const;
 
-            /// Update grid mesh
-            void update();
+        /// Update grid mesh
+        void         update();
 
-            /**@brief Resolution
-             **/
-            void setResolution(QSize _resolution);
+        /**@brief Resolution
+        **/
+        void         setResolution(QSize _resolution);
 
-            /// Return resolution
-            QSize const& resolution() const;
+        /// Return resolution
+        QSize const& resolution() const;
 
-            void setSize(QVector2D const& _size);
+        void         setSize(QVector2D const& _size);
 
-        private:
-            QSize resolution_;
-            Camera const& camera_;
-            Plane plane_;
-            QVector2D size_;
-            std::unique_ptr<QOpenGLShaderProgram> shader_;
-        };
-    }
+      private:
+        QSize resolution_;
+        Camera const& camera_;
+        Plane plane_;
+        QVector2D size_;
+        std::unique_ptr<QOpenGLShaderProgram> shader_;
+    };
+  }
 }
 
 #endif /* OMNI_VISUAL_GRID_H_ */

@@ -76,7 +76,7 @@ namespace omni
     {
       if (!dataModel()) return;
 
-      auto _idInput = dataModel()->inputs().add(_action->text());
+      auto _idInput = dataModel()->inputs().addInput(_action->text());
       auto& _id = _idInput.first;
       auto& _input = _idInput.second;
 
@@ -90,7 +90,7 @@ namespace omni
         emit inputIndexChanged();
       } else
       {
-        dataModel()->inputs().remove(_id);
+        dataModel()->inputs().removeInput(_id);
       }
     }
 
@@ -107,7 +107,7 @@ namespace omni
       qDebug() << "removeSelection: " << _item;
       if (!_item) return;
 
-      dataModel()->inputs().remove(_item->text());
+      dataModel()->inputs().removeInput(_item->text());
       model_->removeRows(_row,1);
 
       this->removeParameterWidget(widget());

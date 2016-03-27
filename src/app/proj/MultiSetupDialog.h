@@ -25,46 +25,45 @@
 #include <omni/Session.h>
 #include <omni/ui/mixin/DataModel.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace proj
-    {
-      namespace Ui
-      {
+namespace omni {
+  namespace ui {
+    namespace proj {
+      namespace Ui {
         class MultiSetupDialog;
-      };
+      }
 
+      /// Dialog which is shown for adding/configuring a multi projector setup
       class MultiSetupDialog :
-        public QDialog
-      {
+        public QDialog {
         Q_OBJECT
-      public:
-        enum class Result
-        {
-          CANCELLED,
-          APPEND,
-          REPLACE
-        };
 
-        MultiSetupDialog(omni::proj::MultiSetup* _multiSetup,
-            std::shared_ptr<Session> _session);
-        ~MultiSetupDialog();
+        public:
+          /// Possible results return by this dialog
+          enum class Result
+          {
+            CANCELLED, // Dialog has been cancelled; do nothing
+            APPEND, // Adds generated tunings to session
+            REPLACE // Removes all existing tunings/projectors and replaces them with new ones
+          };
 
-        static Result open(omni::proj::MultiSetup* _multiSetup,
-            std::shared_ptr<Session> _session);
+          MultiSetupDialog(omni::proj::MultiSetup *_multiSetup,
+                           std::shared_ptr<Session>_session);
+          ~MultiSetupDialog();
 
-      public slots:
-        void replace();
-        void append();
-        void cancel();
+          /// Open dialog and return results
+          static Result open(omni::proj::MultiSetup *_multiSetup,
+                             std::shared_ptr<Session>_session);
 
-      private:
-        std::shared_ptr<Session> session_;
-        omni::proj::MultiSetup* multiSetup_ = nullptr;
-        std::unique_ptr<Ui::MultiSetupDialog> ui_;
-        Result result_ = Result::CANCELLED;
+        public slots:
+          void replace();
+          void append();
+          void cancel();
+
+        private:
+          std::shared_ptr<Session> session_;
+          omni::proj::MultiSetup  *multiSetup_ = nullptr;
+          std::unique_ptr<Ui::MultiSetupDialog> ui_;
+          Result result_ = Result::CANCELLED;
       };
     }
   }

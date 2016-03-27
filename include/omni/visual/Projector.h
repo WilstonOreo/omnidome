@@ -31,6 +31,7 @@ namespace omni
 {
   namespace visual
   {
+    /// Visualizer for drawing a projector with halo
     class Projector : public Interface
     {
     public:
@@ -39,18 +40,30 @@ namespace omni
 
       void update();
 
+      /// Return size of drawn projector
       qreal size() const;
+      /// Set size
       void setSize(qreal);
 
+      /// Halo is bright if projector is selected
       bool isSelected() const;
+
+      /// Set boolean if projector is selected
       void setSelected(bool);
 
+      /// Return drawn color
       QColor color() const;
+
+      /// Set color if drawn projector
       void setColor(QColor);
 
+      /// Draw projector line
       void draw() const;
+
+      /// Draw projector value
       void drawHalo() const;
 
+      /// Draw positioning of projector with center point
       void drawPositioning(QVector3D const& _center) const;
 
     private:

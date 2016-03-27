@@ -33,7 +33,7 @@ namespace omni
     public:
       OMNI_REGISTER_CLASS(Factory,FisheyeTestImage)
 
-      FisheyeTestImage();
+      FisheyeTestImage(Interface const* = nullptr);
       ~FisheyeTestImage();
 
       QSize size() const;

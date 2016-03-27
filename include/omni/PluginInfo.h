@@ -25,96 +25,97 @@
 #include <QMetaClassInfo>
 
 namespace omni {
-    class PluginLoader;
+  class PluginLoader;
 
-    /**@brief Holds meta information about a plugins
-       @detail Only plugin loader can construct a plugin info
-     **/
-    class PluginInfo {
+  /**@brief Holds meta information about a plugins
+     @detail Only plugin loader can construct a plugin info
+   **/
+  class PluginInfo {
     public:
-        /// Only plugin loader can construct a plugin info
-        friend class PluginLoader;
+      /// Only plugin loader can construct a plugin info
+      friend class PluginLoader;
 
-        /// Return name of plugin
-        QString const& name() const;
+      /// Return name of plugin
+      QString const& name() const;
 
-        /// Return type of plugin (e.g. input, mapping or canvas)
-        QString const& type() const;
+      /// Return type of plugin (e.g. input, mapping or canvas)
+      QString const& type() const;
 
-        /// Return author of plugin
-        QString const& author() const;
+      /// Return author of plugin
+      QString const& author() const;
 
-        /// Return url of plugin
-        QString const& url() const;
+      /// Return url of plugin
+      QString const& url() const;
 
-        /// Return description of plugin
-        QString const& description() const;
+      /// Return description of plugin
+      QString const& description() const;
 
-        /// Return version string (MAJOR.MINOR.REV.BUILD) of plugin
-        QString versionString() const;
+      /// Return version string (MAJOR.MINOR.REV.BUILD) of plugin
+      QString        versionString() const;
 
-        /// Return major version
-        int majorVersion() const;
+      /// Return major version
+      int            majorVersion() const;
 
-        /// Return minor version
-        int minorVersion() const;
+      /// Return minor version
+      int            minorVersion() const;
 
-        /// Return revision number
-        int revision() const;
+      /// Return revision number
+      int            revision() const;
 
-        /// Return build number
-        int build() const;
+      /// Return build number
+      int            build() const;
 
-        /// Return class name from meta object
-        QString className() const;
+      /// Return class name from meta object
+      QString        className() const;
 
-        /// Return file name of plugin
-        QString const& file() const;
+      /// Return file name of plugin
+      QString const& file() const;
 
-        /// Return handle (pointer to underlying QObject)
-        QObject const* handle() const;
+      /// Return handle (pointer to underlying QObject)
+      QObject const* handle() const;
 
     private:
-        /// Make a PluginInfo from file and QObject
-        static PluginInfo make(QString const& _file, QObject const*);
+      /// Make a PluginInfo from file and QObject
+      static PluginInfo make(QString const& _file,
+                             QObject const *);
 
-        QString name_;
-        QString type_;
-        QString author_;
-        QString url_;
-        QString description_;
-        int majorVersion_ = 0;
-        int minorVersion_ = 0;
-        int revision_ = 0;
-        int build_ = 0;
-        QString file_;
-        QObject const* handle_ = nullptr;
-    };
+      QString name_;
+      QString type_;
+      QString author_;
+      QString url_;
+      QString description_;
+      int     majorVersion_ = 0;
+      int     minorVersion_ = 0;
+      int     revision_     = 0;
+      int     build_        = 0;
+      QString file_;
+      QObject const *handle_ = nullptr;
+  };
 }
 
 #define OMNI_PLUGIN_AUTHOR(AUTHOR) \
-    Q_CLASSINFO("author",AUTHOR)
+  Q_CLASSINFO("author", AUTHOR)
 
 #define OMNI_PLUGIN_URL(URL) \
-    Q_CLASSINFO("url",URL)
+  Q_CLASSINFO("url", URL)
 
 #define OMNI_PLUGIN_NAME(NAME) \
-    Q_CLASSINFO("name",NAME)
+  Q_CLASSINFO("name", NAME)
 
 #define OMNI_PLUGIN_DESCRIPTION(DESC) \
-    Q_CLASSINFO("description",DESC)
+  Q_CLASSINFO("description", DESC)
 
-#define OMNI_PLUGIN_VERSION(MAJOR,MINOR,REV,BUILD) \
-    Q_CLASSINFO("version",#MAJOR "." #MINOR "." #REV "." #BUILD)
+#define OMNI_PLUGIN_VERSION(MAJOR, MINOR, REV, BUILD) \
+  Q_CLASSINFO("version",# MAJOR "." # MINOR "." # REV "." # BUILD)
 
 #define OMNI_PLUGIN_TYPE(T) \
-    Q_CLASSINFO("type",T)
+  Q_CLASSINFO("type", T)
 
-#define OMNI_PLUGIN_CR8TR(NAME,DESC) \
-    Q_CLASSINFO("version",OMNIDOME_VERSION_STRING) \
-    OMNI_PLUGIN_AUTHOR("CR8TR") \
-    OMNI_PLUGIN_URL("cr8tr.org / omnido.me") \
-    OMNI_PLUGIN_NAME(NAME) \
-    OMNI_PLUGIN_DESCRIPTION(DESC)
+#define OMNI_PLUGIN_CR8TR(NAME, DESC)             \
+  Q_CLASSINFO("version", OMNIDOME_VERSION_STRING) \
+  OMNI_PLUGIN_AUTHOR("CR8TR")                     \
+  OMNI_PLUGIN_URL("cr8tr.org / omnido.me")        \
+  OMNI_PLUGIN_NAME(NAME)                          \
+  OMNI_PLUGIN_DESCRIPTION(DESC)
 
 #endif /* OMNI_PLUGININFO_H_ */

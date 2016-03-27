@@ -24,6 +24,7 @@
 
 #include <omni/util.h>
 #include <omni/visual/util.h>
+#include <omni/proj/Frustum.h>
 
 namespace omni {
     namespace visual {
@@ -126,24 +127,17 @@ namespace omni {
                                             _color.greenF(), _color.blueF());
 
             /// Construct frustum
-            qreal _a              = _proj.fov().radians() * 0.5;
-            qreal _width          = tan(_a);
-            qreal _height         = _width / _proj.aspectRatio();
+            proj::Frustum _frustum(_proj);
             QVector3D _eye        = _m.column(3).toVector3D();
-            QVector3D _topLeft    = _m * QVector3D(1.0, -_width, _height) - _eye;
-            QVector3D _topRight   = _m * QVector3D(1.0, _width, _height) - _eye;
-            QVector3D _bottomLeft = _m *
-                                    QVector3D(1.0, -_width, -_height) - _eye;
-            QVector3D _bottomRight = _m * QVector3D(1.0, _width, -_height) - _eye;
             QVector3D _lookAt      = _m * QVector3D(1.0, 0.0, 0.0) - _eye;
 
             // Setup frustum uniforms for intersection test
             frustumShader_->setUniformValue("eye",          _eye);
             frustumShader_->setUniformValue("look_at",      _lookAt);
-            frustumShader_->setUniformValue("top_left",     _topLeft);
-            frustumShader_->setUniformValue("top_right",    _topRight);
-            frustumShader_->setUniformValue("bottom_left",  _bottomLeft);
-            frustumShader_->setUniformValue("bottom_right", _bottomRight);
+            frustumShader_->setUniformValue("top_left",     _frustum.topLeft(_m));
+            frustumShader_->setUniformValue("top_right",    _frustum.topRight(_m));
+            frustumShader_->setUniformValue("bottom_left",  _frustum.bottomLeft(_m));
+            frustumShader_->setUniformValue("bottom_right", _frustum.bottomRight(_m));
             frustumShader_->setUniformValue("matrix",       _rot);
             frustumShader_->setUniformValue("scale",
                                             GLfloat(_canvas->bounds().radius()));

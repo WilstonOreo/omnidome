@@ -22,65 +22,59 @@
 #include <QOpenGLShaderProgram>
 
 namespace omni {
-    namespace visual {
-        Grid::Grid(Camera const& _camera) :
-            camera_(_camera),
-            size_(10.0,10.0) {
-            setResolution(QSize(1024,1024));
-            plane_.resize(2,2);
-
-        }
-
-        Grid::~Grid() {
-        }
-
-        void Grid::draw() const {
-            draw(1.0);
-        }
-
-        void Grid::draw(float _alpha) const {
-
-            with_current_context([&](QOpenGLFunctions& _) {
-
-                    shader_->bind();
-                    shader_->setUniformValue("resolution",
-                        GLfloat(resolution_.width()),
-                        GLfloat(resolution_.height()));
-                    shader_->setUniformValue("cam_pos",camera_.eye());
-                    shader_->setUniformValue("dir",camera_.direction().vec());
-                    shader_->setUniformValue("alpha",_alpha);
-                glPushMatrix();
-                {
-                    glScalef(size_.x(),size_.y(),1.0);
-                    plane_.draw();
-                }
-                glPopMatrix();
-                    shader_->release();
-
-            });
-
-        }
-
-        void Grid::update() {
-            if (!shader_) {
-                using omni::util::fileToStr;
-                static QString _vertSrc = fileToStr(":/shaders/grid.vert");
-                static QString _fragmentSrc = fileToStr(":/shaders/grid.frag");
-                shader_.reset(new QOpenGLShaderProgram());
-                shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
-                shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
-                shader_->link();
-            }
-
-            plane_.update();
-        }
-
-        QSize const& Grid::resolution() const {
-            return resolution_;
-        }
-
-        void Grid::setResolution(QSize _resolution) {
-            resolution_ = _resolution;
-        }
+  namespace visual {
+    Grid::Grid(Camera const& _camera) :
+      camera_(_camera),
+      size_(10.0, 10.0) {
+      setResolution(QSize(1024, 1024));
+      plane_.resize(2, 2);
     }
+
+    Grid::~Grid() {}
+
+    void Grid::draw() const {
+      draw(1.0);
+    }
+
+    void Grid::draw(float _alpha) const {
+      with_current_context([&](QOpenGLFunctions& _) {
+        shader_->bind();
+        shader_->setUniformValue("resolution",
+                                 GLfloat(resolution_.width()),
+                                 GLfloat(resolution_.height()));
+        shader_->setUniformValue("cam_pos", camera_.eye());
+        shader_->setUniformValue("dir", camera_.direction().vec());
+        shader_->setUniformValue("alpha", _alpha);
+        glPushMatrix();
+        {
+          glScalef(size_.x(), size_.y(), 1.0);
+          plane_.draw();
+        }
+        glPopMatrix();
+        shader_->release();
+      });
+    }
+
+    void Grid::update() {
+      if (!shader_) {
+        using omni::util::fileToStr;
+        static QString _vertSrc     = fileToStr(":/shaders/grid.vert");
+        static QString _fragmentSrc = fileToStr(":/shaders/grid.frag");
+        shader_.reset(new QOpenGLShaderProgram());
+        shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, _vertSrc);
+        shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, _fragmentSrc);
+        shader_->link();
+      }
+
+      plane_.update();
+    }
+
+    QSize const& Grid::resolution() const {
+      return resolution_;
+    }
+
+    void Grid::setResolution(QSize _resolution) {
+      resolution_ = _resolution;
+    }
+  }
 }

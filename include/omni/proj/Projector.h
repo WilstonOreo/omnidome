@@ -24,67 +24,93 @@
 #include <QMatrix4x4>
 #include <QScreen>
 #include <omni/Angle.h>
-#include "Screen.h"
 #include "Setup.h"
 
-namespace omni
-{
-  namespace proj
-  {
-    class Projector
-    {
-    public:
-      Projector();
-      Projector(
-          QScreen const* _screen,
+namespace omni {
+  namespace proj {
+    /// A projector with a transformation matrix and setup
+    class Projector {
+      public:
+        Projector();
+        Projector(
+          QScreen const *_screen,
           int _subScreenIndex,
           Angle _fov = 45.0);
 
-      /**@brief Make a new projector setup with a certain id and delete old one
-       * @return Pointer to new projector setup
-       **/
-      Setup* setup(Id const& _setupId);
+        /**@brief Make a new projector setup with a certain id and delete old
+           one
+         * @return Pointer to new projector setup
+         **/
+        Setup           * setup(Id const& _setupId);
 
-      /// Update projector matrix by current setup and return setup
-      Setup* setup();
+        /// Update projector matrix by current setup and return setup
+        Setup           * setup();
 
-      /// Returns projector setup (const version)
-      Setup const* setup() const;
+        /// Returns projector setup (const version)
+        Setup const     * setup() const;
 
-      qreal aspectRatio() const;
-      void setScreen(QScreen const* _screen, int _subScreenIndex);
-      QScreen const* screen() const;
-      int subScreenIndex() const;
+        /// Aspect ratio of screen
+        qreal             aspectRatio() const;
 
-      qreal throwRatio() const;
-      void setThrowRatio(qreal);
+        /// Assign screen and subscreen to projector
+        void              setScreen(QScreen const *_screen,
+                                    int _subScreenIndex);
 
-      Angle fov() const;
-      void setFov(Angle _fov);
+        /// Return pointer to screen
+        QScreen const   * screen() const;
 
-      QMatrix4x4& matrix();
-      QMatrix4x4 const& matrix() const;
+        /**@brief Return subscreen index
+           @detail Used to determine screen position when screen is a triple head
+         **/
+        int               subScreenIndex() const;
 
-      QMatrix4x4 projectionMatrix() const;
+        /// Return throw ratio of projector ( = 1/2 * tan(fov / 2))
+        qreal             throwRatio() const;
 
-      void setMatrix(QMatrix4x4 const&);
+        /// Set new throw ratio
+        void setThrowRatio(qreal);
 
-      QVector3D pos() const;
+        /// Return field of view
+        Angle             fov() const;
 
-      /// Write projector to stream
-      void toStream(QDataStream&) const;
+        /// Set new field of view
+        void              setFov(Angle _fov);
 
-      /// Read projector from stream
-      void fromStream(QDataStream&);
+        /// Return keystone correction value for projector
+        qreal             keystone() const;
 
-      friend bool operator==(Projector const&,Projector const&);
+        /// Set new keystone correction value (0.0 = default)
+        void setKeystone(qreal);
 
-    private:
-      QMatrix4x4 matrix_;
-      QScreen const* screen_ = nullptr;
-      int subScreenIndex_ = -1;
-      Angle fov_;
-      std::unique_ptr<Setup> setup_;
+        /// Return transformation matrix
+        QMatrix4x4 const& matrix() const;
+
+        /// Set transformation matrix
+        void              setMatrix(QMatrix4x4 const&);
+
+        /// Return projector matrix
+        QMatrix4x4        projectionMatrix() const;
+
+        /// Return projector position (3rd column of projector matrix)
+        QVector3D         pos() const;
+
+        /// Write projector to stream
+        void              toStream(QDataStream&) const;
+
+        /// Read projector from stream
+        void              fromStream(QDataStream&);
+
+        /// Test for equality
+        friend bool       operator==(Projector const&,
+                                     Projector const&);
+
+      private:
+        QMatrix4x4 matrix_;
+        QScreen const *screen_ = nullptr;
+        int   subScreenIndex_  = -1;
+        Angle fov_;
+        qreal keystone_ = 0.0;
+        std::unique_ptr<Setup> setup_;
     };
   }
 

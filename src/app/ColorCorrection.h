@@ -24,46 +24,57 @@
 #include "DockWidget.h"
 
 namespace omni {
-    class Session;
+  class Session;
 
-    namespace ui {
-        namespace Ui {
-            class ColorCorrection;
-        }
-
-        class ColorCorrection :
-            public DockWidget,
-            public mixin::SharedDataModel<Session>
-        {
-            Q_OBJECT
-            OMNI_UI_SHARED_DATAMODEL(Session)
-        public:
-            typedef omni::proj::Channel Channel;
-
-            ColorCorrection(QWidget* _parent = nullptr);
-            ~ColorCorrection();
-
-        public slots:
-            void setAllChannels();
-            void setRedChannel();
-            void setGreenChannel();
-            void setBlueChannel();
-            void setChannel(Channel _channel);
-            void setUsed(bool);
-
-        signals:
-            void dataModelChanged();
-
-        private:
-            /// Update sliders from current color correction
-            void dataToFrontend();
-
-            /// Assign slider values to current color correction
-            bool frontendToData();
-
-            std::unique_ptr<Ui::ColorCorrection> ui_;
-        };
+  namespace ui {
+    namespace Ui {
+      class ColorCorrection;
     }
+
+    /// Dockwidget for editing color correction of a projector
+    class ColorCorrection :
+      public DockWidget,
+      public mixin::SharedDataModel<Session>{
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
+      public:
+        typedef omni::proj::Channel Channel;
+
+        ColorCorrection(QWidget *_parent = nullptr);
+        ~ColorCorrection();
+
+      public slots:
+        /// Select color correction for all channels
+        void setAllChannels();
+
+        /// Select color correction for red channel
+        void setRedChannel();
+
+        /// Select color correction for green channel
+        void setGreenChannel();
+
+        /// Select color correction for blue channel
+        void setBlueChannel();
+
+        /// Select color correction for custom channel
+        void setChannel(Channel _channel);
+
+        /// Select whether color correction is used
+        void setUsed(bool);
+
+      signals:
+        void dataModelChanged();
+
+      private:
+        /// Update sliders from current color correction
+        void dataToFrontend();
+
+        /// Assign slider values to current color correction
+        bool frontendToData();
+
+        std::unique_ptr<Ui::ColorCorrection> ui_;
+    };
+  }
 }
 
 #endif /* OMNI_UI_COLORCORRECTION_H_ */

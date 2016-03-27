@@ -23,63 +23,63 @@
 #include <omni/visual/VBO.h>
 #include <omni/Vertex.h>
 
- namespace omni {
-     namespace visual {
-        /// Utility class for storing and drawing VBO data
-        class VertexVBO
-        {
-        public:
-            /// Vertex buffer type
-            typedef std::vector<Vertex> vertex_buffer_type;
+namespace omni {
+  namespace visual {
+    /// Utility class for storing and drawing VBO data
+    class VertexVBO {
+      public:
+        /// Vertex buffer type
+        typedef std::vector<Vertex>vertex_buffer_type;
 
-            /// Index buffer type
-            typedef std::vector<uint32_t> index_buffer_type;
+        /// Index buffer type
+        typedef std::vector<uint32_t>index_buffer_type;
 
-            /// Copy buffers to GPU
-            void buffer(
-                vertex_buffer_type const& _vertices,
-                index_buffer_type const& _indices);
+        /// Copy buffers to GPU
+        void buffer(
+          vertex_buffer_type const& _vertices,
+          index_buffer_type const& _indices);
 
-            /// Bind buffer for drawing
-            void bind() const;
+        /// Bind buffer for drawing
+        void bind() const;
 
-            /// Draw buffer as triangles
-            void draw() const;
+        /// Draw buffer as triangles
+        void draw() const;
 
-            /// Draw specific indices from buffer as triangles
-            void draw(uint32_t _numIndices, GLuint _drawType = GL_TRIANGLES) const;
+        /// Draw specific indices from buffer as triangles
+        void draw(uint32_t _numIndices,
+                  GLuint _drawType = GL_TRIANGLES) const;
 
-            /// Unbind buffer
-            void unbind() const;
+        /// Unbind buffer
+        void unbind() const;
 
-            template<typename...ARGS>
-            void bindAndDraw(ARGS&&..._args) const {
-                bind();
-                draw(_args...);
-                unbind();
-            }
+        template<typename ... ARGS>
+        void bindAndDraw(ARGS&& ... _args) const {
+          bind();
+          draw(_args ...);
+          unbind();
+        }
 
-            /// Return number of indices in this buffer
-            size_t numIndices() const;
+        /// Return number of indices in this buffer
+        size_t numIndices() const;
 
-            /// Number of triangles = number of indices / 3
-            inline size_t numTriangles() const {
-                return numIndices() / 3;
-            }
+        /// Number of triangles = number of indices / 3
+        inline size_t numTriangles() const {
+          return numIndices() / 3;
+        }
 
-            /// Return vertex vertex buffer object
-            VBO const& vertexVbo() const;
+        /// Return vertex vertex buffer object
+        VBO const& vertexVbo() const;
 
-            /// Return index vertex buffer object
-            VBO const& indexVbo() const;
+        /// Return index vertex buffer object
+        VBO const& indexVbo() const;
 
-        private:
-            VBO vbo_;
-            size_t numIndices_ = 0;
-            VBO vertexVbo_, indexVbo_;
-        };
-     }
- }
+      private:
+        VBO vbo_;
+        size_t numIndices_ = 0;
+        VBO    vertexVbo_, indexVbo_;
+    };
+  }
+}
 
 
 #endif /* OMNI_VISUAL_VERTEXVBO_H_ */

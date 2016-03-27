@@ -22,38 +22,54 @@
 
 #include "AngleSetup.h"
 
-namespace omni
-{
-  namespace proj
-  {
-    class PeripheralSetup : public AngleSetup
-    {
-    public:
-      OMNI_REGISTER_CLASS(SetupFactory,PeripheralSetup)
+namespace omni {
+  namespace proj {
+    /**@brief Setup in which projector rotates with yaw angle around center point
+     **/
+    class PeripheralSetup : public AngleSetup {
+      public:
+        OMNI_REGISTER_CLASS(SetupFactory, PeripheralSetup)
 
-      PeripheralSetup();
+        PeripheralSetup();
 
-      void toStream(QDataStream&) const;
-      void fromStream(QDataStream&);
-      void setup(Projector&);
+        /// Serialize to stream
+        void  toStream(QDataStream&) const;
 
-      Angle deltaYaw() const;
-      void setDeltaYaw(Angle);
+        /// Deserialize from stream
+        void  fromStream(QDataStream&);
 
-      qreal distanceCenter() const;
-      void setDistanceCenter(qreal);
+        /// Setup projector
+        void  setup(Projector&);
 
-      qreal towerHeight() const;
-      void setTowerHeight(qreal);
+        /// Delta yaw angle from rotating yaw angle
+        Angle deltaYaw() const;
 
-      qreal shift() const;
-      void setShift(qreal);
+        /// Delta yaw angle from rotating yaw angle
+        void setDeltaYaw(Angle);
 
-    private:
-      Angle deltaYaw_;
-      qreal distanceCenter_;
-      qreal towerHeight_;
-      qreal shift_;
+        /// Return distance from center
+        qreal distanceCenter() const;
+
+        /// Set distance to center
+        void setDistanceCenter(qreal);
+
+        /// Return tower height (z position)
+        qreal towerHeight() const;
+
+        /// Set tower height (z position of projector)
+        void setTowerHeight(qreal);
+
+        /// Distance to centric line
+        qreal shift() const;
+
+        /// Set shift (distance to centric line)
+        void setShift(qreal);
+
+      private:
+        Angle deltaYaw_;
+        qreal distanceCenter_;
+        qreal towerHeight_;
+        qreal shift_;
     };
   }
 }

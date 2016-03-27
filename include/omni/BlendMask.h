@@ -24,94 +24,99 @@
 #include <QRectF>
 #include <omni/BlendBrush.h>
 
-namespace omni
-{
-  namespace proj
-  {
+namespace omni {
+  namespace proj {
     class Tuning;
   }
 
   /**@brief A blend mask consists of an edge mask and stroke mask with a brush
    * @detail Edge mask and stroke mask are stored in different buffers
    */
-  class BlendMask
-  {
-  public:
-      typedef Buffer<uint8_t> Buffer;
+  class BlendMask {
+    public:
 
-    BlendMask(proj::Tuning const& _tuning);
+      typedef Buffer<uint8_t>Buffer;
 
-    /// Clears stroke buffer
-    void clear();
+      BlendMask(proj::Tuning const& _tuning);
 
-    /**@brief Sets rect of blends
-      *@detail Clamps rect to borders 0,0,1,1 if its overlapping
-     **/
-    void setRect(QRectF const&, bool _update = true);
+      /// Clears stroke buffer
+      void clear();
 
-    /// Returns rectangle
-    QRectF rect() const;
+      /**@brief Sets rect of blends
+       *@detail Clamps rect to borders 0,0,1,1 if its overlapping
+       **/
+      void setRect(QRectF const&,
+                   bool _update = true);
 
-    /// Returns distance to top edge
-    float topWidth() const;
+      /// Returns rectangle
+      QRectF            rect() const;
 
-    /// Returns distance to bottom edge
-    float bottomWidth() const;
+      /// Returns distance to top edge
+      float             topWidth() const;
 
-    /// Returns distance to left edge
-    float leftWidth() const;
+      /// Returns distance to bottom edge
+      float             bottomWidth() const;
 
-    /// Returns distance to right edge
-    float rightWidth() const;
+      /// Returns distance to left edge
+      float             leftWidth() const;
 
-    /// Sets gamma value for edge mask
-    void setGamma(float _gamma);
+      /// Returns distance to right edge
+      float             rightWidth() const;
 
-    /// Return gamma value
-    float gamma() const;
+      /// Sets gamma value for edge mask
+      void              setGamma(float _gamma);
 
-    /// Return reference blend brush
-    BlendBrush& brush();
+      /// Return gamma value
+      float             gamma() const;
 
-    /// Return reference blend brush (const version)
-    BlendBrush const& brush() const;
+      /// Return reference blend brush
+      BlendBrush      & brush();
 
-    /// Stamp on stroke buffer with current brush at position x y
-    void stamp(const QPointF& _pos);
+      /// Return reference blend brush (const version)
+      BlendBrush const& brush() const;
 
-    /**@brief Draws a line on stroke buffer
-     * @returns new left over value
-     */
-    float drawLine(QPointF const& _p0, QPointF const& _p1, float _leftOver = 0.0);
+      /// Stamp on stroke buffer with current brush at position x y
+      void              stamp(const QPointF& _pos);
 
-    /// Returns stroke buffer (read only)
-    Buffer const& strokeBuffer() const;
+      /**@brief Draws a line on stroke buffer
+       * @returns new left over value
+       */
+      float             drawLine(QPointF const& _p0,
+                                 QPointF const& _p1,
+                                 float          _leftOver = 0.0);
 
-    void resize(int width, int height);
+      /// Returns stroke buffer (read only)
+      Buffer const& strokeBuffer() const;
 
-    /// Return void* pointer to strokebuffer data, used for OpenGL Texture
-    void* strokeBufferData() const;
+      void          resize(int width,
+                           int height);
 
-    /// Write blend mask to stream
-    void toStream(QDataStream&) const;
+      /// Return void* pointer to strokebuffer data, used for OpenGL Texture
+      void      * strokeBufferData() const;
 
-    /// Read blend mask from stream
-    void fromStream(QDataStream&);
+      /// Write blend mask to stream
+      void        toStream(QDataStream&) const;
 
-    /// Test for equality, buffers are ignored
-    friend bool operator==(BlendMask const&,BlendMask const&);
+      /// Read blend mask from stream
+      void        fromStream(QDataStream&);
 
-  private:
-    /// Returns blend value for mask buffer at position x y
-    float borderValue(float _x, float _y) const;
+      /// Test for equality, buffers are ignored
+      friend bool operator==(BlendMask const&,
+                             BlendMask const&);
 
-    void autoResizeStrokeBuffer();
+    private:
 
-    proj::Tuning const& tuning_;
-    QRectF rect_;
-    float gamma_;
-    BlendBrush brush_;
-    Buffer strokeBuffer_;
+      /// Returns blend value for mask buffer at position x y
+      float borderValue(float _x,
+                        float _y) const;
+
+      void  autoResizeStrokeBuffer();
+
+      proj::Tuning const& tuning_;
+      QRectF rect_;
+      float  gamma_;
+      BlendBrush brush_;
+      Buffer     strokeBuffer_;
   };
 }
 

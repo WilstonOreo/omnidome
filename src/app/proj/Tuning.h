@@ -26,21 +26,17 @@
 #include <omni/ui/mixin/TuningFromIndex.h>
 #include "proj/TuningLayout.h"
 
-namespace omni
-{
+namespace omni {
   class Session;
 
-  namespace proj
-  {
+  namespace proj {
     class Tuning;
   }
 
-  namespace ui
-  {
+  namespace ui {
     class TuningGLView;
 
-    namespace proj
-    {
+    namespace proj {
       class TitleBar;
       class TuningLayout;
 
@@ -50,163 +46,178 @@ namespace omni
       class Tuning :
         public ParameterWidget,
         public mixin::SharedDataModel<Session>,
-        public mixin::TuningFromIndex<Tuning>
-      {
+        public mixin::TuningFromIndex<Tuning>{
         Q_OBJECT
         OMNI_UI_SHARED_DATAMODEL(Session)
-      public:
-        /// View mode (determines which elements are to be displayed)
-        enum WindowState
-        {
-          NO_DISPLAY, // Widget is minimized
-          DISPLAY_ONLY, // Only preview is displayed
-          FOV_SLIDERS, // Only FOV sliders are displayed
-          ADJUSTMENT_SLIDERS, // Only sliders for adjustment are displayed
-          NUM_WINDOW_STATES
-        };
 
-        typedef TuningLayout::widgetgroup_type widgetgroup_type;
+        public:
+          /// View mode (determines which elements are to be displayed)
+          enum WindowState
+          {
+            NO_DISPLAY,         // Widget is minimized
+            DISPLAY_ONLY,       // Only preview is displayed
+            FOV_SLIDERS,        // Only FOV sliders are displayed
+            ADJUSTMENT_SLIDERS, // Only sliders for adjustment are displayed
+            NUM_WINDOW_STATES
+          };
 
-        /// Default constructor
-        Tuning(QWidget* _parent = nullptr);
+          typedef TuningLayout::widgetgroup_type widgetgroup_type;
 
-        /// Constructs with a given tuning (called by default from TuningList)
-        Tuning(int _index, std::shared_ptr<omni::Session> _session, QWidget* _parent = nullptr);
+          /// Default constructor
+          Tuning(QWidget *_parent = nullptr);
 
-        /// Destructor
-        virtual ~Tuning();
+          /// Constructs with a given tuning (called by default from TuningList)
+          Tuning(int _index,
+                 std::shared_ptr<omni::Session>_session,
+                 QWidget *_parent = nullptr);
 
-        TuningGLView* fullscreenWidget();
-        TuningGLView const* fullscreenWidget() const;
+          /// Destructor
+          virtual ~Tuning();
 
-        TuningGLView* previewWidget();
-        TuningGLView const* previewWidget() const;
+          /// Return pointer to fullscreen widget
+          TuningGLView      * fullscreenWidget();
 
-        /// Return selected flag
-        bool isSelected() const;
+          /// Return pointer to fullscreen widget (const version)
+          TuningGLView const* fullscreenWidget() const;
 
-        /// Return current window state
-        WindowState windowState() const;
+          /// Return pointer to preview widget
+          TuningGLView      * previewWidget();
 
-      public slots:
-        /// Sets Window State which determines which elements are visible
-        void setWindowState(WindowState _mode);
+          /// Return pointer to preview widget (const version)
+          TuningGLView const* previewWidget() const;
 
-        /// Selects succeeding window state
-        void setNextWindowState();
+          /// Return selected flag
+          bool                isSelected() const;
 
-        /**@brief Sets flag if Tuning Widget is active
-           @detail A tuning widget should only be active when
-         **/
-        void setSelected(bool);
+          /// Return current window state
+          WindowState         windowState() const;
 
-        /// Display content and widget for specific session mode
-        void sessionModeChange();
+        public slots:
+          /// Sets Window State which determines which elements are visible
+          void setWindowState(WindowState _mode);
 
-        /// Attaches a screen to this tuning
-        void attachScreen(QScreen const* _screen, int _subScreenIndex);
+          /// Selects succeeding window state
+          void setNextWindowState();
 
-        /**@brief Detaches screen from this tuning
-           @detail Also triggered when QGuiApplication::screenAdded or
-                   QGuiApplication::screenRemoved were fired
-         **/
-        void detachScreen();
+          /**@brief Sets flag if Tuning Widget is active
+             @detail A tuning widget should only be active when
+           **/
+          void setSelected(bool);
 
-        /// Update GL View and Fullscreen view, if there is any
-        void updateViews();
+          /// Display content and widget for specific session mode
+          void sessionModeChange();
 
-        /// Enable or disable fullscreen display
-        void fullscreenToggle(bool);
+          /// Attaches a screen to this tuning
+          void attachScreen(QScreen const *_screen,
+                            int _subScreenIndex);
 
-        /// Reset to free projector setup (discards previous projector setup)
-        void resetToFreeSetup();
+          /**@brief Detaches screen from this tuning
+             @detail Also triggered when QGuiApplication::screenAdded or
+                     QGuiApplication::screenRemoved were fired
+           **/
+          void detachScreen();
 
-        /// Reset to peripheral projector setup (discards previous projector setup)
-        void resetToPeripheralSetup();
+          /// Update GL View and Fullscreen view, if there is any
+          void updateViews();
 
-      signals:
-        void selected(int);
-        void closed(int);
-        void projectorSetupChanged();
-        void dataModelChanged();
+          /// Enable or disable fullscreen display
+          void fullscreenToggle(bool);
 
-      protected:
-        /// Handles resizing of sliders and preview
-        void resizeEvent(QResizeEvent*);
+          /// Reset to free projector setup (discards previous projector setup)
+          void resetToFreeSetup();
 
-        /// Handles proper resizing of the widget
-        void showEvent(QShowEvent*);
+          /// Reset to peripheral projector setup (discards previous projector
+          // setup)
+          void resetToPeripheralSetup();
 
-        /// Paint border
-        void paintEvent(QPaintEvent*);
+        signals:
+          void selected(int);
+          void closed(int);
+          void projectorSetupChanged();
+          void dataModelChanged();
 
-        /// Mouse Move Event and handler for dragging to ScreenSetup widget
-        void mouseMoveEvent(QMouseEvent*);
+        protected:
+          /// Handles resizing of sliders and preview
+          void resizeEvent(QResizeEvent *);
 
-        /// Handles focus events from child widgets
-        bool eventFilter(QObject*,QEvent*);
+          /// Handles proper resizing of the widget
+          void showEvent(QShowEvent *);
 
-        /// Focus in event used by TuningList to set current tuning for session
-        void focusInEvent(QFocusEvent*);
+          /// Paint border
+          void paintEvent(QPaintEvent *);
 
-        /// Focus out for deselecting tuning
-        void focusOutEvent(QFocusEvent*);
+          /// Mouse Move Event and handler for dragging to ScreenSetup widget
+          void mouseMoveEvent(QMouseEvent *);
 
-      private slots:
+          /// Handles focus events from child widgets
+          bool eventFilter(QObject *,
+                           QEvent *);
 
-        void startDrag();
+          /// Focus in event used by TuningList to set current tuning for
+          // session
+          void focusInEvent(QFocusEvent *);
 
-        /// Set parameters from sliders to tuning
-        void updateParameters();
+          /// Focus out for deselecting tuning
+          void focusOutEvent(QFocusEvent *);
 
-        /// Set FOV to projector from slider
-        void setFov();
+        private slots:
+          void startDrag();
 
-        /// Set Throw Ratio to projector from slider
-        void setThrowRatio();
+          /// Set parameters from sliders to tuning
+          void updateParameters();
 
-        /// Update slider and border color
-        void updateColor();
+          /// Set FOV to projector from slider
+          void setFov();
 
-        /// Clean up.
-        void prepareRemove();
+          /// Set Throw Ratio to projector from slider
+          void setThrowRatio();
 
-      private:
-        void dataToFrontend();
-        bool frontendToData();
+          /// Set keystone correction from slider
+          void setKeyStone();
 
-        /// Setup (only called in constructor)
-        void setup();
+          /// Update slider and border color
+          void updateColor();
 
-        /// Id of first focussed widget
-        inline virtual int firstFocusId() const {
-          return 2; // Title bar and view cannot be focussed
-        }
+          /// Clean up.
+          void prepareRemove();
 
-        /// Adds a new/changes a parameter group
-        void addGroup(QString const& _groupName, widgetgroup_type const& _widgets);
+        private:
+          void dataToFrontend();
+          bool frontendToData();
 
-        void setGroup(QString const& _groupName);
+          /// Setup (only called in constructor)
+          void setup();
 
-        /// Title bar widget
-        TitleBar* titleBar_ = nullptr;
+          /// Id of first focussed widget
+          inline virtual int firstFocusId() const {
+            return 2; // Title bar and view cannot be focussed
+          }
 
-        /// GL preview widget
-        TuningGLView* glView_ = nullptr;
+          /// Adds a new/changes a parameter group
+          void addGroup(QString const& _groupName,
+                        widgetgroup_type const& _widgets);
 
-        // Fullscreen GL widget
-        QUniquePtr<TuningGLView> fullscreen_;
+          void setGroup(QString const& _groupName);
 
-        /// Window State
-        WindowState windowState_ = ADJUSTMENT_SLIDERS;
+          /// Title bar widget
+          TitleBar *titleBar_ = nullptr;
 
-        /// Is true when this widgets index and current tuning index are equal
-        bool isSelected_ = true;
+          /// GL preview widget
+          TuningGLView *glView_ = nullptr;
 
-        /// Layout
-        TuningLayout* layout_ = nullptr;
+          // Fullscreen GL widget
+          QUniquePtr<TuningGLView> fullscreen_;
 
-        std::map<QString,widgetgroup_type> groups_;
+          /// Window State
+          WindowState windowState_ = ADJUSTMENT_SLIDERS;
+
+          /// Is true when this widgets index and current tuning index are equal
+          bool isSelected_ = true;
+
+          /// Layout
+          TuningLayout *layout_ = nullptr;
+
+          std::map<QString, widgetgroup_type> groups_;
       };
     }
   }

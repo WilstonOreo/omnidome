@@ -44,7 +44,7 @@ namespace omni {
     }
 }
 
-int main(int ac, char* av[]) {
+int main(int ac, char* av[]) {
 
     using namespace omni;
     test::ThrowRatio(90.0);

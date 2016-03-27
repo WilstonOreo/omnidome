@@ -27,49 +27,47 @@
 #include <omni/TypeIdMemory.h>
 #include "DockWidget.h"
 
-namespace omni
-{
+namespace omni {
   class Session;
 
-  namespace ui
-  {
-    namespace Ui
-    {
+  namespace ui {
+    namespace Ui {
       class Mapping;
     }
 
     /**@brief Widget for selecting a mapping mode and the parameters
-     **/
+    **/
     class Mapping :
       public DockWidget,
       public mixin::SharedDataModel<Session>,
-      private mixin::ParameterWidget
-    {
+      private mixin::ParameterWidget {
       Q_OBJECT
-      OMNI_UI_SHARED_DATAMODEL(Session)
-    public:
-      Mapping(QWidget* = nullptr);
-      ~Mapping();
+             OMNI_UI_SHARED_DATAMODEL(Session)
 
-    signals:
-      void dataModelChanged();
+      public:
+        Mapping(QWidget * = nullptr);
+        ~Mapping();
 
-    public slots:
-      void selectMappingType(QString const&);
+      signals:
+        void dataModelChanged();
 
-    private:
-      /// Update widgets from current mapping
-      void dataToFrontend();
+      public slots:
+        void selectMappingType(QString const&);
 
-      /// Assign widget values to current mapping
-      bool frontendToData();
+      private:
+        /// Update widgets from current mapping
+        void dataToFrontend();
 
-      void showParameterWidget();
+        /// Assign widget values to current mapping
+        bool frontendToData();
 
-      std::unique_ptr<Ui::Mapping> ui_;
+        void showParameterWidget();
 
-      /// Memory for storing/restoring settings of previously selected mapping types
-      TypeIdMemory<mapping::Interface> mappingMemory_;
+        std::unique_ptr<Ui::Mapping> ui_;
+
+        /// Memory for storing/restoring settings of previously selected mapping
+        // types
+        TypeIdMemory<mapping::Interface> mappingMemory_;
     };
   }
 }

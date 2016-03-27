@@ -28,103 +28,100 @@
 #include <omni/proj/ColorCorrection.h>
 #include <omni/proj/Projector.h>
 #include <omni/proj/Setup.h>
-#include <omni/proj/Screen.h>
 
-namespace omni
-{
-  namespace proj
-  {
-    /**@brief A projector tuning holds adjustment and distorsion data for a single projector and screen
-       @detail A tuning consists of a projector, warp grid, blend mask and color correction.
+namespace omni {
+  namespace proj {
+    /**@brief A projector tuning holds adjustment and distorsion data for a
+       single projector and screen
+       @detail A tuning consists of a projector, warp grid, blend mask and color
+          correction.
                It holds a color as well.
      **/
-    class Tuning
-    {
-    public:
-      /// Constructor
-      Tuning();
+    class Tuning {
+      public:
+        /// Constructor
+        Tuning();
 
-      /// Constructor with a color
-      Tuning(QColor const&);
+        /// Constructor with a color
+        Tuning(QColor const&);
 
-      /// Set screen for this tuning
-      void setScreen(QScreen const* _screen, int _subScreenIndex);
-      QScreen const* screen() const;
-      int subScreenIndex() const;
+        /// Set screen for this tuning
+        void                   setScreen(QScreen const *_screen,
+                                         int _subScreenIndex);
+        QScreen const        * screen() const;
+        int                    subScreenIndex() const;
 
-      Projector& projector();
-      Projector const& projector() const;
+        Projector            & projector();
+        Projector const      & projector() const;
 
-      /// Returns reference to warp grid
-      WarpGrid& warpGrid();
+        /// Returns reference to warp grid
+        WarpGrid             & warpGrid();
 
-      /// Returns reference to warp grid (const version)
-      WarpGrid const& warpGrid() const;
+        /// Returns reference to warp grid (const version)
+        WarpGrid const       & warpGrid() const;
 
-      /// Returns reference to blend mask
-      BlendMask& blendMask();
+        /// Returns reference to blend mask
+        BlendMask            & blendMask();
 
-      /// Returns reference to blend mask (const version)
-      BlendMask const& blendMask() const;
+        /// Returns reference to blend mask (const version)
+        BlendMask const      & blendMask() const;
 
-      /// Color correction for projector
-      ColorCorrection& colorCorrection();
+        /// Color correction for projector
+        ColorCorrection      & colorCorrection();
 
-      /// Color correction for projector (const)
-      ColorCorrection const& colorCorrection() const;
+        /// Color correction for projector (const)
+        ColorCorrection const& colorCorrection() const;
 
-      /// Returns color for mapping
-      QColor color() const;
+        /// Returns color for mapping
+        QColor                 color() const;
 
-      /// Sets color for mapping
-      void setColor(QColor const&);
+        /// Sets color for mapping
+        void                   setColor(QColor const&);
 
-      /// Return if a screen is associated with mapping
-      bool hasScreen() const;
+        /// Return if a screen is associated with mapping
+        bool                   hasScreen() const;
 
-      /// Returns true if screen in argument has a different resolution than given one
-      bool resolutionToBeChanged(proj::Screen const* _screen) const;
+        /// Returns width of screen
+        int         width() const;
 
-      /// Returns width of screen
-      int width() const;
+        /// Returns height of screen
+        int         height() const;
 
-      /// Returns height of screen
-      int height() const;
+        /// Return flag if output is disabled, projector output is black
+        bool        outputDisabled() const;
 
-      /// Return flag if output is disabled, projector output is black
-      bool outputDisabled() const;
+        /// Return flag if output is enabled
+        bool        outputEnabled() const;
 
-      /// Return flag if output is enabled
-      bool outputEnabled() const;
+        /// Disable output if _disabled is true, enable otherwise
+        void        setOutputDisabled(bool _disabled = true);
 
-      /// Disable output if _disabled is true, enable otherwise
-      void setOutputDisabled(bool _disabled = true);
+        /// Enable output if _enabled is true, disable otherwise
+        void        setOutputEnabled(bool _enabled = true);
 
-      /// Enable output if _enabled is true, disable otherwise
-      void setOutputEnabled(bool _enabled = true);
+        /// Return opacity of overlapped blend mask
+        float       overlapOpacity() const;
 
-      /// Return opacity of overlapped blend mask
-      float overlapOpacity() const;
+        /// Set opacity of overlap mask in blend mode
+        void        setOverlapOpacity(float);
 
-      /// Set opacity of overlap mask in blend mode
-      void setOverlapOpacity(float);
+        /// Write tuning to stream
+        void        toStream(QDataStream&) const;
 
-      /// Write tuning to stream
-      void toStream(QDataStream&) const;
+        /// Read tuning from stream
+        void        fromStream(QDataStream&);
 
-      /// Read tuning from stream
-      void fromStream(QDataStream&);
+        friend bool operator==(Tuning const&,
+                               Tuning const&);
 
-      friend bool operator==(Tuning const&,Tuning const&);
-
-    private:
-      bool outputDisabled_ = false;
-      bool overlapOpacity_ = 0.0;
-      QColor color_;
-      Projector projector_;
-      WarpGrid warpGrid_;
-      BlendMask blendMask_;
-      ColorCorrection colorCorrection_;
+      private:
+        bool   outputDisabled_ = false;
+        bool   overlapOpacity_ = 0.0;
+        QColor color_;
+        Projector projector_;
+        WarpGrid  warpGrid_;
+        BlendMask blendMask_;
+        ColorCorrection colorCorrection_;
     };
   }
 }

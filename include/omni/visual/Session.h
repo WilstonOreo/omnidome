@@ -26,41 +26,61 @@
 #include <omni/visual/Projector.h>
 #include <omni/visual/WarpGrid.h>
 
-namespace omni
-{
-  namespace visual
-  {
+namespace omni {
+  namespace visual {
     /// Base class for drawing a session
-    class Session
-    {
-    public:
-      Session(omni::Session&);
+    class Session {
+      public:
+        /// Construct with reference to session
+        Session(omni::Session&);
 
-      omni::Session const& session() const;
-      omni::Session& session();
+        /// Return const ref to session
+        omni::Session const& session() const;
 
-      void drawCanvas(mapping::OutputMode = mapping::OutputMode::MAPPED_INPUT, bool _grayscale = false) const;
-      void drawCanvasWithFrustumIntersections(ProjectorViewMode, bool _selectedOnly) const;
+        /// Return ref to session
+        omni::Session      & session();
 
-      void drawFrustumIntersection(proj::Projector const&, QColor const&, ProjectorViewMode) const;
+        /// Draw canvas with given output mode and optional grayscale toggle
+        void                 drawCanvas(
+          mapping::OutputMode = mapping::OutputMode::MAPPED_INPUT,
+          bool _grayscale = false) const;
 
-      void update();
-      void free();
 
-      void drawProjectors(bool _selectedOnly) const;
-      void drawProjectorHalos(bool _selectedOnly) const;
+        /// Canvas with frustum intersection of all projectors
+        void drawCanvasWithFrustumIntersections(ProjectorViewMode,
+                                                bool _selectedOnly) const;
 
-      bool needsUpdate() const;
+        /// Draw frustum canvas intersection
+        void drawFrustumIntersection(proj::Projector const &,
+                                     QColor const &,
+                                     ProjectorViewMode) const;
 
-    private:
-      void drawCanvasWithMatrix() const;
+        /// Update projectors and canvas
+        void update();
+        void free();
 
-      omni::Session& session_;
-      static std::unique_ptr<QOpenGLShaderProgram> frustumShader_;
+        /**@brief Draw projectors.
+           @detail If _selectedOnly true, only currently selected projector is drawn
+         **/
+        void drawProjectors(bool _selectedOnly) const;
 
-      std::list<visual::Projector> projectors_;
+        /**@brief Draw projector halos.
+           @detail If _selectedOnly true, only currently selected projector is drawn
+         **/
+        void drawProjectorHalos(bool _selectedOnly) const;
+
+        /// Returns true if an update is required
+        bool needsUpdate() const;
+
+      private:
+        /// Draw canvas transform with matrix
+        void drawCanvasWithMatrix() const;
+
+        omni::Session& session_;
+        static std::unique_ptr<QOpenGLShaderProgram> frustumShader_;
+
+        std::list<visual::Projector> projectors_;
     };
-
   }
 }
 

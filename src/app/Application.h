@@ -22,27 +22,33 @@
 #include <QSettings>
 
 namespace omni {
-    namespace ui {
-        class Application : public QApplication {
-            Q_OBJECT
-        public:
-            Application(int& ac, char** av);
-            ~Application();
+  namespace ui {
+    /// Omnidome Application
+    class Application : public QApplication {
+        Q_OBJECT
+      public:
+        /// Construct with command arguments and load plugins
+        Application(int& ac,
+                    char **av);
+        ~Application();
 
-            void setStyleSheetFile(QString _file);
+        /// Set custom stylesheet file
+        void              setStyleSheetFile(QString _file);
 
-            QString styleSheetFile() const;
+        /// Return string to style sheet file
+        QString           styleSheetFile() const;
 
-            static QSettings& settings();
-    //        static std::vector<PluginInfo> loadedPlugins();
+        /// Application settings to be saved
+        static QSettings& settings();
 
-        private:
-            bool eventFilter(QObject* object,QEvent* event);
+      private:
+        bool              eventFilter(QObject *object,
+                                      QEvent *event);
 
-            void loadPlugins();
+        void              loadPlugins();
 
-            QString styleSheetFile_;
-            static QSettings settings_;
-        };
-    }
+        QString styleSheetFile_;
+        static QSettings settings_;
+    };
+  }
 }

@@ -25,81 +25,83 @@
 #include "EulerAngles.h"
 
 namespace omni {
-    /**@brief An affine linear transform with rotation, scale and translation
-     **/
-    class AffineTransform {
+  /**@brief An affine linear transform with rotation, scale and translation
+  **/
+  class AffineTransform {
     public:
-        AffineTransform();
+      AffineTransform();
 
-        /// Return ref to rotation angles
-        EulerAngles& rotation();
-        /// Return const ref to rotation angles
-        EulerAngles const& rotation() const;
+      /// Return ref to rotation angles
+      EulerAngles      & rotation();
 
-        /// Set new rotation angles
-        void setRotation(EulerAngles const&);
+      /// Return const ref to rotation angles
+      EulerAngles const& rotation() const;
 
-        /// Return reference to scale vector
-        QVector3D& scale();
+      /// Set new rotation angles
+      void               setRotation(EulerAngles const&);
 
-        /// Return const reference to scale vector
-        QVector3D const& scale() const;
+      /// Return reference to scale vector
+      QVector3D      & scale();
 
-        /// Set new scale vector
-        void setScale(QVector3D const&);
+      /// Return const reference to scale vector
+      QVector3D const& scale() const;
 
-        /// Return reference to translation vector
-        QVector3D& translation();
+      /// Set new scale vector
+      void             setScale(QVector3D const&);
 
-        /// Return reference to translation vector (const)
-        QVector3D const& translation() const;
+      /// Return reference to translation vector
+      QVector3D      & translation();
 
-        /// Set new translation vector
-        void setTranslation(QVector3D const&);
+      /// Return reference to translation vector (const)
+      QVector3D const& translation() const;
 
-        /// Calculate transformation matrix
-        QMatrix4x4 matrix() const;
+      /// Set new translation vector
+      void             setTranslation(QVector3D const&);
 
-        /// Calculate matrix for transformation around a center point
-        QMatrix4x4 matrix(QVector3D const& _center) const;
+      /// Calculate transformation matrix
+      QMatrix4x4       matrix() const;
 
-        /// Return true if rotation is enabled
-        bool rotationEnabled() const;
+      /// Calculate matrix for transformation around a center point
+      QMatrix4x4       matrix(QVector3D const& _center) const;
 
-        /// Enable or disable rotation
-        void setRotationEnabled(bool);
+      /// Return true if rotation is enabled
+      bool             rotationEnabled() const;
 
-        /// Return true if scaling is enabled
-        bool scaleEnabled() const;
+      /// Enable or disable rotation
+      void             setRotationEnabled(bool);
 
-        /// Enable or disable scale
-        void setScaleEnabled(bool);
+      /// Return true if scaling is enabled
+      bool             scaleEnabled() const;
 
-        /// Return true if translation is enabled
-        bool translationEnabled() const;
+      /// Enable or disable scale
+      void             setScaleEnabled(bool);
 
-        /// Enable or disable translation
-        void setTranslationEnabled(bool);
+      /// Return true if translation is enabled
+      bool             translationEnabled() const;
 
-        /// Write transformation to stream
-        void toStream(QDataStream&) const;
+      /// Enable or disable translation
+      void             setTranslationEnabled(bool);
 
-        /// Read transformation from stream
-        void fromStream(QDataStream&);
+      /// Write transformation to stream
+      void             toStream(QDataStream&) const;
 
+      /// Read transformation from stream
+      void             fromStream(QDataStream&);
 
-        friend bool operator==(AffineTransform const&,AffineTransform const&);
+      /// Test for equality
+      friend bool      operator==(AffineTransform const&,
+                                  AffineTransform const&);
 
     private:
-        bool rotationEnabled_ = true;
-        EulerAngles rotation_;
+      bool rotationEnabled_ = true;
+      EulerAngles rotation_;
 
-        bool scaleEnabled_ = true;
-        QVector3D scale_;
+      bool scaleEnabled_ = true;
+      QVector3D scale_;
 
-        bool translationEnabled_ = true;
-        QVector3D translation_;
-    };
+      bool translationEnabled_ = true;
+      QVector3D translation_;
+  };
 }
 
 OMNI_DECL_STREAM_OPERATORS(omni::AffineTransform)

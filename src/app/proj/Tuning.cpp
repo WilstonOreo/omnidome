@@ -42,9 +42,9 @@ namespace omni {
     namespace ui {
         namespace proj {
             Tuning::Tuning(
-                int            _index,
-                std::shared_ptr<Session> _session,
-                QWidget       *_parent) :
+                int                     _index,
+                std::shared_ptr<Session>_session,
+                QWidget                *_parent) :
                 ParameterWidget(_parent),
                 mixin::TuningFromIndex<Tuning>(*this)
             {
@@ -67,47 +67,48 @@ namespace omni {
             }
 
             void Tuning::dataToFrontend() {
-                        glView_->setDataModel(dataModel());
-                        glView_->setTuningIndex(index());
-                        fullscreen_->setDataModel(dataModel());
-                        fullscreen_->setTuningIndex(index());
-                        titleBar_->setColor(tuning()->color());
+                glView_->setDataModel(dataModel());
+                glView_->setTuningIndex(index());
+                fullscreen_->setDataModel(dataModel());
+                fullscreen_->setTuningIndex(index());
+                titleBar_->setColor(tuning()->color());
+                this->setScale(dataModel()->scene().scale());
 
-                        setParamAsFloat("Overlap Opacity",
-                                        tuning()->overlapOpacity());
-                        setParamAsFloat("FOV",
-                                        tuning()->projector().fov().degrees());
-                        setParamAsFloat("Throw Ratio",
-                                        tuning()->projector().throwRatio());
+                setParamAsFloat("Overlap Opacity",
+                                tuning()->overlapOpacity());
+                setParamAsFloat("FOV",
+                                tuning()->projector().fov().degrees());
+                setParamAsFloat("Throw Ratio",
+                                tuning()->projector().throwRatio());
 
-                        auto _projSetup = tuning()->projector().setup();
+                auto _projSetup = tuning()->projector().setup();
 
-                        if (_projSetup->getTypeId() == "FreeSetup")
-                        {
-                            auto *_p =
-                                static_cast<omni::proj::FreeSetup *>(_projSetup);
-                            setParamAsFloat("Yaw",   _p->yaw().degrees());
-                            setParamAsFloat("Pitch", _p->pitch().degrees());
-                            setParamAsFloat("Roll",  _p->roll().degrees());
-                            setParamAsFloat("X",     _p->pos().x());
-                            setParamAsFloat("Y",     _p->pos().y());
-                            setParamAsFloat("Z",     _p->pos().z());
-                        }
-                        else if (_projSetup->getTypeId() == "PeripheralSetup")
-                        {
-                            auto *_p =
-                                static_cast<omni::proj::PeripheralSetup *>(
-                                    _projSetup);
-                            setParamAsFloat("Yaw",          _p->yaw().degrees());
-                            setParamAsFloat("Pitch",
-                                            _p->pitch().degrees());
-                            setParamAsFloat("Roll",         _p->roll().degrees());
-                            setParamAsFloat("Delta Yaw",
-                                            _p->deltaYaw().degrees());
-                            setParamAsFloat("Distance",     _p->distanceCenter());
-                            setParamAsFloat("Tower Height", _p->towerHeight());
-                            setParamAsFloat("Shift",        _p->shift());
-                        }
+                if (_projSetup->getTypeId() == "FreeSetup")
+                {
+                    auto *_p =
+                        static_cast<omni::proj::FreeSetup *>(_projSetup);
+                    setParamAsFloat("Yaw",   _p->yaw().degrees());
+                    setParamAsFloat("Pitch", _p->pitch().degrees());
+                    setParamAsFloat("Roll",  _p->roll().degrees());
+                    setParamAsFloat("X",     _p->pos().x());
+                    setParamAsFloat("Y",     _p->pos().y());
+                    setParamAsFloat("Z",     _p->pos().z());
+                }
+                else if (_projSetup->getTypeId() == "PeripheralSetup")
+                {
+                    auto *_p =
+                        static_cast<omni::proj::PeripheralSetup *>(
+                            _projSetup);
+                    setParamAsFloat("Yaw",          _p->yaw().degrees());
+                    setParamAsFloat("Pitch",
+                                    _p->pitch().degrees());
+                    setParamAsFloat("Roll",         _p->roll().degrees());
+                    setParamAsFloat("Delta Yaw",
+                                    _p->deltaYaw().degrees());
+                    setParamAsFloat("Distance",     _p->distanceCenter());
+                    setParamAsFloat("Tower Height", _p->towerHeight());
+                    setParamAsFloat("Shift",        _p->shift());
+                }
             }
 
             bool Tuning::frontendToData() {
@@ -229,6 +230,15 @@ namespace omni {
                 emit projectorSetupChanged();
             }
 
+            void Tuning::setKeyStone() {
+                if (!tuning() || isLocked()) return;
+
+                tuning()->projector().setKeystone(getParamAsFloat("Keystone"));
+                updateViews();
+
+                emit projectorSetupChanged();
+            }
+
             void Tuning::attachScreen(QScreen const *_screen, int _subScreenIndex)
             {
                 tuning()->setScreen(_screen, _subScreenIndex);
@@ -301,12 +311,19 @@ namespace omni {
                 _fov->setSuffix("°");
                 connect(_fov, SIGNAL(valueChanged()), this, SLOT(setFov()));
 
+                auto *_keystone = addWidget("Keystone", 0.0, -1.0, 1.0);
+                _keystone->setSingleStep(0.01);
+                _keystone->setPageStep(0.1);
+                connect(_keystone, SIGNAL(valueChanged()), this,
+                        SLOT(setKeyStone()));
+
                 /// Throw ratio slider
                 /// @todo Connect this with FOV slider
                 auto *_throwRatio = addWidget("Throw Ratio", 1.0, 0.2, 5.0);
                 _throwRatio->setSingleStep(0.01);
                 _throwRatio->setPageStep(0.05);
-            //    _throwRatio->setScale(RangedFloat::Scale::RECIPROCAL);
+
+                //    _throwRatio->setScale(RangedFloat::Scale::RECIPROCAL);
                 connect(_throwRatio, SIGNAL(valueChanged()), this,
                         SLOT(setThrowRatio()));
 
@@ -376,11 +393,12 @@ namespace omni {
                              _widgets) _result.emplace_back(_widget,
                                                             TuningLayout::Role::PARAMETER);
 
+
                         return _result;
                     };
 
                 addGroup("Minimized",
-                                        { { titleBar_,
+                         { { titleBar_,
                              TuningLayout::Role::TITLE } });
 
                 /// Make slider groups
@@ -388,16 +406,17 @@ namespace omni {
                 addGroup("OverlapOpacity",
                          addParameters(_titleAndPreview, { _overlapOpacity }));
                 addGroup("FOVSliders",
-                         addParameters(_titleAndPreview, { _fov, _throwRatio }));
+                         addParameters(_titleAndPreview,
+                                       { _fov, _throwRatio, _keystone }));
                 addGroup("FreeSetup",
                          addParameters(_titleAndPreview,
                                        { _yaw, _pitch, _roll, _x, _y, _z, _fov,
-                                         _throwRatio }));
+                                         _throwRatio, _keystone }));
                 addGroup("PeripheralSetup",
                          addParameters(_titleAndPreview,
                                        { _yaw, _pitch, _distance, _towerHeight,
                                          _shift, _deltaYaw, _roll, _fov,
-                                         _throwRatio }));
+                                         _throwRatio, _keystone }));
 
                 /// Setup/update mode
                 sessionModeChange();
@@ -679,7 +698,7 @@ namespace omni {
 
             void Tuning::focusOutEvent(QFocusEvent *event)
             {
-//                if (!this->isLocked()) setSelected(false);
+                //                if (!this->isLocked()) setSelected(false);
                 QWidget::focusOutEvent(event);
             }
         }

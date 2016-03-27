@@ -24,67 +24,69 @@
 #include <QString>
 #include <omni/Id.h>
 
-namespace omni
-{
-    /// Base class for all exception. Throws a message with QString type
-    class Exception : public QException
-    {
+namespace omni {
+  /// Base class for all exception. Throws a message with QString type
+  class Exception : public QException {
     public:
-        enum Type {
-            WARNING,
-            ERROR,
-            FATAL
-        };
+      enum Type {
+        WARNING,
+        ERROR,
+        FATAL
+      };
 
       /// This is the method which throw the message string
       virtual QString message() const throw() = 0;
 
       /// Return type of exception
-      virtual Type type() const = 0;
-    };
+      virtual Type    type() const = 0;
+  };
 
-#define OMNI_EXCEPTION(EXCEPTION)\
-    inline virtual void raise() const { \
-        throw *this; \
-    }\
-    inline QException* clone() const {\
-        return new EXCEPTION(*this);\
-    }
+#define OMNI_EXCEPTION(EXCEPTION)     \
+  inline virtual void raise() const { \
+    throw *this;                      \
+  }                                   \
+  inline QException *clone() const {  \
+    return new EXCEPTION(*this);      \
+  }
 
-  namespace exception
-  {
+  namespace exception {
     class Warning : public Exception {
-    public:
-      inline Type type() const { return WARNING; }
+      public:
+        inline Type type() const {
+          return WARNING;
+        }
     };
 
     class Error : public Exception {
-    public:
-      inline Type type() const { return ERROR; }
+      public:
+        inline Type type() const {
+          return ERROR;
+        }
     };
 
     class Fatal : public Exception {
-    public:
-      inline Type type() const { return FATAL; }
+      public:
+        inline Type type() const {
+          return FATAL;
+        }
     };
 
     /// An exception that occurs during Serialization
-    class Serialization: public Error
-    {
-    public:
-      OMNI_EXCEPTION(Serialization)
+    class Serialization : public Error {
+      public:
+        OMNI_EXCEPTION(Serialization)
 
-      Serialization(omni::Id _id) :
-        id_(_id)
-      {}
+        Serialization(omni::Id _id) :
+          id_(_id)
+        {}
 
-      QString message() const throw()
-      {
-        return QString("Serialization Exception. Invalid Id: ") + id_.str();
-      }
+        QString message() const throw()
+        {
+          return QString("Serialization Exception. Invalid Id: ") + id_.str();
+        }
 
-    private:
-      omni::Id id_;
+      private:
+        omni::Id id_;
     };
   }
 

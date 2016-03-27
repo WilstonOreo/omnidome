@@ -26,7 +26,8 @@ namespace omni
 {
   namespace input
   {
-    EquirectangularTestImage::EquirectangularTestImage()
+    EquirectangularTestImage::EquirectangularTestImage(Interface const* _parent) :
+      TestImage(_parent)
     {
     }
 

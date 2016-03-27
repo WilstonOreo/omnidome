@@ -21,7 +21,7 @@
 
 #include <QPainter>
 #include <QRectF>
-#include <omni/Renderer.h>
+#include <omni/render/Renderer.h>
 #include <map>
 
 namespace omni {
@@ -36,34 +36,28 @@ namespace omni {
         QRect OutputPreview::desktopRect() const {
             if (!dataModel()) return QRect();
 
-            QRect _rect = renderOptions_.excludeUnassignedProjectors()
+            using namespace render;
+            auto& _exportSettings = dataModel()->exportSettings();
+
+            QRect _rect = _exportSettings.excludeUnassignedProjectors()
                           ? dataModel()->screenSetup().desktopRect()
                           : dataModel()->screenSetup().combinedDesktopRect();
 
-            if (renderOptions_.outputType() == OutputType::PLAIN_IMAGE) {
+            if (_exportSettings.outputType() == OutputType::PLAIN_IMAGE) {
                 _rect.setHeight(_rect.height() * verticalMultiplier());
             }
 
             return _rect;
         }
 
-        RenderOptions const& OutputPreview::renderOptions() const {
-            return renderOptions_;
-        }
-
-        void OutputPreview::setRenderOptions(RenderOptions const& _renderOptions)
-        {
-            renderOptions_ = _renderOptions;
-            render();
-        }
-
         void OutputPreview::render() {
+            using namespace render;
+
             update();
 
             if (!dataModel()) return;
 
             return;
-
 
             QRectF _rect = this->transformedRect(
                 dataModel()->screenSetup().combinedDesktopRect());
@@ -72,8 +66,7 @@ namespace omni {
 
             std::map<omni::proj::Tuning const *, QImage> _images;
 
-
-            switch (renderOptions_.separationMode()) {
+            switch (dataModel()->exportSettings().separationMode()) {
             case SeparationMode::NONE:
                 break;
 
@@ -94,6 +87,7 @@ namespace omni {
             if (!dataModel()) return;
 
             auto& _screenSetup = dataModel()->screenSetup();
+            auto& _exportSettings = dataModel()->exportSettings();
 
             auto _rect = this->rect();
 
@@ -103,11 +97,10 @@ namespace omni {
             _painter.drawRect(_rect);
 
             QRectF _imageRect(0, 0, image_.width(), image_.height());
-            qDebug() << "OutputPreview::paintEvent: " << _imageRect;
 
             // _painter.drawImage(_imageRect,image_);
             auto _screens = _screenSetup.screens(
-                renderOptions_.excludeUnassignedProjectors());
+                _exportSettings.excludeUnassignedProjectors());
 
             if (_screens.empty()) {
                 QFont _font("Helvetica",30 / devicePixelRatio());
@@ -124,7 +117,7 @@ namespace omni {
             }
 
             for (auto& _tuning :
-                 _screenSetup.tunings(renderOptions_.
+                 _screenSetup.tunings(_exportSettings.
                                       excludeUnassignedProjectors()))
             {
                 drawTuning(_painter, _tuning);
@@ -136,7 +129,7 @@ namespace omni {
             auto & _screenSetup = dataModel()->screenSetup();
             QRectF _imageRect(_screenSetup.tuningRect(_tuning));
 
-            Renderer _renderer(*dataModel(), renderOptions_);
+            render::Renderer _renderer(*dataModel());
 
             auto _tuningImageRect = this->transformedRect(_imageRect);
 
@@ -179,11 +172,15 @@ namespace omni {
         }
 
         int OutputPreview::verticalMultiplier() const {
-            if (renderOptions_.outputType() != OutputType::PLAIN_IMAGE) {
+            auto& _exportSettings = dataModel()->exportSettings();
+
+            using namespace render;
+
+            if (_exportSettings.outputType() != OutputType::PLAIN_IMAGE) {
                 return 1;
             }
 
-            switch (renderOptions_.mappingOutputMode()) {
+            switch (_exportSettings.mappingOutputMode()) {
             case mapping::OutputMode::TEXCOORDS:
                 return 2;
 

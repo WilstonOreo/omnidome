@@ -23,36 +23,26 @@
 #include <omni/visual/Plane.h>
 
 namespace omni {
-    namespace visual {
-        /**@brief Box with subdivisions for drawing
-         **/
-        class Box : public Interface {
-        public:
-            Box();
-            ~Box();
+  namespace visual {
+    /**@brief Box with subdivisions for drawing
+    **/
+    class Box : public Interface {
+      public:
+        Box();
+        ~Box();
 
-            void draw() const;
+        /// Draw box
+        void   draw() const;
 
-            void update();
+        /// Update box mesh
+        void   update();
 
-            /// Return mesh resolution in x direction
-            size_t resX() const;
-
-            /// Return mesh resolution in y direction
-            size_t resY() const;
-
-            /// Return mesh resolution in z direction
-            size_t resZ() const;
-
-            /// Set size and regenerate the mesh
-            void remesh(size_t _resX, size_t _resY, size_t _resZ);
-
-        private:
-            size_t horizontal_ = 4;
-            size_t vertical_ =  4;
-            VertexVBO vbo_;
-        };
-    }
+      private:
+        size_t horizontal_ = 4;
+        size_t vertical_   =  4;
+        VertexVBO vbo_;
+    };
+  }
 }
 
 #endif /* OMNI_VISUAL_BOX_H_ */

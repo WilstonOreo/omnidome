@@ -24,46 +24,51 @@
 #include <omni/visual/Sphere.h>
 #include <omni/canvas/Envelope.h>
 
-namespace omni
-{
-  namespace canvas
-  {
+namespace omni {
+  namespace canvas {
     /// A basic dome canvas width a radius/diameter and offset
-    class Dome : public Envelope
-    {
-    public:
-      Dome();
-      virtual ~Dome();
+    class Dome : public Envelope {
+      public:
 
-      /// Return radius (10.0m by default)
-      qreal radius() const;
+        Dome();
+        virtual ~Dome();
 
-      /// Set radius in meter
-      void setRadius(qreal);
+        /// Return radius (10.0m by default)
+        qreal radius() const;
 
-      /// Return diameter in meter
-      qreal diameter() const;
+        /// Set radius in meter
+        void setRadius(qreal);
 
-      /// Set diameter in meter
-      void setDiameter(qreal);
+        /// Return diameter in meter
+        qreal diameter() const;
 
-      /// Return internally cached bounding box
-      Box bounds() const;
+        /// Set diameter in meter
+        void setDiameter(qreal);
 
-      virtual void draw() const;
-      virtual void drawAux() const;
+        /// Return internally cached bounding box
+        Box          bounds() const;
 
-      virtual void update();
+        /// Draw dome sphere
+        virtual void draw() const;
 
-      virtual void toStream(QDataStream&) const;
-      virtual void fromStream(QDataStream&);
+        /// Draw auxiliary elements
+        virtual void drawAux() const;
 
-    protected:
+        /// Update dome mesh
+        virtual void update();
 
-      visual::Sphere sphere_;
-      Box bounds_;
-    private:
-      QVector3D center_;
+        /// Serialize to stream
+        virtual void toStream(QDataStream&) const;
+
+        /// Deserialize from stream
+        virtual void fromStream(QDataStream&);
+
+      protected:
+        /// Sphere visualizer
+        visual::Sphere sphere_;
+
+      private:
+        QVector3D center_;
     };
   }
 }

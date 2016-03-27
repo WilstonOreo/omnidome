@@ -21,57 +21,56 @@
 #include <omni/PluginLoader.h>
 
 namespace omni {
-    namespace ui {
-        PluginList::PluginList(QWidget* _parent) :
-            QTreeView(_parent) {
+  namespace ui {
+    PluginList::PluginList(QWidget *_parent) :
+      QTreeView(_parent) {
+      prepareModel();
 
-            prepareModel();
-            for (auto& _pluginInfo : PluginLoader::loadedPlugins()) {
-                addItem(_pluginInfo);
-            }
+      for (auto& _pluginInfo : PluginLoader::loadedPlugins()) {
+        addItem(_pluginInfo);
+      }
 
-            for (int i = 0; i < model_->columnCount(); ++i) {
-                resizeColumnToContents(i);
-            }
-        }
-
-        PluginList::~PluginList() {
-
-        }
-
-        void PluginList::prepareModel() {
-            model_.reset(new QStandardItemModel());
-            model_->clear();
-            model_->setColumnCount(8);
-            model_->setHeaderData(0,Qt::Horizontal,"Plugin Name");
-            model_->setHeaderData(1,Qt::Horizontal,"Type");
-            model_->setHeaderData(2,Qt::Horizontal,"Class name");
-            model_->setHeaderData(3,Qt::Horizontal,"Author");
-            model_->setHeaderData(4,Qt::Horizontal,"URL");
-            model_->setHeaderData(5,Qt::Horizontal,"Version");
-            model_->setHeaderData(6,Qt::Horizontal,"Description");
-            model_->setHeaderData(7,Qt::Horizontal,"File");
-            setModel(model_.get());
-        }
-
-        void PluginList::addItem(PluginInfo const& _info) {
-            QList<QStandardItem*> _row;
-            auto _makeItem = [](QString const& _t) -> QStandardItem* {
-                QStandardItem* _item = new QStandardItem(_t);
-                _item->setEditable(false);
-                return _item;
-            };
-
-            _row << _makeItem(_info.name());
-            _row << _makeItem(_info.type());
-            _row << _makeItem(_info.className());
-            _row << _makeItem(_info.author());
-            _row << _makeItem(_info.url());
-            _row << _makeItem(_info.versionString());
-            _row << _makeItem(_info.description());
-            _row << _makeItem(_info.file());
-
-            model_->invisibleRootItem()->appendRow(_row);
-        }
+      for (int i = 0; i < model_->columnCount(); ++i) {
+        resizeColumnToContents(i);
+      }
     }
+
+    PluginList::~PluginList() {}
+
+    void PluginList::prepareModel() {
+      model_.reset(new QStandardItemModel());
+      model_->clear();
+      model_->setColumnCount(8);
+      model_->setHeaderData(0, Qt::Horizontal, "Plugin Name");
+      model_->setHeaderData(1, Qt::Horizontal, "Type");
+      model_->setHeaderData(2, Qt::Horizontal, "Class name");
+      model_->setHeaderData(3, Qt::Horizontal, "Author");
+      model_->setHeaderData(4, Qt::Horizontal, "URL");
+      model_->setHeaderData(5, Qt::Horizontal, "Version");
+      model_->setHeaderData(6, Qt::Horizontal, "Description");
+      model_->setHeaderData(7, Qt::Horizontal, "File");
+      setModel(model_.get());
+    }
+
+    void PluginList::addItem(PluginInfo const& _info) {
+      QList<QStandardItem *> _row;
+      auto _makeItem = [](QString const& _t) -> QStandardItem * {
+                         QStandardItem *_item = new QStandardItem(_t);
+
+                         _item->setEditable(false);
+                         return _item;
+                       };
+
+      _row << _makeItem(_info.name());
+      _row << _makeItem(_info.type());
+      _row << _makeItem(_info.className());
+      _row << _makeItem(_info.author());
+      _row << _makeItem(_info.url());
+      _row << _makeItem(_info.versionString());
+      _row << _makeItem(_info.description());
+      _row << _makeItem(_info.file());
+
+      model_->invisibleRootItem()->appendRow(_row);
+    }
+  }
 }

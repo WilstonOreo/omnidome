@@ -26,7 +26,8 @@ namespace omni
 {
   namespace input
   {
-    FisheyeTestImage::FisheyeTestImage()
+    FisheyeTestImage::FisheyeTestImage(Interface const* _parent) :
+      TestImage(_parent)
     {
     }
 

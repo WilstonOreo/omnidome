@@ -23,38 +23,35 @@
 #include <omni/TypeIdInterface.h>
 #include <omni/Session.h>
 
-namespace omni
-{
+namespace omni {
   class Session;
 
-  namespace proj
-  {
+  namespace proj {
     /**@brief Projector setup template interface
-     * @detail Adds one or several projectors/tunings in a certain placement to a session
+     * @detail Adds one or several projectors/tunings in a certain placement to
+     *a session
      **/
-    class MultiSetup : public TypeIdInterface
-    {
-    public:
-      virtual ~MultiSetup() {}
+    class MultiSetup : public TypeIdInterface {
+      public:
+        virtual ~MultiSetup() {}
 
-      /// Add tunings to session
-      inline void add(Session* _session)
-      {
-        auto&& _projs = this->projectors();
-
-        for (auto& _proj : _projs)
+        /// Add tunings to session
+        inline void add(Session *_session)
         {
-          auto* _tuning = _session->tunings().add();
-          _tuning->projector() = std::move(_proj);
+          auto && _projs = this->projectors();
+
+          for (auto& _proj : _projs)
+          {
+            auto *_tuning = _session->tunings().add();
+            _tuning->projector() = std::move(_proj);
+          }
         }
-      }
 
-      virtual std::vector<Projector> projectors() const = 0;
-
+        virtual std::vector<Projector>projectors() const = 0;
     };
 
     /// Typedef for our factory
-    typedef AbstractFactory<MultiSetup> MultiSetupFactory;
+    typedef AbstractFactory<MultiSetup>MultiSetupFactory;
   }
 }
 

@@ -24,43 +24,57 @@
 #include <QOpenGLFramebufferObject>
 #include "Interface.h"
 
-namespace omni
-{
-  namespace input
-  {
+namespace omni {
+  namespace input {
     /**@brief Abstract class for test images that are generated with a shader
-     **/
+    **/
     class TestImage :
-      public Interface
-    {
-    public:
-      TestImage();
-      virtual ~TestImage();
+      public Interface {
+      public:
+        TestImage(Interface const *_parent = nullptr);
+        virtual ~TestImage();
 
-      GLuint textureId() const;
-      void free();
-      virtual void update();
+        /// Texture id is tex id of internal framebuffer
+        GLuint       textureId() const;
 
-      QPointF rulerPos() const;
-      void setRulerPos(QPointF const&);
+        /// Free framebuffer
+        void         free();
 
-      virtual void toStream(QDataStream&) const;
-      virtual void fromStream(QDataStream&);
+        /// Update framebuffer image
+        virtual void update();
 
-    protected:
-      virtual void shaderUniformHandler();
-      virtual bool changed() const;
-      std::unique_ptr<QOpenGLShaderProgram> shader_;
+        /// Return ruler position
+        QPointF      rulerPos() const;
 
-    private:
-      virtual QString fragmentShaderSource() const = 0;
-      virtual QString vertexShaderSource() const = 0;
+        /// Set ruler position
+        void         setRulerPos(QPointF const&);
 
-      QPointF rulerPos_;
-      bool rulerPosChanged_ = true;
-      std::unique_ptr<QOpenGLFramebufferObject> framebuffer_;
+        /// Serialize to stream
+        virtual void toStream(QDataStream&) const;
+
+        /// Deserialize from stream
+        virtual void fromStream(QDataStream&);
+
+      protected:
+        /**@brief Virtual method to handle additional shader uniforms in derived classes
+         **/
+        virtual void shaderUniformHandler();
+
+        /// Virtual method, return true when values have changed
+        virtual bool changed() const;
+        std::unique_ptr<QOpenGLShaderProgram> shader_;
+
+      private:
+        /// String representing the fragment shader source
+        virtual QString fragmentShaderSource() const = 0;
+
+        /// String representing the vertex shader source
+        virtual QString vertexShaderSource() const   = 0;
+
+        QPointF rulerPos_;
+        bool    rulerPosChanged_ = true;
+        std::unique_ptr<QOpenGLFramebufferObject> framebuffer_;
     };
-
   }
 }
 

@@ -23,33 +23,31 @@
 #include <omni/ui/ParameterWidget.h>
 #include <omni/proj/MultiSetup.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    namespace proj
-    {
+namespace omni {
+  namespace ui {
+    namespace proj {
+      /// Parameter widget for a multisetup
       class MultiSetupParameters :
         public ParameterWidget,
-        protected mixin::Locked
-      {
-        Q_OBJECT
-      public:
-        MultiSetupParameters(QWidget* _parent);
-        ~MultiSetupParameters();
+        protected mixin::Locked {
+          Q_OBJECT
+        public:
+          MultiSetupParameters(QWidget *_parent);
+          ~MultiSetupParameters();
 
-        omni::proj::MultiSetup* multiSetup();
-        omni::proj::MultiSetup const* multiSetup() const;
-        void setMultiSetup(omni::proj::MultiSetup* _template);
+          omni::proj::MultiSetup      * multiSetup();
+          omni::proj::MultiSetup const* multiSetup() const;
+          void                          setMultiSetup(
+            omni::proj::MultiSetup *_template);
 
-        /// Set parameters from sliders to template
-        void updateParameters();
-      private:
+          /// Set parameters from sliders to template
+          void updateParameters();
 
-        /// Clear and setup all parameter widgets
-        void setup();
+        private:
+          /// Clear and setup all parameter widgets
+          void setup();
 
-        omni::proj::MultiSetup* multiSetup_ = nullptr;
+          omni::proj::MultiSetup *multiSetup_ = nullptr;
       };
     }
   }

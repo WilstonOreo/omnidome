@@ -22,30 +22,31 @@
 
 #include <omni/canvas/Interface.h>
 
-namespace omni
-{
-  namespace canvas
-  {
-    /// An enveloped canvas can enclose the viewer and can be projected from inside or outside
+namespace omni {
+  namespace canvas {
+    /// An enveloped canvas can enclose the viewer and can be projected from
+    // inside or outside
     class Envelope :
-      public Canvas
-    {
-    public:
-      Envelope();
-      ~Envelope();
+      public Canvas {
+      public:
+        Envelope();
+        ~Envelope();
 
-      /// Returns copy of cached bounding box
-      Box bounds() const;
+        /// Returns copy of cached bounding box
+        Box          bounds() const;
 
-      virtual void draw() const;
+        /// Draw envelope
+        virtual void draw() const;
 
-      virtual void toStream(QDataStream&) const;
-      virtual void fromStream(QDataStream&);
+        /// Serialize to stream
+        virtual void toStream(QDataStream&) const;
 
-    protected:
+        /// Deserialize from stream
+        virtual void fromStream(QDataStream&);
 
-      /// Protected bounding box member
-      omni::Box bounds_;
+      protected:
+        /// Protected bounding box member
+        omni::Box bounds_;
     };
   }
 }

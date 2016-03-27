@@ -23,51 +23,51 @@
 #include <QString>
 
 namespace omni {
-    /// An encapsulation for length units
-    class LengthUnit {
+  /// An encapsulation for length units
+  class LengthUnit {
     public:
-        /// Supported unit types
-        enum Type {
-            METER, MILLIMETER, CENTIMETER,
-            INCH, FOOT, NUM_UNIT_TYPES,
-            INVALID_UNIT = -1
-        };
+      /// Supported unit types
+      enum Type {
+        METER, MILLIMETER, CENTIMETER,
+        INCH, FOOT, NUM_UNIT_TYPES,
+        INVALID_UNIT = -1
+      };
 
-        /// Make a new unit with a certain type
-        LengthUnit(Type = METER);
+      /// Make a new unit with a certain type
+      LengthUnit(Type = METER);
 
-        /// Return abbreviation for unit with type
-        static QString abbreviation(Type);
+      /// Return abbreviation for unit with type
+      static QString abbreviation(Type);
 
-        /// Return abbreviation of unit
-        QString abbreviation() const;
+      /// Return abbreviation of unit
+      QString     abbreviation() const;
 
-        /// Get unit type from abbreviation
-        static Type type(QString abbr);
+      /// Get unit type from abbreviation
+      static Type type(QString abbr);
 
-        /// Return type of unit
-        Type type() const;
+      /// Return type of unit
+      Type        type() const;
 
-        /// Set type of unit
-        void setType(Type);
+      /// Set type of unit
+      void setType(Type);
 
-        /// Return singular name of unit with type
-        static QString nameSingular(Type);
+      /// Return singular name of unit with type
+      static QString nameSingular(Type);
 
-        /// Return singular name of unit
-        QString nameSingular() const;
+      /// Return singular name of unit
+      QString nameSingular() const;
 
-        /// Return plural name of unit with type
-        static QString namePlural(Type);
+      /// Return plural name of unit with type
+      static QString namePlural(Type);
 
-        /// Return plural name of unit
-        QString namePlural() const;
+      /// Return plural name of unit
+      QString namePlural() const;
 
     private:
-        typedef std::map<Type,QString> map_type;
+      typedef std::map<Type, QString>map_type;
 
-        Type type_;
-    };
+      Type type_;
+  };
 }
 
 #endif /* OMNI_LENGTHUNIT_H_ */

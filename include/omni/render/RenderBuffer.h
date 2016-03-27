@@ -1,15 +1,15 @@
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
- * 
+ *
  * This file is part of Omnidome.
- * 
+ *
  * Omnidome is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,21 +17,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_PROJ_SCREENMANAGER_H_
-#define OMNI_PROJ_SCREENMANAGER_H_
+#ifndef OMNI_RENDERBUFFER_H_
+#define OMNI_RENDERBUFFER_H_
 
-#include "Screen.h"
+#include <omni/Buffer.h>
 
-namespace omni
-{
-  namespace proj
+namespace omni {
+  /// RGBA float pixel type
+  struct RGBAFloat
   {
-    /// Singleton class which manages the current screen setup
-    class ScreenManager
-    {
+    RGBAFloat() {}
 
-    };
-  }
+    RGBAFloat(float r, float g, float b, float a = 1.0) :
+      r(r), g(g), b(b), a(a) {}
+
+    float r, g, b, a;
+  };
+
+  typedef Buffer<RGBAFloat>RenderBuffer;
 }
 
-#endif /* OMNI_PROJ_SCREENMANAGER_H_ */
+#endif /* OMNI_RENDERBUFFER_H_ */

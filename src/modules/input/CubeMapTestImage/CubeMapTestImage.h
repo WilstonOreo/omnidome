@@ -33,7 +33,7 @@ namespace omni
     public:
       OMNI_REGISTER_CLASS(Factory,CubeMapTestImage)
 
-      CubeMapTestImage();
+      CubeMapTestImage(Interface const* = nullptr);
       ~CubeMapTestImage();
 
       QSize size() const;

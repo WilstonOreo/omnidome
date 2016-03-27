@@ -25,21 +25,21 @@
 #include <omni/PluginInfo.h>
 
 namespace omni {
-    namespace ui {
-        class PluginList : public QTreeView {
-            Q_OBJECT
-        public:
-            PluginList(QWidget* = nullptr);
-            ~PluginList();
+  namespace ui {
+    /// List view to show all loaded plugins
+    class PluginList : public QTreeView {
+      Q_OBJECT
 
+      public:
+        PluginList(QWidget * = nullptr);
+        ~PluginList();
 
-        private:
-            void prepareModel();
-            void addItem(PluginInfo const&);
-            std::unique_ptr<QStandardItemModel> model_;
-        };
-
-    }
+      private:
+        void prepareModel();
+        void addItem(PluginInfo const&);
+        std::unique_ptr<QStandardItemModel> model_;
+    };
+  }
 }
 
 #endif /* OMNI_UI_PLUGINLIST_H_ */
