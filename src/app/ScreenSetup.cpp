@@ -161,19 +161,19 @@ namespace omni
 
     void ScreenSetup::dragEnterEvent(QDragEnterEvent* event)
     {
-      auto* _screenItem = getItemAtPos(event->pos());
+      currentScreenItem_ = getItemAtPos(event->pos());
       for (auto& _item : screenItems_)
         _item.second->setDrop(false);
 
       if (event->mimeData()->hasFormat("text/plain"))
       {
-        if (_screenItem)
+        if (currentScreenItem_)
         {
           auto* _tuningWidget = static_cast<proj::Tuning*>(event->source());
           if (!_tuningWidget->tuning()) return;
 
           auto _color = _tuningWidget->tuning()->color();
-          _screenItem->setDrop(true,_color);
+          currentScreenItem_->setDrop(true,_color);
         }
 
         event->acceptProposedAction();
@@ -184,6 +184,9 @@ namespace omni
     void ScreenSetup::dragMoveEvent(QDragMoveEvent* event)
     {
       auto* _screenItem = getItemAtPos(event->pos());
+      if (_screenItem == currentScreenItem_) { return; }
+
+      currentScreenItem_ = _screenItem;
 
       for (auto& _item : screenItems_)
         _item.second->setDrop(false);
@@ -207,17 +210,17 @@ namespace omni
       for (auto& _item : screenItems_)
         _item.second->setDrop(false);
 
-      auto* _screenItem = getItemAtPos(event->pos());
+      currentScreenItem_ = getItemAtPos(event->pos());
       //dragWidget_->hide();
 
-      if (_screenItem)
+      if (currentScreenItem_)
       {
-        _screenItem->setDrop(false);
-        _screenItem->setHoverIndex(event->pos());
+        currentScreenItem_->setDrop(false);
+        currentScreenItem_->setHoverIndex(event->pos());
         auto* _tuningWidget = static_cast<proj::Tuning*>(event->source());
         if (!_tuningWidget->tuning()) return;
 
-        _screenItem->attachTuning(_tuningWidget);
+        currentScreenItem_->attachTuning(_tuningWidget);
         event->acceptProposedAction();
       }
 
@@ -226,6 +229,8 @@ namespace omni
         auto& _item = _screenItem.second;
         _item->endDrop();
       }
+
+      currentScreenItem_ = nullptr;
     }
 
     /// ScreenSetup::SubScreenItem

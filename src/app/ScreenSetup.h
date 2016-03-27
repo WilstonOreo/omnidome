@@ -173,6 +173,7 @@ namespace omni {
         std::map<QScreen const *, std::unique_ptr<Item> > screenItems_;
         omni::proj::ScreenSetup *setup_;
         Session *session_ = nullptr;
+        Item* currentScreenItem_ = nullptr;
     };
   }
 }
