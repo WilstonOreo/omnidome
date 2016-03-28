@@ -41,6 +41,7 @@ namespace omni {
     class TuningGLView;
     class GLView3D;
     class ToolBar;
+    class RecentSessions;
 
     class MainWindow :
       public QMainWindow {
@@ -127,13 +128,15 @@ namespace omni {
         /// Page for exporting projection
         QUniquePtr<GLView3D> live_;
 
+        /// Store recent sessions
+        QUniquePtr<RecentSessions> recentSessions_;
+
         /// MainWindow toolbar
         QUniquePtr<ToolBar> toolBar_;
 
         /// UI containing designed widgets of this window
         std::unique_ptr<Ui::MainWindow> ui_;
 
-        QUniquePtr<QOpenGLContext> glContext_;
     };
   }
 }

@@ -30,6 +30,7 @@
 #include <QIcon>
 
 #include "Application.h"
+#include "RecentSessions.h"
 #include <omni/Session.h>
 #include <omni/proj/MultiSetup.h>
 #include <omni/ui/GLView3D.h>
@@ -209,6 +210,13 @@ MainWindow::MainWindow(QMainWindow *parent) :
   _list << _width * 1.2 << 100;
   ui_->splitter->setSizes(_list);
 
+  {
+    recentSessions_.reset(new RecentSessions);
+    ui_->actionOpen->setMenu(recentSessions_->menu());
+    connect(recentSessions_.get(),SIGNAL(fileToBeLoaded(QString const&)),
+            this,SLOT(openProjection(QString const&)));
+  }
+
   readSettings();
   setupSession();
   raise();
@@ -230,6 +238,8 @@ void MainWindow::readSettings()
   } else {
     restoreState(_windowState);
   }
+
+  recentSessions_->readFromSettings();
 }
 
 void MainWindow::setupSession()
@@ -301,6 +311,7 @@ void MainWindow::saveProjectionAs()
   {
     filename_ = _filename;
     session_->save(filename_);
+    recentSessions_->addFile(filename_);
     modified_ = false;
     buttonState();
   }
@@ -332,6 +343,7 @@ bool MainWindow::openProjection(const QString& _filename)
   setupSession();
   modified_ = false;
   filename_ = _filename;
+  recentSessions_->addFile(filename_);
   return true;
 }
 
@@ -392,6 +404,7 @@ void MainWindow::closeEvent(QCloseEvent *_event)
 
   Application::settings().setValue("geometry", saveGeometry());
   Application::settings().setValue("windowState", saveState());
+  recentSessions_->writeToSettings();
   QMainWindow::closeEvent(_event);
 }
 
