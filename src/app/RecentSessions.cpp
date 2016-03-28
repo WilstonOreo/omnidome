@@ -106,7 +106,7 @@ namespace omni {
     }
 
     QMenu * RecentSessions::menu() {
-      return menu_;
+      return menu_.get();
     }
 
     void RecentSessions::readFromSettings() {
@@ -140,7 +140,9 @@ namespace omni {
     }
 
     void RecentSessions::generateMenu() {
-      if (!menu_)   menu_ = new QMenu(); menu_->clear();
+      if (!menu_)   menu_.reset(new QMenu());
+
+      menu_->clear();
 
       for (auto& _file : recentFiles_) {
         auto* _action = new RecentFileAction(_file);

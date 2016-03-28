@@ -28,7 +28,7 @@ namespace omni
 {
   namespace mapping
   {
-    Fisheye::Fisheye()  
+    Fisheye::Fisheye()
     {
     }
 
@@ -57,8 +57,7 @@ namespace omni
     void Fisheye::fromStream(QDataStream& _stream)
     {
       Interface::fromStream(_stream);
-      PropertyMap _map;
-      _stream >> _map;
+      PropertyMap _map(_stream);
       _map.get("stretch",stretch_);
       setStretch(stretch_);
     }

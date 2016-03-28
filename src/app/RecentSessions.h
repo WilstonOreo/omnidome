@@ -29,19 +29,24 @@ class QFileSystemWatcher;
 
 namespace omni {
   namespace ui {
+    /// Action for recent file
     class RecentFileAction : public QAction {
         Q_OBJECT
       public:
         RecentFileAction(QString const& _file, QObject* = nullptr);
         ~RecentFileAction();
 
+        /// Check if file exists
         bool fileExists() const;
 
       signals:
         void fileToBeLoaded(QString const&);
 
       public slots:
+        /// Load session triggers fileToBeLoaded signal
         void loadSession();
+
+        /// Action is disabled when file does not exist
         void setState();
 
       private:
@@ -56,29 +61,43 @@ namespace omni {
         RecentSessions(QObject * = nullptr);
         ~RecentSessions();
 
+        /// Return pointer to menu
         QMenu* menu();
+
+        /// Read recent files from settings
         void   readFromSettings();
+
+        /// Write recent files to settings
         void   writeToSettings() const;
+
+        /// Return maximum number of files
         int    numberOfFiles() const;
 
       public slots:
+        /// Clear list of recent files
         void   clear();
+
+        /// Add a new file to list
         void   addFile(QString const&);
+
+        /// Set maximum number of files
         void   setNumberOfFiles(int);
 
       signals:
         void fileToBeLoaded(QString const&);
 
       private:
+        /// Add file and optionally regenerate menu
         void   addFile(QString const&, bool _regenerateMenu);
 
         /// Return index of file if in list, return -1 if not
         int  fileInList(QString const&) const;
 
+        /// Generate menu from recent files, create new menu if necessary
         void generateMenu();
 
         std::deque<QString> recentFiles_;
-        QMenu *menu_          = nullptr;
+        QUniquePtr<QMenu> menu_;
         int    numberOfFiles_ = 16;
     };
   }

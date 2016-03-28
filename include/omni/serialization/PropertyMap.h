@@ -97,6 +97,9 @@ namespace omni {
       public:
         PropertyMap();
 
+        /// Construct from stream
+        PropertyMap(QDataStream&);
+
         /// Put an object of type T with id into property map
         template<typename T, typename ... ARGS>
         PropertyMap& put(Id const& _id, T const& _t, ARGS&& ... _args) {

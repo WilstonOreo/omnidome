@@ -75,8 +75,7 @@ namespace omni
     void Equirectangular::fromStream(QDataStream& _stream)
     {
       mapping::Interface::fromStream(_stream);
-      PropertyMap _map;
-      _stream >> _map;
+      PropertyMap _map(_stream);
       _map.get("stripBottom",stripBottom_)
           .get("stripTop",stripTop_);
       validate();

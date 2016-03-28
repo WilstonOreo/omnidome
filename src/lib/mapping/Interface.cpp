@@ -187,8 +187,7 @@ namespace omni {
 
         /// Read mapping from stream
         void Interface::fromStream(QDataStream& _is) {
-            PropertyMap _map;
-            _is >> _map;
+            PropertyMap _map(_is);
             _map.get("transform",transform_)
                 .get("boundToCanvas",boundToCanvas_)
                 .get("flipHorizontal",flipHorizontal_)

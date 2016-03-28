@@ -185,7 +185,7 @@ namespace omni
           ("mode",mode_)
           ("scene",scene_)
           ("blendSettings",blendSettings_)
-          ("exportSettings_",exportSettings_);
+          ("exportSettings",exportSettings_);
       _os << _map;
   }
 

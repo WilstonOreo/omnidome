@@ -29,6 +29,10 @@ namespace omni {
         {
         }
 
+        PropertyMap(QDataStream& _stream) {
+          fromStream(_stream);
+        }
+
         void PropertyMap::toStream(QDataStream& _os) const {
 
             serialize(_os,makeChecksum(properties_));

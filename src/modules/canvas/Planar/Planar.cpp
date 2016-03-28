@@ -85,8 +85,7 @@ namespace omni
     void Planar::fromStream(QDataStream& _stream)
     {
       canvas::Interface::fromStream(_stream);
-      PropertyMap _map;
-      _stream >> _map;
+      PropertyMap _map(_stream);
       _map.get("width",width_)
           .get("height",height_);
     }
