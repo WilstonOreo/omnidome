@@ -154,7 +154,7 @@ namespace omni {
 
         bool Session::needsUpdate() const
         {
-            return session_.tunings().size() != projectors_.size() || needsUpdate_;
+            return session_.tunings().size() != projectors_.size() || needsUpdate_;
         }
 
         void Session::drawProjectors(bool _selectedOnly) const
@@ -213,7 +213,7 @@ namespace omni {
 
             auto *_canvas = session_.canvas();
 
-            if (!_canvas) { 
+            if (!_canvas) {
               needsUpdate_ = true;
               return;
             }

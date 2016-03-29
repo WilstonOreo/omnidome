@@ -23,7 +23,7 @@
 #include <QSize>
 #include <QVector2D>
 #include <omni/visual/Interface.h>
-#include <omni/visual/Camera.h>
+#include <omni/visual/CameraInterface.h>
 #include <omni/visual/Plane.h>
 
 class QOpenGLShaderProgram;
@@ -34,7 +34,7 @@ namespace omni {
     **/
     class Grid : public visual::Interface {
       public:
-        Grid(Camera const&);
+        Grid(CameraInterface const*);
         ~Grid();
 
         /// Draw grid
@@ -53,11 +53,12 @@ namespace omni {
         /// Return resolution
         QSize const& resolution() const;
 
+        /// Set size of grid
         void         setSize(QVector2D const& _size);
 
       private:
         QSize resolution_;
-        Camera const& camera_;
+        CameraInterface const* camera_ = nullptr;
         Plane plane_;
         QVector2D size_;
         std::unique_ptr<QOpenGLShaderProgram> shader_;

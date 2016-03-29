@@ -20,10 +20,12 @@
 #ifndef OMNI_VISUAL_SCENE_H_
 #define OMNI_VISUAL_SCENE_H_
 
+#include <map>
+#include <memory>
 #include <omni/visual/ProjectorViewMode.h>
 #include <omni/serialization/Interface.h>
 #include <omni/visual/Light.h>
-#include <omni/visual/Camera.h>
+#include <omni/visual/CameraInterface.h>
 #include <omni/LengthUnit.h>
 
 namespace omni {
@@ -56,6 +58,8 @@ namespace omni {
      **/
     class Scene {
       public:
+        typedef std::map<QString,std::unique_ptr<CameraInterface>> camera_map_type;
+
         Scene();
 
         /// Scene scale (min, max dimensions)
@@ -116,10 +120,19 @@ namespace omni {
         void        updateLights();
 
         /// Return reference to camera
-        visual::Camera& camera();
+        visual::CameraInterface* camera();
 
         /// Return const reference to camera
-        visual::Camera const& camera() const;
+        visual::CameraInterface const* camera() const;
+
+        /// Return current camera id
+        QString currentCameraId() const;
+
+        /// Set id to current camera
+        void setCurrentCameraId(QString const&);
+
+        camera_map_type& cameras();
+        camera_map_type const& cameras() const;
 
         /// Deserialize from stream
         void        fromStream(QDataStream&);
@@ -143,8 +156,9 @@ namespace omni {
         MoveMode   moveMode_                 = MoveMode::MOVE_XY;
         ProjectorViewMode projectorViewMode_ = ProjectorViewMode::INSIDE;
 
+        QString cameraId_;
         std::vector<visual::Light> lights_;
-        visual::Camera camera_;
+        std::map<QString,std::unique_ptr<visual::CameraInterface>> cameras_;
     };
   }
   using visual::Scene;

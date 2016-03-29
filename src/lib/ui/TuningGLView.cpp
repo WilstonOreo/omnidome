@@ -659,7 +659,7 @@ namespace omni {
     void TuningGLView::paintGL()
     {
       if (!isVisible() || this->isLocked() || !context() ||
-          aboutToBeDestroyed_ || !initialized()) return;
+          aboutToBeDestroyed_ || !initialized()) return;
 
       if (!vizTuning_ || !vizSession_ || !tuning()) return;
 

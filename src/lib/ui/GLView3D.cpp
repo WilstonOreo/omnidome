@@ -61,7 +61,7 @@ namespace omni
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
       visual::viewport(this);
 
-      _scene.camera().setup(30.0,aspect());
+      _scene.camera()->setup(aspect());
 
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
@@ -86,15 +86,16 @@ namespace omni
     {
       if (!dataModel()) return;
 
-      auto& _cam = dataModel()->scene().camera();
+      auto* _cam = dataModel()->scene().camera();
+      if (!_cam) return;
 
       float _r = event->delta()/100.0;
-      _cam.track( 0, 0, _r );
+      _cam->track( 0, 0, _r );
 
       if (dataModel()->canvas())
       {
         auto _r = dataModel()->canvas()->radius();
-        _cam.limitDistance(_r*0.1,_r*10.0);
+        _cam->limitDistance(_r*0.1,_r*10.0);
       }
 
       update();
@@ -108,19 +109,19 @@ namespace omni
     {
       if (!dataModel()) return;
 
-      auto& _cam = dataModel()->scene().camera();
+      auto* _cam = dataModel()->scene().camera();
 
-      if (event->buttons() & Qt::LeftButton)
+      if ((event->buttons() & Qt::LeftButton) && _cam)
       {
         if( event->modifiers() & Qt::ShiftModifier )
         {
-          _cam.strafe((event->pos().x() - mousePosition().x())/20.0);
-          _cam.lift((event->pos().y() - mousePosition().y())/20.0);
+          _cam->strafe((event->pos().x() - mousePosition().x())/20.0);
+          _cam->lift((event->pos().y() - mousePosition().y())/20.0);
         }
         else
         {
           if( !(event->modifiers() & Qt::ControlModifier) )
-            _cam.track( event->pos().x() - mousePosition().x(), event->pos().y() - mousePosition().y(), 0 );
+            _cam->track( event->pos().x() - mousePosition().x(), event->pos().y() - mousePosition().y(), 0 );
         }
         update();
       }
@@ -131,8 +132,9 @@ namespace omni
     void GLView3D::changeZoom(int _value)
     {
       if (!dataModel()) return;
-      auto& _cam = dataModel()->scene().camera();
-      _cam.setDistance(_value/5.0);
+      auto* _cam = dataModel()->scene().camera();
+      if (!_cam) return;
+      _cam->setDistance(_value/5.0);
       update();
     }
   }

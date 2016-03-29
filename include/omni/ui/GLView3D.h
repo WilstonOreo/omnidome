@@ -21,8 +21,6 @@
 #define OMNI_UI_GLVIEW3D_H_
 
 #include <omni/ui/GLView.h>
-#include <omni/visual/Camera.h>
-#include <omni/visual/Light.h>
 #include <omni/visual/Grid.h>
 
 namespace omni {

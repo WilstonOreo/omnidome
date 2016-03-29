@@ -23,7 +23,7 @@
 
 namespace omni {
   namespace visual {
-    Grid::Grid(Camera const& _camera) :
+    Grid::Grid(CameraInterface const* _camera) :
       camera_(_camera),
       size_(10.0, 10.0) {
       setResolution(QSize(1024, 1024));
@@ -42,8 +42,8 @@ namespace omni {
         shader_->setUniformValue("resolution",
                                  GLfloat(resolution_.width()),
                                  GLfloat(resolution_.height()));
-        shader_->setUniformValue("cam_pos", camera_.eye());
-        shader_->setUniformValue("dir", camera_.direction().vec());
+        shader_->setUniformValue("cam_pos", camera_->eye());
+        shader_->setUniformValue("dir", camera_->direction().vec());
         shader_->setUniformValue("alpha", _alpha);
         glPushMatrix();
         {

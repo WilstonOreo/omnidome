@@ -94,8 +94,6 @@ void AboutGL::initializeGL()
     _p.drawText(8,316,"Copyright (C) 2016");
   }
   _p.end();
-
-
   tex_.reset(new QOpenGLTexture(_image.mirrored()));
 }
 

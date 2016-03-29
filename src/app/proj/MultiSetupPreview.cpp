@@ -77,7 +77,7 @@ namespace omni {
                 GL_STENCIL_BUFFER_BIT);
         visual::viewport(this);
 
-        dataModel()->scene().camera().setup(30.0,aspect());
+        dataModel()->scene().camera()->setup(aspect());
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
