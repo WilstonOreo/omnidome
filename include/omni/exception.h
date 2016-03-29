@@ -39,6 +39,17 @@ namespace omni {
 
       /// Return type of exception
       virtual Type    type() const = 0;
+
+      inline virtual QString typeAsString() const {
+        switch (type()) {
+        case WARNING: return "WARNING";
+
+        case ERROR: return "ERROR";
+
+        case FATAL: return "FATAL";
+        }
+        return "INVALID";
+      }
   };
 
 #define OMNI_EXCEPTION(EXCEPTION)     \

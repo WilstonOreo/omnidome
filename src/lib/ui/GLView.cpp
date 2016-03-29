@@ -73,6 +73,7 @@ namespace omni
         _.glEnable(GL_NORMALIZE);
         // fix outlines z-fighting with quads
         _.glPolygonOffset(1, 1);
+        setAutoFillBackground(true);
       });
 
 

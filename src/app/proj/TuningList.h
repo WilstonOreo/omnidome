@@ -90,6 +90,15 @@ namespace omni
         /// Adjust sliders to scene scale
         void updateSceneScale();
 
+        /// Disable all tunings and fullscreen
+        void disableAllTunings();
+
+        /// Enable all tunings and fullscreen
+        void enableAllTunings();
+
+        /// Enable selected tuning and show only this in fullscreen
+        void enableSelectedTuningOnly();
+
       protected:
         void resizeEvent(QResizeEvent*);
         void keyPressEvent(QKeyEvent*);

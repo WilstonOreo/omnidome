@@ -77,6 +77,14 @@ namespace omni {
         closeButton_->setVisible(_visible);
       }
 
+      void TitleBar::fullscreenToggle(bool _checked) {
+        if (_checked) {
+          displayButton_->setIcon(QIcon(":/icons/eye.png"));
+        } else {
+          displayButton_->setIcon(QIcon(":/icons/eye_crossed.png"));
+        }
+      }
+
       void TitleBar::paintEvent(QPaintEvent *event)
       {
         QPainter _p(this);
@@ -138,8 +146,8 @@ namespace omni {
 
         setupToolButton(displayButton_);
         displayButton_->setCheckable(true);
+        displayButton_->setChecked(true);
         displayButton_->setIcon(QIcon(":/icons/eye.png"));
-
         connect(displayButton_.get(), SIGNAL(clicked(bool)), tuningWidget(),
                 SLOT(fullscreenToggle(bool)));
 

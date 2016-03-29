@@ -98,6 +98,10 @@ namespace omni {
 
             using omni::util::fileToStr;
 
+            if (!cursor_) {
+              cursor_.reset(new Circle);
+            }
+
             if (!testCardShader_)
             {
                 static QString _vertSrc =
@@ -199,26 +203,25 @@ namespace omni {
 
         void Tuning::drawCursor(QPointF const& _pos)
         {
+            if (!cursor_) return;
+
             auto _rect = tuningRect();
 
             visual::with_current_context([&](QOpenGLFunctions& _)
             {
                 _.glDisable(GL_LINE_SMOOTH);
-                glColor4f(1.0, 1.0, 1.0, 1.0);
-                _.glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-                glBegin(GL_LINE_LOOP);
+                _.glEnable(GL_BLEND);
+                _.glEnable(GL_COLOR_LOGIC_OP);
+                glLogicOp(GL_XOR);
+
+                glColor4f(0.0, 0.0, 0.0, 1.0);
+                glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
 
                 float _r = tuning_.blendMask().brush().size() * 0.5 / tuning_.width();
-                util::for_each_circle_point(24, _r,
-                                            [&](size_t _i, const QPointF& _p)
-                {
-                    glVertex2f(_p.x() + _pos.x(),
-                               _p.y() * (_rect.height() / _rect.width()) +
-                               _pos.y());
-                });
-                glEnd();
+                cursor_->drawLine(_pos,_r,_r * (_rect.height()/_rect.width()));
                 _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 _.glEnable(GL_LINE_SMOOTH);
+                _.glDisable(GL_COLOR_LOGIC_OP);
             });
         }
 

@@ -51,7 +51,7 @@ namespace omni {
             _s = _s.arg(expected_).arg(got_);
 
             if (!QString(id_).isEmpty()) {
-              _s += QString("On id %1.").arg(QString(id_));
+              _s += QString(" On id %1.").arg(QString(id_));
             }
             return _s;
           }
@@ -73,7 +73,7 @@ namespace omni {
           }
 
         private:
-          Id const& id_;
+          Id id_;
       };
 
       class PropertyNotExisting : public Error {
@@ -87,7 +87,7 @@ namespace omni {
           }
 
         private:
-          Id const& id_;
+          Id id_;
       };
     }
 

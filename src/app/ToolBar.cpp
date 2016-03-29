@@ -114,7 +114,7 @@ namespace omni {
       btnSettings_->setCheckable(false);
       btnSettings_->setIconSize(QSize(48, 48));
       btnSettings_->setToolTip("About Omnidome");
-      connect(btnSettings_, SIGNAL(clicked()), this, SLOT(showSettings()));
+      connect(btnSettings_, SIGNAL(clicked()), this, SLOT(showAbout()));
       auto *_actionSettings = addWidget(btnSettings_);
       this->connect(_actionSettings, SIGNAL(triggered()), btnSettings_,
                     SIGNAL(clicked()));
@@ -225,7 +225,7 @@ namespace omni {
       btnLive_->setEnabled(_hasOutput);
     }
 
-    void ToolBar::showSettings()
+    void ToolBar::showAbout()
     {
       std::unique_ptr<About> _about(new About());
 

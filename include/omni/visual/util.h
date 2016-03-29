@@ -22,42 +22,73 @@
 
 #include <math.h>
 #include <QPointF>
+#include <QRectF>
 #include <QVector2D>
 #include <QVector3D>
 #include <QOpenGLFunctions>
 
 
-namespace omni
-{
-  namespace visual
-  {
-    namespace util
-    {
+namespace omni {
+  namespace visual {
+    namespace util {
       template<typename F>
       void for_each_circle_point(size_t _numVertices, float _radius, F _f)
       {
         for (size_t i = 0; i < _numVertices; ++i)
         {
-          float _m = 2.0 * M_PI * float(i) / _numVertices;
+          float _m   = 2.0 * M_PI * float(i) / _numVertices;
           float _cos = cos(_m), _sin = sin(_m);
-          _f(i,QPointF(_cos*_radius,_sin*_radius));
+          _f(i, QPointF(_cos * _radius, _sin * _radius));
         }
       }
 
+      static inline QRectF viewRect(int _imageWidth,
+                                    int _imageHeight,
+                                    int _canvasWidth,
+                                    int _canvasHeight,
+                                    float _border = 0.0) {
+        float _projAspect = float(_imageWidth) /
+                            _imageHeight;
+        float _viewAspect = float(_canvasWidth) / _canvasHeight;
+        float b           = _border * 0.5;
+        float _left       = -0.5 - b, _right = 0.5 + b, _bottom = -0.5 - b,
+              _top        = 0.5 + b;
+
+        if (_projAspect > _viewAspect)
+        {
+          _top    *= _projAspect / _viewAspect;
+          _bottom *=  _projAspect / _viewAspect;
+        }
+        else
+        {
+          _left  *= _viewAspect / _projAspect;
+          _right *= _viewAspect / _projAspect;
+        }
+
+        return QRectF(QPointF(_left, _top), QPointF(_right, _bottom));
+      }
+
       template<typename F>
-      void for_each_arc_point(size_t _numVertices, float _radius, float _beginAngle, float _endAngle, F _f)
+      void for_each_arc_point(size_t _numVertices,
+                              float _radius,
+                              float _beginAngle,
+                              float _endAngle,
+                              F _f)
       {
-        float _cos = cos(_beginAngle), _sin = sin(_beginAngle);
-        size_t i= 0;
-        _f(0,QPointF(_cos*_radius,_sin*_radius));
+        float  _cos = cos(_beginAngle), _sin = sin(_beginAngle);
+        size_t i    = 0;
+
+        _f(0, QPointF(_cos * _radius, _sin * _radius));
+
         for (; i < _numVertices; ++i)
         {
-          float _m =  _beginAngle + float(i) / _numVertices * (_endAngle - _beginAngle);
+          float _m =  _beginAngle + float(i) / _numVertices *
+                     (_endAngle - _beginAngle);
           _cos = cos(_m), _sin = sin(_m);
-          _f(i,QPointF(_cos*_radius,_sin*_radius));
+          _f(i, QPointF(_cos * _radius, _sin * _radius));
         }
         _cos = cos(_endAngle), _sin = sin(_endAngle);
-        _f(i,QPointF(_cos*_radius,_sin*_radius));
+        _f(i, QPointF(_cos * _radius, _sin * _radius));
       }
 
       /// Draw on current context, if it exists
@@ -65,6 +96,7 @@ namespace omni
       void with_current_context(F f)
       {
         auto _currentContext = QOpenGLContext::currentContext();
+
         if (!_currentContext) return;
 
         QOpenGLFunctions glFuncs(_currentContext);
@@ -78,55 +110,57 @@ namespace omni
         return _size.width() / qreal(_size.height());
       }
 
-      /// Draw into QOpenGLFramebufferObject with given projection and model view operations
+      /// Draw into QOpenGLFramebufferObject with given projection and model
+      // view operations
       template<typename FRAMEBUFFER, typename PROJECTION, typename MODELVIEW>
       void draw_on_framebuffer(FRAMEBUFFER& _f, PROJECTION _p, MODELVIEW _m)
       {
         with_current_context([&](QOpenGLFunctions& _) {
-
           glPushAttrib(GL_ALL_ATTRIB_BITS);
 
           _f->bind();
 
-          _.glViewport(0,0, _f->width(), _f->height());
-          _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+          _.glViewport(0, 0, _f->width(), _f->height());
+          _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+                    GL_STENCIL_BUFFER_BIT);
           _.glEnable(GL_TEXTURE_2D);
 
-        _.glEnable(GL_DEPTH_TEST);
-        _.glDepthFunc(GL_LEQUAL);
-        _.glEnable(GL_BLEND);
-        _.glDisable(GL_CULL_FACE);
-        _.glEnable(GL_NORMALIZE);
-        // fix outlines z-fighting with quads
-        _.glPolygonOffset(1, 1);
+          _.glEnable(GL_DEPTH_TEST);
+          _.glDepthFunc(GL_LEQUAL);
+          _.glEnable(GL_BLEND);
+          _.glDisable(GL_CULL_FACE);
+          _.glEnable(GL_NORMALIZE);
+
+          // fix outlines z-fighting with quads
+          _.glPolygonOffset(1, 1);
+
           // Projection matrix setup
           glMatrixMode(GL_PROJECTION);
           glLoadIdentity();
           _p(_); // Projection operation
 
           _.glEnable(GL_DEPTH_TEST);
+
           // Model view matrix setup
           glMatrixMode(GL_MODELVIEW);
           glLoadIdentity();
           _m(_); // ModelView operation
 
-        _f->release();
+          _f->release();
 
-        glPopAttrib();
+          glPopAttrib();
+        });
+      }
 
-      });
-    }
-
-    /// Set viewport for widget
+      /// Set viewport for widget
       template<typename WIDGET>
-      void viewport(WIDGET* _widget)
+      void viewport(WIDGET *_widget)
       {
         with_current_context([&_widget](QOpenGLFunctions& _)
-      {
-        int d = _widget->devicePixelRatio();
-        _.glViewport(0,0, _widget->width()*d, _widget->height()*d);
-      });
-
+        {
+          int d = _widget->devicePixelRatio();
+          _.glViewport(0, 0, _widget->width() * d, _widget->height() * d);
+        });
       }
     }
     using util::with_current_context;
@@ -134,7 +168,6 @@ namespace omni
     using util::viewport;
   }
 }
-
 
 
 #endif /* OMNI_VISUAL_UTIL_H_ */

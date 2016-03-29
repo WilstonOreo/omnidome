@@ -80,6 +80,7 @@ namespace omni {
         static std::unique_ptr<QOpenGLShaderProgram> frustumShader_;
 
         std::list<visual::Projector> projectors_;
+        bool needsUpdate_ = true;
     };
   }
 }

@@ -67,17 +67,24 @@ namespace omni {
       {
         detach(_subIndex);
       }
+      hideDragWidget();
+      repaint();
 
       widgets_[_subIndex] = _widget;
 
       setGeometry(_widget, _subIndex);
       _widget->setParent(this);
       _widget->show();
+      _widget->raise();
+      _widget->update();
+
       showFullScreen();
     }
 
     void FullScreen::hideDragWidget()
     {
+      dragWidget_->setColor("#FFFFFF");
+      dragWidget_->repaint();
       dragWidget_->hide();
 
       if (widgets_.empty()) hide();
@@ -99,8 +106,8 @@ namespace omni {
     void FullScreen::showDragWidget(int _subIndex, QColor const& _color)
     {
       setGeometry(dragWidget_.get(), _subIndex);
-      dragWidget_->setColor(_color);
       dragWidget_->show();
+      dragWidget_->setColor(_color);
       dragWidget_->raise();
       showFullScreen();
     }

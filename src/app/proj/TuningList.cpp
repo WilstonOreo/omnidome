@@ -340,6 +340,27 @@ namespace omni {
                 }
             }
 
+            /// Disable all tunings and fullscreen
+            void TuningList::disableAllTunings() {
+              for (auto& _widget : widgets_) {
+                _widget->fullscreenToggle(false);
+              }
+            }
+
+            /// Enable all tunings and fullscreen
+            void TuningList::enableAllTunings() {
+              for (auto& _widget : widgets_) {
+                _widget->fullscreenToggle(true);
+              }
+            }
+
+            /// Enable selected tuning and show only this in fullscreen
+            void TuningList::enableSelectedTuningOnly() {
+              for (auto& _widget : widgets_) {
+                _widget->fullscreenToggle(_widget->index() == dataModel()->tunings().currentIndex());
+              }
+            }
+
             void TuningList::resizeEvent(QResizeEvent *event)
             {
                 for (auto& _widget : widgets_) _widget->layout()->update();

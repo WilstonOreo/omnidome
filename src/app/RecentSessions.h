@@ -25,8 +25,6 @@
 #include <QString>
 #include <omni/util.h>
 
-class QFileSystemWatcher;
-
 namespace omni {
   namespace ui {
     /// Action for recent file
@@ -51,7 +49,6 @@ namespace omni {
 
       private:
         QString file_;
-        QUniquePtr<QFileSystemWatcher> watcher_;
     };
 
     /// Data structure and menu to store default sessions
@@ -83,6 +80,9 @@ namespace omni {
         /// Set maximum number of files
         void   setNumberOfFiles(int);
 
+        /// Disable action for which file does not exists
+        void   setActionStates();
+
       signals:
         void fileToBeLoaded(QString const&);
 
@@ -97,6 +97,7 @@ namespace omni {
         void generateMenu();
 
         std::deque<QString> recentFiles_;
+        std::vector<RecentFileAction*> actions_;
         QUniquePtr<QMenu> menu_;
         int    numberOfFiles_ = 16;
     };

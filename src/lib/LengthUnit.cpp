@@ -19,105 +19,133 @@
 
 #include <omni/LengthUnit.h>
 
+#include <omni/util.h>
 
 namespace omni {
-    LengthUnit::LengthUnit(Type _type) :
-        type_(_type)
-    {
+  LengthUnit::LengthUnit(Type _type) :
+    type_(_type)
+  {}
+
+  LengthUnit::LengthUnit(QString const& _abbr)
+  {
+    type_ = type(_abbr);
+  }
+
+  QString LengthUnit::abbreviation(Type _type) {
+    static map_type abbrMap_;
+
+    if (abbrMap_.empty()) {
+      abbrMap_ = map_type({
+        { METER, "m" },
+        { MILLIMETER, "mm" },
+        { CENTIMETER, "cm" },
+        { INCH, "in" },
+        { FOOT, "ft" }
+      });
     }
 
-    QString LengthUnit::abbreviation(Type _type) {
-        static map_type abbrMap_;
-        if (abbrMap_.empty()) {
-            abbrMap_ = map_type({
-                { METER, "m" },
-                { MILLIMETER, "mm" },
-                { CENTIMETER, "cm" },
-                { INCH, "in" },
-                { FOOT, "ft" }
-            });
-        }
-        if (abbrMap_.count(_type) == 0) {
-            return "INVALID_UNIT";
-        }
-        return abbrMap_.at(_type);
+    if (abbrMap_.count(_type) == 0) {
+      return "INVALID_UNIT";
+    }
+    return abbrMap_.at(_type);
+  }
+
+  QString LengthUnit::abbreviation() const {
+    return abbreviation(type_);
+  }
+
+  /// Get unit type from abbreviation
+  LengthUnit::Type LengthUnit::type(QString const& abbr) {
+    static std::map<QString, Type> typeMap_;
+
+    if (typeMap_.empty()) {
+      typeMap_ = std::map<QString, Type>({
+        { "m", METER },
+        { "mm", MILLIMETER },
+        { "cm", CENTIMETER },
+        { "in", INCH },
+        { "ft", FOOT }
+      });
     }
 
-    QString LengthUnit::abbreviation() const {
-        return abbreviation(type_);
+    if (typeMap_.count(abbr) == 0) {
+      return INVALID_UNIT;
+    }
+    return typeMap_.at(abbr);
+  }
+
+  /// Return type of unit
+  LengthUnit::Type LengthUnit::type() const {
+    return type_;
+  }
+
+  /// Set type of unit
+  void LengthUnit::setType(Type _type) {
+    type_ = _type;
+  }
+
+  /// Return singular name of unit with type
+  QString LengthUnit::nameSingular(Type _type) {
+    static map_type nsMap_;
+
+    if (nsMap_.empty()) {
+      nsMap_ = map_type({
+        { METER, "meter" },
+        { MILLIMETER, "millimeter" },
+        { CENTIMETER, "centimeter" },
+        { INCH, "inch" },
+        { FOOT, "foot" }
+      });
     }
 
-    /// Get unit type from abbreviation
-    LengthUnit::Type LengthUnit::type(QString abbr) {
-        static std::map<QString,Type> typeMap_;
-        if (typeMap_.empty()) {
-            typeMap_ = std::map<QString,Type>({
-                { "m", METER },
-                { "mm", MILLIMETER },
-                { "cm", CENTIMETER },
-                { "in", INCH },
-                { "ft", FOOT }
-            });
-        }
-        if (typeMap_.count(abbr) == 0) {
-            return INVALID_UNIT;
-        }
-        return typeMap_.at(abbr);
+    if (nsMap_.count(_type) == 0) {
+      return "INVALID_UNIT";
+    }
+    return nsMap_.at(_type);
+  }
+
+  /// Return singular name of unit
+  QString LengthUnit::nameSingular() const {
+    return nameSingular(type_);
+  }
+
+  /// Return plural name of unit with type
+  QString LengthUnit::namePlural(Type _type) {
+    static map_type npMap_;
+
+    if (npMap_.empty()) {
+      npMap_ = map_type({
+        { METER, "meters" },
+        { MILLIMETER, "millimeters" },
+        { CENTIMETER, "centimeters" },
+        { INCH, "inches" },
+        { FOOT, "feet" }
+      });
     }
 
-    /// Return type of unit
-    LengthUnit::Type LengthUnit::type() const {
-        return type_;
+    if (npMap_.count(_type) == 0) {
+      return "INVALID_UNIT";
     }
+    return npMap_.at(_type);
+  }
 
-    /// Set type of unit
-    void LengthUnit::setType(Type _type) {
-        type_ = _type;
-    }
+  /// Return plural name of unit
+  QString LengthUnit::namePlural() const {
+    return namePlural(type_);
+  }
 
-    /// Return singular name of unit with type
-    QString LengthUnit::nameSingular(Type _type) {
-        static map_type nsMap_;
-        if (nsMap_.empty()) {
-            nsMap_ = map_type({
-                { METER, "meter" },
-                { MILLIMETER, "millimeter" },
-                { CENTIMETER, "centimeter" },
-                { INCH, "inch" },
-                { FOOT, "foot" }
-            });
-        }
-        if (nsMap_.count(_type) == 0) {
-            return "INVALID_UNIT";
-        }
-        return nsMap_.at(_type);
-    }
+  /// Deserialize from stream
+  void LengthUnit::fromStream(QDataStream& _is) {
+    _is >> type_;
+  }
 
-    /// Return singular name of unit
-    QString LengthUnit::nameSingular() const {
-        return nameSingular(type_);
-    }
+  /// Serialize to stream
+  void LengthUnit::toStream(QDataStream& _os) const {
+    _os << type_;
+  }
 
-    /// Return plural name of unit with type
-    QString LengthUnit::namePlural(Type _type) {
-        static map_type npMap_;
-        if (npMap_.empty()) {
-            npMap_ = map_type({
-                { METER, "meters" },
-                { MILLIMETER, "millimeters" },
-                { CENTIMETER, "centimeters" },
-                { INCH, "inches" },
-                { FOOT, "feet" }
-            });
-        }
-        if (npMap_.count(_type) == 0) {
-            return "INVALID_UNIT";
-        }
-        return npMap_.at(_type);
-    }
-
-    /// Return plural name of unit
-    QString LengthUnit::namePlural() const {
-        return namePlural(type_);
-    }
+  /// Test for equality. ScreenSetup is ignored
+  bool operator==(LengthUnit const& _lhs, LengthUnit const& _rhs) {
+    return OMNI_TEST_MEMBER_EQUAL(type_);
+  }
 }

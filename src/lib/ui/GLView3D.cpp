@@ -28,8 +28,7 @@ namespace omni
   namespace ui
   {
     GLView3D::GLView3D(QWidget* _parent) :
-      GLView(_parent),
-      grid_(camera_)
+      GLView(_parent)
     {
     }
 
@@ -41,45 +40,17 @@ namespace omni
     {
       if (!dataModel() || initialized() || !context()) return false;
 
-      using namespace visual;
-      float _radius = dataModel()->canvas() ? dataModel()->canvas()->radius() : 5.0;
+      dataModel()->scene().updateLights();
+      grid_.reset(new visual::Grid(dataModel()->scene().camera()));
+      grid_->update();
 
-      camera_ = Camera(
-                  Tracker(QVector3D(0,0,0), PolarVec(-45.0,45.0,_radius * 5.0)));
-
-      lights_[0] = Light(
-                     Tracker(QVector3D(0.0,0.0,0.0),
-                             PolarVec(-45.0,45.0,_radius * 10.0)),1.0);
-
-      lights_[1] = Light(
-                     Tracker(QVector3D(0.0,0.0,0.0),
-                             PolarVec(45.0,45.0,_radius * 10.0)),0.2);
-
-      lights_[2] = Light(
-                     Tracker(QVector3D(0.0,0.0,0.0),
-                             PolarVec(45.0,-45.0,_radius * 10.0)),0.2);
-
-      updateLight();
-      grid_.update();
       this->vizSession_->update();
       return true;
     }
 
-    void GLView3D::setupCamera()
-    {
-      camera_.setup(30.0,aspect());
-    }
-
-    void GLView3D::updateLight()
-    {
-      GLuint _index = GL_LIGHT0;
-      for (auto& _light : lights_)
-        _light.setup(++_index);
-    }
-
     void GLView3D::paintGL()
     {
-      if (!dataModel() || this->isLocked()) return;
+      if (!dataModel() || this->isLocked() || !initialized()) return;
 
       auto& _scene = dataModel()->scene();
 
@@ -90,10 +61,11 @@ namespace omni
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
       visual::viewport(this);
 
-      setupCamera();
+      _scene.camera().setup(30.0,aspect());
+
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
-      updateLight();
+      _scene.updateLights();
 
       this->vizSession_->drawCanvas(_scene.displayInput() && dataModel()->hasOutput() ?
           mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
@@ -104,9 +76,9 @@ namespace omni
       this->vizSession_->drawProjectorHalos(!_scene.displayProjectors());
 
       if (_scene.displayGrid()) {
-        grid_.draw(0.5);
+        grid_->draw(0.5);
         glDisable(GL_DEPTH_TEST);
-        grid_.draw(0.5);
+        grid_->draw(0.5);
       }
     }
 
@@ -114,13 +86,15 @@ namespace omni
     {
       if (!dataModel()) return;
 
+      auto& _cam = dataModel()->scene().camera();
+
       float _r = event->delta()/100.0;
-      camera_.track( 0, 0, _r );
+      _cam.track( 0, 0, _r );
 
       if (dataModel()->canvas())
       {
         auto _r = dataModel()->canvas()->radius();
-        camera_.limitDistance(_r*0.1,_r*10.0);
+        _cam.limitDistance(_r*0.1,_r*10.0);
       }
 
       update();
@@ -132,25 +106,21 @@ namespace omni
 
     void GLView3D::mouseMoveEvent(QMouseEvent *event)
     {
+      if (!dataModel()) return;
+
+      auto& _cam = dataModel()->scene().camera();
+
       if (event->buttons() & Qt::LeftButton)
       {
         if( event->modifiers() & Qt::ShiftModifier )
         {
-          camera_.strafe((event->pos().x() - mousePosition().x())/20.0);
-          camera_.lift((event->pos().y() - mousePosition().y())/20.0);
+          _cam.strafe((event->pos().x() - mousePosition().x())/20.0);
+          _cam.lift((event->pos().y() - mousePosition().y())/20.0);
         }
         else
         {
-          if( event->modifiers() & Qt::ControlModifier )
-          {
-            for (auto& _light : lights_)
-            {
-              _light.track( event->pos().x() - mousePosition().x(), - event->pos().y() + mousePosition().y(), 0 );
-            }
-            updateLight();
-          }
           if( !(event->modifiers() & Qt::ControlModifier) )
-            camera_.track( event->pos().x() - mousePosition().x(), event->pos().y() - mousePosition().y(), 0 );
+            _cam.track( event->pos().x() - mousePosition().x(), event->pos().y() - mousePosition().y(), 0 );
         }
         update();
       }
@@ -160,7 +130,9 @@ namespace omni
 
     void GLView3D::changeZoom(int _value)
     {
-      camera_.setDistance(_value/5.0);
+      if (!dataModel()) return;
+      auto& _cam = dataModel()->scene().camera();
+      _cam.setDistance(_value/5.0);
       update();
     }
   }

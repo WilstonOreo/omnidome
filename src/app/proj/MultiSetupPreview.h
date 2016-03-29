@@ -49,8 +49,6 @@ namespace omni {
           void paintGL();
 
         private:
-          visual::Camera camera_;
-          std::array<visual::Light, 3> lights_;
           omni::proj::MultiSetup *multiSetup_ = nullptr;
 
           std::vector<omni::proj::Projector> projectors_;

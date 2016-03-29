@@ -39,8 +39,6 @@ namespace omni
       HalfDome(qreal _diameter = 10.0);
       ~HalfDome();
 
-      void draw() const;
-
       /// Make new box parameter widget
       QWidget* widget();
     };

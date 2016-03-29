@@ -49,6 +49,7 @@ namespace omni {
 
         void selectPlainImage(bool);
         void selectOmniCalibration(bool);
+        void getExportSettings();
 
       signals:
         void dataModelChanged();
@@ -60,7 +61,6 @@ namespace omni {
         }
 
         void                 setup();
-        omni::ExportSettings getExportSettings() const;
 
         std::unique_ptr<Ui::Export> ui_;
     };

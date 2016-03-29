@@ -18,28 +18,53 @@
  */
 
 #include <omni/ui/ExceptionList.h>
-//#include "ui_ExceptionList.h"
+
+#include "ui_omni_ui_ExceptionList.h"
 
 namespace omni {
-    namespace ui {
-        ExceptionList::ExceptionList(QWidget* _parent) :
-            QWidget(_parent)
-    //        ui_(new Ui::ExceptionList)
+  namespace ui {
+    ExceptionList::ExceptionList(QWidget *_parent) :
+      QDialog(_parent),
+      ui_(new Ui::ExceptionList)
     {
-    //        ui_->setupUi(this);
-        }
-
-        ExceptionList::~ExceptionList() {
-
-        }
-
-        void ExceptionList::addException(Exception*) {
-
-        }
-
-        void ExceptionList::setupModel() {
-
-        }
-
+      ui_->setupUi(this);
+      setupModel();
     }
+
+    ExceptionList::~ExceptionList() {}
+
+    void ExceptionList::addException(Exception const& _exception) {
+      QList<QStandardItem *> _row;
+      auto _makeItem = [](QString const& _t) -> QStandardItem * {
+                         QStandardItem *_item = new QStandardItem(_t);
+
+                         _item->setEditable(false);
+                         return _item;
+                       };
+
+      _row << _makeItem(_exception.typeAsString());
+      _row << _makeItem(_exception.message());
+      model_->invisibleRootItem()->appendRow(_row);
+    }
+
+    void ExceptionList::clear() {
+      model_->clear();
+    }
+
+    /// Number of exceptions in list
+    int ExceptionList::exceptionCount() const {
+      return model_->rowCount();
+    }
+
+    void ExceptionList::setupModel() {
+      model_.reset(new QStandardItemModel());
+      model_->clear();
+      model_->setColumnCount(2);
+
+      model_->setHeaderData(0, Qt::Horizontal, "Type");
+      model_->setHeaderData(1, Qt::Horizontal, "Message");
+
+      ui_->exceptionList->setModel(model_.get());
+    }
+  }
 }

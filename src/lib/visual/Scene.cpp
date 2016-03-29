@@ -21,9 +21,23 @@
 
 #include <omni/serialization/PropertyMap.h>
 #include <omni/util.h>
+#include <omni/serialization/container.h>
 
 namespace omni {
     namespace visual {
+        Scene::Scene() {
+          float _radius = scale_;
+          camera_ = Camera(
+                    Tracker(QVector3D(0,0,0), PolarVec(-45.0,45.0,_radius * 5.0)));
+
+          lights_.emplace_back(Tracker(QVector3D(0.0,0.0,0.0),
+                             PolarVec(-45.0,45.0,_radius * 10.0)),0.5);
+          lights_.emplace_back(Tracker(QVector3D(0.0,0.0,0.0),
+                             PolarVec( 45.0,45.0,_radius * 10.0)),0.3);
+          lights_.emplace_back(Tracker(QVector3D(0.0,0.0,0.0),
+                             PolarVec( 45.0,-45.0,_radius * 10.0)),0.3);
+        }
+
         float Scene::scale() const {
             return scale_;
         }
@@ -32,11 +46,15 @@ namespace omni {
             scale_ = _scale;
         }
 
-        QString const& Scene::unit() const {
+        LengthUnit const& Scene::unit() const {
             return unit_;
         }
 
         void Scene::setUnit(QString const& _unit) {
+            unit_ = LengthUnit(_unit);
+        }
+
+        void Scene::setUnit(LengthUnit const& _unit) {
             unit_ = _unit;
         }
 
@@ -116,6 +134,16 @@ namespace omni {
             for (auto& _light : lights_) _light.setup(++_index);
         }
 
+        /// Return reference to camera
+        visual::Camera& Scene::camera() {
+          return camera_;
+        }
+
+        /// Return const reference to camera
+        visual::Camera const& Scene::camera() const {
+          return camera_;
+        }
+
         /// Deserialize from stream
         void Scene::fromStream(QDataStream& _is) {
             PropertyMap _map;
@@ -130,6 +158,8 @@ namespace omni {
             _map.get("rotateMode",            rotateMode_);
             _map.get("moveMode",              moveMode_);
             _map.get("projectorViewMode",     projectorViewMode_);
+            _map.get("lights", lights_);
+            _map.get("camera", camera_);
         }
 
         /// Serialize to stream
@@ -144,7 +174,9 @@ namespace omni {
                 ("editMode", editMode_)
                 ("rotateMode", rotateMode_)
                 ("moveMode", moveMode_)
-                ("projectorViewMode", projectorViewMode_);
+                ("projectorViewMode", projectorViewMode_)
+                ("lights", lights_)
+                ("camera", camera_);
             _os << _map;
         }
 
@@ -158,7 +190,9 @@ namespace omni {
                 OMNI_TEST_MEMBER_EQUAL(editMode_) &&
                 OMNI_TEST_MEMBER_EQUAL(rotateMode_) &&
                 OMNI_TEST_MEMBER_EQUAL(moveMode_) &&
-                OMNI_TEST_MEMBER_EQUAL(projectorViewMode_);
+                OMNI_TEST_MEMBER_EQUAL(projectorViewMode_) &&
+                OMNI_TEST_MEMBER_EQUAL(lights_) &&
+                OMNI_TEST_MEMBER_EQUAL(camera_);
         }
     }
 }

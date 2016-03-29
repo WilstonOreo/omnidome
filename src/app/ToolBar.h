@@ -48,7 +48,7 @@ namespace omni {
         void setLiveMode();
 
         /// Show About dialog
-        void showSettings();
+        void showAbout();
 
         /// Set button states (e.g. disable buttons when modes are not accessible)
         void buttonStates();

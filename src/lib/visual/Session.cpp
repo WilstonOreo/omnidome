@@ -154,7 +154,7 @@ namespace omni {
 
         bool Session::needsUpdate() const
         {
-            return session_.tunings().size() != projectors_.size();
+            return session_.tunings().size() != projectors_.size() || needsUpdate_;
         }
 
         void Session::drawProjectors(bool _selectedOnly) const
@@ -213,7 +213,10 @@ namespace omni {
 
             auto *_canvas = session_.canvas();
 
-            if (!_canvas) return;
+            if (!_canvas) { 
+              needsUpdate_ = true;
+              return;
+            }
 
             _canvas->update();
 
@@ -247,6 +250,7 @@ namespace omni {
                                                         _fragmentSrc);
                 frustumShader_->link();
             }
+            needsUpdate_ = false;
         }
 
         void Session::free()

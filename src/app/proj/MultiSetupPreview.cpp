@@ -28,7 +28,8 @@ namespace omni {
     namespace proj {
       MultiSetupPreview::MultiSetupPreview(QWidget *_parent) :
         GLView3D(_parent)
-      {}
+      {
+      }
 
       MultiSetupPreview::~MultiSetupPreview()
       {}
@@ -76,12 +77,12 @@ namespace omni {
                 GL_STENCIL_BUFFER_BIT);
         visual::viewport(this);
 
-        this->setupCamera();
+        dataModel()->scene().camera().setup(30.0,aspect());
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        updateLight();
+        dataModel()->scene().updateLights();
 
         visual::with_current_context([&](QOpenGLFunctions& _)
         {

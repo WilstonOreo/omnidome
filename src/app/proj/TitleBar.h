@@ -67,6 +67,9 @@ namespace omni {
           /// Toggle visibility of close button
           void    setCloseButtonVisible(bool);
 
+          /// Update State for display button when fullscreen has been toggled
+          void    fullscreenToggle(bool);
+
         signals:
           void    closeButtonClicked();
           void    maximizeButtonClicked();

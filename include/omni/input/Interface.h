@@ -140,6 +140,15 @@ namespace omni {
         Interface* addInput(QString const& _id,
                             Interface *_i);
 
+        /// Get id of child interface
+        QString getId(Interface const*) const;
+
+        /// Get interface by absolute path
+        Interface* getByPath(QString const& _path);
+
+        /// Get interface by absolute path (const version)
+        Interface const* getByPath(QString const& _path) const;
+
         /// Remove input with id
         virtual void          removeInput(QString const& _id);
 
@@ -155,20 +164,11 @@ namespace omni {
         /// Return children
         container_type const& children() const;
 
-        /// Return true if this input and input i are connected
-        bool                  isConnected(Interface *_i) const;
-
-        /// Connect this input and input i
-        void                  connect(Interface *_i);
-
-        /// Disconnect this input and input i
-        void                  disconnect(Interface *_i);
-
-        /// Disconnect all inputs
-        void                  disconnectAll();
-
         /// Return parent interface (const version)
         Interface const     * parent() const;
+
+        /// Return absolute path of interface
+        QString path() const;
 
         /// Set new parent
         void                  setParent(Interface *);
@@ -179,7 +179,6 @@ namespace omni {
 
       private:
         Interface const *parent_ = nullptr;
-        std::set<Interface *> used_;
         container_type children_;
         callback_type  updatedCallback_;
     };

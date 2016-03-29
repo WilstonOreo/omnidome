@@ -29,7 +29,7 @@ namespace omni {
         {
         }
 
-        PropertyMap(QDataStream& _stream) {
+        PropertyMap::PropertyMap(QDataStream& _stream) {
           fromStream(_stream);
         }
 

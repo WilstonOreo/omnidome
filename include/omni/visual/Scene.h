@@ -24,6 +24,7 @@
 #include <omni/serialization/Interface.h>
 #include <omni/visual/Light.h>
 #include <omni/visual/Camera.h>
+#include <omni/LengthUnit.h>
 
 namespace omni {
   namespace visual {
@@ -55,16 +56,22 @@ namespace omni {
      **/
     class Scene {
       public:
+        Scene();
+
         /// Scene scale (min, max dimensions)
         float          scale() const;
 
         /// Set scene scale
         void           setScale(float);
 
-        /// Length unit symbol for scene
-        QString const& unit() const;
+        /// Length unit for scene
+        LengthUnit const& unit() const;
 
+        /// Set unit from string prefix
         void           setUnit(QString const&);
+
+        /// Set unit from length unit type
+        void           setUnit(LengthUnit const&);
 
         /// Input is shown on canvas
         bool           displayInput() const;
@@ -108,6 +115,12 @@ namespace omni {
         /// Update light for use in OpenGL
         void        updateLights();
 
+        /// Return reference to camera
+        visual::Camera& camera();
+
+        /// Return const reference to camera
+        visual::Camera const& camera() const;
+
         /// Deserialize from stream
         void        fromStream(QDataStream&);
 
@@ -120,7 +133,7 @@ namespace omni {
 
       private:
         float      scale_                    = 10.0;
-        QString    unit_                     = "m";
+        LengthUnit unit_;
         bool       displayInput_             = true;
         bool       displayGrid_              = true;
         bool       displayProjectors_        = true;

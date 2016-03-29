@@ -53,8 +53,6 @@ namespace omni {
         void OutputPreview::render() {
             using namespace render;
 
-            update();
-
             if (!dataModel()) return;
 
             return;

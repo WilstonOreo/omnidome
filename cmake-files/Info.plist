@@ -17,7 +17,7 @@
 	<key>CFBundleLongVersionString</key>
   <string>${MACOSX_BUNDLE_LONG_VERSION_STRING}</string>
 	<key>CFBundleName</key>
-	<string></string>
+	<string>omnidome</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

@@ -35,6 +35,8 @@
 #include <omni/proj/MultiSetup.h>
 #include <omni/ui/GLView3D.h>
 #include <omni/ui/TuningGLView.h>
+#include <omni/ui/ExceptionList.h>
+#include <omni/serialization/PropertyMap.h>
 
 #include "proj/Tuning.h"
 #include "proj/TuningList.h"
@@ -135,6 +137,13 @@ MainWindow::MainWindow(QMainWindow *parent) :
             toolBar_.get(),
             &ToolBar::updateFrontend);
 
+    connect(ui_->actionEnableAllTunings, SIGNAL(triggered()),
+            ui_->tuningList, SLOT(enableAllTunings()));
+    connect(ui_->actionDisableAllTunings, SIGNAL(triggered()),
+            ui_->tuningList, SLOT(disableAllTunings()));
+    connect(ui_->actionEnableSelectedTuningOnly, SIGNAL(triggered()),
+            ui_->tuningList, SLOT(enableSelectedTuningOnly()));
+
     // Detach tuning from screen setup when it was removed
     connect(ui_->tuningList,
             SIGNAL(tuningToBeRemoved(omni::ui::proj::Tuning *)),
@@ -202,19 +211,24 @@ MainWindow::MainWindow(QMainWindow *parent) :
     connect(ui_->btnAddTuning, SIGNAL(
               clicked()),                           this,
             SLOT(buttonState()));
+
+    // Connect about button with toolbar showAbout slot
+    connect(ui_->actionAbout,SIGNAL(triggered()),toolBar_.get(),SLOT(showAbout()));
   }
 
-  // Set slider sizes
-  QList<int> _list;
-  int _width = width();
-  _list << _width * 1.2 << 100;
-  ui_->splitter->setSizes(_list);
+  {
+    // Set splitter sizes
+    QList<int> _list;
+    int _width = width();
+    _list << _width * 1.2 << 100;
+    ui_->splitter->setSizes(_list);
+  }
 
   {
     recentSessions_.reset(new RecentSessions);
-    ui_->actionOpen->setMenu(recentSessions_->menu());
-    connect(recentSessions_.get(),SIGNAL(fileToBeLoaded(QString const&)),
-            this,SLOT(openProjection(QString const&)));
+    ui_->actionRecentFiles->setMenu(recentSessions_->menu());
+    connect(recentSessions_.get(), SIGNAL(fileToBeLoaded(QString const &)),
+            this, SLOT(openProjection(QString const &)));
   }
 
   readSettings();
@@ -245,8 +259,6 @@ void MainWindow::readSettings()
 void MainWindow::setupSession()
 {
   using util::enumToInt;
-  qDebug() << "setupSession: " << enumToInt(session_->mode()) << " " <<
-    session_.use_count();
   locked_ = true;
   {
     toolBar_->setDataModel(session_);
@@ -266,8 +278,6 @@ void MainWindow::setupSession()
     ui_->dockBlendWidget->setDataModel(session_);
     ui_->dockColorCorrectionWidget->setDataModel(session_);
   }
-  qDebug() << "setupSession: " << enumToInt(session_->mode()) << " " <<
-    session_.use_count();
   setMode();
 
   locked_ = false;
@@ -309,11 +319,21 @@ void MainWindow::saveProjectionAs()
 
   if (!_filename.isEmpty())
   {
-    filename_ = _filename;
-    session_->save(filename_);
-    recentSessions_->addFile(filename_);
-    modified_ = false;
-    buttonState();
+    std::unique_ptr<ExceptionList> _widget(new ExceptionList);
+    try {
+      filename_ = _filename;
+      session_->save(filename_);
+      recentSessions_->addFile(filename_);
+      modified_ = false;
+      buttonState();
+    } catch (exception::Serialization& e) {
+      _widget->addException(e);
+    } catch (serialization::exception::ChecksumError& e) {
+      _widget->addException(e);
+    }
+    if (_widget->exceptionCount() > 0) {
+      _widget->exec();
+    }
   }
 }
 
@@ -338,12 +358,30 @@ void MainWindow::openProjection()
 bool MainWindow::openProjection(const QString& _filename)
 {
   filename_ = _filename;
-  session_.reset(new Session());
-  session_->load(filename_);
+  std::shared_ptr<Session> _session(new Session);
+
+  std::unique_ptr<ExceptionList> _widget(new ExceptionList);
+
+  try {
+    _session->load(filename_);
+  } catch (exception::Serialization& e) {
+    _widget->addException(e);
+  } catch (serialization::exception::ChecksumError& e) {
+    _widget->addException(e);
+  } catch (serialization::exception::PropertyNotExisting& e) {
+    _widget->addException(e);
+  }
+
+  if (_widget->exceptionCount() > 0) {
+    _widget->exec();
+  }
+
+  session_ = _session;
   setupSession();
   modified_ = false;
   filename_ = _filename;
   recentSessions_->addFile(filename_);
+
   return true;
 }
 
@@ -364,9 +402,21 @@ void MainWindow::editAsNew()
 
 void MainWindow::updateAllViews()
 {
-  arrange_->update();
-  tuningView_->update();
-  live_->update();
+  switch (session_->mode()) {
+  case Session::Mode::ARRANGE:
+    arrange_->view()->update();
+    break;
+
+  default:
+  case Session::Mode::WARP:
+  case Session::Mode::BLEND:
+  case Session::Mode::COLORCORRECTION:
+    tuningView_->update();
+    break;
+
+  case Session::Mode::LIVE:
+    live_->update();
+  }
   ui_->tuningList->updateViews();
 }
 
@@ -432,6 +482,7 @@ void MainWindow::setTuningIndex()
 
   tuningView_->setTuningIndex(_index);
   tuningView_->setChildViews(ui_->tuningList->getViews(_index));
+  tuningView_->updateContext(true);
 
   ui_->dockColorCorrectionWidget->updateFrontend();
   ui_->dockBlendWidget->updateFrontend();

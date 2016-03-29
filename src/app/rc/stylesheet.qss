@@ -261,9 +261,9 @@ QScrollBar::handle:vertical:hover
 QScrollBar::sub-line:vertical
 {
     border-image: url(:/arrows/808080_270.png);
-    height: 15px;
-    width: 15px;
-    margin: 0px 0px 2px 2px;
+    height: 13px;
+    width: 13px;
+    margin: 2px 0px 2px 0px;
     subcontrol-position: top;
     subcontrol-origin: margin;
 }
@@ -275,9 +275,9 @@ QScrollBar::sub-line:vertical:hover {
 QScrollBar::add-line:vertical
 {
     border-image: url(:/arrows/808080_90.png);
-    height: 15px;
-    width: 15px;
-    margin: 0px 0px 2px 2px;
+    height: 13px;
+    width: 13px;
+    margin: 2px 0px 2px 0px;
     subcontrol-position: bottom;
     subcontrol-origin: margin;
 }
@@ -289,10 +289,10 @@ QScrollBar::add-line:vertical:hover {
 QScrollBar::sub-line:horizontal
 {
     border-image: url(:/arrows/808080_180.png);
-    height: 15px;
-    width: 15px;
-    margin: 0px 0px 2px 2px;
-    subcontrol-position: left;
+    height: 13px;
+    width: 13px;
+    margin: 2px 0px 2px 0px;
+    subcontrol-position: top;
     subcontrol-origin: margin;
 }
 
@@ -316,6 +316,57 @@ QScrollBar::handle:horizontal
     border: 1px solid #0e0e0e;
     border-radius: 1px;
 }
+
+QScrollBar::handle:horizontal:hover
+{
+    background-color: #808080;
+    min-width: 5px;
+    border: 1px solid #0e0e0e;
+    border-radius: 1px;
+}
+
+QScrollBar::sub-line:horizontal
+{
+    border-image: url(:/arrows/808080_180.png);
+    height: 13px;
+    width: 13px;
+    margin: 0px 0px 2px 2px;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal:hover {
+    border-image: url(:/arrows/f8f8f8_180.png);
+}
+
+QScrollBar::add-line:horizontal
+{
+    border-image: url(:/arrows/808080_0.png);
+    height: 13px;
+    width: 13px;
+    margin: 2px 0px 2px 2px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-line:horizontal:hover {
+    border-image: url(:/arrows/f8f8f8_0.png);
+}
+
+QScrollBar::sub-line:horizontal
+{
+    border-image: url(:/arrows/808080_180.png);
+    height: 13px;
+    width: 13px;
+    margin: 2px 0px 2px 2px;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal:hover {
+    border-image: url(:/arrows/f8f8f8_180.png);
+}
+
 
 /* Slider */
 QSlider {

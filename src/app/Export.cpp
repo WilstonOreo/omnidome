@@ -61,7 +61,7 @@ namespace omni {
       ui_->outputPreview->render();
     }
 
-    omni::ExportSettings Export::getExportSettings() const
+    void Export::getExportSettings()
     {
       using namespace omni::render;
       auto& _exportSettings = dataModel()->exportSettings();
@@ -102,7 +102,6 @@ namespace omni {
         _exportSettings.setMappingOutputMode(
           mapping::OutputMode::MAPPED_INPUT);
       }
-      return _exportSettings;
     }
 
     void Export::dataToFrontend() {
@@ -117,7 +116,6 @@ namespace omni {
           ui_->rbUVWMap->setChecked(false);
         }
       }
-
 
       renderPreview();
     }
@@ -141,6 +139,7 @@ namespace omni {
                                     ui_->rbTextureCoordinates,
                                     ui_->rbUVWMap })) {
         connect(_widget, SIGNAL(clicked()), this, SLOT(renderPreview()));
+        connect(_widget, SIGNAL(clicked()), this, SLOT(getExportSettings()));
       }
 
       selectOmniCalibration(true);

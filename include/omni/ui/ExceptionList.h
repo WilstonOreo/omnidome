@@ -18,7 +18,8 @@
  */
 #include <memory>
 #include <omni/exception.h>
-#include <QWidget>
+#include <QDialog>
+#include <QStandardItemModel>
 
 namespace omni {
   namespace ui {
@@ -27,7 +28,7 @@ namespace omni {
     }
 
     /// A list of all exceptions occured during a process
-    class ExceptionList : public QWidget {
+    class ExceptionList : public QDialog {
       Q_OBJECT
 
       public:
@@ -35,12 +36,20 @@ namespace omni {
         ~ExceptionList();
 
         /// Add exception to list
-        void addException(Exception *);
+        void addException(Exception const&);
+
+        /// Number of exceptions in list
+        int exceptionCount() const;
+
+      public slots:
+        /// Clear list of exceptions
+        void clear();
 
       private:
         void setupModel();
 
-        //    std::unique_ptr<Ui::ExceptionList> ui_;
+        std::unique_ptr<Ui::ExceptionList> ui_;
+        std::unique_ptr<QStandardItemModel> model_;
     };
   }
 }

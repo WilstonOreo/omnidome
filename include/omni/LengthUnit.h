@@ -21,6 +21,7 @@
 
 #include <map>
 #include <QString>
+#include <omni/serialization/Interface.h>
 
 namespace omni {
   /// An encapsulation for length units
@@ -36,6 +37,9 @@ namespace omni {
       /// Make a new unit with a certain type
       LengthUnit(Type = METER);
 
+      /// Make a new unit from abbreviation type
+      LengthUnit(QString const&);
+
       /// Return abbreviation for unit with type
       static QString abbreviation(Type);
 
@@ -43,7 +47,7 @@ namespace omni {
       QString     abbreviation() const;
 
       /// Get unit type from abbreviation
-      static Type type(QString abbr);
+      static Type type(QString const& abbr);
 
       /// Return type of unit
       Type        type() const;
@@ -63,11 +67,24 @@ namespace omni {
       /// Return plural name of unit
       QString namePlural() const;
 
+      /// Deserialize from stream
+      void        fromStream(QDataStream&);
+
+      /// Serialize to stream
+      void        toStream(QDataStream&) const;
+
+      /// Test for equality. ScreenSetup is ignored
+      friend bool operator==(LengthUnit const&,
+                             LengthUnit const&);
+
     private:
       typedef std::map<Type, QString>map_type;
 
       Type type_;
   };
 }
+
+OMNI_DECL_ENUM_STREAM_OPERATORS(omni::LengthUnit::Type)
+OMNI_DECL_STREAM_OPERATORS(omni::LengthUnit)
 
 #endif /* OMNI_LENGTHUNIT_H_ */

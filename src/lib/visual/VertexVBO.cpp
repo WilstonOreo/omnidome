@@ -19,6 +19,7 @@
 
 #include <omni/visual/VertexVBO.h>
 #include <omni/visual/util.h>
+#include <QDebug>
 
 namespace omni {
     namespace visual {
@@ -41,8 +42,8 @@ namespace omni {
                     _.glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size()*sizeof(GLuint), _indices.data(), GL_STATIC_DRAW);
                 }
                 _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                numIndices_ = _indices.size();
             });
-            numIndices_ = _indices.size();
         }
 
         void VertexVBO::bind() const {

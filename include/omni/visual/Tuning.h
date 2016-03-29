@@ -89,6 +89,8 @@ namespace omni
       static std::unique_ptr<QOpenGLShaderProgram> blendShader_;
       std::unique_ptr<QOpenGLTexture> blendTex_;
 
+      std::unique_ptr<Circle> cursor_;
+
       static std::unique_ptr<QOpenGLShaderProgram> testCardShader_;
       QRect blendTextureUpdateRect_;
     };

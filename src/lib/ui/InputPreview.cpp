@@ -80,24 +80,7 @@ namespace omni
       auto* _input = input();
       if (!_input) return QRectF(0.0,0.0,1.0,1.0);
 
-      float _projAspect = float(_input->width()) /
-                          _input->height();
-      float _viewAspect = float(width()) / height();
-      float b = border_ * 0.5;
-      float _left = -0.5 - b,_right = 0.5 + b,_bottom = -0.5 - b,_top = 0.5 + b;
-
-      if (_projAspect > _viewAspect)
-      {
-        _top *= _projAspect / _viewAspect;
-        _bottom *=  _projAspect / _viewAspect;
-      }
-      else
-      {
-        _left *= _viewAspect / _projAspect;
-        _right *= _viewAspect / _projAspect;
-      }
-
-      return QRectF(QPointF(_left,_top),QPointF(_right,_bottom));
+      return visual::util::viewRect(_input->width(),_input->height(),width(),height(),border_);
     }
 
     QPointF InputPreview::screenPos(QPointF const& _pos) const

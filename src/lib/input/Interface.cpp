@@ -29,7 +29,6 @@ namespace omni {
 
     Interface::~Interface()
     {
-      disconnectAll();
     }
 
     Input* Interface::addInput(QString const& _id, Id const& _typeId)
@@ -98,26 +97,37 @@ namespace omni {
       return *this;
     }
 
-    bool Interface::isConnected(Interface *_i) const {
-      return used_.count(_i) > 0;
-    }
+    QString Interface::getId(Interface const* _i) const {
+      if (_i->parent() != this) return "";
 
-    void Interface::connect(Interface *_i) {
-      if (_i != this) return;
-
-      _i->used_.insert(this);
-      this->used_.insert(_i);
-    }
-
-    void Interface::disconnect(Interface *_i) {
-      _i->used_.erase(this);
-      used_.erase(_i);
-    }
-
-    void Interface::disconnectAll() {
-      for (auto& _i : used_) {
-        disconnect(_i);
+      for (auto& _child : children_) {
+        if (_i == _child.second.get()) {
+          return _child.first;
+        }
       }
+      return QString("");
+    }
+
+    QString Interface::path() const {
+      if (!parent()) return "/";
+
+      auto* _parent = parent();
+      QString _path;
+      while (_parent != nullptr) {
+        _path = QString("/") + _parent->getId(this) + _path;
+        _parent = _parent->parent();
+      }
+      return _path;
+    }
+
+    /// Get interface by absolute path
+    Interface* Interface::getByPath(QString const& _path) {
+
+    }
+
+    /// Get interface by absolute path (const version)
+    Interface const* Interface::getByPath(QString const& _path) const {
+
     }
 
     /// Return parent interface (const version)

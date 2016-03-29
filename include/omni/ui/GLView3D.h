@@ -47,15 +47,10 @@ namespace omni {
         virtual void keyPressEvent(QKeyEvent *event);
         virtual void mouseMoveEvent(QMouseEvent *event);
 
-        void         setupCamera();
-        void         updateLight();
-
       private:
         bool         initialize();
 
-        visual::Camera camera_;
-        visual::Grid   grid_;
-        std::array<visual::Light, 3> lights_;
+        std::unique_ptr<visual::Grid>   grid_;
     };
   }
 }

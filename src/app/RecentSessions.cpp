@@ -20,7 +20,6 @@
 #include "RecentSessions.h"
 
 #include <QFileInfo>
-#include <QFileSystemWatcher>
 
 #include "Application.h"
 
@@ -28,12 +27,9 @@ namespace omni {
   namespace ui {
     RecentFileAction::RecentFileAction(QString const& _file, QObject *_parent) :
       QAction(_file, _parent),
-      file_(_file),
-      watcher_(new QFileSystemWatcher()) {
+      file_(_file)
+    {
       connect(this, SIGNAL(triggered()), this, SLOT(loadSession()));
-      watcher_->addPath(_file);
-      connect(watcher_.get(), SIGNAL(fileChanged(QString const &)), this,
-              SLOT(setState()));
       setState();
     }
 
@@ -139,16 +135,27 @@ namespace omni {
       generateMenu();
     }
 
+    void RecentSessions::setActionStates() {
+      for (auto& _action : actions_) {
+        _action->setState();
+      }
+    }
+
     void RecentSessions::generateMenu() {
-      if (!menu_)   menu_.reset(new QMenu());
+      if (!menu_) {
+        menu_.reset(new QMenu());
+        connect(menu_.get(),SIGNAL(aboutToShow()),this,SLOT(setActionStates()));
+      }
 
       menu_->clear();
+      actions_.clear();
 
       for (auto& _file : recentFiles_) {
         auto* _action = new RecentFileAction(_file);
         connect(_action,SIGNAL(fileToBeLoaded(QString const&)),
                 this,SIGNAL(fileToBeLoaded(QString const&)));
         menu_->addAction(_action);
+        actions_.push_back(_action);
       }
 
       if (!recentFiles_.empty()) {

@@ -35,11 +35,6 @@ namespace omni
     {
     }
 
-    void HalfDome::draw() const
-    {
-        this->sphere_.draw();
-    }
-
     QWidget* HalfDome::widget() {
         return ui::makeWidget<ui::canvas::HalfDome>(this);
     }
