@@ -51,7 +51,9 @@ AboutGL::AboutGL(QWidget *_parent) :
 }
 
 AboutGL::~AboutGL()
-{}
+{
+
+}
 
 void AboutGL::initializeGL()
 {
