@@ -10,6 +10,7 @@ import(
   compiler_flags
   doxygen
   qt
+  gl
   cpack
   plugin
 )
@@ -34,15 +35,6 @@ add_definitions(-DOMNIDOME_VERSION_STRING="1.0.0.0")
 
 ########### BUILD_TARGETS ############
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
-    FIND_LIBRARY(omni_extra_libs OpenGL )
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  SET(omni_extra_libs GL )
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
 
 common_cxx_flags()
 
@@ -66,7 +58,7 @@ SET(omni_lib_src
 )
 
 ADD_LIBRARY(omni SHARED ${omni_lib_src})
-TARGET_LINK_LIBRARIES(omni ${Qt5_LIBRARIES} ${omni_extra_libs} )
+TARGET_LINK_LIBRARIES(omni ${Qt5_LIBRARIES} ${omni_gl_LIBRARIES} )
 
 # END Setup libomni build target
 ################################
@@ -111,11 +103,11 @@ endif()
 
 ADD_EXECUTABLE(test_Serialization
   ./src/test/Serialization.cpp )
-TARGET_LINK_LIBRARIES(test_Serialization ${Qt5_LIBRARIES} ${omni_extra_libs}  omni )
+TARGET_LINK_LIBRARIES(test_Serialization ${Qt5_LIBRARIES} ${omni_gl_LIBRARIES}  omni )
 
 ADD_EXECUTABLE(test_ThrowRatio
   ./src/test/ThrowRatio.cpp )
-TARGET_LINK_LIBRARIES(test_ThrowRatio ${Qt5_LIBRARIES} ${omni_extra_libs}  omni )
+TARGET_LINK_LIBRARIES(test_ThrowRatio ${Qt5_LIBRARIES} ${omni_gl_LIBRARIES}  omni )
 
 # Main Application
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -138,7 +130,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   ADD_EXECUTABLE(omnidome MACOSX_BUNDLE ${omni_src} )
   set_target_properties(omnidome PROPERTIES
                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/cmake-files/Info.plist")
-  TARGET_LINK_LIBRARIES(omnidome omni ${omni_extra_libs} ${Qt5_LIBRARIES} )
+  TARGET_LINK_LIBRARIES(omnidome omni ${omni_gl_LIBRARIES} ${Qt5_LIBRARIES} )
 
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 

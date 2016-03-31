@@ -53,7 +53,6 @@ namespace omni
     void TestImage::setRulerPos(QPointF const& _rulerPos)
     {
       rulerPos_ = _rulerPos;
-      rulerPosChanged_ = true;
     }
 
     QPointF TestImage::rulerPos() const
@@ -66,15 +65,9 @@ namespace omni
       shader_->setUniformValue("ruler_pos",rulerPos_ - QPointF(0.5,0.5));
     }
 
-    bool TestImage::changed() const {
-        return rulerPosChanged_;
-    }
-
     void TestImage::update()
     {
       if (!QOpenGLContext::currentContext()) return;
-
-      bool _changed = changed();
 
       if (!framebuffer_)
       {
@@ -85,7 +78,6 @@ namespace omni
         framebuffer_.reset(new QOpenGLFramebufferObject(
               _size.width(),
               _size.height(),_format));
-        _changed = true;
 
         framebuffer_->setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
 
@@ -103,10 +95,9 @@ namespace omni
         shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
         shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
         shader_->link();
-        _changed = true;
       }
 
-      if (!_changed) return;
+      //if (!_changed) return;
 
       visual::draw_on_framebuffer(framebuffer_,
       [&](QOpenGLFunctions& _) // Projection Operation
@@ -135,8 +126,6 @@ namespace omni
         }
         shader_->release();
       });
-
-      rulerPosChanged_ = false;
     }
 
     void TestImage::toStream(QDataStream& _stream) const

@@ -101,7 +101,15 @@ namespace omni {
         return;
       }
 
+      for (auto& _child : children()) {
+        _child.second->deactivate();
+      }
+
       currentId_ = _id;
+
+      if (current()) {
+        current()->activate();
+      }
     }
 
     bool operator==(List const& _lhs, List const& _rhs)

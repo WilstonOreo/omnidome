@@ -23,6 +23,7 @@
 
 #include <omni/util.h>
 #include <omni/serialization/PropertyMap.h>
+#include <omni/visual/Tuning.h>
 
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>

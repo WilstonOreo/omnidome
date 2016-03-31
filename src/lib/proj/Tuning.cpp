@@ -19,10 +19,14 @@
 
 #include <omni/proj/Tuning.h>
 
+#include <QOpenGLContext>
 #include <omni/util.h>
 #include <omni/serialization/PropertyMap.h>
 #include <omni/proj/Setup.h>
 #include <omni/proj/ScreenSetup.h>
+
+#include <omni/visual/Tuning.h>
+
 #include <QColor>
 
 
@@ -109,6 +113,23 @@ namespace omni {
         void Tuning::setColor(QColor const& _color)
         {
             color_ = _color;
+        }
+
+        /// Return pointer to visualizer
+        Tuning::visualizer_type* Tuning::visualizer() {
+          return viz_.get();
+        }
+
+        Tuning::visualizer_type* Tuning::makeVisualizer() {
+          if (!viz_ && QOpenGLContext::currentContext()) {
+            viz_.reset(new visualizer_type(*this));
+          }
+          return visualizer();
+        }
+
+        /// Return pointer to visualizer (const version)
+        Tuning::visualizer_type const* Tuning::visualizer() const {
+          return viz_.get();
         }
 
         bool Tuning::hasScreen() const

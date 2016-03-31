@@ -32,11 +32,13 @@ namespace omni
     InputPreview::InputPreview(QWidget* _parent) :
       GLView(_parent)
     {
+      setUpdateFrequency(25.0);
     }
 
     InputPreview::InputPreview(input::Interface* _input, QWidget* _parent) :
         GLView(_parent),
         input_(_input) {
+      setUpdateFrequency(25.0);
     }
 
     InputPreview::~InputPreview()
@@ -124,6 +126,7 @@ namespace omni
         visual::Rectangle::draw();
         _.glBindTexture(GL_TEXTURE_2D, 0);
       });
+      paintGLReady();
     }
   }
 }

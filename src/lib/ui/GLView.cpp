@@ -24,10 +24,12 @@
 #include <omni/visual/util.h>
 
 #include <QMouseEvent>
-
+#include <chrono>
 
 namespace omni
 {
+  using visual::util::now;
+
   namespace ui
   {
     GLView::GLView(QWidget* _parent) :
@@ -37,6 +39,49 @@ namespace omni
 
     GLView::~GLView()
     {
+    }
+
+    void GLView::updateWithFrameRate() {
+//      if (canDraw()) {.DS_Stor
+      if (updateFreq_ <= 0.0) update();
+//      }
+
+      updateTriggered_ = false;
+    }
+
+    void GLView::timerEvent(QTimerEvent*) {
+      if (!updateTriggered_) {
+          update();
+      }
+      updateTriggered_ = true;
+    }
+
+    bool GLView::canDraw() const {
+      bool _needsUpdate = (updateFreq_ <= 0.0) || ((now() - lastUpdateTime_) >= 1.0 / updateFreq_);
+      return _needsUpdate;
+    }
+
+    float GLView::updateFrequency() const {
+      return updateFreq_;
+    }
+
+    void GLView::setUpdateFrequency(float _updateFrequency) {
+      updateFreq_ = _updateFrequency;
+      if (updateFreq_ <= 0.0) {
+        if (timerId_) {
+          killTimer(timerId_);
+        }
+        return;
+      }
+
+      int _timerId = startTimer(1000.0 / updateFreq_);
+      if (!timerId_) {
+        timerId_ = _timerId;
+      }
+    }
+
+    void GLView::paintGLReady() {
+      lastUpdateTime_ = now();
     }
 
     float GLView::aspect() const

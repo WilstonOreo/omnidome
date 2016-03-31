@@ -60,8 +60,6 @@ namespace omni {
          **/
         virtual void shaderUniformHandler();
 
-        /// Virtual method, return true when values have changed
-        virtual bool changed() const;
         std::unique_ptr<QOpenGLShaderProgram> shader_;
 
       private:
@@ -72,7 +70,6 @@ namespace omni {
         virtual QString vertexShaderSource() const   = 0;
 
         QPointF rulerPos_;
-        bool    rulerPosChanged_ = true;
         std::unique_ptr<QOpenGLFramebufferObject> framebuffer_;
     };
   }

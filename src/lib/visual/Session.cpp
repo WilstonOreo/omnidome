@@ -32,7 +32,11 @@ namespace omni {
 
         Session::Session(omni::Session& _session) :
             session_(_session)
-        {}
+        {
+            auto *_input = session_.inputs().current();
+
+            if (_input) _input->update();
+        }
 
         omni::Session& Session::session()
         {
@@ -164,7 +168,6 @@ namespace omni {
             glDisable(GL_DEPTH_TEST);
 
             int _tuningIndex = session_.tunings().currentIndex();
-
             int i = 0;
 
             for (auto& _proj : projectors_)
@@ -174,7 +177,6 @@ namespace omni {
                 }
                 ++i;
             }
-
 
             if (session_.canvas())
             {
@@ -210,19 +212,6 @@ namespace omni {
         void Session::update()
         {
             if (!QOpenGLContext::currentContext()) return;
-
-            auto *_canvas = session_.canvas();
-
-            if (!_canvas) {
-              needsUpdate_ = true;
-              return;
-            }
-
-            _canvas->update();
-
-            auto *_input = session_.inputs().current();
-
-            if (_input) _input->update();
 
             // Update projector visualizers
             projectors_.clear();

@@ -38,9 +38,7 @@ namespace omni {
     }
 
     TuningGLView::~TuningGLView()
-    {
-      //        if (!aboutToBeDestroyed_) free();
-    }
+    {}
 
     void TuningGLView::free()
     {
@@ -49,12 +47,8 @@ namespace omni {
       if (!context()->isValid()) return;
 
       makeCurrent();
-      vizTuning_->free();
-      vizTuning_.reset();
       vizSession_->free();
       vizSession_.reset();
-      frameBuffer_.reset();
-      warpGridBuffer_.reset();
       destroy();
       doneCurrent();
     }
@@ -67,8 +61,8 @@ namespace omni {
       if (!_tuning) return;
 
       // Make new visualizer
-      vizTuning_.reset(new visual::Tuning(*_tuning));
-      vizTuning_->update();
+      _tuning->makeVisualizer();
+      _tuning->visualizer()->update();
     }
 
     bool TuningGLView::keepAspectRatio() const
@@ -138,35 +132,13 @@ namespace omni {
       return childViews_;
     }
 
-    void TuningGLView::updateWithChildViews(bool _update)
+    void TuningGLView::updateWithChildViews()
     {
-      updateContext(_update);
-
+      updateWithFrameRate();
       for (auto& _childView : childViews_)
       {
-        _childView->updateContext(_update);
+        _childView->updateWithFrameRate();
       }
-    }
-
-    void TuningGLView::updateWithChildViews(QRect const& _rect)
-    {
-      vizTuning_->setBlendTextureUpdateRect(_rect);
-      vizTuning_->update();
-
-      for (auto& _childView : childViews_)
-      {
-        if (_childView->tuning() == tuning())
-        {
-          _childView->updateWithChildViews(_rect);
-        }
-      }
-      update();
-    }
-
-    void TuningGLView::updateContext(bool _update)
-    {
-      if (_update) vizTuning_->update();
-      update();
     }
 
     void TuningGLView::setBorder(float _border)
@@ -177,7 +149,7 @@ namespace omni {
 
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
     {
-      if (!dataModel() || !vizTuning_ || (viewOnly() && !showCursor_)) return;
+      if (!dataModel() || !tuning() || (viewOnly() && !showCursor_)) return;
 
       auto && _rect = viewRect();
       float dx = float(event->x() - mousePosition().x()) / width() *
@@ -200,8 +172,9 @@ namespace omni {
           {
             _selected->pos() += QPointF(dx, -dy);
           }
-
-          updateWithChildViews(true);
+          auto* _vizTuning = tuning()->visualizer();
+          _vizTuning->updateWarpGrid();
+          updateWithChildViews();
         }
         else if (_mode == Session::Mode::BLEND)
         {
@@ -219,7 +192,11 @@ namespace omni {
           {
             _childView->cursorPosition_ = cursorPosition_;
           }
-          updateWithChildViews(QRect(_from, _to));
+
+          auto* _vizTuning = tuning()->visualizer();
+          _vizTuning->setBlendTextureUpdateRect(QRect(_from, _to));
+          _vizTuning->updateBlendTexture();
+          updateWithChildViews();
         }
       }
 
@@ -232,9 +209,9 @@ namespace omni {
         {
           _childView->cursorPosition_ = cursorPosition_;
 
-          if (_childView->showCursor()) _childView->update();
+          if (_childView->showCursor()) _childView->updateWithFrameRate();
         }
-        update();
+        updateWithFrameRate();
       }
     }
 
@@ -243,7 +220,7 @@ namespace omni {
       makeCurrent();
       QOpenGLWidget::mousePressEvent(event);
 
-      if (!dataModel() || !vizTuning_ || viewOnly()) return;
+      if (!dataModel() || !tuning() || viewOnly()) return;
 
       this->mousePosition_ = event->pos();
       auto && _newPos      = screenPos(this->mousePosition_);
@@ -269,7 +246,6 @@ namespace omni {
         // Select point if it is not selected already or
         // number of selected point is larger than 1
         _p->setSelected(!_p->selected() || (_selectedPoints.size() > 1));
-        updateWithChildViews(false);
       }
       else if (_mode == Session::Mode::BLEND)
       {
@@ -284,7 +260,9 @@ namespace omni {
 
         auto& _blendMask = tuning()->blendMask();
         _blendMask.stamp(pixelPos(event->pos()));
-        updateWithChildViews();
+
+        auto* _vizTuning = tuning()->visualizer();
+        _vizTuning->updateBlendTexture();
 
         leftOverDistance_ = 0.0;
       }
@@ -292,14 +270,13 @@ namespace omni {
       for (auto& _childView : childViews_)
       {
         _childView->cursorPosition_ = cursorPosition_;
-
-        if (_childView->showCursor()) _childView->update();
       }
+      updateWithChildViews();
     }
 
     void TuningGLView::mouseReleaseEvent(QMouseEvent *event)
     {
-      if (!dataModel() || !vizTuning_ || viewOnly()) return;
+      if (!dataModel() || !tuning() || viewOnly()) return;
 
       mouseDown_ = false;
       makeCurrent();
@@ -338,7 +315,7 @@ namespace omni {
       {
         auto& _blendMask = tuning()->blendMask();
         _blendMask.brush().changeSize(event->delta() / 5.0);
-        updateWithChildViews(false);
+        updateWithChildViews();
       }
     }
 
@@ -353,6 +330,7 @@ namespace omni {
                                 for (auto& _p : _selectedPoints) {
                                   _p->pos() += QPointF(_x, _y);
                                 }
+                                tuning()->visualizer()->updateWarpGrid();
                                 updateWithChildViews();
                               };
 
@@ -376,9 +354,7 @@ namespace omni {
     }
 
     void TuningGLView::destroy()
-    {
-      aboutToBeDestroyed_ = true;
-    }
+    {}
 
     bool TuningGLView::initialize()
     {
@@ -451,66 +427,6 @@ namespace omni {
       });
     }
 
-    /// Update warp buffer which contains image of projector perspective
-    void TuningGLView::updateWarpBuffer()
-    {
-      // If tuning size has changed, reset warpGrid framebuffer
-      if (warpGridBuffer_)
-      {
-        if ((warpGridBuffer_->width() != tuning()->width()) ||
-            (warpGridBuffer_->height() !=
-             tuning()->height())) warpGridBuffer_.reset();
-      }
-
-      // If warp grid framebuffer is empty, make a new one
-      if (!warpGridBuffer_)
-      {
-        warpGridBuffer_.reset(new QOpenGLFramebufferObject(
-                                tuning()->width(),
-                                tuning()->height()));
-        warpGridBuffer_->setAttachment(QOpenGLFramebufferObject::Depth);
-      }
-      vizTuning_->updateWarpGrid();
-
-      // Draw projector's perspective on framebuffer texture
-      visual::with_current_context([this](QOpenGLFunctions& _)
-      {
-        _.glEnable(GL_TEXTURE_2D);
-        _.glDisable(GL_LIGHTING);
-        visual::draw_on_framebuffer(warpGridBuffer_,
-                                    [&](QOpenGLFunctions& _) // Projection
-                                                             // Operation
-        {
-          glMultMatrixf(tuning()->projector().projectionMatrix().constData());
-        },
-                                    [&](QOpenGLFunctions& _) // Model View
-                                                             // Operation
-        {
-          _.glClearColor(0.0, 0.0, 0.0, 1.0);
-          _.glClear(GL_DEPTH_BUFFER_BIT);
-
-          _.glEnable(GL_DEPTH_TEST);
-          _.glDepthFunc(GL_LEQUAL);
-          _.glEnable(GL_BLEND);
-          _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-          _.glEnable(GL_LINE_SMOOTH);
-          _.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-          _.glEnable(GL_POINT_SMOOTH);
-          _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-          _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-          glPolygonMode(GL_FRONT, GL_FILL);
-          glPolygonMode(GL_BACK, GL_FILL);
-          _.glEnable(GL_NORMALIZE);
-
-          // fix outlines z-fighting with quads
-          _.glPolygonOffset(1, 1);
-
-          _.glEnable(GL_DEPTH_TEST);
-          vizSession_->drawCanvas();
-        });
-      });
-    }
-
     template<typename F>
     void TuningGLView::drawOnSurface(F f)
     {
@@ -535,14 +451,12 @@ namespace omni {
 
     void TuningGLView::drawWarpGrid()
     {
-      updateWarpBuffer();
       drawOutput(
-        dataModel()->blendSettings().showInWarpMode() ? 1.0 : 0.0 /*
-                                                                              zero
-                                                                              blend
-                                                                              mask
-                                                                              opacity */
-
+        dataModel()->blendSettings().showInWarpMode() ? 1.0 : 0.0 /*  zero
+                                                                      blend
+                                                                      mask
+                                                                      opacity
+                                                                   */
         );
 
       drawOnSurface([&](QOpenGLFunctions& _)
@@ -552,7 +466,7 @@ namespace omni {
         _.glDisable(GL_COLOR_MATERIAL);
         _.glEnable(GL_BLEND);
         _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        vizTuning_->drawWarpGrid();
+        tuning()->visualizer()->drawWarpGrid();
         _.glEnable(GL_LIGHTING);
         _.glEnable(GL_COLOR_MATERIAL);
       });
@@ -597,18 +511,17 @@ namespace omni {
             }
        */
 
-      if (showCursor_ || !viewOnly_) vizTuning_->drawCursor(cursorPosition_);
+      if (showCursor_ || !viewOnly_) tuning()->visualizer()->drawCursor(cursorPosition_);
     }
 
     void TuningGLView::drawOutput(float _blendMaskOpacity,
                                   float _inputOpacity,
                                   QColor _color) {
-      updateWarpBuffer();
+      tuning()->visualizer()->updateWarpBuffer(vizSession_.get());
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        vizTuning_->drawOutput(
-          warpGridBuffer_->texture(),
+        tuning()->visualizer()->drawOutput(
           _inputOpacity, _color, _blendMaskOpacity,
           tuning()->outputDisabled() && viewOnly());
 
@@ -640,7 +553,7 @@ namespace omni {
         glPolygonMode(GL_FRONT, GL_LINE);
         glPolygonMode(GL_BACK, GL_LINE);
         auto _color = tuning()->color();
-        glColor4f(_color.redF(), _color.greenF(), _color.blueF(),1.0);
+        glColor4f(_color.redF(), _color.greenF(), _color.blueF(), 1.0);
         visual::Rectangle::draw();
         glPolygonMode(GL_FRONT, GL_FILL);
         glPolygonMode(GL_BACK, GL_FILL);
@@ -651,17 +564,27 @@ namespace omni {
     {
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        vizTuning_->drawTestCard(index() + 1,
+        tuning()->visualizer()->drawTestCard(index() + 1,
                                  tuning()->outputDisabled() && viewOnly());
       });
     }
 
+    void TuningGLView::showEvent(QShowEvent *event) {
+      if (!tuning()) return;
+
+      auto* _vizTuning = tuning()->visualizer();
+      if (!_vizTuning) return;
+
+      vizSession_->update();
+
+      if (!_vizTuning->initialized()) _vizTuning->update();
+    }
+
     void TuningGLView::paintGL()
     {
-      if (!isVisible() || this->isLocked() || !context() ||
-          aboutToBeDestroyed_ || !initialized()) return;
+      if (!isVisible() || !context() || !initialized()) return;
 
-      if (!vizTuning_ || !vizSession_ || !tuning()) return;
+      if (!tuning() || !vizSession_ || !tuning()) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
@@ -672,13 +595,10 @@ namespace omni {
 
       if (tuning()->outputDisabled() && this->fullscreenMode()) return;
 
-      this->vizSession_->update();
-
-      if (!vizTuning_->initialized()) vizTuning_->update();
-
       if (!dataModel()->hasOutput())
       {
         drawTestCard();
+        paintGLReady();
         return;
       }
 
@@ -715,6 +635,7 @@ namespace omni {
 
       default: break;
       }
+      paintGLReady();
     }
   }
 }

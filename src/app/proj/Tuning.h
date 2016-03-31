@@ -46,7 +46,7 @@ namespace omni {
       class Tuning :
         public ParameterWidget,
         public mixin::SharedDataModel<Session>,
-        public mixin::TuningFromIndex<Tuning>{
+        public mixin::TuningFromIndex<Tuning> {
         Q_OBJECT
         OMNI_UI_SHARED_DATAMODEL(Session)
 

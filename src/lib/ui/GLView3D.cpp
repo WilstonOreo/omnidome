@@ -44,8 +44,19 @@ namespace omni
       grid_.reset(new visual::Grid(dataModel()->scene().camera()));
       grid_->update();
 
+      if (dataModel()->canvas()) {
+        dataModel()->canvas()->update();
+      }
+
       this->vizSession_->update();
       return true;
+    }
+
+
+    void GLView3D::showEvent(QShowEvent* event) {
+        if (vizSession_) {
+          vizSession_->update();
+        }
     }
 
     void GLView3D::paintGL()
@@ -54,7 +65,6 @@ namespace omni
 
       auto& _scene = dataModel()->scene();
 
-      this->vizSession_->update();
       glEnable(GL_DEPTH_TEST);
 
       makeCurrent();
@@ -71,7 +81,6 @@ namespace omni
           mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
 
       this->vizSession_->drawProjectors(!_scene.displayProjectors());
-
       this->vizSession_->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),!_scene.displayProjectedAreas());
       this->vizSession_->drawProjectorHalos(!_scene.displayProjectors());
 
@@ -92,13 +101,9 @@ namespace omni
       float _r = event->delta()/100.0;
       _cam->track( 0, 0, _r );
 
-      if (dataModel()->canvas())
-      {
-        auto _r = dataModel()->canvas()->radius();
-        _cam->limitDistance(_r*0.1,_r*10.0);
-      }
-
-      update();
+      auto _size = dataModel()->scene().scale();
+      _cam->limitDistance(_size*0.1,_size*5.0);
+      updateWithFrameRate();
     }
 
     void GLView3D::keyPressEvent(QKeyEvent* event)
@@ -123,10 +128,10 @@ namespace omni
           if( !(event->modifiers() & Qt::ControlModifier) )
             _cam->track( event->pos().x() - mousePosition().x(), event->pos().y() - mousePosition().y(), 0 );
         }
-        update();
       }
 
       this->mousePosition_ = event->pos();
+      updateWithFrameRate();
     }
 
     void GLView3D::changeZoom(int _value)
@@ -135,7 +140,7 @@ namespace omni
       auto* _cam = dataModel()->scene().camera();
       if (!_cam) return;
       _cam->setDistance(_value/5.0);
-      update();
+      updateWithFrameRate();
     }
   }
 }

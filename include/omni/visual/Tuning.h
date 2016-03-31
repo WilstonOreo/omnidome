@@ -22,6 +22,7 @@
 
 #include <QRectF>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLFramebufferObject>
 #include <QOpenGLTexture>
 
 #include <omni/proj/Tuning.h>
@@ -31,6 +32,8 @@ namespace omni
 {
   namespace visual
   {
+    class Session;
+
     /// Tuning visualizer
     class Tuning
     {
@@ -63,7 +66,6 @@ namespace omni
 
       /// Draws Blendmask with warp grid and brush stroke layer
       void drawOutput(
-          int _inputTexId = 0,
           float _inputOpacity = 0.0,
           QColor const& _color = Qt::white,
           float _blendMaskOpacity = 1.0,
@@ -76,6 +78,9 @@ namespace omni
 
       void free();
 
+      /// Update warp buffer which contains image of projector perspective
+      void updateWarpBuffer(visual::Session const* _vizSession);
+
     private:
 
       /**@brief Calculates rectangle of this tuning
@@ -85,14 +90,16 @@ namespace omni
       omni::proj::Tuning& tuning_;
 
       std::unique_ptr<visual::WarpGrid> warpGrid_;
-
-      static std::unique_ptr<QOpenGLShaderProgram> blendShader_;
       std::unique_ptr<QOpenGLTexture> blendTex_;
-
       std::unique_ptr<Circle> cursor_;
 
-      static std::unique_ptr<QOpenGLShaderProgram> testCardShader_;
+      /// Frame buffer which holds a texture with current view image
+      std::unique_ptr<QOpenGLFramebufferObject> warpGridBuffer_;
+
       QRect blendTextureUpdateRect_;
+
+      static std::unique_ptr<QOpenGLShaderProgram> testCardShader_;
+      static std::unique_ptr<QOpenGLShaderProgram> blendShader_;
     };
   }
 }

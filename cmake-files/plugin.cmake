@@ -26,10 +26,11 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
     SET(build_target plugin_${PLUGIN_PREFIX}_${PLUGIN_NAME})
 
     add_library(${build_target} SHARED ${plugin_src})
-    target_link_libraries(${build_target} ${Qt5_LIBRARIES} omni)
+    target_link_libraries(${build_target} ${Qt5_LIBRARIES} ${${build_target}_LIBS} omni ${omni_gl_LIBRARIES})
     target_compile_definitions(${build_target} PRIVATE ${defs})
+    target_compile_definitions(${build_target} PRIVATE ${${build_target}_DEFS})
 
-    add_definitions(${defs})
+    add_definitions(${defs} ${${build_target}_DEFS})
 
     SET_TARGET_PROPERTIES(${build_target}
         PROPERTIES

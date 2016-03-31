@@ -27,6 +27,8 @@ namespace omni {
   // type id
   class TypeIdInterface {
     public:
+      virtual ~TypeIdInterface() {}
+
       /// Returns type id of object
       virtual Id   getTypeId() const = 0;
 

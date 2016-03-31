@@ -21,6 +21,7 @@
 #define OMNI_VISUAL_UTIL_H_
 
 #include <math.h>
+#include <chrono>
 #include <QPointF>
 #include <QRectF>
 #include <QVector2D>
@@ -31,6 +32,12 @@
 namespace omni {
   namespace visual {
     namespace util {
+      /// Get current time in nano seconds
+      inline static double now() {
+        return std::chrono::high_resolution_clock::now().time_since_epoch().count() /
+          1000000000.0;
+      }
+
       template<typename F>
       void for_each_circle_point(size_t _numVertices, float _radius, F _f)
       {

@@ -30,6 +30,8 @@ namespace omni {
      */
     class Interface {
       public:
+        virtual ~Interface() {}
+
         /// Serialize to stream
         virtual void toStream(QDataStream&) const = 0;
 

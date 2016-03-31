@@ -74,6 +74,10 @@ namespace omni {
           return false;
         }
 
+        void    inputUpdatedEmitter();
+
+        void    selectInputId(QString const&);
+
         /// Setup the item model with columns etc
         void    prepareModel();
 

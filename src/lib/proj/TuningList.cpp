@@ -21,6 +21,7 @@
 
 #include <omni/util.h>
 #include <omni/proj/Tuning.h>
+#include <omni/visual/Tuning.h>
 #include <omni/serialization/PropertyMap.h>
 
 namespace omni

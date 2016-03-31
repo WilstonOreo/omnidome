@@ -85,13 +85,28 @@ namespace omni
       if (_input->canAdd())
       {
         addItem(_id,_input);
-        dataModel()->inputs().setCurrentId(_id);
+        selectInputId(_id);
+
         showParameterWidget();
         emit inputIndexChanged();
       } else
       {
         dataModel()->inputs().removeInput(_id);
       }
+    }
+
+    void Input::selectInputId(QString const& _id) {
+        dataModel()->inputs().setCurrentId(_id);
+        auto* _current = dataModel()->inputs().current();
+
+        if (_current) {
+          _current->setUpdateCallBack(std::bind(&Input::inputUpdatedEmitter,this));
+        }
+        emit inputChanged();
+    }
+
+    void Input::inputUpdatedEmitter() {
+      emit inputChanged();
     }
 
     void Input::removeSelection()
@@ -139,7 +154,7 @@ namespace omni
 
       if (itemId(_row) == dataModel()->inputs().currentId()) return;
 
-      dataModel()->inputs().setCurrentId(itemId(_row));
+      selectInputId(itemId(_row));
       showParameterWidget();
       emit inputIndexChanged();
     }
@@ -148,6 +163,7 @@ namespace omni
       this->setupParameterWidget(widget(),dataModel()->inputs().current());
       if (this->parameterWidget()) {
           connect(this->parameterWidget(),SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
+          connect(this,SIGNAL(inputChanged()),this->parameterWidget(),SLOT(updateWithFrameRate()));
       }
     }
 

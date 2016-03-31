@@ -76,17 +76,20 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
     arrange_.reset(new Arrange(this));
     _layout->addWidget(arrange_.get());
+    arrange_->view()->setUpdateFrequency(60.0);
 
     tuningView_.reset(new TuningGLView(this));
     _layout->addWidget(tuningView_.get());
     tuningView_->setBorder(0.5);
     tuningView_->setKeepAspectRatio(true);
+    arrange_->view()->setUpdateFrequency(60.0);
 
     export_.reset(new Export(this));
     _layout->addWidget(export_.get());
 
     live_.reset(new GLView3D(this));
     _layout->addWidget(live_.get());
+    live_->setUpdateFrequency(60.0);
 
     _layout->setContentsMargins(0, 0, 0, 0);
     ui_->pages->setLayout(_layout);
@@ -159,9 +162,9 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
     // Connect scene parameter change with 3d view update
     connect(ui_->dockSceneWidget, SIGNAL(dataModelChanged()),
-            arrange_->view(), SLOT(update()));
+            arrange_->view(), SLOT(updateWithFrameRate()));
     connect(ui_->dockSceneWidget, SIGNAL(dataModelChanged()),
-            live_.get(), SLOT(update()));
+            live_.get(), SLOT(updateWithFrameRate()));
     connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged()),
             ui_->tuningList, SLOT(updateSceneScale()));
     connect(ui_->dockSceneWidget, SIGNAL(unitChanged()),
@@ -171,6 +174,9 @@ MainWindow::MainWindow(QMainWindow *parent) :
     connect(ui_->dockInputsWidget, SIGNAL(
               inputChanged()),                      this,
             SLOT(modified()));
+    connect(ui_->dockInputsWidget, SIGNAL(
+              inputChanged()),                      this,
+            SLOT(updateAllViews()));
     connect(ui_->dockInputsWidget, SIGNAL(
               inputIndexChanged()),                 this,
             SLOT(modified()));
@@ -404,18 +410,18 @@ void MainWindow::updateAllViews()
 {
   switch (session_->mode()) {
   case Session::Mode::ARRANGE:
-    arrange_->view()->update();
+    arrange_->view()->updateWithFrameRate();
     break;
 
   default:
   case Session::Mode::WARP:
   case Session::Mode::BLEND:
   case Session::Mode::COLORCORRECTION:
-    tuningView_->update();
+    tuningView_->updateWithFrameRate();
     break;
 
   case Session::Mode::LIVE:
-    live_->update();
+    live_->updateWithFrameRate();
   }
   ui_->tuningList->updateViews();
 }
@@ -482,7 +488,6 @@ void MainWindow::setTuningIndex()
 
   tuningView_->setTuningIndex(_index);
   tuningView_->setChildViews(ui_->tuningList->getViews(_index));
-  tuningView_->updateContext(true);
 
   ui_->dockColorCorrectionWidget->updateFrontend();
   ui_->dockBlendWidget->updateFrontend();

@@ -23,6 +23,7 @@
 #include <QFile>
 #include <QDebug>
 #include <omni/util.h>
+#include <omni/visual/Tuning.h>
 
 namespace omni
 {

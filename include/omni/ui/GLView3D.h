@@ -44,6 +44,7 @@ namespace omni {
         virtual void wheelEvent(QWheelEvent *event);
         virtual void keyPressEvent(QKeyEvent *event);
         virtual void mouseMoveEvent(QMouseEvent *event);
+        virtual void showEvent(QShowEvent* event);
 
       private:
         bool         initialize();

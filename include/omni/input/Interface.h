@@ -104,7 +104,7 @@ namespace omni {
         }
 
         /// Make new parameter widget
-        virtual QWidget* widget() = 0;
+        virtual QWidget* widget();
 
         /**@brief Returns true if this input can be added
            @detail E.g., an input can be added after an initial settings dialog
@@ -123,8 +123,15 @@ namespace omni {
           updatedCallback_ = _updatedCallback;
         }
 
-        callback_type updatedCallback() {
+        inline callback_type updatedCallback() {
           return updatedCallback_;
+        }
+
+        inline virtual void activate() {
+          this->update();
+        }
+
+        inline virtual void deactivate() {
         }
 
         /**@brief Add new input with given type id. Returns nullptr if input

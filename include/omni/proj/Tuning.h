@@ -30,6 +30,11 @@
 #include <omni/proj/Setup.h>
 
 namespace omni {
+  namespace visual {
+    /// Forward declaration for tuning visualizer
+    class Tuning;
+  }
+
   namespace proj {
     /**@brief A projector tuning holds adjustment and distorsion data for a
        single projector and screen
@@ -39,6 +44,8 @@ namespace omni {
      **/
     class Tuning {
       public:
+        typedef omni::visual::Tuning visualizer_type;
+
         /// Constructor
         Tuning();
 
@@ -77,6 +84,15 @@ namespace omni {
 
         /// Sets color for mapping
         void                   setColor(QColor const&);
+
+        /// Return pointer to visualizer
+        visualizer_type* visualizer();
+
+        /// Return pointer to visualizer (const version)
+        visualizer_type const* visualizer() const;
+
+        /// Make visualizer if it is not instantiated yet
+        visualizer_type* makeVisualizer();
 
         /// Return if a screen is associated with mapping
         bool                   hasScreen() const;
@@ -122,6 +138,7 @@ namespace omni {
         WarpGrid  warpGrid_;
         BlendMask blendMask_;
         ColorCorrection colorCorrection_;
+        std::unique_ptr<visualizer_type> viz_;
     };
   }
 }

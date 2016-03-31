@@ -22,6 +22,7 @@
 #include <omni/util.h>
 #include <omni/serialization/pointer.h>
 #include <omni/serialization/container.h>
+#include <omni/ui/InputPreview.h>
 
 namespace omni {
   namespace input {
@@ -156,6 +157,10 @@ namespace omni {
           return addInput(_id, _typeId);
         });
       }
+    }
+
+    QWidget* Interface::widget() {
+      return new ui::InputPreview(this);
     }
 
     /// Serialize to stream

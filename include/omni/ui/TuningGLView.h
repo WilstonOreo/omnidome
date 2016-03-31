@@ -58,8 +58,6 @@ namespace omni {
         void                    setChildViews(std::set<TuningGLView *>const&);
         std::set<TuningGLView *>childViews() const;
 
-        void                    updateContext(bool);
-
       public slots:
         /// Set tuning index from session
         void setTuningIndex(int);
@@ -85,8 +83,7 @@ namespace omni {
         /// Set fullscreen mode
         void setFullScreenMode(bool);
 
-        void updateWithChildViews(bool _updateContext = true);
-        void updateWithChildViews(QRect const&);
+        void updateWithChildViews();
 
       private slots:
         void free();
@@ -98,6 +95,7 @@ namespace omni {
         void mouseReleaseEvent(QMouseEvent *event);
         void wheelEvent(QWheelEvent *event);
         void keyPressEvent(QKeyEvent *event);
+        void showEvent(QShowEvent *event);
 
       private:
         void drawOutput(
@@ -167,9 +165,6 @@ namespace omni {
         /// Show cursor flag (cursor is also shown when widget is view only)
         bool showCursor_ = true;
 
-        /// Flag which is set to true before this widget is destroyed
-        bool aboutToBeDestroyed_ = false;
-
         /// Left over distance value for blend blush
         float leftOverDistance_ = 0.0;
 
@@ -178,15 +173,6 @@ namespace omni {
 
         /// True if this widget is shown in fullscreen mode
         bool fullscreenMode_ = false;
-
-        /// Tuning visualizer
-        std::shared_ptr<visual::Tuning> vizTuning_;
-
-        /// Used for drawing grayscale
-        std::unique_ptr<QOpenGLFramebufferObject> frameBuffer_;
-
-        /// Frame buffer which holds a texture with current view image
-        std::unique_ptr<QOpenGLFramebufferObject> warpGridBuffer_;
 
         std::set<TuningGLView *> childViews_;
     };

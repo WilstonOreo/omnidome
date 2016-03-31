@@ -60,6 +60,17 @@ namespace omni {
         /// Return boolean value if widget has been initialized
         bool    initialized() const;
 
+        /// Return update frequency
+        float   updateFrequency() const;
+
+        /// Return update frequency
+        void    setUpdateFrequency(float _updateFrequency);
+
+        bool    canDraw() const;
+
+      public slots:
+        void    updateWithFrameRate();
+
       signals:
         void    dataModelChanged();
 
@@ -81,6 +92,10 @@ namespace omni {
         /// Mouse press event sets mouse position
         virtual void mousePressEvent(QMouseEvent *);
 
+        void timerEvent(QTimerEvent*);
+
+        void         paintGLReady();
+
         /// Mouse position stored
         QPointF mousePosition_;
 
@@ -96,6 +111,12 @@ namespace omni {
         /// Pure virtual function to initialize GL contents
         virtual bool initialize() = 0;
         bool initialized_ = false;
+
+        float  updateFreq_     = 0.0;
+        double lastUpdateTime_ = 0.0;
+        bool   needsUpdate_    = true;
+        bool   updateTriggered_ = false;
+        int timerId_ = 0;
     };
   }
 }

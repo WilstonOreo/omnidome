@@ -44,9 +44,7 @@ AboutGL::AboutGL(QWidget *_parent) :
   timer->start(20);
 
   /// "Random" start time
-  startTime_ =
-    std::chrono::high_resolution_clock::now().time_since_epoch().count() /
-    1000000000.0 +
+  startTime_ = visual::util::now() +
     double(reinterpret_cast<long long>(timer) & ((1 << 16) - 1));
 }
 

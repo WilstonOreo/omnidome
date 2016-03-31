@@ -25,7 +25,6 @@
 #include <QErrorMessage>
 #include <QFileDialog>
 #include <omni/visual/util.h>
-#include <omni/ui/InputPreview.h>
 
 namespace omni {
   namespace input {
@@ -120,10 +119,6 @@ namespace omni {
         return false;
       }
       return true;
-    }
-
-    QWidget * Image::widget() {
-      return new ui::InputPreview(this);
     }
   }
 }

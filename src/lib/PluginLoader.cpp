@@ -52,20 +52,18 @@ namespace omni {
             if (_inputInterface) {
                 qDebug() << "Loaded input plugin: " << _inputInterface->getTypeId();
                 _inputInterface->registerInFactory();
-                return;
             }
             auto* _mappingInterface = qobject_cast<mapping::Interface*>(plugin);
             if (_mappingInterface) {
                 qDebug() << "Loaded mapping plugin: " << _mappingInterface->getTypeId();
                 _mappingInterface->registerInFactory();
-                return;
             }
             auto* _canvasInterface = qobject_cast<canvas::Interface*>(plugin);
             if (_canvasInterface) {
                 qDebug() << "Loaded canvas plugin: " << _canvasInterface->getTypeId();
                 _canvasInterface->registerInFactory();
-                return;
             }
+            delete plugin;
         } else {
             qDebug() << "Error loading plugin: " << _pluginLoader.errorString();
         }

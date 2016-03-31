@@ -137,6 +137,7 @@ namespace omni {
       void Tuning::fullscreenToggle(bool _enabled)
       {
         tuning()->setOutputEnabled(_enabled);
+        glView_->setUpdateFrequency(_enabled ? 10.0 : 3.0);
         titleBar_->fullscreenToggle(_enabled);
         updateViews();
       }
@@ -198,6 +199,7 @@ namespace omni {
         tuning()->projector().setup();
         tuning()->setColor(titleBar_->color());
 
+        glView_->update();
         updateViews();
         emit projectorSetupChanged();
       }
@@ -251,9 +253,8 @@ namespace omni {
 
       void Tuning::updateViews()
       {
-        glView_->update();
-
-        if (fullscreen_) fullscreen_->update();
+        glView_->updateWithFrameRate();
+        if (fullscreen_) fullscreen_->updateWithFrameRate();
       }
 
       void Tuning::setup()
@@ -290,6 +291,7 @@ namespace omni {
         glView_->setKeepAspectRatio(true);
         glView_->setBorder(0.0);
         glView_->setViewOnly(true);
+        glView_->setUpdateFrequency(10.0); // 10.0 fps
         glView_->installEventFilter(this);
         layout_->addWidget(glView_, TuningLayout::Role::PREVIEW);
 
