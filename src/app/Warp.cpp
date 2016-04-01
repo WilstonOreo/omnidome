@@ -25,6 +25,7 @@
 #include <omni/Session.h>
 #include <omni/WarpGrid.h>
 #include <omni/util.h>
+#include <omni/visual/Tuning.h>
 
 namespace omni {
   namespace ui {
@@ -101,6 +102,7 @@ namespace omni {
       if (!warpGrid() || this->isLocked()) return;
 
       warpGrid()->reset();
+      dataModel()->tunings().current()->visualizer()->updateWarpGrid();
       emit dataModelChanged();
     }
 
