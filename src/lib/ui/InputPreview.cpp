@@ -126,7 +126,6 @@ namespace omni
         visual::Rectangle::draw();
         _.glBindTexture(GL_TEXTURE_2D, 0);
       });
-      paintGLReady();
     }
   }
 }

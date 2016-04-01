@@ -485,7 +485,7 @@ namespace omni {
 
       glDisable(GL_DEPTH_TEST);
 
-      if ((showCursor_ || !viewOnly_) &&
+      if ((showCursor_) &&
           (tuning() == dataModel()->tunings().current())) {
             tuning()->visualizer()->drawCursor(cursorPosition_);
           }
@@ -578,7 +578,6 @@ namespace omni {
       if (!dataModel()->hasOutput())
       {
         drawTestCard();
-        paintGLReady();
         return;
       }
 

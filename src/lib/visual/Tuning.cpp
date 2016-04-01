@@ -212,8 +212,6 @@ namespace omni {
       {
         _.glDisable(GL_LINE_SMOOTH);
         _.glEnable(GL_BLEND);
-        _.glEnable(GL_COLOR_LOGIC_OP);
-        glLogicOp(GL_XOR);
 
         glColor4f(0.0, 0.0, 0.0, 1.0);
         glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
@@ -222,7 +220,6 @@ namespace omni {
         cursor_->drawLine(_pos, _r, _r * (_rect.height() / _rect.width()));
         _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         _.glEnable(GL_LINE_SMOOTH);
-        _.glDisable(GL_COLOR_LOGIC_OP);
       });
     }
 
