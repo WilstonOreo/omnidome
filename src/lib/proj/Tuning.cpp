@@ -20,10 +20,12 @@
 #include <omni/proj/Tuning.h>
 
 #include <QOpenGLContext>
+#include <omni/Session.h>
 #include <omni/util.h>
 #include <omni/serialization/PropertyMap.h>
 #include <omni/proj/Setup.h>
 #include <omni/proj/ScreenSetup.h>
+#include <omni/proj/Calibration.h>
 
 #include <omni/visual/Tuning.h>
 
@@ -32,14 +34,10 @@
 
 namespace omni {
     namespace proj {
-        Tuning::Tuning() :
+        Tuning::Tuning(Session const& _session) :
             color_("#FFFFFF"),
-            blendMask_(*this)
-        {}
-
-        Tuning::Tuning(const QColor& _color) :
-            color_(_color),
-            blendMask_(*this)
+            blendMask_(*this),
+            session_(_session)
         {}
 
         void Tuning::setScreen(QScreen const *_screen, int _subScreenIndex)
@@ -137,6 +135,18 @@ namespace omni {
             return projector_.screen() != ScreenSetup::standardScreen();
         }
 
+        /// Render calibration
+        void Tuning::renderCalibration(Calibration& _calib)
+        const {
+          _calib.render(*this,session_.exportSettings().outputMode());
+        }
+
+        /// Render and return calibration
+        Calibration Tuning::renderCalibration(
+          CalibrationMode _outputMode) const {
+            return Calibration(*this,_outputMode);
+        }
+
         int Tuning::width() const
         {
             if (!ScreenSetup::standardScreen()) {
@@ -225,6 +235,11 @@ namespace omni {
                 OMNI_TEST_MEMBER_EQUAL(outputDisabled_) &&
                 OMNI_TEST_MEMBER_EQUAL(overlapOpacity_) &&
                 OMNI_TEST_MEMBER_EQUAL(colorCorrection_);
+        }
+
+        /// Return const reference to owning session
+        Session const& Tuning::session() const {
+          return session_;
         }
     }
 }

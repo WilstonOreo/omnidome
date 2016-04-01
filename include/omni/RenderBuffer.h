@@ -17,41 +17,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_UI_GLVIEW3D_H_
-#define OMNI_UI_GLVIEW3D_H_
+#ifndef OMNI_RENDERBUFFER_H_
+#define OMNI_RENDERBUFFER_H_
 
-#include <omni/ui/GLView.h>
-#include <omni/visual/Grid.h>
+#include <omni/Buffer.h>
 
 namespace omni {
-  namespace ui {
-    /**@brief An OpenGL view for visualizing the scene of a session
-     **/
-    class GLView3D : public GLView {
-      Q_OBJECT
+  /// RGBA float pixel type
+  struct RGBAFloat
+  {
+    RGBAFloat() {}
 
-      public:
-        GLView3D(QWidget *_parent = nullptr);
-        ~GLView3D();
+    RGBAFloat(float r, float g, float b, float a = 1.0) :
+      r(r), g(g), b(b), a(a) {}
 
-      public slots:
-        void         changeZoom(int _value);
+    float r, g, b, a;
+  };
 
-      protected:
-        virtual void paintGL();
-
-        /// Change zoom on mouse wheel event
-        virtual void wheelEvent(QWheelEvent *event);
-        virtual void keyPressEvent(QKeyEvent *event);
-        virtual void mouseMoveEvent(QMouseEvent *event);
-        virtual void showEvent(QShowEvent* event);
-
-      private:
-        bool         initialize();
-
-        std::unique_ptr<visual::Grid>   grid_;
-    };
-  }
+  typedef Buffer<RGBAFloat> RenderBuffer;
 }
 
-#endif /* OMNI_UI_GLVIEW3D_H_ */
+#endif /* OMNI_RENDERBUFFER_H_ */

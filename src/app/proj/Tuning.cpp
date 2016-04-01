@@ -140,6 +140,7 @@ namespace omni {
         glView_->setUpdateFrequency(_enabled ? 10.0 : 3.0);
         titleBar_->fullscreenToggle(_enabled);
         updateViews();
+        emit projectorSetupChanged();
       }
 
       /// Reset to free projector setup (discards previous projector setup)
@@ -253,8 +254,8 @@ namespace omni {
 
       void Tuning::updateViews()
       {
-        glView_->updateWithFrameRate();
-        if (fullscreen_) fullscreen_->updateWithFrameRate();
+        glView_->triggerUpdate();
+        if (fullscreen_) fullscreen_->triggerUpdate();
       }
 
       void Tuning::setup()
@@ -308,7 +309,7 @@ namespace omni {
         _fov->setSuffix("°");
         connect(_fov, SIGNAL(valueChanged()), this, SLOT(setFov()));
 
-        auto *_keystone = addWidget("Keystone", 0.0, -1.0, 1.0);
+        auto *_keystone = addWidget("Keystone", 0.0, -1.0, 2.0);
         _keystone->setSingleStep(0.01);
         _keystone->setPageStep(0.1);
         connect(_keystone, SIGNAL(valueChanged()), this,

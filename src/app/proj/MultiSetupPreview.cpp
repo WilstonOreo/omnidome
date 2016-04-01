@@ -27,7 +27,7 @@ namespace omni {
   namespace ui {
     namespace proj {
       MultiSetupPreview::MultiSetupPreview(QWidget *_parent) :
-        GLView3D(_parent)
+        SceneGLView(_parent)
       {
       }
 

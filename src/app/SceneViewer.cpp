@@ -17,43 +17,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <memory>
-#include <QWidget>
-#include <omni/Session.h>
-#include <omni/ui/mixin/DataModel.h>
+#include "SceneViewer.h"
+#include "ui_omni_ui_SceneViewer.h"
 
 namespace omni {
   namespace ui {
-    class GLView3D;
-
-    namespace Ui {
-      class Arrange;
+    SceneViewer::SceneViewer(QWidget *_parent) :
+      QWidget(_parent),
+      ui_(new Ui::SceneViewer)
+    {
+      ui_->setupUi(this);
+      ui_->toolBar->hide();
     }
 
-    /// Arrange widget for positioning of elements and 3D view of scene
-    class Arrange :
-      public QWidget,
-      public mixin::SharedDataModel<Session>{
-        Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
-      public:
-        Arrange(QWidget * = nullptr);
-        ~Arrange();
+    SceneViewer::~SceneViewer() {}
 
-        /// Return pointer to view
-        GLView3D      * view();
+    void SceneViewer::dataToFrontend() {
+      ui_->view->setDataModel(dataModel());
+    }
 
-        /// Return pointer to view (const version)
-        GLView3D const* view() const;
+    SceneGLView * SceneViewer::view() {
+      return ui_->view;
+    }
 
-      signals:
-        void            dataModelChanged();
+    SceneGLView const * SceneViewer::view() const {
+      return ui_->view;
+    }
 
-      private:
-        void            dataToFrontend();
-        bool            frontendToData();
-
-        std::unique_ptr<Ui::Arrange> ui_;
-    };
+    bool SceneViewer::frontendToData() {
+      return false;
+    }
   }
 }

@@ -22,14 +22,18 @@
 
 namespace omni {
   namespace render {
-    mapping::OutputMode ExportSettings::mappingOutputMode() const
+    CalibrationMode ExportSettings::outputMode() const
     {
-      return mappingOutputMode_;
+      return outputMode_;
     }
 
-    void ExportSettings::setMappingOutputMode(mapping::OutputMode _outputMode)
+    mapping::OutputMode ExportSettings::mappingOutputMode() const {
+      return proj::calibrationModeToMappingOutputMode(outputMode_);
+    }
+
+    void ExportSettings::setOutputMode(CalibrationMode _outputMode)
     {
-      mappingOutputMode_ = _outputMode;
+      outputMode_ = _outputMode;
     }
 
     SeparationMode ExportSettings::separationMode() const
@@ -66,7 +70,7 @@ namespace omni {
 
       _is >> _map;
       _map.get("outputType", outputType_);
-      _map.get("mappingOutputMode", mappingOutputMode_);
+      _map.get("outputMode", outputMode_);
       _map.get("separationMode", separationMode_);
       _map.get("excludeUnassignedProjectors", excludeUnassignedProjectors_);
     }
@@ -75,7 +79,7 @@ namespace omni {
       PropertyMap _map;
 
       _map("outputType", outputType_);
-      _map("mappingOutputMode", mappingOutputMode_);
+      _map("outputMode", outputMode_);
       _map("separationMode", separationMode_);
       _map("excludeUnassignedProjectors", excludeUnassignedProjectors_);
       _os << _map;
@@ -86,7 +90,7 @@ namespace omni {
       ExportSettings const& _rhs) {
       return
         OMNI_TEST_MEMBER_EQUAL(outputType_) &&
-        OMNI_TEST_MEMBER_EQUAL(mappingOutputMode_) &&
+        OMNI_TEST_MEMBER_EQUAL(outputMode_) &&
         OMNI_TEST_MEMBER_EQUAL(separationMode_) &&
         OMNI_TEST_MEMBER_EQUAL(excludeUnassignedProjectors_);
     }

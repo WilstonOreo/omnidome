@@ -33,7 +33,9 @@
 
 namespace omni
 {
-  Session::Session() : screenSetup_(this)
+  Session::Session() :
+    tunings_(*this),
+    screenSetup_(this)
   {
     // Register Projector Setups
     {

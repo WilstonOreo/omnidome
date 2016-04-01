@@ -35,11 +35,10 @@ namespace omni {
     namespace Ui {
       class MainWindow;
     }
-    class Arrange;
+    class SceneViewer;
     class ScreenSetup;
     class Export;
     class TuningGLView;
-    class GLView3D;
     class ToolBar;
     class RecentSessions;
 
@@ -116,17 +115,14 @@ namespace omni {
         /// Screen Setup page
         QUniquePtr<ScreenSetup> screenSetup_;
 
-        /// ProjectionSetup/Canvas arrangement page
-        QUniquePtr<Arrange> arrange_;
+        /// ProjectionSetup/Canvas arrangement and live view page
+        QUniquePtr<SceneViewer> sceneViewer_;
 
-        /// Page for current warp grid
+        /// Page for warp grid, blend mask and color correction
         QUniquePtr<TuningGLView> tuningView_;
 
         /// Page for exporting projection
         QUniquePtr<Export> export_;
-
-        /// Page for exporting projection
-        QUniquePtr<GLView3D> live_;
 
         /// Store recent sessions
         QUniquePtr<RecentSessions> recentSessions_;
@@ -136,7 +132,6 @@ namespace omni {
 
         /// UI containing designed widgets of this window
         std::unique_ptr<Ui::MainWindow> ui_;
-
     };
   }
 }

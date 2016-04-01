@@ -28,9 +28,14 @@ namespace omni
 {
   namespace proj
   {
+    TuningList::TuningList(Session const& _session) :
+      session_(_session) {
+
+    }
+
     Tuning* TuningList::add(bool _makeCurrent)
     {
-      container_type::emplace_back(new Tuning());
+      container_type::emplace_back(new Tuning(session_));
       auto* _tuning = container_type::back().get();
       if (_makeCurrent)
         setCurrentIndex(container_type::size()-1);

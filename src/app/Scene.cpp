@@ -19,8 +19,6 @@
 
 #include "Scene.h"
 
-#include <omni/ui/GLView3D.h>
-
 #include "ui_omni_ui_Scene.h"
 
 

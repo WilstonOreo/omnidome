@@ -126,17 +126,11 @@ namespace omni {
           glPushAttrib(GL_ALL_ATTRIB_BITS);
 
           _f->bind();
-
           _.glViewport(0, 0, _f->width(), _f->height());
           _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
                     GL_STENCIL_BUFFER_BIT);
-          _.glEnable(GL_TEXTURE_2D);
 
-          _.glEnable(GL_DEPTH_TEST);
           _.glDepthFunc(GL_LEQUAL);
-          _.glEnable(GL_BLEND);
-          _.glDisable(GL_CULL_FACE);
-          _.glEnable(GL_NORMALIZE);
 
           // fix outlines z-fighting with quads
           _.glPolygonOffset(1, 1);

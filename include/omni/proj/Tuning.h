@@ -25,32 +25,35 @@
 #include <omni/Id.h>
 #include <omni/WarpGrid.h>
 #include <omni/BlendMask.h>
+#include <omni/proj/CalibrationMode.h>
 #include <omni/proj/ColorCorrection.h>
 #include <omni/proj/Projector.h>
 #include <omni/proj/Setup.h>
+#include <omni/mapping/Interface.h>
 
 namespace omni {
+  class Session;
+
   namespace visual {
     /// Forward declaration for tuning visualizer
     class Tuning;
   }
 
   namespace proj {
+    class Calibration;
+
     /**@brief A projector tuning holds adjustment and distorsion data for a
        single projector and screen
        @detail A tuning consists of a projector, warp grid, blend mask and color
           correction.
-               It holds a color as well.
+               It holds a color as well. It can render a projector calibration
      **/
     class Tuning {
       public:
         typedef omni::visual::Tuning visualizer_type;
 
         /// Constructor
-        Tuning();
-
-        /// Constructor with a color
-        Tuning(QColor const&);
+        Tuning(Session const&);
 
         /// Set screen for this tuning
         void                   setScreen(QScreen const *_screen,
@@ -86,16 +89,24 @@ namespace omni {
         void                   setColor(QColor const&);
 
         /// Return pointer to visualizer
-        visualizer_type* visualizer();
+        visualizer_type      * visualizer();
 
         /// Return pointer to visualizer (const version)
         visualizer_type const* visualizer() const;
 
         /// Make visualizer if it is not instantiated yet
-        visualizer_type* makeVisualizer();
+        visualizer_type      * makeVisualizer();
 
         /// Return if a screen is associated with mapping
         bool                   hasScreen() const;
+
+        /// Render calibration
+        void                   renderCalibration(Calibration& _calib)
+        const;
+
+        /// Render and return calibration
+        Calibration renderCalibration(CalibrationMode =
+                                        CalibrationMode::TEXCOORDS) const;
 
         /// Returns width of screen
         int         width() const;
@@ -127,8 +138,12 @@ namespace omni {
         /// Read tuning from stream
         void        fromStream(QDataStream&);
 
+        /// Test for equality
         friend bool operator==(Tuning const&,
                                Tuning const&);
+
+        /// Return const reference to owning session
+        Session const& session() const;
 
       private:
         bool   outputDisabled_ = false;
@@ -139,6 +154,7 @@ namespace omni {
         BlendMask blendMask_;
         ColorCorrection colorCorrection_;
         std::unique_ptr<visualizer_type> viz_;
+        Session const& session_;
     };
   }
 }

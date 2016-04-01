@@ -33,7 +33,7 @@
 #include "RecentSessions.h"
 #include <omni/Session.h>
 #include <omni/proj/MultiSetup.h>
-#include <omni/ui/GLView3D.h>
+#include <omni/ui/SceneGLView.h>
 #include <omni/ui/TuningGLView.h>
 #include <omni/ui/ExceptionList.h>
 #include <omni/serialization/PropertyMap.h>
@@ -42,7 +42,7 @@
 #include "proj/TuningList.h"
 #include "proj/MultiSetupDialog.h"
 
-#include "Arrange.h"
+#include "SceneViewer.h"
 #include "ScreenSetup.h"
 #include "Export.h"
 #include "Mapping.h"
@@ -74,22 +74,18 @@ MainWindow::MainWindow(QMainWindow *parent) :
     screenSetup_.reset(new ScreenSetup(this));
     _layout->addWidget(screenSetup_.get());
 
-    arrange_.reset(new Arrange(this));
-    _layout->addWidget(arrange_.get());
-    arrange_->view()->setUpdateFrequency(60.0);
+    sceneViewer_.reset(new SceneViewer(this));
+    _layout->addWidget(sceneViewer_.get());
+    sceneViewer_->view()->setUpdateFrequency(60.0);
 
     tuningView_.reset(new TuningGLView(this));
     _layout->addWidget(tuningView_.get());
     tuningView_->setBorder(0.5);
     tuningView_->setKeepAspectRatio(true);
-    arrange_->view()->setUpdateFrequency(60.0);
+    tuningView_->setUpdateFrequency(60.0);
 
     export_.reset(new Export(this));
     _layout->addWidget(export_.get());
-
-    live_.reset(new GLView3D(this));
-    _layout->addWidget(live_.get());
-    live_->setUpdateFrequency(60.0);
 
     _layout->setContentsMargins(0, 0, 0, 0);
     ui_->pages->setLayout(_layout);
@@ -162,9 +158,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
     // Connect scene parameter change with 3d view update
     connect(ui_->dockSceneWidget, SIGNAL(dataModelChanged()),
-            arrange_->view(), SLOT(updateWithFrameRate()));
-    connect(ui_->dockSceneWidget, SIGNAL(dataModelChanged()),
-            live_.get(), SLOT(updateWithFrameRate()));
+            sceneViewer_->view(), SLOT(triggerUpdate()));
     connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged()),
             ui_->tuningList, SLOT(updateSceneScale()));
     connect(ui_->dockSceneWidget, SIGNAL(unitChanged()),
@@ -270,8 +264,7 @@ void MainWindow::setupSession()
     toolBar_->setDataModel(session_);
 
     // Set session to pages
-    arrange_->setDataModel(session_);
-    live_->setDataModel(session_);
+    sceneViewer_->setDataModel(session_);
     tuningView_->setDataModel(session_);
     export_->setDataModel(session_);
 
@@ -410,18 +403,15 @@ void MainWindow::updateAllViews()
 {
   switch (session_->mode()) {
   case Session::Mode::ARRANGE:
-    arrange_->view()->updateWithFrameRate();
+  case Session::Mode::LIVE:
+    sceneViewer_->view()->triggerUpdate();
     break;
-
   default:
   case Session::Mode::WARP:
   case Session::Mode::BLEND:
   case Session::Mode::COLORCORRECTION:
-    tuningView_->updateWithFrameRate();
+    tuningView_->triggerUpdate();
     break;
-
-  case Session::Mode::LIVE:
-    live_->updateWithFrameRate();
   }
   ui_->tuningList->updateViews();
 }
@@ -525,14 +515,14 @@ void MainWindow::setMode()
   bool _hasTunings = session_->hasOutput();
 
   screenSetup_->setVisible(_mode == Session::Mode::SCREENSETUP);
-  arrange_->setVisible(_mode == Session::Mode::ARRANGE);
+  sceneViewer_->setVisible(_mode == Session::Mode::ARRANGE ||
+                           (_mode == Session::Mode::LIVE && _hasTunings));
   tuningView_->setVisible((
                             _mode == Session::Mode::WARP ||
                             _mode == Session::Mode::BLEND ||
                             _mode == Session::Mode::COLORCORRECTION) &&
                           _hasTunings);
   export_->setVisible(_mode == Session::Mode::EXPORT && _hasTunings);
-  live_->setVisible(_mode == Session::Mode::LIVE && _hasTunings);
 
   using omni::ui::proj::Tuning;
 

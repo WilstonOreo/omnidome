@@ -91,16 +91,15 @@ namespace omni {
 
       if (ui_->rbUVWMap->isChecked())
       {
-        _exportSettings.setMappingOutputMode(mapping::OutputMode::UVW);
+        _exportSettings.setOutputMode(CalibrationMode::UVW);
       } else
       if (ui_->rbTextureCoordinates->isChecked())
       {
-        _exportSettings.setMappingOutputMode(mapping::OutputMode::TEXCOORDS);
+        _exportSettings.setOutputMode(CalibrationMode::TEXCOORDS);
       } else
       if (ui_->rbMappedInput->isChecked())
       {
-        _exportSettings.setMappingOutputMode(
-          mapping::OutputMode::MAPPED_INPUT);
+        _exportSettings.setOutputMode(CalibrationMode::MAPPED_INPUT);
       }
     }
 

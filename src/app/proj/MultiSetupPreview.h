@@ -20,14 +20,14 @@
 #ifndef OMNI_UI_PROJ_MULTISETUPPREVIEW_H
 #define OMNI_UI_PROJ_MULTISETUPPREVIEW_H
 
-#include <omni/ui/GLView3D.h>
+#include <omni/ui/SceneGLView.h>
 #include <omni/proj/MultiSetup.h>
 
 namespace omni {
   namespace ui {
     namespace proj {
       /// Preview for multisetup
-      class MultiSetupPreview : public GLView3D {
+      class MultiSetupPreview : public SceneGLView {
           Q_OBJECT
         public:
           MultiSetupPreview(QWidget *_parent);

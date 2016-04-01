@@ -93,6 +93,8 @@ namespace omni {
             dataModel()->setCanvas(_id);
             canvasMemory_.restore(dataModel()->canvas());
 
+            dataModel()->canvas()->update();
+
             emit canvasTypeChanged();
             showParameterWidget();
         }

@@ -66,10 +66,8 @@ namespace omni {
         /// Return update frequency
         void    setUpdateFrequency(float _updateFrequency);
 
-        bool    canDraw() const;
-
       public slots:
-        void    updateWithFrameRate();
+        void    triggerUpdate();
 
       signals:
         void    dataModelChanged();

@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -17,18 +17,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_RENDER_CALIBRATION_H_
-#define OMNI_RENDER_CALIBRATION_H_
+#include <memory>
+#include <QWidget>
+#include <omni/Session.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni {
-  namespace render {
-    class Calibration {
+  namespace ui {
+    class SceneGLView;
+
+    namespace Ui {
+      class SceneViewer;
+    }
+
+    /// SceneViewer widget for positioning of elements and 3D view of scene
+    class SceneViewer :
+      public QWidget,
+      public mixin::SharedDataModel<Session>{
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
       public:
+        SceneViewer(QWidget * = nullptr);
+        ~SceneViewer();
+
+        /// Return pointer to view
+        SceneGLView      * view();
+
+        /// Return pointer to view (const version)
+        SceneGLView const* view() const;
+
+      signals:
+        void            dataModelChanged();
+
       private:
-        mapping::OutputType type_;
-        std::vector<CalibratedProjector> projectors_;
+        void            dataToFrontend();
+        bool            frontendToData();
+
+        std::unique_ptr<Ui::SceneViewer> ui_;
     };
   }
 }
-
-#endif /* OMNI_RENDER_CALIBRATION_H_ */

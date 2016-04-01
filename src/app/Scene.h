@@ -33,9 +33,8 @@ namespace omni {
     class Scene :
       public DockWidget,
       public mixin::SharedDataModel<Session>{
-      Q_OBJECT
-             OMNI_UI_SHARED_DATAMODEL(Session)
-
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
       public:
         Scene(QWidget *_parent = nullptr);
         ~Scene();

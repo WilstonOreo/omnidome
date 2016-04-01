@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>omni::ui::Arrange</class>
- <widget class="QWidget" name="omni::ui::Arrange">
+ <class>omni::ui::SceneViewer</class>
+ <widget class="QWidget" name="omni::ui::SceneViewer">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -158,15 +158,15 @@
     </widget>
    </item>
    <item>
-    <widget class="omni::ui::GLView3D" name="view" native="true"/>
+    <widget class="omni::ui::SceneGLView" name="view" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>omni::ui::GLView3D</class>
+   <class>omni::ui::SceneGLView</class>
    <extends>QWidget</extends>
-   <header location="global">omni/ui/GLView3D.h</header>
+   <header location="global">omni/ui/SceneGLView.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

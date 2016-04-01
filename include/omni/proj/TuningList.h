@@ -26,12 +26,16 @@
 #include <omni/proj/Tuning.h>
 
 namespace omni {
+  class Session;
+  
   namespace proj {
     /**@brief Tuning List contains a list of tunings
      *@detail Tuning List is serializable via QDataStream
      **/
     class TuningList : private std::vector<std::unique_ptr<Tuning> >{
       public:
+        TuningList(Session const&);
+
         typedef std::vector<std::unique_ptr<Tuning> >container_type;
 
         using container_type::size;
@@ -92,6 +96,8 @@ namespace omni {
         bool validIndex(int) const;
 
         int currentIdx_ = -1;
+
+        Session const& session_;
     };
   }
 }

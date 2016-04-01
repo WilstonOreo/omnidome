@@ -47,7 +47,6 @@ namespace omni {
       if (!context()->isValid()) return;
 
       makeCurrent();
-      vizSession_->free();
       vizSession_.reset();
       destroy();
       doneCurrent();
@@ -134,10 +133,10 @@ namespace omni {
 
     void TuningGLView::updateWithChildViews()
     {
-      updateWithFrameRate();
+      triggerUpdate();
       for (auto& _childView : childViews_)
       {
-        _childView->updateWithFrameRate();
+        _childView->triggerUpdate();
       }
     }
 
@@ -209,9 +208,9 @@ namespace omni {
         {
           _childView->cursorPosition_ = cursorPosition_;
 
-          if (_childView->showCursor()) _childView->updateWithFrameRate();
+          if (_childView->showCursor()) _childView->triggerUpdate();
         }
-        updateWithFrameRate();
+        triggerUpdate();
       }
     }
 
@@ -486,32 +485,10 @@ namespace omni {
 
       glDisable(GL_DEPTH_TEST);
 
-      /*
-              ///@todo draw overlaps
-            for (auto& _tuning : dataModel()->tunings())
-            {
-              if (_tuning.get() == tuning()) continue;
-
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
-            glMultMatrixf(tuning()->projector().projectionMatrix().constData());
-            glMatrixMode(GL_MODELVIEW);
-
-            glLoadIdentity();
-
-            visual::with_current_context([&](QOpenGLFunctions& _)
-            {
-                _.glDisable(GL_LIGHTING);
-                _.glDisable(GL_CULL_FACE);
-                _.glDisable(GL_DEPTH_TEST);
-                vizSession_->drawFrustumIntersection(_tuning->projector(),_tuning->color(),ProjectorViewMode::BOTH);
-                _.glDisable(GL_DEPTH_TEST);
-            });
-
-            }
-       */
-
-      if (showCursor_ || !viewOnly_) tuning()->visualizer()->drawCursor(cursorPosition_);
+      if ((showCursor_ || !viewOnly_) &&
+          (tuning() == dataModel()->tunings().current())) {
+            tuning()->visualizer()->drawCursor(cursorPosition_);
+          }
     }
 
     void TuningGLView::drawOutput(float _blendMaskOpacity,
@@ -576,8 +553,8 @@ namespace omni {
       if (!_vizTuning) return;
 
       vizSession_->update();
-
-      if (!_vizTuning->initialized()) _vizTuning->update();
+      _vizTuning->update();
+      _vizTuning->updateWarpBuffer(vizSession_.get());
     }
 
     void TuningGLView::paintGL()

@@ -30,17 +30,9 @@ namespace omni {
     namespace visual {
         std::unique_ptr<QOpenGLShaderProgram> Session::frustumShader_;
 
-        Session::Session(omni::Session& _session) :
+        Session::Session(omni::Session const& _session) :
             session_(_session)
         {
-            auto *_input = session_.inputs().current();
-
-            if (_input) _input->update();
-        }
-
-        omni::Session& Session::session()
-        {
-            return session_;
         }
 
         omni::Session const& Session::session() const
@@ -70,7 +62,7 @@ namespace omni {
             with_current_context([&](QOpenGLFunctions& _)
             {
                 auto *_input = session_.inputs().current();
-                auto *_mapping = session_.mapping();
+                auto *_mapping = const_cast<mapping::Interface*>(session_.mapping());
 
                 if (session_.hasOutput() && _mode != mapping::OutputMode::LIGHTING_ONLY)
                 {
@@ -202,7 +194,7 @@ namespace omni {
 
             for (auto& _proj : projectors_)
             {
-                if (!_selectedOnly || (i == _tuningIndex)) {
+                if ((!_selectedOnly || (i == _tuningIndex)) && session_.tunings()[i]->outputEnabled()) {
                     _proj.drawHalo();
                 }
                 ++i;
@@ -242,11 +234,5 @@ namespace omni {
             needsUpdate_ = false;
         }
 
-        void Session::free()
-        {
-            auto *_input = session_.inputs().current();
-
-            if (_input) _input->free();
-        }
     }
 }

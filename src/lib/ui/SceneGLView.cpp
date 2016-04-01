@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/ui/GLView3D.h>
+#include <omni/ui/SceneGLView.h>
 
 #include <QMouseEvent>
 #include <omni/util.h>
@@ -27,16 +27,16 @@ namespace omni
 {
   namespace ui
   {
-    GLView3D::GLView3D(QWidget* _parent) :
+    SceneGLView::SceneGLView(QWidget* _parent) :
       GLView(_parent)
     {
     }
 
-    GLView3D::~GLView3D()
+    SceneGLView::~SceneGLView()
     {
     }
 
-    bool GLView3D::initialize()
+    bool SceneGLView::initialize()
     {
       if (!dataModel() || initialized() || !context()) return false;
 
@@ -53,13 +53,13 @@ namespace omni
     }
 
 
-    void GLView3D::showEvent(QShowEvent* event) {
+    void SceneGLView::showEvent(QShowEvent* event) {
         if (vizSession_) {
           vizSession_->update();
         }
     }
 
-    void GLView3D::paintGL()
+    void SceneGLView::paintGL()
     {
       if (!dataModel() || this->isLocked() || !initialized()) return;
 
@@ -70,6 +70,8 @@ namespace omni
       makeCurrent();
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
       visual::viewport(this);
+
+      vizSession_->update();
 
       _scene.camera()->setup(aspect());
 
@@ -91,7 +93,7 @@ namespace omni
       }
     }
 
-    void GLView3D::wheelEvent(QWheelEvent* event)
+    void SceneGLView::wheelEvent(QWheelEvent* event)
     {
       if (!dataModel()) return;
 
@@ -103,14 +105,14 @@ namespace omni
 
       auto _size = dataModel()->scene().scale();
       _cam->limitDistance(_size*0.1,_size*5.0);
-      updateWithFrameRate();
+      triggerUpdate();
     }
 
-    void GLView3D::keyPressEvent(QKeyEvent* event)
+    void SceneGLView::keyPressEvent(QKeyEvent* event)
     {
     }
 
-    void GLView3D::mouseMoveEvent(QMouseEvent *event)
+    void SceneGLView::mouseMoveEvent(QMouseEvent *event)
     {
       if (!dataModel()) return;
 
@@ -131,16 +133,16 @@ namespace omni
       }
 
       this->mousePosition_ = event->pos();
-      updateWithFrameRate();
+      triggerUpdate();
     }
 
-    void GLView3D::changeZoom(int _value)
+    void SceneGLView::changeZoom(int _value)
     {
       if (!dataModel()) return;
       auto* _cam = dataModel()->scene().camera();
       if (!_cam) return;
       _cam->setDistance(_value/5.0);
-      updateWithFrameRate();
+      triggerUpdate();
     }
   }
 }

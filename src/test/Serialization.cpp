@@ -155,22 +155,6 @@ int main(int ac, char* av[])
       test::Serialization<Projector>("Projector",_proj);
   }
 
-
-  /// Test Tuning
-  {
-    proj::Tuning _tuning;
-    test::Serialization<proj::Tuning>("proj_Tuning",_tuning);
-  }
-
-
-  /// Test TuningList
-  {
-    proj::TuningList _tuningList;
-    _tuningList.add();
-    _tuningList.add();
-    test::Serialization<proj::TuningList>("proj_TuningList",_tuningList);
-  }
-
   /// Test InputList
   {
     InputList _inputs;
@@ -181,6 +165,7 @@ int main(int ac, char* av[])
   /// Test session
   {
     Session _session;
+    _session.tunings().add();
     test::Serialization<Session> _test("Session",_session);
   }
 }

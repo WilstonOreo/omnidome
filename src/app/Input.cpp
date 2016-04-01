@@ -163,7 +163,7 @@ namespace omni
       this->setupParameterWidget(widget(),dataModel()->inputs().current());
       if (this->parameterWidget()) {
           connect(this->parameterWidget(),SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
-          connect(this,SIGNAL(inputChanged()),this->parameterWidget(),SLOT(updateWithFrameRate()));
+          connect(this,SIGNAL(inputChanged()),this->parameterWidget(),SLOT(triggerUpdate()));
       }
     }
 

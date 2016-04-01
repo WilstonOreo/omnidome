@@ -41,10 +41,8 @@ namespace omni
     {
     }
 
-    void GLView::updateWithFrameRate() {
-//      if (canDraw()) {.DS_Stor
+    void GLView::triggerUpdate() {
       if (updateFreq_ <= 0.0) update();
-//      }
 
       updateTriggered_ = false;
     }
@@ -56,21 +54,19 @@ namespace omni
       updateTriggered_ = true;
     }
 
-    bool GLView::canDraw() const {
-      bool _needsUpdate = (updateFreq_ <= 0.0) || ((now() - lastUpdateTime_) >= 1.0 / updateFreq_);
-      return _needsUpdate;
-    }
-
     float GLView::updateFrequency() const {
       return updateFreq_;
     }
 
     void GLView::setUpdateFrequency(float _updateFrequency) {
       updateFreq_ = _updateFrequency;
+
+      if (timerId_) {
+        killTimer(timerId_);
+        timerId_ = 0;
+      }
+
       if (updateFreq_ <= 0.0) {
-        if (timerId_) {
-          killTimer(timerId_);
-        }
         return;
       }
 

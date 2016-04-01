@@ -32,13 +32,10 @@ namespace omni {
     class Session {
       public:
         /// Construct with reference to session
-        Session(omni::Session&);
+        Session(omni::Session const&);
 
         /// Return const ref to session
         omni::Session const& session() const;
-
-        /// Return ref to session
-        omni::Session      & session();
 
         /// Draw canvas with given output mode and optional grayscale toggle
         void                 drawCanvas(
@@ -57,7 +54,6 @@ namespace omni {
 
         /// Update projectors and canvas
         void update();
-        void free();
 
         /**@brief Draw projectors.
            @detail If _selectedOnly true, only currently selected projector is drawn
@@ -76,7 +72,7 @@ namespace omni {
         /// Draw canvas transform with matrix
         void drawCanvasWithMatrix() const;
 
-        omni::Session& session_;
+        omni::Session const& session_;
         static std::unique_ptr<QOpenGLShaderProgram> frustumShader_;
 
         std::list<visual::Projector> projectors_;

@@ -22,6 +22,7 @@
 
 #include <omni/mapping/Interface.h>
 #include <omni/serialization/Interface.h>
+#include <omni/proj/CalibrationMode.h>
 
 namespace omni {
   namespace render {
@@ -45,20 +46,23 @@ namespace omni {
            @detail Determines if uvw map, texture coordinates or the actual
                    mapped image shall be output.
          **/
+        CalibrationMode outputMode() const;
+
+        /// Converts calibration mode into mapping output mode
         mapping::OutputMode mappingOutputMode() const;
 
         /**@brief Set Mapping output mode
            @detail Determines if uvw map, texture coordinates or the actual
                    mapped image shall be output.
          **/
-        void                setMappingOutputMode(mapping::OutputMode);
+        void setOutputMode(CalibrationMode);
 
         /**@brief Determines how output images are separated
            @detail Images can be stitched together or separated by screen or
               projector.
                    Ignored when OMNI_CALIBRATION is output type.
          **/
-        SeparationMode      separationMode() const;
+        SeparationMode separationMode() const;
 
         /**@brief Set separation mode which defines how output images are
            separated
@@ -93,10 +97,10 @@ namespace omni {
                                ExportSettings const&);
 
       private:
-        OutputType outputType_                 = OutputType::OMNI_CALIBRATION;
-        mapping::OutputMode mappingOutputMode_ = mapping::OutputMode::TEXCOORDS;
-        SeparationMode separationMode_         = SeparationMode::SCREENS;
-        bool excludeUnassignedProjectors_      = false;
+        OutputType outputType_            = OutputType::OMNI_CALIBRATION;
+        CalibrationMode outputMode_       = CalibrationMode::TEXCOORDS;
+        SeparationMode  separationMode_   = SeparationMode::SCREENS;
+        bool excludeUnassignedProjectors_ = false;
     };
   }
 
