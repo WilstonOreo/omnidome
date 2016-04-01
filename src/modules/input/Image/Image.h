@@ -71,7 +71,6 @@ namespace omni {
 
       private:
         QImage image_;
-        bool   needsUpdate_ = true;
         std::unique_ptr<QOpenGLTexture> texture_;
         QString path_;
     };

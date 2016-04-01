@@ -37,20 +37,18 @@ namespace omni {
 
     void Image::free()
     {
-      needsUpdate_ = true;
       texture_.reset();
     }
 
     void Image::update()
     {
-      if (!needsUpdate_ || (image_.width() == 0)) return;
+      if (image_.width() == 0) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _) {
         texture_.reset(new QOpenGLTexture(image_));
         texture_->setMinMagFilters(
           QOpenGLTexture::Linear,
           QOpenGLTexture::Linear);
-        needsUpdate_ = false;
       });
     }
 
@@ -63,7 +61,7 @@ namespace omni {
     {
       image_       = QImage(_path).mirrored();
       path_        = _path;
-      needsUpdate_ = true;
+      update();
     }
 
     void Image::reload()
