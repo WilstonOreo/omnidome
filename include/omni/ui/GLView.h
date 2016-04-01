@@ -111,8 +111,6 @@ namespace omni {
         bool initialized_ = false;
 
         float  updateFreq_     = 0.0;
-        double lastUpdateTime_ = 0.0;
-        bool   needsUpdate_    = true;
         bool   updateTriggered_ = false;
         int timerId_ = 0;
     };

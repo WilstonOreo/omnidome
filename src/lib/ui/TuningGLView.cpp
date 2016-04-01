@@ -552,6 +552,9 @@ namespace omni {
       auto* _vizTuning = tuning()->visualizer();
       if (!_vizTuning) return;
 
+      if (dataModel()->canvas()) {
+        dataModel()->canvas()->update();
+      }
       vizSession_->update();
       _vizTuning->update();
       _vizTuning->updateWarpBuffer(vizSession_.get());
@@ -612,7 +615,6 @@ namespace omni {
 
       default: break;
       }
-      paintGLReady();
     }
   }
 }

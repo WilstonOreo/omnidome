@@ -76,10 +76,6 @@ namespace omni
       }
     }
 
-    void GLView::paintGLReady() {
-      lastUpdateTime_ = now();
-    }
-
     float GLView::aspect() const
     {
       return (float)width() / height();
