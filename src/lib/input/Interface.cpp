@@ -26,15 +26,15 @@
 
 namespace omni {
   namespace input {
-    Interface::Interface(Interface const* _parent) : parent_(_parent) {}
+    Interface::Interface(Interface const *_parent) : parent_(_parent) {}
 
     Interface::~Interface()
-    {
-    }
+    {}
 
-    Input* Interface::addInput(QString const& _id, Id const& _typeId)
+    Input * Interface::addInput(QString const& _id, Id const& _typeId)
     {
-      std::unique_ptr<Input> _input(Factory::create(_typeId,this));
+      std::unique_ptr<Input> _input(Factory::create(_typeId, this));
+
       if (!_input) return nullptr;
 
       _input->parent_ = this;
@@ -50,7 +50,7 @@ namespace omni {
       if (container_type::count(_id) != 0) {
         return nullptr;
       }
-      container_type::operator[](_id).reset(_i);
+             container_type::operator[](_id).reset(_i);
       _i->parent_ = this;
 
       return container_type::operator[](_id).get();
@@ -98,7 +98,7 @@ namespace omni {
       return *this;
     }
 
-    QString Interface::getId(Interface const* _i) const {
+    QString Interface::getId(Interface const *_i) const {
       if (_i->parent() != this) return "";
 
       for (auto& _child : children_) {
@@ -112,24 +112,21 @@ namespace omni {
     QString Interface::path() const {
       if (!parent()) return "/";
 
-      auto* _parent = parent();
+      auto   *_parent = parent();
       QString _path;
+
       while (_parent != nullptr) {
-        _path = QString("/") + _parent->getId(this) + _path;
+        _path   = QString("/") + _parent->getId(this) + _path;
         _parent = _parent->parent();
       }
       return _path;
     }
 
     /// Get interface by absolute path
-    Interface* Interface::getByPath(QString const& _path) {
-
-    }
+    Interface * Interface::getByPath(QString const& _path) {}
 
     /// Get interface by absolute path (const version)
-    Interface const* Interface::getByPath(QString const& _path) const {
-
-    }
+    Interface const * Interface::getByPath(QString const& _path) const {}
 
     /// Return parent interface (const version)
     Interface const * Interface::parent() const {
@@ -147,19 +144,21 @@ namespace omni {
 
       int _size = deserializeReturn<int>(_is, 0);
 
-      // Deserialize map of inputs
-      for (int i = 0; i < _size; ++i)
-      {
-        auto _id = deserializeReturn<QString>(_is);
-        deserializePtr(_is, [&](Id const& _typeId) ->
-                       input::Interface *
+      if (canHaveChildren()) {
+        // Deserialize map of inputs
+        for (int i = 0; i < _size; ++i)
         {
-          return addInput(_id, _typeId);
-        });
+          auto _id = deserializeReturn<QString>(_is);
+          deserializePtr(_is, [&](Id const& _typeId) ->
+                         input::Interface *
+          {
+            return addInput(_id, _typeId);
+          });
+        }
       }
     }
 
-    QWidget* Interface::widget() {
+    QWidget * Interface::widget() {
       return new ui::InputPreview(this);
     }
 
@@ -167,15 +166,19 @@ namespace omni {
     void Interface::toStream(QDataStream& _os) const {
       using namespace omni::util;
 
-      // serialize map of inputs
-      serialize(_os, int(children().size()));
+      if (canHaveChildren()) {
+        // serialize map of inputs
+        serialize(_os, int(children().size()));
 
-      for (auto& _idInput : (*this))
-      {
-        auto& _id    = _idInput.first;
-        auto& _input = _idInput.second;
-        serialize(_os, _id);
-        serialize(_os, _input.get());
+        for (auto& _idInput : (*this))
+        {
+          auto& _id    = _idInput.first;
+          auto& _input = _idInput.second;
+          serialize(_os, _id);
+          serialize(_os, _input.get());
+        }
+      } else {
+        serialize(_os, int(0));
       }
     }
   }
