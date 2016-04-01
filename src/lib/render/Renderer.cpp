@@ -210,6 +210,9 @@ namespace omni {
 
       visual::Tuning _tuningViz(*const_cast<proj::Tuning *>(_tuning));
       _tuningViz.update();
+      _tuningViz.updateWarpGrid();
+      _tuningViz.updateWarpBuffer(&_sessionViz);
+      _tuningViz.updateBlendTexture();
 
       renderToBuffer(_warpBuffer,
 
