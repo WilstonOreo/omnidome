@@ -45,8 +45,8 @@ namespace omni {
         return description_;
     }
 
-    QString PluginInfo::className() const {
-        return handle_->metaObject()->className();
+    QString const& PluginInfo::className() const {
+        return className_;
     }
 
     QString PluginInfo::versionString() const {
@@ -79,8 +79,8 @@ namespace omni {
 
     PluginInfo PluginInfo::make(QString const& _file, QObject const* _obj) {
         PluginInfo _info;
-        _info.handle_ = _obj;
         _info.file_ = _file;
+        _info.className_ = _obj->metaObject()->className();
 
         auto _getClassInfo = [&](QString const& _name) {
             auto const* _metaObject = _obj->metaObject();

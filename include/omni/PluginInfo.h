@@ -66,7 +66,7 @@ namespace omni {
       int            build() const;
 
       /// Return class name from meta object
-      QString        className() const;
+      QString const& className() const;
 
       /// Return file name of plugin
       QString const& file() const;
@@ -84,12 +84,12 @@ namespace omni {
       QString author_;
       QString url_;
       QString description_;
+      QString className_;
       int     majorVersion_ = 0;
       int     minorVersion_ = 0;
       int     revision_     = 0;
       int     build_        = 0;
       QString file_;
-      QObject const *handle_ = nullptr;
   };
 }
 

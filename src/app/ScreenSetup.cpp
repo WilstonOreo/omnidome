@@ -155,7 +155,6 @@ namespace omni
           break;
         }
       }
-
       return _itemAtPos;
     }
 
@@ -184,9 +183,16 @@ namespace omni
     void ScreenSetup::dragMoveEvent(QDragMoveEvent* event)
     {
       auto* _screenItem = getItemAtPos(event->pos());
-      if (_screenItem == currentScreenItem_) { return; }
+      if (!_screenItem) return;
+
+      if (currentScreenItem_) {
+        if (_screenItem == currentScreenItem_ && (_screenItem->hoverIndex() == currentScreenItem_->hoverIndex())) {
+          return;
+        }
+      }
 
       currentScreenItem_ = _screenItem;
+
 
       for (auto& _item : screenItems_)
         _item.second->setDrop(false);
