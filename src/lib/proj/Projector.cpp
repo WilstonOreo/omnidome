@@ -167,7 +167,6 @@ namespace omni {
 
     void Projector::fromStream(QDataStream& _is) {
       PropertyMap _map;
-
       _is >> _map;
       QRect _screenRect = _map.getValue<QRect>("screenRect");
 

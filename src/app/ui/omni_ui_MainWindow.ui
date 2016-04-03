@@ -270,9 +270,23 @@
     <property name="title">
      <string>View</string>
     </property>
+    <widget class="QMenu" name="menuSet_scene_view_FPS">
+     <property name="title">
+      <string>Scene View FPS</string>
+     </property>
+     <addaction name="action5_fps"/>
+     <addaction name="action10_fps"/>
+     <addaction name="action25_fps"/>
+     <addaction name="action30_fps"/>
+     <addaction name="action60_fps"/>
+     <addaction name="actionNo_limit"/>
+    </widget>
     <addaction name="actionDisableAllTunings"/>
     <addaction name="actionEnableAllTunings"/>
     <addaction name="actionEnableSelectedTuningOnly"/>
+    <addaction name="separator"/>
+    <addaction name="menuSet_scene_view_FPS"/>
+    <addaction name="actionProjector_View_FPS"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -376,6 +390,41 @@
   <action name="actionRecentFiles">
    <property name="text">
     <string>Recent files</string>
+   </property>
+  </action>
+  <action name="action10_fps">
+   <property name="text">
+    <string>10 fps</string>
+   </property>
+  </action>
+  <action name="action25_fps">
+   <property name="text">
+    <string>15 fps</string>
+   </property>
+  </action>
+  <action name="action5_fps">
+   <property name="text">
+    <string>5 fps</string>
+   </property>
+  </action>
+  <action name="action60_fps">
+   <property name="text">
+    <string>60 fps</string>
+   </property>
+  </action>
+  <action name="action30_fps">
+   <property name="text">
+    <string>30 fps</string>
+   </property>
+  </action>
+  <action name="actionNo_limit">
+   <property name="text">
+    <string>no limit</string>
+   </property>
+  </action>
+  <action name="actionProjector_View_FPS">
+   <property name="text">
+    <string>Projector View FPS</string>
    </property>
   </action>
  </widget>

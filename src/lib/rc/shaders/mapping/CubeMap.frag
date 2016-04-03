@@ -77,6 +77,13 @@ int dominant_axis(vec3 uvw) {
     return NO_AXIS;
 }
 
+#define CUBEMAP_EAST 2.0
+#define CUBEMAP_WEST 3.0
+#define CUBEMAP_NORTH 0.0
+#define CUBEMAP_SOUTH 1.0
+#define CUBEMAP_TOP 4.0
+#define CUBEMAP_BOTTOM 5.0
+
 float mapping(in vec3 uvw, out vec2 texCoords)
 {
   float _off = 0.0;
@@ -84,23 +91,22 @@ float mapping(in vec3 uvw, out vec2 texCoords)
   int axis = dominant_axis(uvw);
 
   if (axis == X_AXIS) {
-    _off = (uvw.x > 0.0) ? 2.0 : 3.0; // EAST / WEST
     texCoords = uvw.yz / abs(uvw.x);
     if (uvw.x > 0.0) {
-        _off = 2.0; // EAST
+        _off = CUBEMAP_EAST;
     } else {
         texCoords.s = -texCoords.s;
-        _off = 3.0; // WEST
+        _off = CUBEMAP_WEST;
     }
   }
   if (axis == Y_AXIS)
   {
     texCoords = uvw.xz / abs(uvw.y);
     if (uvw.y > 0.0) {
-        _off = 0.0; // NORTH
+        _off = CUBEMAP_NORTH;
         texCoords.s = - texCoords.s;
     } else {
-        _off = 1.0; // SOUTH
+        _off = CUBEMAP_SOUTH;
     }
   }
 
@@ -108,9 +114,9 @@ float mapping(in vec3 uvw, out vec2 texCoords)
   {
     texCoords = uvw.xy / abs(uvw.z);
     if (uvw.z > 0.0) {
-        _off = 4.0; // TOP
+        _off = CUBEMAP_TOP;
     } else {
-        _off = 5.0; // BOTTOM
+        _off = CUBEMAP_BOTTOM; 
         texCoords.t = - texCoords.t;
     }
   }

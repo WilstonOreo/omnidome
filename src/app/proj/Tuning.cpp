@@ -78,6 +78,8 @@ namespace omni {
                         tuning()->projector().fov().degrees());
         setParamAsFloat("Throw Ratio",
                         tuning()->projector().throwRatio());
+        setParamAsFloat("Keystone",
+                        tuning()->projector().keystone());
 
         auto _projSetup = tuning()->projector().setup();
 

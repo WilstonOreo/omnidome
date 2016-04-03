@@ -15,12 +15,14 @@
  "NAME": "inputmap_mode",
   "LABEL" : "Input mapping",
  "VALUES": [
- 0,
- 1
+ 2,
+ 1,
+ 0
  ],
  "LABELS": [
+ "Cubemap",
+ "Fisheye",
  "Equirectangular",
- "Fisheye"
  ],
  "DEFAULT": 0,
  "TYPE": "long"
@@ -29,12 +31,14 @@
  "NAME": "outputmap_mode",
   "LABEL" : "Output mapping",
  "VALUES": [
- 0,
- 1
+ 2,
+ 1,
+ 0
  ],
  "LABELS": [
- "Equirectangular",
- "Fisheye"
+ "Cubemap",
+ "Fisheye",
+ "Equirectangular"
  ],
  "DEFAULT": 0,
  "TYPE": "long"
@@ -90,8 +94,8 @@
     You should have received a copy of the GNU General Public License
     along with DomeSimulator.  If not, see <http://www.gnu.org/licenses/>.
 
-    Omnidome is free for non-commercial use. If you want to use it 
-    commercially, you should contact the author 
+    Omnidome is free for non-commercial use. If you want to use it
+    commercially, you should contact the author
     Michael Winkelmann aka Wilston Oreo by mail:
     me@wilstonoreo.net
 **************************************************************************/
@@ -99,6 +103,7 @@
 
 #define MAP_EQUIRECTANGULAR 0
 #define MAP_FISHEYE 1
+#define MAP_CUBEMAP 2
 
 ////////// ./shaders/util.h //////////
 
@@ -155,11 +160,28 @@ mat3 rotateAroundZ( in float angle )
 /// Calculate rotation by given yaw and pitch angles (in degrees!)
 mat3 rotationMatrix(in float yaw, in float pitch, in float roll)
 {
-  return rotateAroundZ(deg2rad(yaw)) * 
+  return rotateAroundZ(deg2rad(yaw)) *
          rotateAroundY(deg2rad(pitch)) *
          rotateAroundX(deg2rad(roll));
 }
 
+void transform_to_cubemap(inout vec2 texCoords, float offset) {
+  float eps =  -0.00;
+  texCoords = vec2(texCoords.s/(12.0 - eps) + (0.5 + offset) / 6.0,0.5 + texCoords.t/(2.0 - eps));
+}
+
+#define X_AXIS 0
+#define Y_AXIS 1
+#define Z_AXIS 2
+#define NO_AXIS 3
+
+int dominant_axis(vec3 uvw) {
+    vec3 v = abs(uvw);
+    if (v.x >= v.y && (v.x >= v.z)) return X_AXIS;
+    if (v.y >= v.x && (v.y >= v.z)) return Y_AXIS;
+    if (v.z >= v.x && (v.z >= v.y)) return Z_AXIS;
+    return NO_AXIS;
+}
 
 float map_equirectangular(in vec3 normal, out vec2 texCoords)
 {
@@ -194,26 +216,99 @@ float map_fisheye(in vec3 n, out vec2 texCoords)
 float map_fisheye(in vec2 texCoords, out vec3 n)
 {
     vec2 uv = texCoords -0.5;
-    float phi = atan(uv.x,uv.y);
+    float phi = atan(uv.y,uv.x);
     float l = length(uv);
-    
+
     if (l > 0.5) return -1.0;
-    
+
     float theta = l *PI *(1.0 + fisheye_stretch);
     float sin_theta = sin(theta);
     n = normalize(vec3(sin_theta * sin(phi), sin_theta * cos(phi), -cos(theta)));
     return 1.0;
 }
 
+#define CUBEMAP_EAST 2.0
+#define CUBEMAP_WEST 3.0
+#define CUBEMAP_NORTH 0.0
+#define CUBEMAP_SOUTH 1.0
+#define CUBEMAP_TOP 4.0
+#define CUBEMAP_BOTTOM 5.0
 
+float map_cubemap(in vec2 texCoords, out vec3 n) {
+
+  float side = floor(texCoords.x*6.0);
+  vec2 uv = (vec2(fract(texCoords.x*6.0),fract(texCoords.y)) - 0.5) *2.0;
+
+  if (side == CUBEMAP_EAST) {
+    n = vec3(1.0,uv.x,uv.y);
+  } else
+  if (side == CUBEMAP_WEST) {
+    n = vec3(-1.0,-uv.x,uv.y);
+  } else
+  if (side == CUBEMAP_NORTH) {
+    n = vec3(-uv.x,1.0,uv.y);
+  } else
+  if (side == CUBEMAP_SOUTH) {
+    n = vec3(uv.x,-1.0,uv.y);
+  } else
+  if (side == CUBEMAP_TOP) {
+    n = vec3(-uv,1.0);
+  } else
+  if (side == CUBEMAP_BOTTOM) {
+    n = vec3(uv.x,-uv.y,-1.0);
+  }
+
+  n = normalize(n);
+  return 1.0;
+}
+
+float map_cubemap(in vec3 n, out vec2 texCoords) {
+  float _off = 0.0;
+  vec3 v = abs(n);
+  int axis = dominant_axis(n);
+
+  if (axis == X_AXIS) {
+    texCoords = n.yz / abs(n.x);
+    if (n.x > 0.0) {
+        _off = CUBEMAP_EAST;
+    } else {
+        texCoords.s = -texCoords.s;
+        _off = CUBEMAP_WEST;
+    }
+  }
+  if (axis == Y_AXIS)
+  {
+    texCoords = n.xz / abs(n.y);
+    if (n.y > 0.0) {
+        _off = CUBEMAP_NORTH;
+        texCoords.s = - texCoords.s;
+    } else {
+        _off = CUBEMAP_SOUTH;
+    }
+  }
+
+  if (axis == Z_AXIS)
+  {
+    texCoords = n.xy / abs(n.z);
+    if (n.z > 0.0) {
+        _off = CUBEMAP_TOP;
+    } else {
+        _off = CUBEMAP_BOTTOM;
+        texCoords.t = - texCoords.t;
+    }
+  }
+  transform_to_cubemap(texCoords,_off);
+  return 1.0;
+}
 
 void main(void)
 {
     vec2 uv=gl_FragCoord.xy/RENDERSIZE.xy;
-    
+    uv.y = 1.0 - uv.y;
+
     vec3 normal = vec3(0.0,0.0,0.0);
     float result = -1.0;
-    
+
     if (outputmap_mode == MAP_EQUIRECTANGULAR)
     {
         result = map_equirectangular(uv,normal);
@@ -221,15 +316,19 @@ void main(void)
     if (outputmap_mode == MAP_FISHEYE)
     {
         result = map_fisheye(uv,normal);
+    } else
+    if (outputmap_mode == MAP_CUBEMAP)
+    {
+        result = map_cubemap(uv,normal);
     }
     if (result < 0.0)
     {
         gl_FragColor = vec4(0.0);
         return;
     }
-    
+
     normal *= rotationMatrix(map_yaw,map_pitch,map_roll);
-    
+
     vec2 texCoords;
     if (inputmap_mode == MAP_EQUIRECTANGULAR)
     {
@@ -238,13 +337,16 @@ void main(void)
     if (inputmap_mode == MAP_FISHEYE)
     {
         result = map_fisheye(normal,uv);
+    } else
+    if (inputmap_mode == MAP_CUBEMAP)
+    {
+        result = map_cubemap(normal,uv);
     }
     if (result < 0.0)
     {
         gl_FragColor = vec4(0.0);
         return;
     }
-    
+
     gl_FragColor = texture2DRect(inputImage,uv * _inputImage_imgSize);
 }
-

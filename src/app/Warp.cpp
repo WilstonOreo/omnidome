@@ -93,6 +93,7 @@ namespace omni {
 
       auto _interp = util::intToEnum<WarpGrid::Interpolation>(_index);
       warpGrid()->setInterpolation(_interp);
+      dataModel()->tunings().current()->visualizer()->updateWarpGrid();
       updateFrontend();
       emit dataModelChanged();
     }
