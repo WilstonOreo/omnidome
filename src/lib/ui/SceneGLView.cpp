@@ -48,7 +48,7 @@ namespace omni
         dataModel()->canvas()->update();
       }
 
-      this->vizSession_->update();
+      vizSession_->update();
       return true;
     }
 
@@ -79,12 +79,12 @@ namespace omni
       glLoadIdentity();
       _scene.updateLights();
 
-      this->vizSession_->drawCanvas(_scene.displayInput() && dataModel()->hasOutput() ?
+      vizSession_->drawCanvas(_scene.displayInput() && dataModel()->hasOutput() ?
           mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
 
-      this->vizSession_->drawProjectors(!_scene.displayProjectors());
-      this->vizSession_->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),!_scene.displayProjectedAreas());
-      this->vizSession_->drawProjectorHalos(!_scene.displayProjectors());
+      vizSession_->drawProjectors(!_scene.displayProjectors());
+      vizSession_->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),!_scene.displayProjectedAreas());
+      vizSession_->drawProjectorHalos(!_scene.displayProjectors());
 
       if (_scene.displayGrid()) {
         grid_->draw(0.5);
@@ -143,6 +143,12 @@ namespace omni
       if (!_cam) return;
       _cam->setDistance(_value/5.0);
       triggerUpdate();
+    }
+
+    void SceneGLView::dataToFrontend()
+    {
+      vizSession_.reset(new visual::Session(*dataModel()));
+      initializeGL();
     }
   }
 }

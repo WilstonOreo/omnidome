@@ -77,7 +77,7 @@ namespace omni
 
     QRectF InputPreview::viewRect() const
     {
-      if (!input_ || this->isLocked()) return QRectF();
+      if (!input_) return QRectF();
 
       auto* _input = input();
       if (!_input) return QRectF(0.0,0.0,1.0,1.0);
@@ -94,7 +94,7 @@ namespace omni
 
     void InputPreview::paintGL()
     {
-      if (!input_ || this->isLocked()) return;
+      if (!input_) return;
 
       visual::with_current_context([this](QOpenGLFunctions& _)
       {

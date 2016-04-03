@@ -134,6 +134,7 @@ namespace omni {
     void TuningGLView::updateWithChildViews()
     {
       triggerUpdate();
+
       for (auto& _childView : childViews_)
       {
         _childView->triggerUpdate();
@@ -171,7 +172,7 @@ namespace omni {
           {
             _selected->pos() += QPointF(dx, -dy);
           }
-          auto* _vizTuning = tuning()->visualizer();
+          auto *_vizTuning = tuning()->visualizer();
           _vizTuning->updateWarpGrid();
           updateWithChildViews();
         }
@@ -192,7 +193,7 @@ namespace omni {
             _childView->cursorPosition_ = cursorPosition_;
           }
 
-          auto* _vizTuning = tuning()->visualizer();
+          auto *_vizTuning = tuning()->visualizer();
           _vizTuning->setBlendTextureUpdateRect(QRect(_from, _to));
           _vizTuning->updateBlendTexture();
           updateWithChildViews();
@@ -260,7 +261,7 @@ namespace omni {
         auto& _blendMask = tuning()->blendMask();
         _blendMask.stamp(pixelPos(event->pos()));
 
-        auto* _vizTuning = tuning()->visualizer();
+        auto *_vizTuning = tuning()->visualizer();
         _vizTuning->updateBlendTexture();
 
         leftOverDistance_ = 0.0;
@@ -487,8 +488,8 @@ namespace omni {
 
       if ((showCursor_) &&
           (tuning() == dataModel()->tunings().current())) {
-            tuning()->visualizer()->drawCursor(cursorPosition_);
-          }
+        tuning()->visualizer()->drawCursor(cursorPosition_);
+      }
     }
 
     void TuningGLView::drawOutput(float _blendMaskOpacity,
@@ -542,14 +543,16 @@ namespace omni {
       drawOnSurface([&](QOpenGLFunctions& _)
       {
         tuning()->visualizer()->drawTestCard(index() + 1,
-                                 tuning()->outputDisabled() && viewOnly());
+                                             tuning()->outputDisabled() &&
+                                             viewOnly());
       });
     }
 
     void TuningGLView::showEvent(QShowEvent *event) {
       if (!tuning()) return;
 
-      auto* _vizTuning = tuning()->visualizer();
+      auto *_vizTuning = tuning()->visualizer();
+
       if (!_vizTuning) return;
 
       if (dataModel()->canvas()) {
@@ -563,7 +566,9 @@ namespace omni {
     void TuningGLView::paintGL()
     {
       if (!isVisible() || !context() || !initialized()) return;
+
       if (!tuning() || !vizSession_) return;
+
       if (!tuning()->visualizer()) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _)
@@ -614,6 +619,12 @@ namespace omni {
 
       default: break;
       }
+    }
+
+    void TuningGLView::dataToFrontend()
+    {
+      vizSession_.reset(new visual::Session(*dataModel()));
+      initializeGL();
     }
   }
 }

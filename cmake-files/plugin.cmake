@@ -25,6 +25,8 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
 
     SET(build_target plugin_${PLUGIN_PREFIX}_${PLUGIN_NAME})
 
+    include_directories(${${build_target}_INCLUDE})
+
     add_library(${build_target} SHARED ${plugin_src})
     target_link_libraries(${build_target} ${Qt5_LIBRARIES} ${${build_target}_LIBS} omni ${omni_gl_LIBRARIES})
     target_compile_definitions(${build_target} PRIVATE ${defs})

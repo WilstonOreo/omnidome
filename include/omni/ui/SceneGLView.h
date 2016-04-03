@@ -22,13 +22,19 @@
 
 #include <omni/ui/GLView.h>
 #include <omni/visual/Grid.h>
+#include <omni/ui/mixin/DataModel.h>
+#include <omni/visual/Session.h>
 
 namespace omni {
   namespace ui {
     /**@brief An OpenGL view for visualizing the scene of a session
      **/
-    class SceneGLView : public GLView {
+    class SceneGLView :
+      public GLView,
+      public mixin::SharedDataModel<Session>
+     {
       Q_OBJECT
+      OMNI_UI_SHARED_DATAMODEL(Session)
 
       public:
         SceneGLView(QWidget *_parent = nullptr);
@@ -36,6 +42,8 @@ namespace omni {
 
       public slots:
         void         changeZoom(int _value);
+      signals:
+        void dataModelChanged();
 
       protected:
         virtual void paintGL();
@@ -46,7 +54,15 @@ namespace omni {
         virtual void mouseMoveEvent(QMouseEvent *event);
         virtual void showEvent(QShowEvent* event);
 
+        /// Visualizer for session
+        std::unique_ptr<visual::Session> vizSession_;
+
       private:
+        virtual void dataToFrontend();
+        inline virtual bool frontendToData() {
+          return false;
+        }
+
         bool         initialize();
 
         std::unique_ptr<visual::Grid>   grid_;

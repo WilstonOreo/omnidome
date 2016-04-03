@@ -91,7 +91,7 @@ namespace omni
       int slices_ = 128;
 
       float top_ = 1.0;
-      float bottom_ = 0.0;
+      float bottom_ = -1.0;
 
       qreal radius_ = 1.0;
 

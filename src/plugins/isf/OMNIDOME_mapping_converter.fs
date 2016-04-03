@@ -338,7 +338,6 @@ void main(void)
 
     normal *= rotationMatrix(map_yaw,map_pitch,map_roll);
 
-    vec2 texCoords;
     if (inputmap_mode == MAP_EQUIRECTANGULAR)
     {
         result = map_equirectangular(normal,uv);

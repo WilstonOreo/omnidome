@@ -133,7 +133,7 @@ namespace omni {
     {
       auto e = eye();
 
-      return param_type({ e.x(), e.y(), e.z(), GLfloat(0.0) });
+      return param_type({ e.x(), e.y(), e.z(), GLfloat(1.0) });
     }
 
     /// Deserialize from stream

@@ -25,11 +25,8 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QPointF>
-#include <omni/visual/Session.h>
-#include <omni/ui/mixin/DataModel.h>
 
 namespace omni {
-  class Session;
 
   namespace ui {
     /**@brief GLView for visualizing tunings or session
@@ -37,19 +34,12 @@ namespace omni {
      **/
     class GLView :
       public QOpenGLWidget,
-      public mixin::SharedDataModel<Session>,
       protected QOpenGLFunctions {
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
 
       public:
         explicit GLView(QWidget *_parent = nullptr);
-        GLView(std::shared_ptr<omni::Session>,
-               QWidget *_parent = nullptr);
         virtual ~GLView();
-
-        /// Set of child views
-        typedef std::set<GLView *>view_set_type;
 
         /// Return aspect ratio of widget
         float   aspect() const;
@@ -68,9 +58,6 @@ namespace omni {
 
       public slots:
         void    triggerUpdate();
-
-      signals:
-        void    dataModelChanged();
 
       private slots:
         /// Free OpenGL contents stored in widget
@@ -97,17 +84,11 @@ namespace omni {
         /// Mouse position stored
         QPointF mousePosition_;
 
-        /// Visualizer for session
-        std::unique_ptr<visual::Session> vizSession_;
-
       private:
-        virtual void dataToFrontend();
-        inline virtual bool frontendToData() {
-          return false;
-        }
-
         /// Pure virtual function to initialize GL contents
         virtual bool initialize() = 0;
+
+        /// Is initialized flag is set to true after successful initialization
         bool initialized_ = false;
 
         float  updateFreq_     = 0.0;

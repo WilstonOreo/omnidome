@@ -119,8 +119,6 @@ namespace omni
 
     void GLView::resizeGL(int _w, int _h)
     {
-       if (this->isLocked()) return;
-
       _w = _w & ~1;
       _h = _h & ~1;
       makeCurrent();
@@ -136,17 +134,10 @@ namespace omni
     {
     }
 
-    void GLView::dataToFrontend()
-    {
-      vizSession_.reset(new visual::Session(*dataModel()));
-      initialized_ = initialize();
-    }
-
     void GLView::mousePressEvent(QMouseEvent* event)
     {
       QOpenGLWidget::mousePressEvent(event);
       setFocus();
-      if (!vizSession_) return;
       mousePosition_ = event->pos();
 
       update();

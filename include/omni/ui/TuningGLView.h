@@ -23,6 +23,8 @@
 #include <QOpenGLFramebufferObject>
 
 #include <omni/ui/GLView.h>
+#include <omni/ui/mixin/DataModel.h>
+#include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
 #include <omni/ui/mixin/TuningFromIndex.h>
 
@@ -31,8 +33,10 @@ namespace omni {
     /// A GLView for visualizing all modes of a projector view (tuning)
     class TuningGLView :
       public GLView,
+      public mixin::SharedDataModel<Session>,
       public mixin::TuningFromIndex<TuningGLView>{
       Q_OBJECT
+      OMNI_UI_SHARED_DATAMODEL(Session)
 
       public:
         TuningGLView(QWidget * = nullptr);
@@ -88,6 +92,9 @@ namespace omni {
       private slots:
         void free();
 
+      signals:
+        void    dataModelChanged();
+
       protected:
         void paintGL();
         void mouseMoveEvent(QMouseEvent *event);
@@ -98,6 +105,11 @@ namespace omni {
         void showEvent(QShowEvent *event);
 
       private:
+        virtual void dataToFrontend();
+        inline virtual bool frontendToData() {
+          return false;
+        }
+
         void drawOutput(
           float _blendMaskOpacity,
           float _inputOpacity = 1.0,
@@ -175,6 +187,9 @@ namespace omni {
         bool fullscreenMode_ = false;
 
         std::set<TuningGLView *> childViews_;
+
+        /// Visualizer for session
+        std::unique_ptr<visual::Session> vizSession_;
     };
   }
 }

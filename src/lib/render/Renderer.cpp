@@ -331,7 +331,7 @@ namespace omni {
       {
         GLuint fb = 0, _colorTex = 0, _depthRb = 0;
 
-        // RGBA8 2D texture, 24 bit depth texture, 256x256
+        // RGBA32F 2D texture
         _.glGenTextures(1, &_colorTex);
         _.glBindTexture(GL_TEXTURE_2D, _colorTex);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_REPEAT);

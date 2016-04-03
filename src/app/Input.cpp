@@ -115,11 +115,9 @@ namespace omni
 
       int _row = ui_->inputList->currentIndex().row();
 
-      qDebug() << "removeSelection: " << _row;
       if (_row < 1 || _row > dataModel()->inputs().numberOfChildren()) return;
 
       auto* _item = model_->item(_row);
-      qDebug() << "removeSelection: " << _item;
       if (!_item) return;
 
       dataModel()->inputs().removeInput(_item->text());
