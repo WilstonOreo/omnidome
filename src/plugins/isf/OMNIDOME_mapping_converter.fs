@@ -52,6 +52,12 @@
             "MAX": 180.0
         },
         {
+        	"NAME" : "flip",
+        	"LABEL" : "Flip",
+        	"TYPE" : "bool",
+        	"DEFAULT": 0
+        },
+        {
             "NAME": "map_pitch",
             "LABEL" : "Pitch",
             "TYPE": "float",
@@ -252,7 +258,7 @@ float map_cubemap(in vec2 texCoords, out vec3 n) {
     n = vec3(uv.x,-1.0,uv.y);
   } else
   if (side == CUBEMAP_TOP) {
-    n = vec3(-uv,1.0);
+    n = vec3(uv,1.0);
   } else
   if (side == CUBEMAP_BOTTOM) {
     n = vec3(uv.x,-uv.y,-1.0);
@@ -304,7 +310,10 @@ float map_cubemap(in vec3 n, out vec2 texCoords) {
 void main(void)
 {
     vec2 uv=gl_FragCoord.xy/RENDERSIZE.xy;
-    uv.y = 1.0 - uv.y;
+
+    if (flip) {
+    	uv.y = 1.0 - uv.y;
+    }
 
     vec3 normal = vec3(0.0,0.0,0.0);
     float result = -1.0;

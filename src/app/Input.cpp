@@ -127,6 +127,7 @@ namespace omni
 
       this->removeParameterWidget(widget());
       changeSelection(model_->index(_row,0));
+      emit inputChanged();
     }
 
     void Input::clear()
