@@ -65,7 +65,7 @@ namespace omni {
             suffix_ = _suffix;
 
             for (auto& _slider_info : sliders_) {
-              _slider_info->setSuffix(suffix_);
+              _slider_info.first->setSuffix(suffix_);
             }
           }
 

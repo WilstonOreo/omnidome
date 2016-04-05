@@ -178,6 +178,7 @@ namespace omni {
       data_.resize(width_ * height_);
     }
 
+    /// Convert buffer to QImage
     QImage toQImage() const
     {
       QImage _output(width(), height(), QImage::Format_RGB32);
@@ -192,9 +193,16 @@ namespace omni {
       return _output;
     }
 
+    /// Return void pointer to data
     void* ptr()
     {
       return static_cast<void *>(data_.data());
+    }
+
+    /// Return void pointer to data (const version)
+    void const* ptr() const
+    {
+      return static_cast<void const*>(data_.data());
     }
 
     /// Write blend mask to stream

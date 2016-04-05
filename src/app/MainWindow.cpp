@@ -153,6 +153,9 @@ MainWindow::MainWindow(QMainWindow *parent) :
     connect(ui_->dockCanvasWidget, SIGNAL(
               dataModelChanged()),                     this,
             SLOT(modified()));
+    connect(ui_->dockCanvasWidget, SIGNAL(
+              dataModelChanged()),                     this,
+            SLOT(updateAllViews()));
     connect(ui_->dockCanvasWidget, SIGNAL(canvasTypeChanged()),
             this, SLOT(modified()));
 
@@ -161,8 +164,12 @@ MainWindow::MainWindow(QMainWindow *parent) :
             sceneViewer_->view(), SLOT(triggerUpdate()));
     connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged()),
             ui_->tuningList, SLOT(updateSceneScale()));
+    connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged()),
+            ui_->dockCanvas, SLOT(updateSceneScale()));
     connect(ui_->dockSceneWidget, SIGNAL(unitChanged()),
             ui_->tuningList, SLOT(updateUnits()));
+    connect(ui_->dockSceneWidget, SIGNAL(dataModelChanged()),
+            this, SLOT(updateAllViews()));
 
     // Update all views when input has changed
     connect(ui_->dockInputsWidget, SIGNAL(
@@ -182,6 +189,9 @@ MainWindow::MainWindow(QMainWindow *parent) :
     connect(ui_->dockMappingWidget, SIGNAL(
               dataModelChanged()),                    this,
             SLOT(modified()));
+    connect(ui_->dockMappingWidget, SIGNAL(
+              dataModelChanged()),                    this,
+            SLOT(updateAllViews()));
     connect(ui_->dockMappingWidget, SIGNAL(
               dataModelChanged()),                      toolBar_.get(),
             SLOT(buttonStates()));
@@ -325,6 +335,8 @@ void MainWindow::saveProjectionAs()
       recentSessions_->addFile(filename_);
       modified_ = false;
       buttonState();
+    } catch (Exception& e) {
+      _widget->addException(e);
     } catch (exception::Serialization& e) {
       _widget->addException(e);
     } catch (serialization::exception::ChecksumError& e) {
@@ -422,12 +434,6 @@ void MainWindow::modified()
   if (locked_) return;
 
   modified_ = true;
-
-  if ((session_->mode() != Session::Mode::WARP) &&
-      (session_->mode() != Session::Mode::BLEND)) ui_->dockMapping->setVisible(
-      session_->inputs().current() != nullptr &&
-      session_->mode() !=
-      Session::Mode::SCREENSETUP);
   updateAllViews();
   buttonState();
 }
@@ -576,8 +582,7 @@ void MainWindow::setMode()
   case Session::Mode::LIVE:
     ui_->dockInputs->show();
     ui_->dockMapping->hide();
-    ui_->dockScene->raise();
-
+    ui_->dockScene->hide();
   default:
     break;
   }

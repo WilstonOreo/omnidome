@@ -41,8 +41,6 @@ namespace omni
       if (!dataModel() || initialized() || !context()) return false;
 
       dataModel()->scene().updateLights();
-      grid_.reset(new visual::Grid(dataModel()->scene().camera()));
-      grid_->update();
 
       if (dataModel()->canvas()) {
         dataModel()->canvas()->update();
@@ -67,7 +65,7 @@ namespace omni
 
       glEnable(GL_DEPTH_TEST);
 
-      makeCurrent();
+    //  makeCurrent();
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
       visual::viewport(this);
 
@@ -79,18 +77,16 @@ namespace omni
       glLoadIdentity();
       _scene.updateLights();
 
-      vizSession_->drawCanvas(_scene.displayInput() && dataModel()->hasOutput() ?
+      bool _displayInput = _scene.displayInput() && dataModel()->mapping() && dataModel()->inputs().current();
+      vizSession_->drawCanvas(_displayInput ?
           mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
 
       vizSession_->drawProjectors(!_scene.displayProjectors());
       vizSession_->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),!_scene.displayProjectedAreas());
       vizSession_->drawProjectorHalos(!_scene.displayProjectors());
 
-      if (_scene.displayGrid()) {
-        grid_->draw(0.5);
-        glDisable(GL_DEPTH_TEST);
-        grid_->draw(0.5);
-      }
+
+      _scene.drawGrid();
     }
 
     void SceneGLView::wheelEvent(QWheelEvent* event)
@@ -103,7 +99,7 @@ namespace omni
       float _r = event->delta()/100.0;
       _cam->track( 0, 0, _r );
 
-      auto _size = dataModel()->scene().scale();
+      auto _size = dataModel()->scene().size();
       _cam->limitDistance(_size*0.1,_size*5.0);
       triggerUpdate();
     }
@@ -148,7 +144,9 @@ namespace omni
     void SceneGLView::dataToFrontend()
     {
       vizSession_.reset(new visual::Session(*dataModel()));
-      initializeGL();
+      if (context()) {
+        initializeGL();
+      }
     }
   }
 }

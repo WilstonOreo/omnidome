@@ -523,6 +523,10 @@ namespace omni {
         1.0 /* draw input */);
     }
 
+    void TuningGLView::drawLiveView() {
+      tuning()->visualizer()->drawCalibratedInput();
+    }
+
     void TuningGLView::drawScreenBorder()
     {
       // Draw screen border rectangle on top
@@ -565,11 +569,7 @@ namespace omni {
 
     void TuningGLView::paintGL()
     {
-      if (!isVisible() || !context() || !initialized()) return;
-
-      if (!tuning() || !vizSession_) return;
-
-      if (!tuning()->visualizer()) return;
+      if (!context() || !initialized() || !tuning() || !vizSession_) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
@@ -578,13 +578,15 @@ namespace omni {
         _.glClearColor(0.0, 0.0, 0.0, 1.0);
       });
 
-      if (tuning()->outputDisabled() && this->fullscreenMode()) return;
-
       if (!dataModel()->hasOutput())
       {
         drawTestCard();
         return;
       }
+
+      if (!tuning()->visualizer()) return;
+      if (tuning()->outputDisabled() && this->fullscreenMode()) return;
+
 
       switch (dataModel()->mode())
       {
@@ -611,10 +613,8 @@ namespace omni {
       case Session::Mode::EXPORT:
         drawExportView();
         break;
-
       case Session::Mode::LIVE:
-
-        // drawLiveView();
+         drawLiveView();
         break;
 
       default: break;
@@ -624,7 +624,9 @@ namespace omni {
     void TuningGLView::dataToFrontend()
     {
       vizSession_.reset(new visual::Session(*dataModel()));
-      initializeGL();
+      if (context() && !initialized()) {
+        initializeGL();
+      }
     }
   }
 }

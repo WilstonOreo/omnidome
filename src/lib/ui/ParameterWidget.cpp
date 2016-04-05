@@ -112,8 +112,8 @@ namespace omni
     {
       auto* _offset = addWidget(_str,_value,_min,_max);
       _offset->setSuffix("m");
-      _offset->setSingleStep(0.01);
-      _offset->setPageStep(0.1);
+      _offset->setSingleStep(0.001);
+      _offset->setPageStep(0.01);
       _offset->setPivot(0.0);
       this->registerScaledSlider(_offset);
       return _offset;
@@ -211,6 +211,14 @@ namespace omni
         focus(layout()->count()-1);
     }
 
+    void ParameterWidget::setScale(float _scale) {
+        mixin::Scale<omni::ui::RangedFloat>::setScale(_scale);
+    }
+
+    void ParameterWidget::setUnit(QString const& _unitAbbr) {
+        mixin::Scale<omni::ui::RangedFloat>::setSuffix(_unitAbbr);
+    }
+
     void ParameterWidget::keyPressEvent(QKeyEvent* _event) {
           if (_event->key() == Qt::Key_Up) {
               focusPrev(false);
@@ -274,7 +282,7 @@ namespace omni
         QString const& _id, omni::AffineTransform* _transform) {
 
         auto* _widget = ui::makeWidget<omni::ui::AffineTransform>(_transform);
-            
+
         if (layout())
             layout()->addWidget(_widget);
 

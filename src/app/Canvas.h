@@ -50,10 +50,14 @@ namespace omni {
       signals:
         void dataModelChanged();
         void canvasTypeChanged();
+        void sceneSizeChanged();
 
       public slots:
         /// Select canvas type with id
         void selectCanvasType(QString);
+
+        /// Set size of scene
+        void setSceneSize(float);
 
       private:
         /// Update widgets from current mapping
@@ -63,7 +67,7 @@ namespace omni {
         bool frontendToData();
 
         void showParameterWidget();
-    
+
         std::unique_ptr<Ui::Canvas> ui_;
 
         TypeIdMemory<canvas::Interface> canvasMemory_;

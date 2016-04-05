@@ -29,7 +29,7 @@ void main(void)
 {
   vec2 pos = v.xy / vec2(1000.0,1000.0);
 
-  dist = length(resolution) / length(cam_pos - v) * 2000.0;
+  dist = length(resolution) / length(cam_pos - v) * 200.0;
 
   float numGrid = 1.0;
   float grid = 0.0;

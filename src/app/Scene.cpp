@@ -50,13 +50,19 @@ namespace omni {
             if (!dataModel() || isLocked()) return;
 
             auto& _scene = dataModel()->scene();
-            _scene.setScale(ui_->boxSize->currentText().toFloat());
+            _scene.setSize(ui_->boxSize->currentText().toFloat());
 
             emit sceneScaleChanged();
         }
 
         void Scene::setUnit() {
             if (!dataModel() || isLocked()) return;
+
+            auto& _scene = dataModel()->scene();
+            auto&& _stringList = ui_->boxUnit->currentText().split(" ");
+            if (_stringList.isEmpty()) return;
+
+            _scene.setUnit(_stringList[0]);
 
             emit unitChanged();
         }
@@ -69,6 +75,14 @@ namespace omni {
             ui_->chkProjectors->setChecked(_scene.displayProjectors());
             ui_->chkProjectedAreas->setChecked(_scene.displayProjectedAreas());
             ui_->boxFrustumViewMode->setCurrentIndex(util::enumToInt(_scene.projectorViewMode()));
+
+            int _index = -1;
+            /*
+            for (int i = 0; i < ui_->boxSize->count(); ++i) {
+
+            }
+            ui_->boxSize->setCurrentIndex(_index);
+            */
         }
 
         bool Scene::frontendToData() {

@@ -31,6 +31,7 @@ namespace omni {
   namespace visual {
     std::unique_ptr<QOpenGLShaderProgram> Tuning::blendShader_;
     std::unique_ptr<QOpenGLShaderProgram> Tuning::testCardShader_;
+    std::unique_ptr<QOpenGLShaderProgram> Tuning::calibrationShader_;
 
     Tuning::Tuning(omni::proj::Tuning& _tuning) :
       tuning_(_tuning)
@@ -103,32 +104,26 @@ namespace omni {
         cursor_.reset(new Circle);
       }
 
-      if (!testCardShader_)
-      {
-        static QString _vertSrc =
-          fileToStr(":/shaders/testcard.vert");
-        static QString _fragmentSrc =
-          fileToStr(":/shaders/testcard.frag");
+      auto _initShader = [&](
+        std::unique_ptr<QOpenGLShaderProgram>& _s,
+        QString const& _filename) {
+                           if (!!_s) return;
 
-        testCardShader_.reset(new QOpenGLShaderProgram());
-        testCardShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                                 _vertSrc);
-        testCardShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                                 _fragmentSrc);
-        testCardShader_->link();
-      }
+                           QString _vertSrc =
+                             fileToStr(":/shaders/" + _filename + ".vert");
+                           QString _fragmentSrc =
+                             fileToStr(":/shaders/" + _filename + ".frag");
+                           _s.reset(new QOpenGLShaderProgram());
+                           _s->addShaderFromSourceCode(QOpenGLShader::Vertex,
+                                                       _vertSrc);
+                           _s->addShaderFromSourceCode(QOpenGLShader::Fragment,
+                                                       _fragmentSrc);
+                           _s->link();
+                         };
 
-      if (!blendShader_)
-      {
-        static QString _vertSrc     = fileToStr(":/shaders/blend.vert");
-        static QString _fragmentSrc = fileToStr(":/shaders/blend.frag");
-        blendShader_.reset(new QOpenGLShaderProgram());
-        blendShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                              _vertSrc);
-        blendShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                              _fragmentSrc);
-        blendShader_->link();
-      }
+      _initShader(testCardShader_, "testcard");
+      _initShader(blendShader_, "blend");
+      _initShader(calibrationShader_, "calibration");
 
       updateWarpGrid();
       updateBlendTexture();
@@ -371,7 +366,7 @@ namespace omni {
     }
 
     /// Update warp buffer which contains image of projector perspective
-    void Tuning::updateWarpBuffer(visual::Session const* _vizSession)
+    void Tuning::updateWarpBuffer(visual::Session const *_vizSession)
     {
       // If tuning size has changed, reset warpGrid framebuffer
       if (warpGridBuffer_)
@@ -396,13 +391,13 @@ namespace omni {
         _.glEnable(GL_TEXTURE_2D);
         _.glDisable(GL_LIGHTING);
         draw_on_framebuffer(warpGridBuffer_,
-                                    [&](QOpenGLFunctions& _) // Projection
-                                                             // Operation
+                            [&](QOpenGLFunctions& _) // Projection
+                                                     // Operation
         {
           glMultMatrixf(tuning().projector().projectionMatrix().constData());
         },
-                                    [&](QOpenGLFunctions& _) // Model View
-                                                             // Operation
+                            [&](QOpenGLFunctions& _) // Model View
+                                                     // Operation
         {
           _.glClearColor(0.0, 0.0, 0.0, 1.0);
           _.glClear(GL_DEPTH_BUFFER_BIT);
@@ -439,6 +434,90 @@ namespace omni {
 
       blendShader_.reset();
       testCardShader_.reset();
+    }
+
+    void Tuning::generateCalibrationData() {
+      tuning_.renderCalibration(calibration_);
+
+      with_current_context([&](QOpenGLFunctions& _) {
+        if (calibrationTexId_ != 0) {
+          _.glDeleteTextures(1, &calibrationTexId_);
+        }
+
+        _.glGenTextures(1, &calibrationTexId_);
+        _.glBindTexture(GL_TEXTURE_2D, calibrationTexId_);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
+                       calibration_.renderSize().width(),
+                       calibration_.renderSize().height(), 0,
+                       GL_RGBA, GL_FLOAT, calibration_.buffer().ptr());
+        _.glBindTexture(GL_TEXTURE_2D, 0);
+      });
+    }
+
+    QVector4D Tuning::channelCorrectionAsVec(Channel _channel) const {
+      QVector4D _vec(0.0, 0.0, 0.0, 0.0);
+      auto     *_channelCorrection = calibration_.colorCorrection().correction(
+        _channel);
+
+      if (!_channelCorrection) return _vec;
+
+      _vec.setX(_channelCorrection->gamma());
+      _vec.setY(_channelCorrection->brightness());
+      _vec.setZ(_channelCorrection->contrast());
+      _vec.setW(_channelCorrection->multiplier());
+      return _vec;
+    }
+
+    void Tuning::drawCalibratedInput() {
+      if (!calibrationShader_) return;
+
+      auto *_currentInput = tuning().session().inputs().current();
+
+      if (!_currentInput) return;
+
+      with_current_context([&](QOpenGLFunctions& _) {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        QMatrix4x4 _m;
+        _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
+        glMultMatrixf(_m.constData());
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        calibrationShader_->bind();
+        {
+          calibrationShader_->setUniformValue("uv_map", GLint(1));
+          _.glActiveTexture(GL_TEXTURE0 + 1);
+          _.glBindTexture(GL_TEXTURE_2D, calibrationTexId_);
+
+          calibrationShader_->setUniformValue("image", GLint(2));
+          _.glActiveTexture(GL_TEXTURE0 + 2);
+          _.glBindTexture(GL_TEXTURE_2D, _currentInput->textureId());
+
+          calibrationShader_->setUniformValue("cc_red",
+                                              channelCorrectionAsVec(
+                                                Channel::RED));
+          calibrationShader_->setUniformValue("cc_green",
+                                              channelCorrectionAsVec(Channel::
+                                                                     GREEN));
+          calibrationShader_->setUniformValue("cc_blue",
+                                              channelCorrectionAsVec(
+                                                Channel::BLUE));
+          calibrationShader_->setUniformValue("cc_all",
+                                              channelCorrectionAsVec(
+                                                Channel::ALL));
+
+          Rectangle::draw(-0.5, 0.5, 0.5, -0.5);
+        }
+        calibrationShader_->release();
+        _.glBindTexture(GL_TEXTURE_2D, 0);
+      });
     }
 
     QRectF Tuning::tuningRect() const

@@ -21,6 +21,7 @@
 #define OMNI_INPUT_IMAGE_H_
 
 #include <omni/input/Interface.h>
+#include <omni/media/Location.h>
 
 namespace omni {
   namespace input {
@@ -71,8 +72,8 @@ namespace omni {
 
       private:
         QImage image_;
+        media::Location imageLocation_;
         std::unique_ptr<QOpenGLTexture> texture_;
-        QString path_;
     };
   }
 }

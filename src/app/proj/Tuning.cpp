@@ -72,7 +72,7 @@ namespace omni {
         fullscreen_->setDataModel(dataModel());
         fullscreen_->setTuningIndex(index());
         titleBar_->setColor(tuning()->color());
-        this->setScale(dataModel()->scene().scale());
+        this->setScale(dataModel()->scene().size());
 
         setParamAsFloat("FOV",
                         tuning()->projector().fov().degrees());

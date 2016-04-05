@@ -27,6 +27,7 @@
 #include <omni/visual/Light.h>
 #include <omni/visual/CameraInterface.h>
 #include <omni/LengthUnit.h>
+#include <omni/visual/Grid.h>
 
 namespace omni {
   namespace visual {
@@ -62,11 +63,11 @@ namespace omni {
 
         Scene();
 
-        /// Scene scale (min, max dimensions)
-        float          scale() const;
+        /// Scene size (min, max dimensions)
+        float          size() const;
 
-        /// Set scene scale
-        void           setScale(float);
+        /// Set scene size
+        void           setSize(float);
 
         /// Length unit for scene
         LengthUnit const& unit() const;
@@ -144,8 +145,14 @@ namespace omni {
         friend bool operator==(Scene const&,
                                Scene const&);
 
+        /// Draw grid with given scene size if it is to be displayed
+        void drawGrid() const;
+
+        /// Update grid
+        void updateGrid();
+
       private:
-        float      scale_                    = 10.0;
+        float      size_                     = 10.0;
         LengthUnit unit_;
         bool       displayInput_             = true;
         bool       displayGrid_              = true;
@@ -159,6 +166,7 @@ namespace omni {
         QString cameraId_;
         std::vector<visual::Light> lights_;
         std::map<QString,std::unique_ptr<visual::CameraInterface>> cameras_;
+        std::unique_ptr<visual::Grid>   grid_;
     };
   }
   using visual::Scene;

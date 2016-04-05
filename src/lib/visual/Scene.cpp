@@ -25,198 +25,228 @@
 #include <omni/serialization/container.h>
 
 namespace omni {
-    namespace visual {
-        Scene::Scene() {
-          float _radius = scale_;
-          std::unique_ptr<CameraInterface> _cam(new PerspectiveCamera(
-                    Tracker(QVector3D(0,0,0), PolarVec(-45.0,45.0,_radius * 5.0))));
+  namespace visual {
+    Scene::Scene() {
+      setSize(size_);
+      float _radius = size_;
+      std::unique_ptr<CameraInterface> _cam(new PerspectiveCamera(
+                                              Tracker(QVector3D(0,
+                                                                0,
+                                                                0), PolarVec(
+                                                        -45.0,
+                                                        45.0,
+                                                        _radius * 5.0))));
+      cameras_["camera"] = std::move(_cam);
+      setCurrentCameraId("camera");
 
-          cameras_["camera"] = std::move(_cam);
-          cameraId_ = "camera";
-
-          lights_.emplace_back(Tracker(QVector3D(0.0,0.0,0.0),
-                             PolarVec(-45.0,45.0,_radius * 10.0)),0.5);
-          lights_.emplace_back(Tracker(QVector3D(0.0,0.0,0.0),
-                             PolarVec( 45.0,45.0,_radius * 10.0)),0.3);
-          lights_.emplace_back(Tracker(QVector3D(0.0,0.0,0.0),
-                             PolarVec( 45.0,-45.0,_radius * 10.0)),0.3);
-        }
-
-        float Scene::scale() const {
-            return scale_;
-        }
-
-        void Scene::setScale(float _scale) {
-            scale_ = _scale;
-        }
-
-        LengthUnit const& Scene::unit() const {
-            return unit_;
-        }
-
-        void Scene::setUnit(QString const& _unit) {
-            unit_ = LengthUnit(_unit);
-        }
-
-        void Scene::setUnit(LengthUnit const& _unit) {
-            unit_ = _unit;
-        }
-
-        /// Input is shown on canvas
-        bool Scene::displayInput() const {
-            return displayInput_;
-        }
-
-        void Scene::setDisplayInput(bool _displayInput) {
-            displayInput_ = _displayInput;
-        }
-
-        /// Display line grid
-        bool Scene::displayGrid() const {
-            return displayGrid_;
-        }
-
-        void Scene::setDisplayGrid(bool _displayGrid) {
-            displayGrid_ = _displayGrid;
-        }
-
-        /// Display projector frustra (selected projector is always shown)
-        bool Scene::displayProjectors() const {
-            return displayProjectors_;
-        }
-
-        void Scene::setDisplayProjectors(bool _displayProjectors) {
-            displayProjectors_ = _displayProjectors;
-        }
-
-        /// Display projected areas
-        bool Scene::displayProjectedAreas() const {
-            return displayProjectedAreas_;
-        }
-
-        void Scene::setDisplayProjectedAreas(bool _displayProjectedAreas) {
-            displayProjectedAreas_ = _displayProjectedAreas;
-        }
-
-        /// Set mode whether to manip
-        EditMode Scene::editMode() const {
-            return editMode_;
-        }
-
-        void Scene::setEditMode(EditMode _editMode) {
-            editMode_ = _editMode;
-        }
-
-        RotateMode Scene::rotateMode() const {
-            return rotateMode_;
-        }
-
-        void Scene::setRotateMode(RotateMode _rotateMode) {
-            rotateMode_ = _rotateMode;
-        }
-
-        MoveMode Scene::moveMode() const {
-            return moveMode_;
-        }
-
-        void Scene::setMoveMode(MoveMode _moveMode) {
-            moveMode_ = _moveMode;
-        }
-
-        ProjectorViewMode Scene::projectorViewMode() const {
-            return projectorViewMode_;
-        }
-
-        void Scene::setProjectorViewMode(ProjectorViewMode _projectorViewMode) {
-            projectorViewMode_ = _projectorViewMode;
-        }
-
-        /// Setup light for use in OpenGL
-        void Scene::updateLights() {
-            GLuint _index = GL_LIGHT0;
-
-            for (auto& _light : lights_) _light.setup(++_index);
-        }
-
-        /// Return reference to camera
-        visual::CameraInterface* Scene::camera() {
-          if (cameras_.count(cameraId_) == 0) return nullptr;
-          return cameras_.at(cameraId_).get();
-        }
-
-        /// Return const reference to camera
-        visual::CameraInterface const* Scene::camera() const {
-          if (cameras_.count(cameraId_) == 0) return nullptr;
-          return cameras_.at(cameraId_).get();
-        }
-
-        /// Return current camera id
-        QString Scene::currentCameraId() const {
-          return cameraId_;
-        }
-
-        /// Set id to current camera
-        void Scene::setCurrentCameraId(QString const& _cameraId) {
-          cameraId_ = _cameraId;
-        }
-
-        Scene::camera_map_type& Scene::cameras() {
-          return cameras_;
-        }
-
-        Scene::camera_map_type const& Scene::cameras() const {
-          return cameras_;
-        }
-
-        /// Deserialize from stream
-        void Scene::fromStream(QDataStream& _is) {
-            PropertyMap _map;
-
-            _is >> _map;
-            _map.get("scale",                 scale_);
-            _map.get("displayInput",          displayInput_);
-            _map.get("displayGrid",           displayGrid_);
-            _map.get("displayProjectors",     displayProjectors_);
-            _map.get("displayProjectedAreas", displayProjectedAreas_);
-            _map.get("editMode",              editMode_);
-            _map.get("rotateMode",            rotateMode_);
-            _map.get("moveMode",              moveMode_);
-            _map.get("projectorViewMode",     projectorViewMode_);
-            _map.get("lights", lights_);
-            //_map.get("cameras", cameras_);
-        }
-
-        /// Serialize to stream
-        void Scene::toStream(QDataStream& _os) const {
-            PropertyMap _map;
-
-            _map("scale", scale_)
-                ("displayInput", displayInput_)
-                ("displayGrid", displayGrid_)
-                ("displayProjectors", displayProjectors_)
-                ("displayProjectedAreas", displayProjectedAreas_)
-                ("editMode", editMode_)
-                ("rotateMode", rotateMode_)
-                ("moveMode", moveMode_)
-                ("projectorViewMode", projectorViewMode_)
-                ("lights", lights_);
-          //      ("cameras", cameras_);
-            _os << _map;
-        }
-
-        bool operator==(Scene const& _lhs, Scene const& _rhs) {
-            return
-                OMNI_TEST_MEMBER_EQUAL(scale_) &&
-                OMNI_TEST_MEMBER_EQUAL(displayInput_) &&
-                OMNI_TEST_MEMBER_EQUAL(displayGrid_) &&
-                OMNI_TEST_MEMBER_EQUAL(displayProjectors_) &&
-                OMNI_TEST_MEMBER_EQUAL(displayProjectedAreas_) &&
-                OMNI_TEST_MEMBER_EQUAL(editMode_) &&
-                OMNI_TEST_MEMBER_EQUAL(rotateMode_) &&
-                OMNI_TEST_MEMBER_EQUAL(moveMode_) &&
-                OMNI_TEST_MEMBER_EQUAL(projectorViewMode_) &&
-                OMNI_TEST_MEMBER_EQUAL(lights_) &&
-                OMNI_TEST_MEMBER_EQUAL(cameras_);
-        }
+      lights_.emplace_back(Tracker(QVector3D(0.0, 0.0, 0.0),
+                                   PolarVec(-45.0, 45.0, _radius * 10.0)), 0.5);
+      lights_.emplace_back(Tracker(QVector3D(0.0, 0.0, 0.0),
+                                   PolarVec(45.0, 45.0, _radius * 10.0)), 0.3);
+      lights_.emplace_back(Tracker(QVector3D(0.0, 0.0, 0.0),
+                                   PolarVec(45.0, -45.0, _radius * 10.0)), 0.3);
     }
+
+    float Scene::size() const {
+      return size_;
+    }
+
+    void Scene::setSize(float _size) {
+      size_ = _size;
+      updateGrid();
+    }
+
+    LengthUnit const& Scene::unit() const {
+      return unit_;
+    }
+
+    void Scene::setUnit(QString const& _unit) {
+      unit_ = LengthUnit(_unit);
+    }
+
+    void Scene::setUnit(LengthUnit const& _unit) {
+      unit_ = _unit;
+    }
+
+    /// Input is shown on canvas
+    bool Scene::displayInput() const {
+      return displayInput_;
+    }
+
+    void Scene::setDisplayInput(bool _displayInput) {
+      displayInput_ = _displayInput;
+    }
+
+    /// Display line grid
+    bool Scene::displayGrid() const {
+      return displayGrid_;
+    }
+
+    void Scene::setDisplayGrid(bool _displayGrid) {
+      displayGrid_ = _displayGrid;
+    }
+
+    /// Display projector frustra (selected projector is always shown)
+    bool Scene::displayProjectors() const {
+      return displayProjectors_;
+    }
+
+    void Scene::setDisplayProjectors(bool _displayProjectors) {
+      displayProjectors_ = _displayProjectors;
+    }
+
+    /// Display projected areas
+    bool Scene::displayProjectedAreas() const {
+      return displayProjectedAreas_;
+    }
+
+    void Scene::setDisplayProjectedAreas(bool _displayProjectedAreas) {
+      displayProjectedAreas_ = _displayProjectedAreas;
+    }
+
+    /// Set mode whether to manip
+    EditMode Scene::editMode() const {
+      return editMode_;
+    }
+
+    void Scene::setEditMode(EditMode _editMode) {
+      editMode_ = _editMode;
+    }
+
+    RotateMode Scene::rotateMode() const {
+      return rotateMode_;
+    }
+
+    void Scene::setRotateMode(RotateMode _rotateMode) {
+      rotateMode_ = _rotateMode;
+    }
+
+    MoveMode Scene::moveMode() const {
+      return moveMode_;
+    }
+
+    void Scene::setMoveMode(MoveMode _moveMode) {
+      moveMode_ = _moveMode;
+    }
+
+    ProjectorViewMode Scene::projectorViewMode() const {
+      return projectorViewMode_;
+    }
+
+    void Scene::setProjectorViewMode(ProjectorViewMode _projectorViewMode) {
+      projectorViewMode_ = _projectorViewMode;
+    }
+
+    /// Setup light for use in OpenGL
+    void Scene::updateLights() {
+      GLuint _index = GL_LIGHT0;
+
+      for (auto& _light : lights_) _light.setup(++_index);
+    }
+
+    /// Return reference to camera
+    visual::CameraInterface * Scene::camera() {
+      if (cameras_.count(cameraId_) == 0) return nullptr;
+
+      return cameras_.at(cameraId_).get();
+    }
+
+    /// Return const reference to camera
+    visual::CameraInterface const * Scene::camera() const {
+      if (cameras_.count(cameraId_) == 0) return nullptr;
+
+      return cameras_.at(cameraId_).get();
+    }
+
+    /// Return current camera id
+    QString Scene::currentCameraId() const {
+      return cameraId_;
+    }
+
+    /// Set id to current camera
+    void Scene::setCurrentCameraId(QString const& _cameraId) {
+      cameraId_ = _cameraId;
+
+      updateGrid();
+    }
+
+    Scene::camera_map_type& Scene::cameras() {
+      return cameras_;
+    }
+
+    Scene::camera_map_type const& Scene::cameras() const {
+      return cameras_;
+    }
+
+    /// Deserialize from stream
+    void Scene::fromStream(QDataStream& _is) {
+      PropertyMap _map;
+
+      _is >> _map;
+      _map.get("size",                 size_);
+      _map.get("displayInput",          displayInput_);
+      _map.get("displayGrid",           displayGrid_);
+      _map.get("displayProjectors",     displayProjectors_);
+      _map.get("displayProjectedAreas", displayProjectedAreas_);
+      _map.get("editMode",              editMode_);
+      _map.get("rotateMode",            rotateMode_);
+      _map.get("moveMode",              moveMode_);
+      _map.get("projectorViewMode",     projectorViewMode_);
+      _map.get("lights", lights_);
+
+      // _map.get("cameras", cameras_);
+    }
+
+    /// Serialize to stream
+    void Scene::toStream(QDataStream& _os) const {
+      PropertyMap _map;
+
+      _map("size", size_)
+        ("displayInput", displayInput_)
+        ("displayGrid", displayGrid_)
+        ("displayProjectors", displayProjectors_)
+        ("displayProjectedAreas", displayProjectedAreas_)
+        ("editMode", editMode_)
+        ("rotateMode", rotateMode_)
+        ("moveMode", moveMode_)
+        ("projectorViewMode", projectorViewMode_)
+        ("lights", lights_);
+
+      //      ("cameras", cameras_);
+      _os << _map;
+    }
+
+    bool operator==(Scene const& _lhs, Scene const& _rhs) {
+      return
+        OMNI_TEST_MEMBER_EQUAL(size_) &&
+        OMNI_TEST_MEMBER_EQUAL(displayInput_) &&
+        OMNI_TEST_MEMBER_EQUAL(displayGrid_) &&
+        OMNI_TEST_MEMBER_EQUAL(displayProjectors_) &&
+        OMNI_TEST_MEMBER_EQUAL(displayProjectedAreas_) &&
+        OMNI_TEST_MEMBER_EQUAL(editMode_) &&
+        OMNI_TEST_MEMBER_EQUAL(rotateMode_) &&
+        OMNI_TEST_MEMBER_EQUAL(moveMode_) &&
+        OMNI_TEST_MEMBER_EQUAL(projectorViewMode_) &&
+        OMNI_TEST_MEMBER_EQUAL(lights_) &&
+        OMNI_TEST_MEMBER_EQUAL(cameras_);
+    }
+
+    void Scene::drawGrid() const {
+      if (!grid_ || !displayGrid()) return;
+
+      grid_->draw(0.5);
+      glDisable(GL_DEPTH_TEST);
+      grid_->draw(0.5);
+      glEnable(GL_DEPTH_TEST);
+    }
+
+    void Scene::updateGrid() {
+      if (!grid_) {
+        grid_.reset(new visual::Grid(camera()));
+      }
+      grid_->setSize(QVector2D(size_, size_));
+      grid_->update();
+      grid_->setCamera(camera());
+    }
+  }
 }

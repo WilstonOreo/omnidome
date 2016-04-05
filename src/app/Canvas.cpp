@@ -79,6 +79,11 @@ namespace omni {
             return false;
         }
 
+        void Canvas::setSceneSize(float) {
+
+          emit sceneSizeChanged();
+        }
+
         void Canvas::selectCanvasType(QString _id)
         {
             if (!dataModel() || this->isLocked()) return;
@@ -105,6 +110,8 @@ namespace omni {
                 // Update parameter when canvas has changed
                 connect(this->parameterWidget(),SIGNAL(dataModelChanged()),
                         this,SIGNAL(dataModelChanged()));
+                connect(this,SIGNAL(sceneSizeChanged()),
+                        this->parameterWidget(),SLOT(setScale()));
             }
         }
     }

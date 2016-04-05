@@ -12,7 +12,9 @@ MACRO(set_version_string dir)
 ENDMACRO(set_version_string dir)
 
 MACRO(common_cxx_flags)
-  ADD_DEFINITIONS(-fPIC -fsigned-char -Wall -std=c++11 -Wno-missing-braces)
+  ADD_DEFINITIONS(-fPIC -fsigned-char -Wall -Wno-missing-braces)
+
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
   IF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
     ADD_DEFINITIONS("-g -DDEBUG -O1")

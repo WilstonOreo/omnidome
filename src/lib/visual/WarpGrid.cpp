@@ -65,7 +65,10 @@ namespace omni {
         void WarpGrid::drawLines()
         {
             with_current_context([this](QOpenGLFunctions& _)
-            {/*
+            {
+              _.glDisable(GL_TEXTURE_2D);
+              /*
+
                 _.glEnable(GL_BLEND);
                 _.glDepthFunc(GL_LEQUAL);
 
@@ -87,6 +90,7 @@ namespace omni {
 
                 _.glBindBuffer(GL_ARRAY_BUFFER,         0);
                 _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+              _.glEnable(GL_TEXTURE_2D);
             });
         }
 
@@ -100,7 +104,10 @@ namespace omni {
             float _rY = _radius * _rect.height();
 
             visual::with_current_context([&](QOpenGLFunctions& _)
-            {/*
+            {
+
+              _.glDisable(GL_TEXTURE_2D);
+              /*
                 _.glEnable(GL_BLEND);
                 _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 */
@@ -116,6 +123,7 @@ namespace omni {
                         circle_->drawFill(_point.pos(),_rX,_rY);
                     }
                 }
+              _.glEnable(GL_TEXTURE_2D);
             });
         }
 

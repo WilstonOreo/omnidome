@@ -136,6 +136,9 @@ namespace omni {
         /// Draw export view
         void    drawExportView();
 
+        /// Draw fast live view
+        void    drawLiveView();
+
         /// Update warp buffer which contains image of projector perspective
         void    updateWarpBuffer();
 

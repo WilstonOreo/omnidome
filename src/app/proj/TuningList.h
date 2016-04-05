@@ -90,6 +90,9 @@ namespace omni
         /// Adjust sliders to scene scale
         void updateSceneScale();
 
+        /// Set unit of sliders
+        void updateUnits();
+
         /// Disable all tunings and fullscreen
         void disableAllTunings();
 

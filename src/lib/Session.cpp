@@ -132,6 +132,14 @@ namespace omni
   void Session::setMode(Mode _mode)
   {
     mode_=_mode;
+
+    /// Generate calibration data for visualizer when switching to live mode
+    if (mode_ == Mode::LIVE) {
+      for (auto& _tuning : tunings_) {
+        if (!_tuning->visualizer()) continue;
+        _tuning->visualizer()->generateCalibrationData();
+      }
+    }
   }
 
   Scene& Session::scene() {
@@ -152,7 +160,7 @@ namespace omni
 
   bool Session::hasOutput() const
   {
-    return inputs().current() && canvas() && mapping();
+    return inputs().current() && canvas() && mapping() && (tunings().size() > 0);
   }
 
   /// Export calibration data of session to a file

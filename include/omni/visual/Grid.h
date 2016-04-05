@@ -53,8 +53,13 @@ namespace omni {
         /// Return resolution
         QSize const& resolution() const;
 
+        QVector2D const& size() const;
+
         /// Set size of grid
         void         setSize(QVector2D const& _size);
+
+        void        setCamera(CameraInterface const*);
+        CameraInterface const* camera() const;
 
       private:
         QSize resolution_;

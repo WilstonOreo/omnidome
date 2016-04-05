@@ -137,6 +137,12 @@ namespace omni {
         /// Set focus on last widget in parameter list
         void     focusLast();
 
+        /// Set slider ranges
+        void     setScale(float);
+
+        /// Set slider ranges
+        void     setUnit(QString const&);
+
       signals:
         void     parametersUpdated();
 

@@ -64,8 +64,6 @@ namespace omni {
         }
 
         bool         initialize();
-
-        std::unique_ptr<visual::Grid>   grid_;
     };
   }
 }

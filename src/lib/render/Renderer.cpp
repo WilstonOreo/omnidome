@@ -393,9 +393,9 @@ namespace omni {
           glLoadIdentity();
           _proj(_); // Projection operation
 
+          _.glEnable(GL_DEPTH_TEST);
           glMatrixMode(GL_MODELVIEW);
           glLoadIdentity();
-          glEnable(GL_DEPTH_TEST);
           _mv(_); // Model view operation
 
           // -------------------------

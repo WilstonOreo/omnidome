@@ -218,32 +218,32 @@ namespace omni {
 
         // -------------------------
         _.glGenFramebuffers(1, &fb);
-        _.glBindFramebuffer(GL_FRAMEBUFFER_EXT, fb);
+        _.glBindFramebuffer(GL_FRAMEBUFFER, fb);
 
         //   Attach 2D texture to this FBO
-        _.glFramebufferTexture2D(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
+        _.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                  GL_TEXTURE_2D, _colorTex, 0);
 
         // -------------------------
         _.glGenRenderbuffers(1, &_depthRb);
-        _.glBindRenderbuffer(GL_RENDERBUFFER_EXT, _depthRb);
-        _.glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _w,
+        _.glBindRenderbuffer(GL_RENDERBUFFER, _depthRb);
+        _.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, _w,
                                 _h);
 
         // -------------------------
         // Attach depth buffer to FBO
-        _.glFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT,
-                                    GL_DEPTH_ATTACHMENT_EXT,
-                                    GL_RENDERBUFFER_EXT, _depthRb);
+        _.glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                                    GL_DEPTH_ATTACHMENT,
+                                    GL_RENDERBUFFER, _depthRb);
 
         // -------------------------
         // Does the GPU support current FBO configuration?
         GLenum status;
-        status = _.glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
+        status = _.glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
         switch (status)
         {
-        case GL_FRAMEBUFFER_COMPLETE_EXT:
+        case GL_FRAMEBUFFER_COMPLETE:
           qDebug() << "good";
           break;
 
@@ -254,7 +254,7 @@ namespace omni {
         // -------------------------
         // and now you can render to GL_TEXTURE_2D
         glPushAttrib(GL_ALL_ATTRIB_BITS);
-        _.glBindFramebuffer(GL_FRAMEBUFFER_EXT, fb);
+        _.glBindFramebuffer(GL_FRAMEBUFFER, fb);
         {
           _.glClearColor(0.0, 0.0, 0.0, 1.0);
           _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
@@ -274,7 +274,7 @@ namespace omni {
           // -------------------------
           _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _buffer.ptr());
         }
-        _.glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+        _.glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
         // Delete resources
@@ -283,7 +283,7 @@ namespace omni {
 
         // Bind 0, which means render to back buffer, as a result, fb is
         // unbound
-        _.glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+        _.glBindFramebuffer(GL_FRAMEBUFFER, 0);
         _.glDeleteFramebuffers(1, &fb);
         glPopAttrib();
       });

@@ -101,6 +101,7 @@ namespace omni
 
         if (_current) {
           _current->setUpdateCallBack(std::bind(&Input::inputUpdatedEmitter,this));
+          _current->update();
         }
         emit inputChanged();
     }

@@ -37,11 +37,12 @@ namespace omni {
     }
 
     void Grid::draw(float _alpha) const {
+      if (!shader_) return;
       with_current_context([&](QOpenGLFunctions& _) {
         shader_->bind();
         shader_->setUniformValue("resolution",
-                                 GLfloat(resolution_.width()),
-                                 GLfloat(resolution_.height()));
+                                 GLfloat(resolution_.width() * size().x()),
+                                 GLfloat(resolution_.height() * size().y()));
         shader_->setUniformValue("cam_pos", camera_->eye());
         shader_->setUniformValue("dir", camera_->direction().vec());
         shader_->setUniformValue("alpha", _alpha);
@@ -56,17 +57,20 @@ namespace omni {
     }
 
     void Grid::update() {
-      if (!shader_) {
-        using omni::util::fileToStr;
-        static QString _vertSrc     = fileToStr(":/shaders/grid.vert");
-        static QString _fragmentSrc = fileToStr(":/shaders/grid.frag");
-        shader_.reset(new QOpenGLShaderProgram());
-        shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, _vertSrc);
-        shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, _fragmentSrc);
-        shader_->link();
-      }
+      visual::with_current_context([&](QOpenGLFunctions& _) {
 
-      plane_.update();
+      if (!shader_) {
+          using omni::util::fileToStr;
+          static QString _vertSrc     = fileToStr(":/shaders/grid.vert");
+          static QString _fragmentSrc = fileToStr(":/shaders/grid.frag");
+          shader_.reset(new QOpenGLShaderProgram());
+          shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, _vertSrc);
+          shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, _fragmentSrc);
+          shader_->link();
+        }
+
+        plane_.update();
+      });
     }
 
     QSize const& Grid::resolution() const {
@@ -75,6 +79,22 @@ namespace omni {
 
     void Grid::setResolution(QSize _resolution) {
       resolution_ = _resolution;
+    }
+
+    QVector2D const& Grid::size() const {
+      return size_;
+    }
+
+    void Grid::setSize(QVector2D const& _size) {
+      size_=_size;
+    }
+
+    void Grid::setCamera(CameraInterface const* _camera) {
+      camera_=_camera;
+    }
+
+    CameraInterface const* Grid::camera() const {
+      return camera_;
     }
   }
 }

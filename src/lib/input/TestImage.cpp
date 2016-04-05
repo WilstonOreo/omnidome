@@ -81,10 +81,12 @@ namespace omni
 
         framebuffer_->setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
 
-        glBindTexture(GL_TEXTURE_2D, framebuffer_->texture());
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        visual::with_current_context([&](QOpenGLFunctions& _) {
+          _.glBindTexture(GL_TEXTURE_2D, framebuffer_->texture());
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+          _.glBindTexture(GL_TEXTURE_2D, 0);
+        });
       }
 
       if (!shader_)
@@ -96,8 +98,6 @@ namespace omni
         shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
         shader_->link();
       }
-
-      //if (!_changed) return;
 
       visual::draw_on_framebuffer(framebuffer_,
       [&](QOpenGLFunctions& _) // Projection Operation

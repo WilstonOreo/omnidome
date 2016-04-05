@@ -200,6 +200,9 @@ namespace omni {
                 _widget->connect(_widget, SIGNAL(
                                      projectorSetupChanged()), this,
                                  SIGNAL(tuningChanged()));
+                _widget->connect(_widget, SIGNAL(
+                                     dataModelChanged()), this,
+                                 SIGNAL(tuningChanged()));
                 _widget->sessionModeChange();
 
                 emit tuningAdded();
@@ -336,7 +339,15 @@ namespace omni {
                 if (!dataModel() || isLocked()) return;
 
                 for (auto& _widget : widgets_) {
-                    _widget->setScale(dataModel()->scene().scale());
+                    _widget->setScale(dataModel()->scene().size());
+                }
+            }
+
+            void TuningList::updateUnits() {
+                if (!dataModel() || isLocked()) return;
+
+                for (auto& _widget : widgets_) {
+                    _widget->setUnit(dataModel()->scene().unit().abbreviation());
                 }
             }
 

@@ -27,6 +27,7 @@
 
 #include <omni/proj/Tuning.h>
 #include <omni/visual/WarpGrid.h>
+#include <omni/proj/Calibration.h>
 
 namespace omni
 {
@@ -51,6 +52,7 @@ namespace omni
       /// Update warp grid mesh
       void updateWarpGrid();
 
+      /// Set portion of blend mask which is to be updated
       void setBlendTextureUpdateRect(QRect const&);
 
       /// Draw Test card image for screen setup
@@ -81,11 +83,18 @@ namespace omni
       /// Update warp buffer which contains image of projector perspective
       void updateWarpBuffer(visual::Session const* _vizSession);
 
+      void generateCalibrationData();
+
+      void drawCalibratedInput();
+
     private:
 
       /**@brief Calculates rectangle of this tuning
        **/
       QRectF tuningRect() const;
+
+      /// Return QVector4D of channel correction parameters
+      QVector4D channelCorrectionAsVec(Channel) const;
 
       omni::proj::Tuning& tuning_;
 
@@ -93,11 +102,15 @@ namespace omni
       std::unique_ptr<QOpenGLTexture> blendTex_;
       std::unique_ptr<Circle> cursor_;
 
+      GLuint calibrationTexId_ = 0;
+      proj::Calibration calibration_;
+
       /// Frame buffer which holds a texture with current view image
       std::unique_ptr<QOpenGLFramebufferObject> warpGridBuffer_;
 
       QRect blendTextureUpdateRect_;
 
+      static std::unique_ptr<QOpenGLShaderProgram> calibrationShader_;
       static std::unique_ptr<QOpenGLShaderProgram> testCardShader_;
       static std::unique_ptr<QOpenGLShaderProgram> blendShader_;
     };

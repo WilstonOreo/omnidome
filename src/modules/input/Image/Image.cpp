@@ -59,27 +59,24 @@ namespace omni {
 
     void Image::load(QString const& _path)
     {
-      image_       = QImage(_path).mirrored();
-      path_        = _path;
+      imageLocation_.load(_path,image_);
+      image_       = image_.mirrored();
       update();
     }
 
     void Image::reload()
     {
-      if (path_.isEmpty()) return;
-
-      load(path_);
+      load(path());
     }
 
     QString Image::path() const
     {
-      return path_;
+      return imageLocation_.location();
     }
 
     QString Image::infoText() const
     {
-      QFileInfo fi(path_);
-
+      QFileInfo fi(path());
       return fi.baseName();
     }
 
@@ -92,14 +89,14 @@ namespace omni {
     {
       input::Interface::toStream(_stream);
 
-      _stream << path_;
+      _stream << imageLocation_;
     }
 
     void Image::fromStream(QDataStream& _stream)
     {
       input::Interface::fromStream(_stream);
 
-      _stream >> path_;
+      _stream >> imageLocation_;
       reload();
     }
 

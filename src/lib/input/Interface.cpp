@@ -122,12 +122,6 @@ namespace omni {
       return _path;
     }
 
-    /// Get interface by absolute path
-    Interface * Interface::getByPath(QString const& _path) {}
-
-    /// Get interface by absolute path (const version)
-    Interface const * Interface::getByPath(QString const& _path) const {}
-
     /// Return parent interface (const version)
     Interface const * Interface::parent() const {
       return parent_;

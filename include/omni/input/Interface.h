@@ -150,12 +150,6 @@ namespace omni {
         /// Get id of child interface
         QString getId(Interface const*) const;
 
-        /// Get interface by absolute path
-        Interface* getByPath(QString const& _path);
-
-        /// Get interface by absolute path (const version)
-        Interface const* getByPath(QString const& _path) const;
-
         /// Remove input with id
         virtual void          removeInput(QString const& _id);
 

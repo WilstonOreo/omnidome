@@ -25,25 +25,22 @@
 #include <omni/visual/util.h>
 #include <omni/visual/Rectangle.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    InputPreview::InputPreview(QWidget* _parent) :
+namespace omni {
+  namespace ui {
+    InputPreview::InputPreview(QWidget *_parent) :
       GLView(_parent)
     {
       setUpdateFrequency(25.0);
     }
 
-    InputPreview::InputPreview(input::Interface* _input, QWidget* _parent) :
-        GLView(_parent),
-        input_(_input) {
+    InputPreview::InputPreview(input::Interface *_input, QWidget *_parent) :
+      GLView(_parent),
+      input_(_input) {
       setUpdateFrequency(25.0);
     }
 
     InputPreview::~InputPreview()
-    {
-    }
+    {}
 
     float InputPreview::border() const
     {
@@ -56,19 +53,19 @@ namespace omni
       update();
     }
 
-    input::Interface* InputPreview::input()
+    input::Interface * InputPreview::input()
     {
       return input_;
     }
 
-    input::Interface const* InputPreview::input() const
+    input::Interface const * InputPreview::input() const
     {
       return input_;
     }
 
-     void InputPreview::setInput(input::Interface* _input) {
-         input_=_input;
-     }
+    void InputPreview::setInput(input::Interface *_input) {
+      input_ = _input;
+    }
 
     bool InputPreview::initialize()
     {
@@ -79,17 +76,19 @@ namespace omni
     {
       if (!input_) return QRectF();
 
-      auto* _input = input();
-      if (!_input) return QRectF(0.0,0.0,1.0,1.0);
+      auto *_input = input();
 
-      return visual::util::viewRect(_input->width(),_input->height(),width(),height(),border_);
+      if (!_input) return QRectF(0.0, 0.0, 1.0, 1.0);
+
+      return visual::util::viewRect(_input->width(), _input->height(),
+                                    width(), height(), border_);
     }
 
     QPointF InputPreview::screenPos(QPointF const& _pos) const
     {
-      QRectF&& _rect = viewRect();
-      QPointF _p = QPointF(_pos.x() / width(),_pos.y() / height() );
-      return QPointF(_p.x() * _rect.width(),-_p.y() * _rect.height());
+      QRectF && _rect = viewRect();
+      QPointF _p = QPointF(_pos.x() / width(), _pos.y() / height());
+      return QPointF(_p.x() * _rect.width(), -_p.y() * _rect.height());
     }
 
     void InputPreview::paintGL()
@@ -100,27 +99,25 @@ namespace omni
       {
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         _.glDisable(GL_BLEND);
-      });
 
-      auto _rect = viewRect();
+        auto _rect = viewRect();
 
-      input_->update();
-      makeCurrent();
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-      visual::viewport(this);
+        visual::viewport(this);
 
-      /// Setup orthogonal projection
-      glMatrixMode(GL_PROJECTION);
-      {
+        /// Setup orthogonal projection
+        glMatrixMode(GL_PROJECTION);
+        {
+          glLoadIdentity();
+          QMatrix4x4 _m;
+          _m.ortho(_rect.left(), _rect.right(), _rect.top(), _rect.bottom(), -1.0,
+                   1.0);
+          glMultMatrixf(_m.constData());
+        }
+
+        glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        QMatrix4x4 _m;
-        _m.ortho(_rect.left(),_rect.right(),_rect.top(),_rect.bottom(),-1.0,1.0);
-        glMultMatrixf(_m.constData());
-      }
 
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
         _.glEnable(GL_TEXTURE_2D);
         _.glBindTexture(GL_TEXTURE_2D, input_->textureId());
         visual::Rectangle::draw();

@@ -64,12 +64,12 @@ namespace omni {
                 auto *_input = session_.inputs().current();
                 auto *_mapping = const_cast<mapping::Interface*>(session_.mapping());
 
-                if (session_.hasOutput() && _mode != mapping::OutputMode::LIGHTING_ONLY)
+                if (session_.inputs().current() && session_.mapping() && _mode != mapping::OutputMode::LIGHTING_ONLY)
                 {
                     GLuint _texId = _input ? _input->textureId() : 0;
                     _.glEnable(GL_TEXTURE_2D);
-
                     _.glBindTexture(GL_TEXTURE_2D, _texId);
+                    _.glDisable(GL_LIGHTING);
                     _mapping->bind(_mode, _grayscale);
                     drawCanvasWithMatrix();
 

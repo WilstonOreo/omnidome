@@ -190,7 +190,7 @@ namespace omni {
 
           /// Id of first focussed widget
           inline virtual int firstFocusId() const {
-            return 2; // Title bar and view cannot be focussed
+            return std::min(layout()->count()-1,2); // Title bar and view cannot be focussed
           }
 
           /// Adds a new/changes a parameter group
