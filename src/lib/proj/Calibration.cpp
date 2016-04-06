@@ -66,8 +66,8 @@ namespace omni {
       {
         _.glGenTextures(1, &_projTex);
         _.glBindTexture(GL_TEXTURE_2D, _projTex);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
@@ -207,8 +207,8 @@ namespace omni {
         // RGBA8 2D texture, 24 bit depth texture, 256x256
         _.glGenTextures(1, &_colorTex);
         _.glBindTexture(GL_TEXTURE_2D, _colorTex);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -431,11 +431,8 @@ namespace omni {
         if (_channelCorrection) {
           switch (_componentIndex) {
           case 0: _component = _channelCorrection->gamma(); break;
-
           case 1: _component = _channelCorrection->brightness(); break;
-
           case 2: _component = _channelCorrection->contrast(); break;
-
           case 3: _component = _channelCorrection->multiplier(); break;
           }
 
