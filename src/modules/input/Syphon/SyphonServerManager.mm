@@ -69,16 +69,16 @@ namespace omni {
         //NSString *title = [NSString stringWithString:appName];
 
         if(_isAnnounce){
-            bool exists = serverExists(SyphonServerDescription([name UTF8String], [appName UTF8String]));
+            bool exists = serverExists(SyphonServerDescription([appName UTF8String], [name UTF8String]));
             if(!exists){
-                SyphonServerDescription sy = SyphonServerDescription(QString([name UTF8String]),QString([appName UTF8String]));
+                SyphonServerDescription sy = SyphonServerDescription(QString([appName UTF8String]),QString([name UTF8String]));
                 serverList_.push_back(sy);
                 eventArgs.push_back(sy);
 
                 qDebug() <<"Adding server: "<< QString([name UTF8String])<<" appName: "<< QString([appName UTF8String])<<"\n";
             }
         } else {
-            eventArgs.push_back(SyphonServerDescription(QString([name UTF8String]),QString([appName UTF8String])));
+            eventArgs.push_back(SyphonServerDescription(QString([appName UTF8String]),QString([name UTF8String])));
         }
     }
 

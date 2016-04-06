@@ -57,8 +57,9 @@ namespace omni
     }
 
     void Syphon::setDescription(SyphonServerDescription const& _description) {
+      deactivate();
       description_ = _description;
-      update();
+      activate();
     }
 
     SyphonServerDescription const& Syphon::description() const {
@@ -86,7 +87,7 @@ namespace omni
 		      GLuint _texId = [(SyphonImage*)latestImage_ textureName];
           texId_ = _texId;
 
-          if ( (!framebuffer_) || (_texSize.width != width()) || 
+          if ( (!framebuffer_) || (_texSize.width != width()) ||
                (_texSize.height != height())) {
             QOpenGLFramebufferObjectFormat _format;
             framebuffer_.reset(new QOpenGLFramebufferObject(_texSize.width,_texSize.height,_format));
@@ -152,7 +153,6 @@ namespace omni
 
        if(isSetup_)
        {
-         description_.put("Layer 1","VDMX5");
          NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
          NSString *nsAppName =
@@ -215,12 +215,15 @@ namespace omni
     void Syphon::toStream(QDataStream& _stream) const
     {
       input::Interface::toStream(_stream);
+      _stream << description_;
     }
 
     void Syphon::fromStream(QDataStream& _stream)
     {
+      deactivate();
       input::Interface::fromStream(_stream);
-      update();
+      _stream >> description_;
+      activate();
     }
   }
 }

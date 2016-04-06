@@ -20,6 +20,8 @@
 #include "SyphonWidget.h"
 
 #include <QComboBox>
+#include "SyphonServerDescription.h"
+#include "SyphonServerItemModel.h"
 #include "SyphonServerManager.h"
 
 namespace omni {
@@ -38,15 +40,35 @@ namespace omni {
         boxServerList_->clear();
         auto&& _serverList = serverManager_->getServerList();
 
+        int _index = 0;
+        int _inputIndex = 0;
         for (auto& _server : _serverList) {
-          boxServerList_->addItem(_server.applicationName() + " : " + _server.serverName());
+          model_->addDescription(_server);
+
+          // Search server for input
+          if (input_) {
+            if (input_->description() == _server) {
+              _inputIndex = _index;
+            }
+          }
+          ++_index;
         }
+
+        this->locked([&]() {
+          boxServerList_->setCurrentIndex(_inputIndex);
+        });
       }
 
       void Syphon::triggerUpdate() {
         if (!preview_) return;
 
         preview_->triggerUpdate();
+      }
+
+      void Syphon::setDescriptionToInput() {
+        if (isLocked()) return;
+
+        input_->setDescription(model_->getDescription(boxServerList_->currentIndex()));
       }
 
       void Syphon::setup() {
@@ -58,7 +80,10 @@ namespace omni {
         _layout->setSizeConstraint(QLayout::SetMaximumSize);
         setLayout(_layout);
 
+        model_.reset(new SyphonServerItemModel);
+
         boxServerList_.reset(new QComboBox());
+        boxServerList_->setModel(model_.get());
         _layout->addWidget(boxServerList_.get());
         connect(serverManager_.get(), SIGNAL(serverAnnounced(ServerList const&)),
           this, SLOT(updateServerList()));
@@ -73,6 +98,8 @@ namespace omni {
         _layout->addWidget(preview_.get());
 
         serverManager_->setup();
+        connect(boxServerList_.get(), SIGNAL(currentIndexChanged(int)),
+          this, SLOT(setDescriptionToInput()));
       }
     }
   }

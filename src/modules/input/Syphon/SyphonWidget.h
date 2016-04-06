@@ -20,6 +20,7 @@
 #define OMNI_UI_INPUT_SYPHON_H_
 
 #include <omni/util.h>
+#include <omni/ui/mixin/Locked.h>
 #include <omni/ui/InputPreview.h>
 #include <omni/ui/ParameterWidget.h>
 #include "Syphon.h"
@@ -33,7 +34,12 @@ namespace omni {
 
     namespace ui {
         namespace input {
-            class Syphon : public omni::ui::ParameterWidget {
+            class SyphonServerItemModel;
+
+            /// Syphon widget
+            class Syphon :
+              public omni::ui::ParameterWidget,
+              protected omni::ui::mixin::Locked {
                 Q_OBJECT
             public:
                 Syphon(omni::input::Syphon*, QWidget* = nullptr);
@@ -41,18 +47,22 @@ namespace omni {
 
             public slots:
                 void updateServerList();
+
+                /// Pass-through signal to update input preview
                 void triggerUpdate();
 
             signals:
                 void inputChanged();
 
+            private slots:
+                void setDescriptionToInput();
             private:
                 void setup();
 
                 omni::input::Syphon* input_ = nullptr;
                 QUniquePtr<InputPreview> preview_;
-
                 QUniquePtr<QComboBox> boxServerList_;
+                QUniquePtr<SyphonServerItemModel> model_;
                 std::unique_ptr<omni::input::SyphonServerManager> serverManager_;
             };
         }

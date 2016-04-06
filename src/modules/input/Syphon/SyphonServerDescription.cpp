@@ -22,13 +22,15 @@
 namespace omni {
   namespace input {
     SyphonServerDescription::SyphonServerDescription(
-      QString const& _serverName,
-      QString const& _appName) : serverName_(_serverName), appName_(_appName) {}
+      QString const& _appName,
+      QString const& _serverName) :
+        appName_(_appName),
+        serverName_(_serverName) {}
 
-    void SyphonServerDescription::put(QString const& _serverName,
-                                      QString const& _appName) {
-      serverName_ = _serverName;
+    void SyphonServerDescription::put(QString const& _appName,
+                                      QString const& _serverName) {
       appName_    = _appName;
+      serverName_ = _serverName;
     }
 
     QString const& SyphonServerDescription::serverName() const {
@@ -47,4 +49,21 @@ namespace omni {
       return applicationName().toLatin1().data();
     }
   }
+}
+
+/// Serialize omni::input::ServerDescription to stream
+QDataStream& operator<<(QDataStream& _os,
+                        const omni::input::SyphonServerDescription& _p) {
+  _os << _p.serverName() << _p.applicationName();
+  return _os;
+}
+
+/// Deserialize omni::input::ServerDescription from stream
+QDataStream& operator>>(QDataStream& _is,
+                        omni::input::SyphonServerDescription& _p) {
+  QString _serverName;
+  QString _applicationName;
+  _is >> _serverName >> _applicationName;
+  _p.put(_applicationName,_serverName);
+  return _is;
 }

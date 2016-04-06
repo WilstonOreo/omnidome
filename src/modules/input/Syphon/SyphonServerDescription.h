@@ -22,6 +22,7 @@
 
 #include <QString>
 #include <QObject>
+#include "SyphonServerDescription.h"
 
 namespace omni {
   namespace input {
@@ -29,8 +30,8 @@ namespace omni {
     class SyphonServerDescription {
       public:
         /// Construct new server description with optional server and app name
-        SyphonServerDescription(QString const& _serverName = "null",
-                                QString const& _appName = "null");
+        SyphonServerDescription(QString const& _appName = "null",
+                                QString const& _serverName = "null");
 
         /// Test for equality
         inline friend bool operator==(const SyphonServerDescription& lhs,
@@ -40,7 +41,7 @@ namespace omni {
         }
 
         /// Set server and application name
-        void put(QString const& _serverName, QString const& _appName);
+        void put(QString const& _appName, QString const& _serverName);
 
         /// Return server name
         QString const& serverName() const;
@@ -59,9 +60,17 @@ namespace omni {
         const char* applicationNameAsConstChar() const;
 
       private:
-        QString serverName_, appName_;
+        QString appName_, serverName_;
     };
   }
 }
+
+/// Serialize omni::input::ServerDescription to stream
+QDataStream& operator<<(QDataStream& _os,
+                        const omni::input::SyphonServerDescription& _p);
+
+/// Deserialize omni::input::ServerDescription from stream
+QDataStream& operator>>(QDataStream& _is,
+                        omni::input::SyphonServerDescription& _p);
 
 #endif /* OMNI_INPUT_SYPHONSERVERDESCRIPTION_H_ */
