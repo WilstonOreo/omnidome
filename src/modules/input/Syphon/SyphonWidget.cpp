@@ -41,7 +41,7 @@ namespace omni {
         auto&& _serverList = serverManager_->getServerList();
 
         int _index = 0;
-        int _inputIndex = 0;
+        int _inputIndex = -1;
         for (auto& _server : _serverList) {
           model_->addDescription(_server);
 
@@ -54,9 +54,13 @@ namespace omni {
           ++_index;
         }
 
-        this->locked([&]() {
-          boxServerList_->setCurrentIndex(_inputIndex);
-        });
+        if (_inputIndex != -1) {
+          this->locked([&]() {
+            boxServerList_->setCurrentIndex(_inputIndex);
+          });
+        } else {
+          boxServerList_->setCurrentIndex(0);
+        }
       }
 
       void Syphon::triggerUpdate() {
@@ -97,9 +101,10 @@ namespace omni {
                 SIGNAL(inputChanged()));
         _layout->addWidget(preview_.get());
 
-        serverManager_->setup();
         connect(boxServerList_.get(), SIGNAL(currentIndexChanged(int)),
           this, SLOT(setDescriptionToInput()));
+
+        serverManager_->setup();
       }
     }
   }

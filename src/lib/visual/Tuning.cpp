@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -57,7 +57,6 @@ namespace omni {
         GLfloat _red = _color.redF();
         GLfloat _green = _color.greenF();
         GLfloat _blue = _color.blueF();
-
         testCardShader_->bind();
         testCardShader_->setUniformValue("resolution",
                                          GLfloat(tuning_.width()),
@@ -67,7 +66,6 @@ namespace omni {
                                          _blue);
         testCardShader_->setUniformValue("projector_id", _id);
         testCardShader_->setUniformValue("gray_output",  _grayscale);
-
         Rectangle::draw();
         testCardShader_->release();
       });
@@ -134,7 +132,6 @@ namespace omni {
     void Tuning::setBlendTextureUpdateRect(QRect const& _rect)
     {
       int _radius = tuning_.blendMask().brush().size() / 2 + 1;
-
       blendTextureUpdateRect_ = _rect.normalized().adjusted(-_radius,
                                                             -_radius,
                                                             _radius,

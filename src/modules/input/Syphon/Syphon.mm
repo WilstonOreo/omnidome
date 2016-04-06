@@ -57,9 +57,13 @@ namespace omni
     }
 
     void Syphon::setDescription(SyphonServerDescription const& _description) {
-      deactivate();
+      int _oldTimerId = timerId_;
+      if (timerId_) deactivate();
       description_ = _description;
-      activate();
+
+      if (_oldTimerId) {
+        activate();
+      }
     }
 
     SyphonServerDescription const& Syphon::description() const {
@@ -97,7 +101,6 @@ namespace omni
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glBindTexture(GL_TEXTURE_2D, 0);
-            qDebug() << width() << " " << height() << texId_;
           }
 
         GLfloat _w = width();
@@ -186,7 +189,6 @@ namespace omni
           latestImage_ = nil;
           texId_ = 0;
           isSetup_ = false;
-          deactivateFramebuffer();
         } else
         {
           qDebug() << "syphonClient is not setup, or is not properly connected to server.  Cannot unbind.\n";
@@ -194,15 +196,6 @@ namespace omni
 	       [pool drain];
 
       }
-
-
-       void Syphon::activateFramebuffer() {
-
-
-       }
-
-       void Syphon::deactivateFramebuffer() {
-       }
 
     QWidget* Syphon::widget() {
         return new omni::ui::input::Syphon(this);
@@ -220,10 +213,15 @@ namespace omni
 
     void Syphon::fromStream(QDataStream& _stream)
     {
-      deactivate();
+      int _oldTimerId = timerId_;
+      if (timerId_) {
+        deactivate();
+      }
       input::Interface::fromStream(_stream);
       _stream >> description_;
-      activate();
+      if (_oldTimerId) {
+        activate();
+      }
     }
   }
 }

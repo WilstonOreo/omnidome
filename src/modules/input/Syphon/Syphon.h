@@ -65,9 +65,6 @@ namespace omni
       void timerEvent(QTimerEvent *);
 
     private:
-       void activateFramebuffer();
-       void deactivateFramebuffer();
-
 	     void* client_ = nullptr;
        void* latestImage_ = nullptr;
 
