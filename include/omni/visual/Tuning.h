@@ -113,6 +113,7 @@ namespace omni
       static std::unique_ptr<QOpenGLShaderProgram> calibrationShader_;
       static std::unique_ptr<QOpenGLShaderProgram> testCardShader_;
       static std::unique_ptr<QOpenGLShaderProgram> blendShader_;
+      static std::unique_ptr<QOpenGLShaderProgram> blendBrushShader_;
     };
   }
 }

@@ -22,6 +22,7 @@
 
 #include <math.h>
 #include <chrono>
+#include <QDebug>
 #include <QPointF>
 #include <QRectF>
 #include <QVector2D>
@@ -124,6 +125,7 @@ namespace omni {
       {
         with_current_context([&](QOpenGLFunctions& _) {
           glPushAttrib(GL_ALL_ATTRIB_BITS);
+          glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 
           _f->bind();
           _.glViewport(0, 0, _f->width(), _f->height());
@@ -135,6 +137,10 @@ namespace omni {
           // fix outlines z-fighting with quads
           _.glPolygonOffset(1, 1);
 
+          glMatrixMode(GL_TEXTURE);
+          glPushMatrix();
+          glLoadIdentity();
+
           // Projection matrix setup
           glMatrixMode(GL_PROJECTION);
           glLoadIdentity();
@@ -145,11 +151,32 @@ namespace omni {
           // Model view matrix setup
           glMatrixMode(GL_MODELVIEW);
           glLoadIdentity();
+          _.glClearColor(0.0, 0.0, 0.0, 1.0);
+          _.glActiveTexture(GL_TEXTURE0);
+          glClientActiveTexture(GL_TEXTURE0);
+          _.glClear(GL_DEPTH_BUFFER_BIT);
+          _.glEnable(GL_TEXTURE_2D);
+          _.glDisable(GL_LIGHTING);
+          _.glDepthFunc(GL_LEQUAL);
+          _.glEnable(GL_BLEND);
+          _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+          _.glEnable(GL_LINE_SMOOTH);
+          _.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+          _.glEnable(GL_POINT_SMOOTH);
+          _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+          _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+          glPolygonMode(GL_FRONT, GL_FILL);
+          glPolygonMode(GL_BACK, GL_FILL);
+          _.glEnable(GL_NORMALIZE);
+
+          // fix outlines z-fighting with quads
+          _.glPolygonOffset(1, 1);
           _m(_); // ModelView operation
 
           _f->release();
 
           glPopAttrib();
+          glPopClientAttrib();
         });
       }
 

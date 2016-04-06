@@ -30,6 +30,7 @@
 namespace omni {
   namespace visual {
     std::unique_ptr<QOpenGLShaderProgram> Tuning::blendShader_;
+    std::unique_ptr<QOpenGLShaderProgram> Tuning::blendBrushShader_;
     std::unique_ptr<QOpenGLShaderProgram> Tuning::testCardShader_;
     std::unique_ptr<QOpenGLShaderProgram> Tuning::calibrationShader_;
 
@@ -123,6 +124,7 @@ namespace omni {
 
       _initShader(testCardShader_, "testcard");
       _initShader(blendShader_, "blend");
+      _initShader(blendBrushShader_, "blendbrush");
       _initShader(calibrationShader_, "calibration");
 
       updateWarpGrid();
@@ -162,8 +164,21 @@ namespace omni {
             QRect(0, 0, tuning_.width(), tuning_.height());
           blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().
                                              strokeBuffer().toQImage()));
-        }
 
+            blendTex_->bind();
+            glTexEnvf(GL_TEXTURE_ENV,
+                      GL_TEXTURE_ENV_MODE,
+                      GL_REPLACE);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+                            GL_CLAMP_TO_EDGE);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+                            GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                            GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                            GL_LINEAR);
+            blendTex_->release();
+        }
         auto& _blendMask = tuning().blendMask();
         auto _ptr = _blendMask.strokeBufferData();
 
@@ -182,15 +197,15 @@ namespace omni {
           _.glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
           _.glPixelStorei(GL_UNPACK_SKIP_ROWS,   0);
           _.glTexSubImage2D(GL_TEXTURE_2D, 0, _r.x(), _r.y(),
-                            _r.width(), _r.height(), GL_ALPHA,
+                            _r.width(), _r.height(), GL_RED,
                             GL_UNSIGNED_BYTE, _ptr);
           _.glBindTexture(GL_TEXTURE_2D, 0);
           blendTextureUpdateRect_ = _fullRect;
         } else
         {
           _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
-          _.glTexSubImage2D(GL_TEXTURE_2D, 0, _r.x(), _r.y(),
-                            _r.width(), _r.height(), GL_ALPHA,
+          _.glTexSubImage2D(GL_TEXTURE_2D, 0, _fullRect.x(), _fullRect.y(),
+                            _fullRect.width(), _fullRect.height(), GL_RED,
                             GL_UNSIGNED_BYTE, _ptr);
           _.glBindTexture(GL_TEXTURE_2D, 0);
         }
@@ -209,7 +224,7 @@ namespace omni {
         _.glEnable(GL_BLEND);
 
         glColor4f(0.0, 0.0, 0.0, 1.0);
-        glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
+        _.glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
 
         float _r = tuning_.blendMask().brush().size() * 0.5 / tuning_.width();
         cursor_->drawLine(_pos, _r, _r * (_rect.height() / _rect.width()));
@@ -230,7 +245,7 @@ namespace omni {
     {
       if (!blendShader_ || !warpGridBuffer_) return;
 
-      int _inputTexId = warpGridBuffer_->texture();
+      GLuint _inputTexId = warpGridBuffer_->texture();
 
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
@@ -242,9 +257,6 @@ namespace omni {
         _.glDepthFunc(GL_LEQUAL);
         _.glEnable(GL_BLEND);
         _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-        _.glBindTexture(GL_TEXTURE_2D, _inputTexId);
-        _.glActiveTexture(GL_TEXTURE0);
 
         blendShader_->bind();
         {
@@ -260,6 +272,8 @@ namespace omni {
                                         _mask.leftWidth());
           blendShader_->setUniformValue("edge_gamma",    _mask.gamma());
           blendShader_->setUniformValue("input_tex",     0);
+          _.glActiveTexture(GL_TEXTURE0 + 0);
+          _.glBindTexture(GL_TEXTURE_2D, _inputTexId);
           blendShader_->setUniformValue("input_opacity", _inputOpacity);
           blendShader_->setUniformValue("color",         _color.redF(),
                                         _color.greenF(),
@@ -297,14 +311,12 @@ namespace omni {
             blendShader_->setUniformValue("cc_gamma",      _null);
           }
 
-
           blendShader_->setUniformValue("mask",
                                         GLfloat(_blendMaskOpacity));
           warpGrid_->draw();
         }
-        blendShader_->release();
         _.glBindTexture(GL_TEXTURE_2D, 0);
-
+        blendShader_->release();
 
         if (_blendMaskOpacity > 0.0) {
           _.glDisable(GL_BLEND);
@@ -337,24 +349,15 @@ namespace omni {
           _.glEnable(GL_BLEND);
           _.glEnable(GL_TEXTURE_2D);
           _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-          blendTex_->bind();
+          blendBrushShader_->bind();
           {
-            glColor4f(0.0, 0.0, 0.0, 1.0);
-            glTexEnvf(GL_TEXTURE_ENV,
-                      GL_TEXTURE_ENV_MODE,
-                      GL_MODULATE);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-                            GL_CLAMP_TO_EDGE);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-                            GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                            GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                            GL_LINEAR);
-
+            blendBrushShader_->setUniformValue("blend_tex",1);
+            blendTex_->bind(1);
             Rectangle::drawFlipped();
           }
-          blendTex_->release();
+          blendTex_->release(1);
+          blendBrushShader_->release();
+          _.glDisable(GL_TEXTURE_2D);
         }
       });
     }
@@ -388,8 +391,6 @@ namespace omni {
       // Draw projector's perspective on framebuffer texture
       with_current_context([&](QOpenGLFunctions& _)
       {
-        _.glEnable(GL_TEXTURE_2D);
-        _.glDisable(GL_LIGHTING);
         draw_on_framebuffer(warpGridBuffer_,
                             [&](QOpenGLFunctions& _) // Projection
                                                      // Operation
@@ -399,25 +400,6 @@ namespace omni {
                             [&](QOpenGLFunctions& _) // Model View
                                                      // Operation
         {
-          _.glClearColor(0.0, 0.0, 0.0, 1.0);
-          _.glClear(GL_DEPTH_BUFFER_BIT);
-
-          _.glEnable(GL_DEPTH_TEST);
-          _.glDepthFunc(GL_LEQUAL);
-          _.glEnable(GL_BLEND);
-          _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-          _.glEnable(GL_LINE_SMOOTH);
-          _.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-          _.glEnable(GL_POINT_SMOOTH);
-          _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-          _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-          glPolygonMode(GL_FRONT, GL_FILL);
-          glPolygonMode(GL_BACK, GL_FILL);
-          _.glEnable(GL_NORMALIZE);
-
-          // fix outlines z-fighting with quads
-          _.glPolygonOffset(1, 1);
-
           _.glEnable(GL_DEPTH_TEST);
           _vizSession->drawCanvas();
         });
@@ -461,9 +443,8 @@ namespace omni {
 
     QVector4D Tuning::channelCorrectionAsVec(Channel _channel) const {
       QVector4D _vec(0.0, 0.0, 0.0, 0.0);
-      auto     *_channelCorrection = calibration_.colorCorrection().correction(
+      auto*_channelCorrection = calibration_.colorCorrection().correction(
         _channel);
-
       if (!_channelCorrection) return _vec;
 
       _vec.setX(_channelCorrection->gamma());
@@ -500,16 +481,16 @@ namespace omni {
           _.glActiveTexture(GL_TEXTURE0 + 2);
           _.glBindTexture(GL_TEXTURE_2D, _currentInput->textureId());
 
-          calibrationShader_->setUniformValue("cc_red",
+          calibrationShader_->setUniformValue("cc_red_vec",
                                               channelCorrectionAsVec(
                                                 Channel::RED));
-          calibrationShader_->setUniformValue("cc_green",
+          calibrationShader_->setUniformValue("cc_green_vec",
                                               channelCorrectionAsVec(Channel::
                                                                      GREEN));
-          calibrationShader_->setUniformValue("cc_blue",
+          calibrationShader_->setUniformValue("cc_blue_vec",
                                               channelCorrectionAsVec(
                                                 Channel::BLUE));
-          calibrationShader_->setUniformValue("cc_all",
+          calibrationShader_->setUniformValue("cc_all_vec",
                                               channelCorrectionAsVec(
                                                 Channel::ALL));
 

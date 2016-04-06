@@ -33,10 +33,15 @@ struct ChannelCorrection {
 
 varying vec2 vTexCoord;
 
-uniform ChannelCorrection cc_red;
-uniform ChannelCorrection cc_green;
-uniform ChannelCorrection cc_blue;
-uniform ChannelCorrection cc_all;
+uniform vec4 cc_red_vec;
+uniform vec4 cc_green_vec;
+uniform vec4 cc_blue_vec;
+uniform vec4 cc_all_vec;
+
+ChannelCorrection cc_red;
+ChannelCorrection cc_green;
+ChannelCorrection cc_blue;
+ChannelCorrection cc_all;
 
 uniform bool map_mirror_vertical;
 uniform bool map_mirror_horizontal;
@@ -94,6 +99,11 @@ void main()
 {
     vec2 uv = vTexCoord;
     vec3 calib = texture2D(uv_map,uv).rga;
+
+    cc_red = ChannelCorrection(cc_red_vec.x,cc_red_vec.y,cc_red_vec.z,cc_red_vec.w);
+    cc_green = ChannelCorrection(cc_green_vec.x,cc_green_vec.y,cc_green_vec.z,cc_green_vec.w);
+    cc_blue = ChannelCorrection(cc_blue_vec.x,cc_blue_vec.y,cc_blue_vec.z,cc_blue_vec.w);
+    cc_all = ChannelCorrection(cc_all_vec.x,cc_all_vec.y,cc_all_vec.z,cc_all_vec.w);
 
     if (map_mirror_horizontal)
     {

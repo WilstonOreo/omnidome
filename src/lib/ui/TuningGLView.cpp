@@ -587,7 +587,6 @@ namespace omni {
       if (!tuning()->visualizer()) return;
       if (tuning()->outputDisabled() && this->fullscreenMode()) return;
 
-
       switch (dataModel()->mode())
       {
       case Session::Mode::SCREENSETUP:

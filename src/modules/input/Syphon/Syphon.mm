@@ -74,9 +74,8 @@ namespace omni
       if (!QOpenGLContext::currentContext()) return;
       NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
       if(isSetup_)
+
     {
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_TEXTURE_RECTANGLE);
 
       [(SyphonNameboundClient*)client_ lockClient];
           SyphonClient *client = [(SyphonNameboundClient*)client_ client];
@@ -110,7 +109,13 @@ namespace omni
 
         }, [&](QOpenGLFunctions& _) {
 
+        glEnable(GL_TEXTURE_RECTANGLE);
         glBindTexture(GL_TEXTURE_RECTANGLE,texId_);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+        glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+        glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
+
         glBegin(GL_QUADS);
         {
           glColor4f(1.0,1.0,1.0,1.0);
@@ -125,6 +130,7 @@ namespace omni
         }
         glEnd();
         glBindTexture(GL_TEXTURE_RECTANGLE,0);
+        glDisable(GL_TEXTURE_RECTANGLE);
 
         });
       } else
@@ -134,8 +140,7 @@ namespace omni
     }
 
     void Syphon::activate() {
-
-      deactivate();
+      if (isSetup_) return;
 
       // Need pool
       NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -153,14 +158,11 @@ namespace omni
          NSString *nsAppName =
           [NSString stringWithCString:description_.applicationNameAsConstChar() encoding:[NSString defaultCStringEncoding]];
 
-        NSString *nsServerName =
+          NSString *nsServerName =
           [NSString stringWithCString:description_.serverNameAsConstChar() encoding:[NSString defaultCStringEncoding]];
 
           [(SyphonNameboundClient*)client_ setAppName:nsAppName];
           [(SyphonNameboundClient*)client_ setName:nsServerName];
-          SyphonClient *client = [(SyphonNameboundClient*)client_ client];
-          latestImage_ = [client newFrameImageForContext:CGLGetCurrentContext()];
-          update();
 
           [pool drain];
         }

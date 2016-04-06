@@ -68,9 +68,10 @@ namespace omni {
                 {
                     GLuint _texId = _input ? _input->textureId() : 0;
                     _.glEnable(GL_TEXTURE_2D);
-                    _.glBindTexture(GL_TEXTURE_2D, _texId);
                     _.glDisable(GL_LIGHTING);
                     _mapping->bind(_mode, _grayscale);
+                    _.glActiveTexture(GL_TEXTURE0);
+                    _.glBindTexture(GL_TEXTURE_2D, _texId);
                     drawCanvasWithMatrix();
 
                     _.glBindTexture(GL_TEXTURE_2D, 0);

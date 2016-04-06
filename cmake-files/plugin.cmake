@@ -20,7 +20,7 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
     FILE(GLOB plugin_headers ${plugin_dir}/*.h )
     FILE(GLOB plugin_sources ${plugin_dir}/*.cpp )
     FILE(GLOB plugin_forms ${plugin_dir}/*.ui )
-    FILE(GLOB plugin_resources ${plugin_dir}/rc/*.qrc )
+    FILE(GLOB plugin_resources ${plugin_dir}/*.qrc )
 
     IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") # If mac os x
       # Look for ObjectiveC sources

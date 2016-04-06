@@ -56,6 +56,7 @@ namespace omni {
                 shader_->bind();
                 shader_->setUniformValue("flip_horizontal", flipHorizontal_);
                 shader_->setUniformValue("flip_vertical",   flipVertical_);
+                shader_->setUniformValue("texture",   0);
 
                 if (isUVW()) {
                     shader_->setUniformValue("bound_to_canvas", boundToCanvas_);

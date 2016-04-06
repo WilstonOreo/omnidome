@@ -4,6 +4,8 @@
     <file>shaders/frustum.vert</file>
     <file>shaders/blend.frag</file>
     <file>shaders/blend.vert</file>
+    <file>shaders/blendbrush.frag</file>
+    <file>shaders/blendbrush.vert</file>
     <file>shaders/calibration.frag</file>
     <file>shaders/calibration.vert</file>
     <file>shaders/halo.frag</file>
