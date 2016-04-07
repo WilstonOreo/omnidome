@@ -62,7 +62,7 @@ namespace omni {
         QRect const          & screenGeometry() const;
 
         /// Return output geometry rectangle
-        QRect const          & outputGeometry() const;
+        QRect const          & contentGeometry() const;
 
         /// Return actual size of rendered output
         QSize                  renderSize() const;
@@ -100,7 +100,7 @@ namespace omni {
 
         bool  virtualScreen_;
         QRect screenGeometry_;
-        QRect outputGeometry_;
+        QRect contentGeometry_;
         CalibrationMode mode_;
         ColorCorrection colorCorrection_;
         RenderBuffer buffer_;

@@ -37,7 +37,8 @@ namespace omni {
       int _h = buffer_.height() <= 0 ? _tuning.height() : buffer_.height();
 
       colorCorrection_ = _tuning.colorCorrection();
-      screenGeometry_ = _tuning.screen()->geometry();
+      screenGeometry_ = _tuning.screenGeometry();
+      contentGeometry_ = _tuning.contentGeometry();
 
       /// 1st Step: Render projectors view to texture
       RenderBuffer _projBuffer(_w, _h);
@@ -176,8 +177,8 @@ namespace omni {
         return screenGeometry_;
     }
 
-    QRect const& Calibration::outputGeometry() const {
-        return outputGeometry_;
+    QRect const& Calibration::contentGeometry() const {
+        return contentGeometry_;
     }
 
     QSize Calibration::renderSize() const {

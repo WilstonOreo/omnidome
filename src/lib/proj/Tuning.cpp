@@ -61,7 +61,13 @@ namespace omni {
         int Tuning::subScreenIndex() const
         {
           if (!screen_) { // Calculate subscreen position from
-
+            int _index = 0;
+            for (auto& _tuning : session_.tunings()) {
+              if (_tuning->hasScreen()) continue;
+              if (_tuning.get() == this) return _index;
+              ++_index;
+            }
+            return 0;
           }
 
           return subScreenIndex_;
@@ -146,6 +152,7 @@ namespace omni {
         QRect Tuning::contentGeometry() const {
           QRect _screenRect(screenGeometry());
           int _w = session_.screenSetup().subScreenWidth(screen());
+
           QRect _contentRect(_w * subScreenIndex(),0,_w,_screenRect.height());
           return _contentRect;
         }
