@@ -28,7 +28,7 @@
 #include <omni/ui/mixin/DataModel.h>
 #include "proj/Tuning.h"
 #include "ScreenSetupDragWidget.h"
-#include "FullScreen.h"
+#include "ScreenItem.h"
 
 namespace omni {
   class Session;
@@ -56,8 +56,6 @@ namespace omni {
         /// Update screen dimensions
         void updateScreens();
 
-        void detachTuning(omni::ui::proj::Tuning *);
-
       signals:
         void dataModelChanged();
 
@@ -73,90 +71,8 @@ namespace omni {
         void dropEvent(QDropEvent *);
 
       private:
-        friend class Item;
-
-        friend class SubScreenItem;
-
-        class Item;
-
-        class SubScreenItem {
-          public:
-            SubScreenItem();
-            SubScreenItem(Item const *_parent,
-                          int _index);
-
-            omni::ui::proj::Tuning      * tuning();
-            omni::ui::proj::Tuning const* tuning() const;
-            void                          setTuning(
-              omni::ui::proj::Tuning *_tuning);
-
-            QRect                         rect() const;
-            QSize                         size() const;
-
-            void                          paint(bool _hover,
-                                                bool _drop,
-                                                QColor _dropColor,
-                                                QPainter&);
-
-          private:
-            Item const *parent_             = nullptr;
-            int index_                      = -1;
-            omni::ui::proj::Tuning *tuning_ = nullptr;
-        };
-
-        /// A screen rectangle item with drawing functionality
-        class Item {
-          public:
-            Item(ScreenSetup&,
-                 QScreen const *_screen);
-            ~Item();
-
-            QScreen const* screen() const;
-
-            void           paint(QPainter&);
-
-            /// Attach projector to screen on current hover index
-            void           attachTuning(omni::ui::proj::Tuning *);
-
-            /// Detach projector from screen
-            void           detachTuning(omni::ui::proj::Tuning *);
-
-            /// Detach projector from item on current hover index
-            void           detachCurrentTuning();
-
-            /// Detach all tunings/projectors
-            void           detachTunings();
-
-            /// Returns flag whether mouse is currently over this item
-            int            hoverIndex() const;
-
-            /// Set index of current hovered subscreen
-            void           setHoverIndex(int);
-
-            /// Set hover index from mouse position
-            void           setHoverIndex(QPoint const&);
-
-            /// Flag whether a drop is supposed to happen on this item
-            bool           drop() const;
-
-            /// Drop and color of drop
-            void           setDrop(bool,
-                                   QColor const& _color = QColor("#FFFFFF"));
-
-            /// Hides fullscreen widget if no tunings are attached
-            void  endDrop();
-
-            QRect rect() const;
-
-          private:
-            int hoverIndex_ = -1;
-            bool   drop_    = false;
-            QColor dropColor_;
-            ScreenSetup  & screenSetup_;
-            QScreen const *screen_;
-            FullScreen    *fullscreen_;
-            std::vector<SubScreenItem> subScreens_;
-        };
+        friend ScreenItem;
+        friend SubScreenItem;
 
         /// Set session parameters
         void dataToFrontend();
@@ -165,15 +81,14 @@ namespace omni {
           return false;
         }
 
-        /**@brief Returns pointer to a ScreenSetup::Item under given position
+        /**@brief Returns pointer to a SubScreenItem under given position
          *@detail Returns null otherwise
          **/
-        Item* getItemAtPos(QPoint const&);
+        SubScreenItem* getSubScreenItemAtPos(QPoint const&);
 
-        std::map<QScreen const *, std::unique_ptr<Item> > screenItems_;
-        omni::proj::ScreenSetup *setup_;
+        std::map<QScreen const *, std::unique_ptr<ScreenItem> > screenItems_;
         Session *session_ = nullptr;
-        Item* currentScreenItem_ = nullptr;
+        SubScreenItem* currentSubScreenItem_ = nullptr;
     };
   }
 }

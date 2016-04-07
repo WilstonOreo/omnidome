@@ -37,8 +37,8 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
       if (plugin_objcpp_sources)
         set_source_files_properties(${plugin_objcpp_sources} PROPERTIES
                                   COMPILE_FLAGS "-x objective-c++")
-        MESSAGE(STATUS "Objective-C++ sources: ${plugin_objc_sources}")
-        SET(plugin_sources ${plugin_sources} ${plugin_objc_sources})
+        MESSAGE(STATUS "Objective-C++ sources: ${plugin_objcpp_sources}")
+        SET(plugin_sources ${plugin_sources} ${plugin_objcpp_sources})
       endif()
 
 
