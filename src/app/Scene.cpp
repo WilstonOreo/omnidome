@@ -30,16 +30,18 @@ namespace omni {
         {
             this->setup(ui_);
 
-            connect(ui_->chkInput,&QCheckBox::clicked,this,&Scene::updateDataModel);
-            connect(ui_->chkGrid,&QCheckBox::clicked,this,&Scene::updateDataModel);
-            connect(ui_->chkProjectors,&QCheckBox::clicked,this,&Scene::updateDataModel);
-            connect(ui_->chkProjectedAreas,&QCheckBox::clicked,
+            this->locked([&]() {
+              connect(ui_->chkInput,&QCheckBox::clicked,this,&Scene::updateDataModel);
+              connect(ui_->chkGrid,&QCheckBox::clicked,this,&Scene::updateDataModel);
+              connect(ui_->chkProjectors,&QCheckBox::clicked,this,&Scene::updateDataModel);
+              connect(ui_->chkProjectedAreas,&QCheckBox::clicked,
                     this,&Scene::updateDataModel);
-            connect(ui_->boxFrustumViewMode,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-                    this,&Scene::updateDataModel);
+              connect(ui_->boxFrustumViewMode,static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                      this,&Scene::updateDataModel);
 
-            connect(ui_->boxSize,SIGNAL(currentIndexChanged(int)),this,SLOT(setSceneScale()));
-            connect(ui_->boxUnit,SIGNAL(currentIndexChanged(int)),this,SLOT(setUnit()));
+              connect(ui_->boxSize,SIGNAL(currentIndexChanged(int)),this,SLOT(setSceneScale()));
+              connect(ui_->boxUnit,SIGNAL(currentIndexChanged(int)),this,SLOT(setUnit()));
+            });
         }
 
         Scene::~Scene() {
@@ -77,8 +79,10 @@ namespace omni {
             ui_->boxFrustumViewMode->setCurrentIndex(util::enumToInt(_scene.projectorViewMode()));
 
             int _index = -1;
-            /*
+/*
             for (int i = 0; i < ui_->boxSize->count(); ++i) {
+
+            }
 
             }
             ui_->boxSize->setCurrentIndex(_index);

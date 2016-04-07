@@ -44,9 +44,7 @@ namespace omni {
         void TestInputPreview::mousePressEvent(QMouseEvent *event)
         {
             GLView::mousePressEvent(event);
-
             if (!input()) return;
-
             setRulerPos(event->pos());
         }
 
@@ -66,8 +64,9 @@ namespace omni {
 
             QPointF _pos = screenPos(_eventPos);
             static_cast<input::TestImage*>(input())->setRulerPos(_pos);
+            input()->update();
             emit inputChanged();
-            update();
+            triggerUpdate();
         }
     }
 }
