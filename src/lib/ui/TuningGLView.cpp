@@ -94,7 +94,7 @@ namespace omni {
 
     void TuningGLView::setFullScreenMode(bool _fullscreenMode) {
       fullscreenMode_ = _fullscreenMode;
-      update();
+      triggerUpdate();
     }
 
     bool TuningGLView::showCursor() const
@@ -144,7 +144,7 @@ namespace omni {
     void TuningGLView::setBorder(float _border)
     {
       border_ = _border;
-      update();
+      triggerUpdate();
     }
 
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
@@ -255,7 +255,7 @@ namespace omni {
         // Invert brush on right click
         if (event->button() == Qt::RightButton)
         {
-          tuning()->blendMask().brush().setInvert(!_inv);
+          tuning()->blendMask().invertBrush(!_inv);
         }
 
         auto& _blendMask = tuning()->blendMask();
@@ -296,7 +296,7 @@ namespace omni {
 
         if (event->button() == Qt::RightButton)
         {
-          tuning()->blendMask().brush().setInvert(!_inv);
+          tuning()->blendMask().invertBrush(!_inv);
         }
       }
       this->mousePosition_  = event->pos();
@@ -314,7 +314,7 @@ namespace omni {
       if (_mode == Session::Mode::BLEND)
       {
         auto& _blendMask = tuning()->blendMask();
-        _blendMask.brush().changeSize(event->delta() / 5.0);
+        _blendMask.changeBrushSize(event->delta() / 5.0);
         updateWithChildViews();
       }
     }
@@ -569,7 +569,7 @@ namespace omni {
 
     void TuningGLView::paintGL()
     {
-      if (!context() || !initialized() || !tuning() || !vizSession_) return;
+      if (!context() || !initialized() || !tuning() || !vizSession_) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _)
       {

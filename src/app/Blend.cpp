@@ -110,7 +110,7 @@ namespace omni {
         dataModel()->blendSettings().inputOpacity());
 
       auto& _brush = blendMask()->brush();
-      ui_->sliderSize->setValue(_brush.size());
+      ui_->sliderSize->setValue(blendMask()->brushSize());
       ui_->sliderFeather->setValue(_brush.feather());
       ui_->sliderOpacity->setValue(_brush.opacity());
       ui_->chkInvert->setChecked(_brush.invert());
@@ -136,7 +136,7 @@ namespace omni {
       float _opacity = ui_->sliderOpacity->value();
       bool  _invert  = ui_->chkInvert->isChecked();
 
-      blendMask()->brush().setBrush(
+      blendMask()->setBrush(
         ui_->sliderSize->value(), // Size
         _feather, _opacity, _invert);
       ui_->brushPreview->update(_feather, _opacity, _invert);

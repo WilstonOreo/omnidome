@@ -125,7 +125,7 @@ namespace omni {
         void OutputPreview::drawTuning(QPainter          & _p,
                                        proj::Tuning const *_tuning) {
             auto & _screenSetup = dataModel()->screenSetup();
-            QRectF _imageRect(_screenSetup.tuningRect(_tuning));
+            QRectF _imageRect(_tuning->contentGeometry().translated(_tuning->screenGeometry().topLeft()));
 
             render::Renderer _renderer(*dataModel());
 
@@ -156,10 +156,7 @@ namespace omni {
 
             _p.setPen(QPen(QColor("#FFFFFF")));
             _p.setBrush(Qt::NoBrush);
-            auto _rect = _screen ==
-                         _screenSetup.standardScreen() ? _screenSetup.
-                         virtualDesktopRect() :
-                         _screen->geometry();
+            auto _rect = _screenSetup.screenGeometry(_screen);
             _rect.translate(-desktopRect().topLeft());
 
             for (int i = 0; i < verticalMultiplier(); ++i) {

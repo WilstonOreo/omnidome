@@ -1,5 +1,10 @@
 
 function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
+    IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") # If mac os x
+      SET(OMNIDOME_BUILD_DIR ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/omnidome.app)
+    ENDIF()
+
+
     get_filename_component(PLUGIN_NAME ${PLUGIN_DIR} NAME)
     SET(build_target plugin_${PLUGIN_PREFIX}_${PLUGIN_NAME})
 
@@ -74,11 +79,19 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
 
     add_definitions(${defs} ${${build_target}_DEFS})
 
+    set(PLUGIN_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
+
+    IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") # If mac os x
+      # Put plugins in plugins folder in omnidome.app dir
+      set(PLUGIN_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/omnidome.app/Contents/PlugIns)
+    ENDIF()
+
     SET_TARGET_PROPERTIES(${build_target}
         PROPERTIES
         SUFFIX ".omnix"
         PREFIX ""
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}
+        RUNTIME_OUTPUT_DIRECTORY ${PLUGIN_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY ${PLUGIN_OUTPUT_DIR}
     )
 endfunction()
 

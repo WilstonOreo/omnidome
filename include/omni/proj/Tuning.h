@@ -55,9 +55,13 @@ namespace omni {
         /// Constructor
         Tuning(Session const&);
 
+        /// Assign virtual screen to tuning
+        void assignVirtualScreen();
+
         /// Set screen for this tuning
         void                   setScreen(QScreen const *_screen,
                                          int _subScreenIndex);
+
         QScreen const        * screen() const;
         int                    subScreenIndex() const;
 
@@ -103,6 +107,12 @@ namespace omni {
         /// Render calibration
         void                   renderCalibration(Calibration& _calib)
         const;
+
+        /// Rectangle of the output screen on desktop
+        QRect                  screenGeometry() const;
+
+        /// Content rectangle (position) inside the screen
+        QRect                  contentGeometry() const;
 
         /// Render and return calibration
         Calibration renderCalibration(CalibrationMode =
@@ -150,6 +160,15 @@ namespace omni {
         bool   overlapOpacity_ = 0.0;
         QColor color_;
         Projector projector_;
+
+        /**@brief Screen this tuning is assigned to.
+           @detail If screen is nullptr, tuning is assigned to virtual screen
+         **/
+        QScreen const* screen_ = nullptr;
+
+        /// SubScreen index of this tuning
+        int subScreenIndex_ = 0;
+
         WarpGrid  warpGrid_;
         BlendMask blendMask_;
         ColorCorrection colorCorrection_;

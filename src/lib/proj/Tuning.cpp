@@ -38,31 +38,33 @@ namespace omni {
             color_("#FFFFFF"),
             blendMask_(*this),
             session_(_session)
-        {}
+        {
+        }
+
+        void Tuning::assignVirtualScreen() {
+          setScreen(nullptr,0);
+        }
 
         void Tuning::setScreen(QScreen const *_screen, int _subScreenIndex)
         {
-            if (!_screen) _screen = ScreenSetup::standardScreen();
-
-            auto _oldScreenSize = projector_.screen()->size();
-            projector_.setScreen(_screen, _subScreenIndex);
-
-            if (_screen->size() != _oldScreenSize)
-            {
-                blendMask_.resize(
-                    ScreenSetup::subScreenWidth(_screen),
-                    _screen->size().height());
-            }
+          screen_ = _screen;
+          subScreenIndex_ = _subScreenIndex;
+          projector_.setAspectRatio(session_.screenSetup().subScreenAspectRatio(screen()));
+          blendMask_.setBrush(100.0,blendMask_.brush().feather(),blendMask_.brush().opacity(),blendMask_.brush().invert());
         }
 
-        QScreen const * Tuning::screen() const
+        QScreen const* Tuning::screen() const
         {
-            return projector_.screen();
+            return screen_;
         }
 
         int Tuning::subScreenIndex() const
         {
-            return projector_.subScreenIndex();
+          if (!screen_) { // Calculate subscreen position from
+
+          }
+
+          return subScreenIndex_;
         }
 
         Projector& Tuning::projector()
@@ -132,7 +134,20 @@ namespace omni {
 
         bool Tuning::hasScreen() const
         {
-            return projector_.screen() != ScreenSetup::standardScreen();
+            return screen_ != nullptr;
+        }
+
+        /// Rectangle of the output screen on desktop
+        QRect Tuning::screenGeometry() const {
+          return session_.screenSetup().screenGeometry(screen());
+        }
+
+        /// Content rectangle (position) inside the screen
+        QRect Tuning::contentGeometry() const {
+          QRect _screenRect(screenGeometry());
+          int _w = session_.screenSetup().subScreenWidth(screen());
+          QRect _contentRect(_w * subScreenIndex(),0,_w,_screenRect.height());
+          return _contentRect;
         }
 
         /// Render calibration
@@ -149,24 +164,12 @@ namespace omni {
 
         int Tuning::width() const
         {
-            if (!ScreenSetup::standardScreen()) {
-                return 0;
-            }
-
-            return !hasScreen() ?
-                   ScreenSetup::subScreenWidth(ScreenSetup::standardScreen()) :
-                   ScreenSetup::subScreenWidth(projector_.screen());
+          return contentGeometry().width();
         }
 
         int Tuning::height() const
         {
-            if (!ScreenSetup::standardScreen()) {
-                return 0;
-            }
-
-            return !hasScreen() ?
-                   ScreenSetup::standardScreen()->size().height() :
-                   projector_.screen()->size().height();
+          return contentGeometry().height();
         }
 
         /// Return flag if output is disabled, projector output is black
@@ -209,6 +212,10 @@ namespace omni {
                 ("overlapOpacity",overlapOpacity_)
                 ("colorCorrection",colorCorrection_)
                 ;
+
+            _map("screenGeometry", screenGeometry());
+            _map("contentGeometry", contentGeometry());
+            _map("subScreenIndex", subScreenIndex_);
             _os << _map;
         }
 
@@ -216,6 +223,12 @@ namespace omni {
         void Tuning::fromStream(QDataStream& _is) {
             PropertyMap _map;
             _is >> _map;
+            QRect _screenRect = _map.getValue<QRect>("screenRect");
+            if (!_screenRect.isNull()) {
+              screen_ = ScreenSetup::screenFromRect(_screenRect);
+            }
+
+            _map.get("subScreenIndex", subScreenIndex_);
             _map.get("color",color_);
             _map.get("projector",projector_);
             _map.get("warpGrid",warpGrid_);

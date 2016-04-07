@@ -73,8 +73,7 @@ namespace omni {
 
         for (auto& _tuning : _tunings)
         {
-          auto _rect = proj::ScreenSetup::subScreenRect(_screen,
-                                                        _tuning->subScreenIndex());
+          auto _rect = _tuning->contentGeometry();
           QImage _tuningImage;
           render(_tuning, _tuningImage);
           _p.drawImage(_rect.x(), 0, _tuningImage);

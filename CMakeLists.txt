@@ -138,3 +138,6 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   ADD_EXECUTABLE(omnidome ${omni_src} )
   TARGET_LINK_LIBRARIES(omnidome omni ${omni_extra_libs} ${Qt5_LIBRARIES} )
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+
+setup_cpack()

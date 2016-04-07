@@ -131,7 +131,7 @@ namespace omni {
 
     void Tuning::setBlendTextureUpdateRect(QRect const& _rect)
     {
-      int _radius = tuning_.blendMask().brush().size() / 2 + 1;
+      int _radius = tuning_.blendMask().brushSize() / 2 + 1;
       blendTextureUpdateRect_ = _rect.normalized().adjusted(-_radius,
                                                             -_radius,
                                                             _radius,
@@ -180,12 +180,23 @@ namespace omni {
         auto _ptr = _blendMask.strokeBufferData();
 
         auto _fullRect = QRect(0, 0, tuning_.width(), tuning_.height());
-        auto& _r = blendTextureUpdateRect_;
+
+
+        /// Transform tuning sized rect to stroke buffer sized rect
+        auto _transformRect = [&](QRect const& _rect) -> QRect {
+          auto _res = BlendMask::resolution();
+          return QRect(
+            _res * _rect.x() / tuning_.width(),
+            _res * _rect.y() / tuning_.height(),
+            _res * _rect.width() / tuning_.width(),
+            _res * _rect.height() / tuning_.height());
+        };
 
         /// Optimization for uploading only a portion of the blend
         // buffer to texture
-        if (_r != _fullRect)
+        if (blendTextureUpdateRect_ != _fullRect)
         {
+          auto _r = _transformRect(blendTextureUpdateRect_);
           auto _data = _blendMask.strokeBuffer().cropRect(_r);
           _ptr = (void *)(_data.data().data());
           _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
@@ -200,9 +211,10 @@ namespace omni {
           blendTextureUpdateRect_ = _fullRect;
         } else
         {
+          auto _r = _transformRect(_fullRect);
           _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
-          _.glTexSubImage2D(GL_TEXTURE_2D, 0, _fullRect.x(), _fullRect.y(),
-                            _fullRect.width(), _fullRect.height(), GL_RED,
+          _.glTexSubImage2D(GL_TEXTURE_2D, 0, _r.x(), _r.y(),
+                            _r.width(), _r.height(), GL_RED,
                             GL_UNSIGNED_BYTE, _ptr);
           _.glBindTexture(GL_TEXTURE_2D, 0);
         }
@@ -223,7 +235,7 @@ namespace omni {
         glColor4f(0.0, 0.0, 0.0, 1.0);
         _.glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
 
-        float _r = tuning_.blendMask().brush().size() * 0.5 / tuning_.width();
+        float _r = tuning_.blendMask().brushSize() * 0.5 / tuning_.width();
         cursor_->drawLine(_pos, _r, _r * (_rect.height() / _rect.width()));
         _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         _.glEnable(GL_LINE_SMOOTH);

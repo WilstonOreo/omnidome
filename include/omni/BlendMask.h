@@ -34,6 +34,10 @@ namespace omni {
    */
   class BlendMask {
     public:
+      /// Resolution of blend mask
+      inline static constexpr int resolution() {
+        return 1024;
+      }
 
       typedef Buffer<uint8_t>Buffer;
 
@@ -45,8 +49,7 @@ namespace omni {
       /**@brief Sets rect of blends
        *@detail Clamps rect to borders 0,0,1,1 if its overlapping
        **/
-      void setRect(QRectF const&,
-                   bool _update = true);
+      void setRect(QRectF const&);
 
       /// Returns rectangle
       QRectF            rect() const;
@@ -69,8 +72,19 @@ namespace omni {
       /// Return gamma value
       float             gamma() const;
 
-      /// Return reference blend brush
-      BlendBrush      & brush();
+      /// Set blend brush settings
+      void  setBrush(
+              float _size,
+              float _feather, float _opacity, bool _invert);
+
+      /// Brush size for tuning
+      float brushSize() const;
+
+      /// Invert brush
+      void invertBrush(bool);
+
+      /// Change brush size by +- amount of pixel
+      void changeBrushSize(float _delta);
 
       /// Return reference blend brush (const version)
       BlendBrush const& brush() const;
@@ -105,12 +119,12 @@ namespace omni {
                              BlendMask const&);
 
     private:
+      /// Transform point from tuning coordinates to stroke buffer coordinates
+      QPointF transformedPoint(QPointF const&) const;
 
       /// Returns blend value for mask buffer at position x y
       float borderValue(float _x,
                         float _y) const;
-
-      void  autoResizeStrokeBuffer();
 
       proj::Tuning const& tuning_;
       QRectF rect_;

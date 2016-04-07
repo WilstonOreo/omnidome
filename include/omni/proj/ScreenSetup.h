@@ -35,6 +35,11 @@ namespace omni {
       public:
         ScreenSetup(Session const *_session);
 
+        /**@brief Returns the screen geometry for a screen
+           @detail If screen is null, the geometry for the virtual screen is returned
+         **/
+        QRect screenGeometry(QScreen const* = nullptr) const;
+
         /// Returns screen size that supports triple heads
         static std::vector<QSize>const& screenResolutions();
 
@@ -44,20 +49,45 @@ namespace omni {
         /// Return const pointer to session
         Session const                 * session() const;
 
-        /// True if this widget is shown in fullscreen mode
-        /// Returns the number of subscreens for a single screen
-        static int   subScreenCount(QScreen const *);
+        /**@brief Returns the number of subscreens for a single screen
+           @detail If screen is nullptr, number of subscreen for virtual screen
+                   is returned.
+         **/
+        int   subScreenCount(QScreen const * = nullptr) const;
+
+        /** @brief Static method for getting subscreen count for screen
+            @detail Screen must not be nullptr!
+         **/
+        static int   subScreenCountForScreen(QScreen const *);
+
+        /**@brief Returns the number of subscreens for a single screen
+           @detail If screen is nullptr, number of subscreen for virtual screen
+                   is returned.
+         **/
+        int   subScreenWidth(QScreen const * = nullptr) const;
+
+        /** @brief Static method for getting subscreen width for screen
+            @detail Screen must not be nullptr!
+         **/
+        static int   subScreenWidthForScreen(QScreen const *);
 
         /// Returns the rectangle of a subscreen with a certain index
-        static QRect subScreenRect(QScreen const *,
-                                   int _subScreenIndex);
-        static int   subScreenWidth(QScreen const *);
+        QRect subScreenRect(int _index, QScreen const* = nullptr) const;
+
+        /** @brief Static method for getting subscreen count for screen
+            @detail Screen must not be nullptr!
+         **/
+        static QRect   subScreenRectForScreen(int _index, QScreen const *);
+
+        /// Return aspect ratio of subscreen
+        qreal subScreenAspectRatio(QScreen const* = nullptr) const;
+
 
         static QRect desktopRect(
           bool _excludeStandardScreen = true);
 
         /// Virtual desktop rect contains all non-assigned tunings
-        QRect virtualDesktopRect() const;
+        QRect virtualScreenRect() const;
 
         /// Returns combined desktop and virtual desktop rect
         QRect combinedDesktopRect() const;
@@ -77,13 +107,6 @@ namespace omni {
         /// Return pointer to screen for rectangle, nullptr if no screen with
         // rectangle exists
         static QScreen const             * screenFromRect(QRect const&);
-
-        /**@brief Return screen rectangle for tuning, in combined desktop rect
-           @param _tuning Tuning
-           œparam _shrink Removes empty space from rect
-         **/
-        QRect                              tuningRect(proj::Tuning const *_tuning)
-        const;
 
         /// Bounding rect that unifies all tunings
         QRect tuningRect() const;

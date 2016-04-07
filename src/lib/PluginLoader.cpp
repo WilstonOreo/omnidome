@@ -74,17 +74,30 @@ namespace omni {
     }
 
     std::vector<QDir> PluginLoader::defaultPaths() {
-
         std::vector<QDir> _pluginDirs;
         _pluginDirs.push_back(QCoreApplication::applicationDirPath());
         #if defined(Q_OS_MAC)
         {
             QDir _appDir(QCoreApplication::applicationDirPath());
             if (_appDir.dirName() == "MacOS") {
-                _appDir.cdUp();
-                _appDir.cdUp();
-                _appDir.cdUp();
-                _pluginDirs.push_back(_appDir);
+                // omnidome.app/Contents/MacOS
+                QDir _dir = _appDir;
+                _dir.cdUp();
+                _dir.cdUp();
+                _dir.cdUp();
+                _pluginDirs.push_back(_dir);
+
+                // omnidome.app/Contents/PlugIns
+                _dir = _appDir;
+                _dir.cdUp();
+                _dir.cd("PlugIns");
+                _pluginDirs.push_back(_dir);
+            } else {
+                QDir _dir = _appDir;
+                _dir.cd("omnidome.app");
+                _dir.cd("Contents");
+                _dir.cd("PlugIns");
+                _pluginDirs.push_back(_dir);
             }
         }
         #endif

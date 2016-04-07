@@ -40,6 +40,8 @@ namespace omni
       if (_makeCurrent)
         setCurrentIndex(container_type::size()-1);
 
+      // Assign virtual screen initially, this also sets up projector aspectRatio correctly
+      _tuning->assignVirtualScreen();
       _tuning->projector().setup("PeripheralSetup");
 
       return _tuning;

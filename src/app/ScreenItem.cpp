@@ -46,7 +46,7 @@ namespace omni {
     QRect SubScreenItem::rect() const
     {
       auto _r     = parent_->rect(); // Parent rect
-      int  _width = _r.width() / omni::proj::ScreenSetup::subScreenCount(
+      int  _width = _r.width() / omni::proj::ScreenSetup::subScreenCountForScreen(
         parent()->screen());
 
       return QRect(_r.x() + index_ * _width, _r.y(), _width, _r.height());
@@ -57,7 +57,7 @@ namespace omni {
       auto _screen = parent()->screen();
 
       return QSize(
-        omni::proj::ScreenSetup::subScreenWidth(_screen),
+        omni::proj::ScreenSetup::subScreenWidthForScreen(_screen),
         _screen->size().height());
     }
 
@@ -148,7 +148,7 @@ namespace omni {
       screen_(_screen),
       fullscreen_(new FullScreen(_screen))
     {
-      int _numScreens = omni::proj::ScreenSetup::subScreenCount(_screen);
+      int _numScreens = omni::proj::ScreenSetup::subScreenCountForScreen(_screen);
 
       for (int i = 0; i < _numScreens; ++i)
       {
@@ -196,7 +196,6 @@ namespace omni {
         if (subScreens_[i].rect().contains(_pos))
         {
           setHoverIndex(i);
-          qDebug() << "ScreenItem::setHoverIndex(QPoint) " << hoverIndex();
           return;
         }
       }

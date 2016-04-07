@@ -33,8 +33,7 @@ namespace omni {
       public:
         Projector();
         Projector(
-          QScreen const *_screen,
-          int _subScreenIndex,
+          qreal _aspectRatio,
           Angle _fov = 45.0);
 
         /**@brief Make a new projector setup with a certain id and delete old
@@ -52,17 +51,8 @@ namespace omni {
         /// Aspect ratio of screen
         qreal             aspectRatio() const;
 
-        /// Assign screen and subscreen to projector
-        void              setScreen(QScreen const *_screen,
-                                    int _subScreenIndex);
-
-        /// Return pointer to screen
-        QScreen const   * screen() const;
-
-        /**@brief Return subscreen index
-           @detail Used to determine screen position when screen is a triple head
-         **/
-        int               subScreenIndex() const;
+        /// Set aspect ratio of screen
+        void              setAspectRatio(qreal);
 
         /// Return throw ratio of projector ( = 1/2 * tan(fov / 2))
         qreal             throwRatio() const;
@@ -106,8 +96,7 @@ namespace omni {
 
       private:
         QMatrix4x4 matrix_;
-        QScreen const *screen_ = nullptr;
-        int   subScreenIndex_  = -1;
+        qreal aspectRatio_ = 0.75;
         Angle fov_;
         qreal keystone_ = 0.0;
         std::unique_ptr<Setup> setup_;

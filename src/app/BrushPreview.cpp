@@ -36,7 +36,8 @@ BrushPreview::BrushPreview(QWidget *_parent) :
 
 void BrushPreview::update(float _feather, float _opacity, bool _invert)
 {
-  brush_.setBrush(std::min(width(), height()), _feather, _opacity, _invert);
+  int _size = std::min(width(),height());
+  brush_.setBrush(QVector2D(_size,_size), _feather, _opacity, _invert);
   image_ = brush_.buffer().toQImage();
 
   if (_invert) image_.invertPixels();

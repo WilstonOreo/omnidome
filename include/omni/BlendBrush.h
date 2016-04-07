@@ -20,6 +20,7 @@
 #ifndef OMNI_BLENDBRUSH_H_
 #define OMNI_BLENDBRUSH_H_
 
+#include <QVector2D>
 #include <omni/Buffer.h>
 
 class QPointF;
@@ -37,21 +38,21 @@ namespace omni {
       /**@brief Constructor with a size and feather value (1.0 by default)
          @detail Updates internal pixel buffer
        **/
-      BlendBrush(float _size,
+      BlendBrush(QVector2D const& _size,
                  float _feather = 1.0);
 
       /// Returns brush size
-      float size() const;
+      QVector2D const& size() const;
 
       /**@brief Sets size of the brush.
        * @detail Minimum size is 2 pixels, maximum size is 512 pixels
        **/
-      void  setSize(float _size);
+      void  setSize(QVector2D const& _size);
 
       /**@brief Increase/Decrease size of the brush with a certain delta value
        * @detail Minimum size is 2 pixels, maximum size is 512 pixels
        **/
-      void  changeSize(float _delta);
+      void  changeSize(QVector2D const& _delta);
 
       /// Return feather value
       float feather() const;
@@ -80,7 +81,7 @@ namespace omni {
       void  setInvert(bool _invert);
 
       /// Set brush settings and generate pixel buffer
-      void  setBrush(float _size,
+      void  setBrush(QVector2D const&  _size,
                      float _feather,
                      float _opacity,
                      bool _invert);
@@ -118,11 +119,14 @@ namespace omni {
       /// Generate internal pixel buffer with given size and feather parameters
       void generate();
 
+      /// Keep brush size within certain limits
+      static QVector2D clampBrushSize(QVector2D const&);
+
       /// Internal pixel buffer
       Buffer<float> buffer_;
 
       float opacity_ = 1.0;
-      float size_    = 100.0;
+      QVector2D size_;
       float feather_ = 1.0;
       bool  invert_  = false;
   };

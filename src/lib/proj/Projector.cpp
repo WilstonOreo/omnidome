@@ -28,33 +28,14 @@
 namespace omni {
   namespace proj {
     Projector::Projector() :
-      screen_(nullptr),
       fov_(45.0)
     {}
 
-    Projector::Projector(QScreen const *_screen,
-                         int _subScreenIndex,
+    Projector::Projector(qreal _aspectRatio,
                          Angle _fov) :
-      screen_(_screen),
-      subScreenIndex_(_subScreenIndex),
+      aspectRatio_(_aspectRatio),
       fov_(_fov)
     {}
-
-    QScreen const * Projector::screen() const
-    {
-      return screen_ ? screen_ : ScreenSetup::standardScreen();
-    }
-
-    int Projector::subScreenIndex() const
-    {
-      return subScreenIndex_;
-    }
-
-    void Projector::setScreen(QScreen const *_screen, int _subScreenIndex)
-    {
-      screen_         = _screen;
-      subScreenIndex_ = _subScreenIndex;
-    }
 
     Setup * Projector::setup(Id const& _setupId)
     {
@@ -77,8 +58,11 @@ namespace omni {
 
     qreal Projector::aspectRatio() const
     {
-      return qreal(ScreenSetup::subScreenWidth(screen())) /
-             screen()->size().height();
+      return aspectRatio_;
+    }
+
+    void Projector::setAspectRatio(qreal _aspectRatio) {
+      aspectRatio_ = _aspectRatio;
     }
 
     qreal Projector::throwRatio() const
@@ -151,16 +135,9 @@ namespace omni {
     void Projector::toStream(QDataStream& _os) const {
       PropertyMap _map;
 
-      if (screen_) {
-        // Serialize screen rectangle
-        _map("screenRect", screen_->geometry());
-      } else {
-        // Serialize null rectangle if there is not screen
-        _map("screenRect", QRect());
-      }
-      _map("subScreenIndex", subScreenIndex_);
       _map("fov", fov_);
       _map("keystone", keystone_);
+      _map("aspectRatio", aspectRatio_);
       _map("setup", setup_);
       _os << _map;
     }
@@ -168,15 +145,9 @@ namespace omni {
     void Projector::fromStream(QDataStream& _is) {
       PropertyMap _map;
       _is >> _map;
-      QRect _screenRect = _map.getValue<QRect>("screenRect");
-
-      if (!_screenRect.isNull()) {
-        screen_ = _screenRect.isNull() ? nullptr :
-                  ScreenSetup::screenFromRect(_screenRect);
-      }
-      _map.get("subScreenIndex", subScreenIndex_);
       _map.get("fov", fov_);
       _map.get("keystone", keystone_);
+      _map.get("aspectRatio",aspectRatio_);
       _map.getPtr("setup", [this](const Id& _id) -> Setup * {
         return this->setup(_id);
       });
@@ -187,8 +158,9 @@ namespace omni {
       return
         OMNI_TEST_MEMBER_EQUAL(matrix_) &&
         OMNI_TEST_MEMBER_EQUAL(fov_) &&
-        OMNI_TEST_MEMBER_EQUAL(subScreenIndex_) &&
-        OMNI_TEST_MEMBER_EQUAL(screen_);
+        OMNI_TEST_MEMBER_EQUAL(keystone_) &&
+        OMNI_TEST_MEMBER_EQUAL(aspectRatio_) &&
+        OMNI_TEST_PTR_MEMBER_EQUAL(setup_);
     }
   }
 }

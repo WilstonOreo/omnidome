@@ -201,7 +201,6 @@ namespace omni
         _item.second->endDrop();
 
       currentSubScreenItem_ = getSubScreenItemAtPos(event->pos());
-      //dragWidget_->hide();
 
       if (currentSubScreenItem_)
       {

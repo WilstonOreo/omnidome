@@ -26,30 +26,30 @@
 #include <omni/serialization/PropertyMap.h>
 
 namespace omni {
-    BlendBrush::BlendBrush()
+    BlendBrush::BlendBrush() : size_(100.0,100.0)
     {
         generate();
     }
 
-    BlendBrush::BlendBrush(float _size, float _feather) :
+    BlendBrush::BlendBrush(QVector2D const& _size, float _feather) :
         size_(_size),
         feather_(_feather)
     {
         generate();
     }
 
-    float BlendBrush::size() const
+    QVector2D const& BlendBrush::size() const
     {
         return size_;
     }
 
-    void BlendBrush::setSize(float _size)
+    void BlendBrush::setSize(QVector2D const& _size)
     {
-        size_ = qBound(2.0f, _size, 512.0f);
+        size_ = clampBrushSize(_size);
         generate();
     }
 
-    void BlendBrush::changeSize(float _delta)
+    void BlendBrush::changeSize(QVector2D const& _delta)
     {
         setSize(size_ + _delta);
     }
@@ -98,15 +98,15 @@ namespace omni {
     }
 
     void BlendBrush::setBrush(
-        float _size,
+        QVector2D const& _size,
         float _feather,
         float _opacity, bool _invert)
     {
-        size_    = qBound(_size, 2.0f, 512.0f);
+        size_ = clampBrushSize(_size);
+
         feather_ = _feather;
 
         if (feather_ < 0.0) feather_ = 0.0;
-
         if (feather_ > 10.0) feather_ = 10.0;
         invert_ = _invert;
 
@@ -123,19 +123,20 @@ namespace omni {
 
     void BlendBrush::stamp(QPointF const& _p, Buffer<uint8_t>& _buf) const
     {
-        int   _size = size();
-        float r     = size() * 0.5;
+        int _sizeX = size().x();
+        int _sizeY = size().y();
+        QVector2D r     = size() * 0.5;
 
-        int dx = _p.x() - r;
-        int dy = _p.y() - r;
+        int dx = _p.x() - r.x();
+        int dy = _p.y() - r.y();
 
-        for (int i = 0; i < _size; ++i)
+        for (int i = 0; i < _sizeX; ++i)
         {
             int _posx = int(i + dx);
 
             if ((_posx < 0) || (_posx >= _buf.width())) continue;
 
-            for (int j = 0; j < _size; ++j)
+            for (int j = 0; j < _sizeY; ++j)
             {
                 int _posy = int(j + dy);
 
@@ -159,8 +160,7 @@ namespace omni {
     float BlendBrush::drawLine(const QPointF& _p0, const QPointF& _p1,
                                Buffer<uint8_t>& _buf, float _leftOver)
     {
-        float _spacing = size_ / 10.0;
-
+        float _spacing = size_.length() / 10.0;
         if (_spacing < 0.5) _spacing = 0.5;
 
         QVector2D _step(0.0, 0.0);
@@ -209,28 +209,35 @@ namespace omni {
 
     void BlendBrush::generate()
     {
-        int _size = std::max(int(size() + 1), 2);
+        int _sizeX = std::max(int(size().x() + 1), 2);
+        int _sizeY = std::max(int(size().y() + 1), 2);
+        buffer_.resize(_sizeX, _sizeY);
 
-        buffer_.resize(_size, _size);
-
-        float _r = _size * 0.5;
+        QVector2D _r(_sizeX * 0.5,_sizeY * 0.5);
 
         // Calculate feather radius
-        float _innerRadius = feather() * (1.0 - _r) + _r;
+        QVector2D _innerRadius = feather() * (QVector2D(1.0,1.0) - _r) + _r;
 
         // For each pixel
-        for (int y = 0; y < _size; ++y)
-            for (int x = 0; x < _size; ++x)
+        for (int y = 0; y < _sizeY; ++y)
+            for (int x = 0; x < _sizeX; ++x)
             {
-                float _distance = QVector2D(x - _r, y - _r).length();
+                QVector2D _d = QVector2D(x - _r.x(), y - _r.y());
 
                 // Pixel value
-                float _v = (_distance - _innerRadius) / (_r - _innerRadius) *
+                float _v = ((_d - _innerRadius) / (_r - _innerRadius)).length() *
                            opacity_ + 1.0 - opacity_;
 
                 // Clamp and set pixel value
                 buffer_(x, y) = qBound(0.0f, _v, 1.0f);
             }
+    }
+
+    QVector2D BlendBrush::clampBrushSize(QVector2D const& _size) {
+        float _aspect = _size.x() / _size.y();
+        return QVector2D(
+          qBound(_size.x(), 2.0f, 512.0f),
+          qBound(_size.y(), 2.0f * _aspect, 512.0f * _aspect));
     }
 
     /// Write blend brush to stream

@@ -92,15 +92,15 @@ namespace omni {
 
     void FullScreen::setGeometry(QWidget *_widget, int _subIndex) const
     {
-      int _subScreenCount = omni::proj::ScreenSetup::subScreenCount(screen_);
+      /// Todo
+      int _subScreenCount = omni::proj::ScreenSetup::subScreenCountForScreen(screen_);
 
       if (_subIndex <  0) _subIndex = 0;
 
       if (_subIndex >= _subScreenCount) _subIndex = _subScreenCount - 1;
 
       using omni::proj::ScreenSetup;
-      _widget->setGeometry(ScreenSetup::subScreenRect(screen_,
-                                                      _subIndex));
+      _widget->setGeometry(ScreenSetup::subScreenRectForScreen(_subIndex,screen_));
     }
 
     void FullScreen::showDragWidget(int _subIndex, QColor const& _color)

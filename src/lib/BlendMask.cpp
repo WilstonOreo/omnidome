@@ -29,7 +29,8 @@ namespace omni {
         rect_(0.1, 0.1, 0.8, 0.9),
         gamma_(2.0)
     {
-        autoResizeStrokeBuffer();
+      // Stroke buffer size is fixed to 1 mega pixel
+      strokeBuffer_.resize(resolution(),resolution());
     }
 
     void BlendMask::clear()
@@ -37,7 +38,7 @@ namespace omni {
         strokeBuffer_.clear();
     }
 
-    void BlendMask::setRect(QRectF const& _rect, bool _update)
+    void BlendMask::setRect(QRectF const& _rect)
     {
         rect_ = _rect;
     }
@@ -79,28 +80,44 @@ namespace omni {
         return gamma_;
     }
 
-    BlendBrush& BlendMask::brush()
-    {
-        return brush_;
+    void BlendMask::setBrush(
+              float _size,
+              float _feather, float _opacity, bool _invert) {
+      brush_.setBrush(QVector2D(transformedPoint(QPointF(_size,_size))),_feather,_opacity,_invert);
     }
+
+
+      /// Invert brush
+      void BlendMask::invertBrush(bool _invert) {
+        brush_.setInvert(_invert);
+      }
+
+      /// Change brush size by +- amount of pixel
+      void BlendMask::changeBrushSize(float _delta) {
+        brush_.changeSize(QVector2D(transformedPoint(QPointF(_delta,_delta))));
+      }
 
     BlendBrush const& BlendMask::brush() const
     {
         return brush_;
     }
 
+    float BlendMask::brushSize() const {
+      return brush_.size().x() * tuning_.width() / 1024.0;
+    }
+
     void BlendMask::stamp(const QPointF& _pos)
     {
-        autoResizeStrokeBuffer();
-        brush_.stamp(_pos, strokeBuffer_);
+      brush_.stamp(transformedPoint(_pos), strokeBuffer_);
     }
 
     float BlendMask::drawLine(QPointF const& _p0,
                               QPointF const& _p1,
                               float          _leftOver)
     {
-        autoResizeStrokeBuffer();
-        return brush_.drawLine(_p0, _p1, strokeBuffer_, _leftOver);
+      return brush_.drawLine(
+        transformedPoint(_p0),
+        transformedPoint(_p1), strokeBuffer_, _leftOver);
     }
 
     BlendMask::Buffer const& BlendMask::strokeBuffer() const
@@ -118,12 +135,8 @@ namespace omni {
         return (void *)(strokeBuffer_.data().data());
     }
 
-    void BlendMask::autoResizeStrokeBuffer()
-    {
-        if ((strokeBuffer_.width() != tuning_.width()) ||
-            (strokeBuffer_.height() != tuning_.height())) strokeBuffer_.resize(
-                tuning_.width(),
-                tuning_.height());
+    QPointF BlendMask::transformedPoint(QPointF const& _pos) const {
+      return float(resolution()) * QPointF(_pos.x() / tuning_.width(),_pos.y() / tuning_.height());
     }
 
     void BlendMask::toStream(QDataStream& _os) const {
