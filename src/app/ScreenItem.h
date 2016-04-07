@@ -72,6 +72,7 @@ namespace omni {
                                         bool _drop,
                                         QColor _dropColor,
                                         QPainter&);
+
       private:
         ScreenItem *parent_   = nullptr;
         int index_                  = -1;
