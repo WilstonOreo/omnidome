@@ -79,6 +79,14 @@ namespace omni
       return 0.5 * (min_ + max_);
   }
 
+  void Box::extend(QVector3D const& _v) {
+    for (int i = 0; i < 3; ++i) {
+      min_[i] = std::min(_v[i],min_[i]);
+      max_[i] = std::max(_v[i],max_[i]);
+    }
+    validate();
+  }
+
   void Box::validate()
   {
     for (int i = 0; i < 3; ++i)

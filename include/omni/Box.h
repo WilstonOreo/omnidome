@@ -55,6 +55,9 @@ namespace omni {
       void      setMinMax(QVector3D const&,
                           QVector3D const&);
 
+      /// Extend dimenstions of box by point
+      void      extend(QVector3D const&);
+
       /// Return the center point of the box
       QVector3D center() const;
 

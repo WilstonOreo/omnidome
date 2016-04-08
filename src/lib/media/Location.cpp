@@ -19,27 +19,28 @@
 
 #include <omni/media/Location.h>
 
+#include <QDebug>
 #include <QFileInfo>
 
 namespace omni {
   namespace media {
     Location::Location() {}
 
-    Location::Location(QString const & _location) {
-      setLocation(_location);
+    Location::Location(QString const & _path) {
+      setPath(_path);
     }
 
     bool Location::exists() const {
-      return exists(location_);
+      return exists(path_);
     }
 
-    bool Location::exists(QString const& _location) {
-      QFileInfo _fileInfo(_location);
+    bool Location::exists(QString const& _path) {
+      QFileInfo _fileInfo(_path);
       return _fileInfo.exists();
     }
 
-    QString const& Location::location() const {
-      return location_;
+    QString const& Location::path() const {
+      return path_;
     }
 
     void Location::relocate(QString const& _directoryHint) {
@@ -51,14 +52,14 @@ namespace omni {
        */
     }
 
-    void Location::setLocation(QString const& _location) {
+    void Location::setPath(QString const& _path) {
+      path_ = _path;
+      qDebug() << "Location::setPath " << _path;
+      QFileInfo _fileInfo(_path);
+      fileSize_ = _fileInfo.size();
       if (!exists()) {
         throw exception::NotExisting(*this);
       }
-
-      location_ = _location;
-      QFileInfo _fileInfo(_location);
-      fileSize_ = _fileInfo.size();
     }
   }
 }
@@ -67,12 +68,12 @@ QDataStream& operator>>(QDataStream& _is,
                         omni::media::Location& _loc) {
   QString _string;
   _is >> _string;
-  _loc.setLocation(_string);
+  _loc.setPath(_string);
   return _is;
 }
 
 QDataStream& operator<<(QDataStream& _os,
                         omni::media::Location const& _loc) {
-  _os << _loc.location();
+  _os << _loc.path();
   return _os;
 }

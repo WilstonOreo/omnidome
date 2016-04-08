@@ -83,7 +83,7 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
 
     IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") # If mac os x
       # Put plugins in plugins folder in omnidome.app dir
-      set(PLUGIN_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/omnidome.app/Contents/PlugIns)
+      set(PLUGIN_OUTPUT_DIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/omnidome.app/Contents/PlugIns)
     ENDIF()
 
     SET_TARGET_PROPERTIES(${build_target}

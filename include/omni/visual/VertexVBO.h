@@ -74,7 +74,6 @@ namespace omni {
         VBO const& indexVbo() const;
 
       private:
-        VBO vbo_;
         size_t numIndices_ = 0;
         VBO    vertexVbo_, indexVbo_;
     };

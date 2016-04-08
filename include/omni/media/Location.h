@@ -34,29 +34,29 @@ namespace omni {
 
         template<typename MEDIA>
         void reload(MEDIA& _media) {
-          load(location_,_media);
+          load(path_,_media);
         }
 
         /// Load media from file
         template<typename MEDIA>
-        void load(QString const& _location, MEDIA& _media) {
-          setLocation(_location);
-          _media.load(_location);
+        void load(QString const& _path, MEDIA& _media) {
+          setPath(_path);
+          _media.load(_path);
         }
 
         bool           exists() const;
         static bool    exists(QString const&);
 
         uint64_t       fileSize() const;
-        QString const& location() const;
-        void           setLocation(QString const&);
+        QString const& path() const;
+        void           setPath(QString const&);
 
         /// Relocate media by searching directories, with optional directory hint
         void           relocate(QString const& _directoryHint = QString());
 
       private:
         qint64   fileSize_ = 0;
-        QString  location_;
+        QString  path_;
     };
 
     namespace exception {
@@ -70,7 +70,7 @@ namespace omni {
 
           inline QString message() const throw() {
             QString _msg("Location %1 does not exist!");
-            _msg = _msg.arg(location_.location());
+            _msg = _msg.arg(location_.path());
             return _msg;
           }
 

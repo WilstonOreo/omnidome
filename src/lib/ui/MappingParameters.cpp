@@ -45,7 +45,7 @@ namespace omni
         if (dataModel()->isUVW()) {
             addCheckBox("Bound to canvas",dataModel()->isBoundToCanvas());
             transform_ = addAffineTransformWidget("Transform", &dataModel()->transform());
-            transform_->setTranslationVisible(false);
+        //    transform_->setTranslationVisible(false);
         }
     }
 

@@ -36,7 +36,7 @@ namespace omni
     public:
       OMNI_REGISTER_CLASS(Factory,HalfDome)
 
-      HalfDome(qreal _diameter = 10.0);
+      HalfDome(qreal _diameter = 5.0);
       ~HalfDome();
 
       /// Make new box parameter widget

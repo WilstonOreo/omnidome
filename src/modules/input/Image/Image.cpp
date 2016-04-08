@@ -71,7 +71,7 @@ namespace omni {
 
     QString Image::path() const
     {
-      return imageLocation_.location();
+      return imageLocation_.path();
     }
 
     QString Image::infoText() const
