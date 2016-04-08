@@ -135,6 +135,7 @@ namespace omni {
             frustumShader_->setUniformValue("top_right",    _frustum.topRight(_m));
             frustumShader_->setUniformValue("bottom_left",  _frustum.bottomLeft(_m));
             frustumShader_->setUniformValue("bottom_right", _frustum.bottomRight(_m));
+            frustumShader_->setUniformValue("frame_width", GLfloat(0.005 * session_.scene().size()));
             frustumShader_->setUniformValue("matrix",       _rot);
             frustumShader_->setUniformValue("scale",
                                             GLfloat(_canvas->bounds().radius()));
@@ -215,6 +216,7 @@ namespace omni {
                 projectors_.back().setColor(session_.tunings()[i]->color());
                 projectors_.back().setSelected(
                     i == session_.tunings().currentIndex());
+                projectors_.back().setSize(session_.scene().size() / 10.0);
                 projectors_.back().update();
             }
 

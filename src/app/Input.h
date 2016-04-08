@@ -40,7 +40,7 @@ namespace omni {
     class Input :
       public DockWidget,
       public mixin::SharedDataModel<Session>,
-      private mixin::ParameterWidget {
+      private mixin::ParameterWidget<> {
         Q_OBJECT
         OMNI_UI_SHARED_DATAMODEL(Session)
 

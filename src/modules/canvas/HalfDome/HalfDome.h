@@ -40,7 +40,7 @@ namespace omni
       ~HalfDome();
 
       /// Make new box parameter widget
-      QWidget* widget();
+      ui::CanvasParameters* widget();
     };
   }
 }

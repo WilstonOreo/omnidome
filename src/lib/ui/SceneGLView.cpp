@@ -85,7 +85,6 @@ namespace omni
       vizSession_->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),!_scene.displayProjectedAreas());
       vizSession_->drawProjectorHalos(!_scene.displayProjectors());
 
-
       _scene.drawGrid();
     }
 

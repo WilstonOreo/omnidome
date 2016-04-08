@@ -81,13 +81,17 @@ namespace omni
       if(isSetup_)
 
     {
-
       [(SyphonNameboundClient*)client_ lockClient];
           SyphonClient *client = [(SyphonNameboundClient*)client_ client];
 
           latestImage_ = [client newFrameImageForContext:CGLGetCurrentContext()];
 
 		      NSSize _texSize = [(SyphonImage*)latestImage_ textureSize];
+          if (_texSize.width == 0 || _texSize.height == 0) {
+            [pool drain];
+            texId_ = 0;
+            return;
+          }
 		      GLuint _texId = [(SyphonImage*)latestImage_ textureName];
           texId_ = _texId;
 

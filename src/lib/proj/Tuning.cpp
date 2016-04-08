@@ -60,7 +60,8 @@ namespace omni {
 
         int Tuning::subScreenIndex() const
         {
-          if (!screen_) { // Calculate subscreen position from
+          if (!screen_) {
+            // Calculate subscreen index by iterating tuning
             int _index = 0;
             for (auto& _tuning : session_.tunings()) {
               if (_tuning->hasScreen()) continue;
@@ -69,7 +70,6 @@ namespace omni {
             }
             return 0;
           }
-
           return subScreenIndex_;
         }
 

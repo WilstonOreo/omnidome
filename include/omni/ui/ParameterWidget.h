@@ -109,6 +109,7 @@ namespace omni {
         /// Get parameter widget from parameter map with Id
         QWidget* getWidget(QString const&);
 
+        /// Show / hide parameter widgets
         void     setParametersVisible(bool);
 
         /**@brief Put focus on next element
@@ -138,10 +139,10 @@ namespace omni {
         void     focusLast();
 
         /// Set slider ranges
-        void     setScale(float);
+        virtual void     setScale(float);
 
         /// Set slider ranges
-        void     setUnit(QString const&);
+        virtual void     setUnit(QString const&);
 
       signals:
         void     parametersUpdated();

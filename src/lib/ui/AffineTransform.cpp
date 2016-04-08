@@ -80,6 +80,16 @@ namespace omni {
             });
         }
 
+        /// Set unit suffix for offset
+        void AffineTransform::setOffsetUnit(QString const& _unit) {
+          mixin_scale_type::setSuffix(_unit);
+        }
+
+        /// Set scale of ranges for offsets
+        void AffineTransform::setOffsetRangeScale(float _scale) {
+          mixin_scale_type::setScale(_scale);
+        }
+
         void AffineTransform::dataToFrontend() {
 
             ui_->btnRotate->setChecked(dataModel()->rotationEnabled());

@@ -79,9 +79,21 @@ namespace omni {
             return false;
         }
 
-        void Canvas::setSceneSize(float) {
+        void Canvas::updateSceneSize() {
+          auto* _paramWidget = this->parameterWidget();
 
-          emit sceneSizeChanged();
+          if (_paramWidget && dataModel()) {
+            _paramWidget->setScale(dataModel()->scene().size());
+          }
+        }
+
+        void Canvas::updateUnits() {
+          auto* _paramWidget = this->parameterWidget();
+
+          if (_paramWidget && dataModel()) {
+            /// Update parameter slider unit suffixes
+            _paramWidget->setUnit(dataModel()->scene().unit().abbreviation());
+          }
         }
 
         void Canvas::selectCanvasType(QString _id)
@@ -110,8 +122,6 @@ namespace omni {
                 // Update parameter when canvas has changed
                 connect(this->parameterWidget(),SIGNAL(dataModelChanged()),
                         this,SIGNAL(dataModelChanged()));
-                connect(this,SIGNAL(sceneSizeChanged()),
-                        this->parameterWidget(),SLOT(setScale()));
             }
         }
     }

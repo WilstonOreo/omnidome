@@ -84,7 +84,7 @@ namespace omni
       _stream << _map;
     }
 
-    QWidget* Box::widget() {
+    ui::CanvasParameters* Box::widget() {
         return ui::makeWidget<ui::canvas::Box>(this);
     }
 

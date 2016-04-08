@@ -46,5 +46,23 @@ namespace omni
     void CanvasParameters::dataToFrontend() {
         transform_ = addAffineTransformWidget("Transform", &dataModel()->transform());
     }
+
+    /// Set slider ranges
+    void CanvasParameters::setScale(float _scale) {
+      ParameterWidget::setScale(_scale);
+      if (transform_) {
+        transform_->setOffsetRangeScale(_scale);
+      }
+      emit dataModelChanged();
+    }
+
+    /// Set slider ranges
+    void CanvasParameters::setUnit(QString const& _unit) {
+      ParameterWidget::setUnit(_unit);
+      if (transform_) {
+        transform_->setOffsetUnit(_unit);
+      }
+      emit dataModelChanged();
+    }
   }
 }

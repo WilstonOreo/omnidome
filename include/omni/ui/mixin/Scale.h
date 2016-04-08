@@ -45,8 +45,10 @@ namespace omni {
               _slider->setRange(_info.min_ * scale_, _info.max_ * scale_);
               _slider->setValue(_value);
               _slider->setSingleStep(_info.singleStep_ * scale_);
+              _slider->setDefaultValue(_info.defaultValue_ * scale_);
               _slider->setPageStep(_info.pageStep_ * scale_);
               _slider->setPrecision(getPrecision(scale_));
+              _slider->setPivot(_info.pivot_);
             }
           }
 
@@ -75,7 +77,9 @@ namespace omni {
 
             sliders_[_slider] = SliderInfo(_slider->minimum(), _slider->maximum(),
                                            _slider->pageStep(),
-                                           _slider->singleStep());
+                                           _slider->singleStep(),
+                                           _slider->defaultValue(),
+                                           _slider->pivot());
           }
 
           /// Remove slider from list, keep scale
@@ -111,14 +115,17 @@ namespace omni {
             SliderInfo() {}
 
             SliderInfo(float _min, float _max, float _pageStep,
-                       float _singleStep) :
+                       float _singleStep, float _defaultValue, float _pivot) :
               min_(_min),
               max_(_max),
               pageStep_(_pageStep),
-              singleStep_(_singleStep) {}
+              singleStep_(_singleStep),
+              defaultValue_(_defaultValue),
+              pivot_(_pivot) {}
 
             float min_, max_;
             float pageStep_, singleStep_;
+            float defaultValue_, pivot_;
           };
 
           /// Common suffix is meter

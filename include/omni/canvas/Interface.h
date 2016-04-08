@@ -30,6 +30,10 @@
 #include <omni/Box.h>
 
 namespace omni {
+  namespace ui {
+    class CanvasParameters;
+  }
+
   namespace canvas {
     /**@brief Abstract interface for a canvas
      * @detail A canvas represents the surface on which the projection is
@@ -77,7 +81,7 @@ namespace omni {
         virtual QMatrix4x4 matrix() const;
 
         /// Returns pointer to parameter widget
-        virtual QWidget  * widget() = 0;
+        virtual ui::CanvasParameters* widget() = 0;
 
         /// Write mapping to stream
         virtual void       toStream(QDataStream&) const;

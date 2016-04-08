@@ -39,9 +39,9 @@ namespace omni {
             }
 
             void Box::dataToFrontend() {
-                    auto *_height = addOffsetWidget("Height", 1.0, 0.1, 10.0);
-                    auto *_length = addOffsetWidget("Length", 1.0, 0.1, 10.0);
-                    auto *_width = addOffsetWidget("Width", 1.0, 0.1, 10.0);
+                    auto *_height = addOffsetWidget("Height", 0.5, 0.01, 1.0);
+                    auto *_length = addOffsetWidget("Length", 0.5, 0.01, 1.0);
+                    auto *_width = addOffsetWidget("Width", 0.5, 0.01, 1.0);
 
                     /// Retrieve parameters for Box canvas
                     auto *_box = static_cast<omni::canvas::Box *>(dataModel());

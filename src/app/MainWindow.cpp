@@ -82,7 +82,6 @@ MainWindow::MainWindow(QMainWindow *parent) :
     _layout->addWidget(tuningView_.get());
     tuningView_->setBorder(0.5);
     tuningView_->setKeepAspectRatio(true);
-    tuningView_->setUpdateFrequency(60.0);
 
     export_.reset(new Export(this));
     _layout->addWidget(export_.get());
@@ -161,15 +160,17 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
     // Connect scene parameter change with 3d view update
     connect(ui_->dockSceneWidget, SIGNAL(dataModelChanged()),
-            sceneViewer_->view(), SLOT(triggerUpdate()));
+            this, SLOT(updateAllViews()));
+
+    /// Handle scene scale and unit events
     connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged()),
             ui_->tuningList, SLOT(updateSceneScale()));
     connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged()),
-            ui_->dockCanvas, SLOT(updateSceneScale()));
+            ui_->dockCanvasWidget, SLOT(updateSceneSize()));
+    connect(ui_->dockSceneWidget, SIGNAL(unitChanged()),
+            ui_->dockCanvasWidget, SLOT(updateUnits()));
     connect(ui_->dockSceneWidget, SIGNAL(unitChanged()),
             ui_->tuningList, SLOT(updateUnits()));
-    connect(ui_->dockSceneWidget, SIGNAL(dataModelChanged()),
-            this, SLOT(updateAllViews()));
 
     // Update all views when input has changed
     connect(ui_->dockInputsWidget, SIGNAL(

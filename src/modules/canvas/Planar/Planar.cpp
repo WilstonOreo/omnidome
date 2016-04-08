@@ -99,7 +99,7 @@ namespace omni
       _stream << _map;
     }
 
-    QWidget* Planar::widget() {
+    ui::CanvasParameters* Planar::widget() {
         return ui::makeWidget<ui::canvas::Planar>(this);
     }
   }

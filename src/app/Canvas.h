@@ -40,7 +40,7 @@ namespace omni {
     class Canvas :
       public DockWidget,
       public mixin::SharedDataModel<Session>,
-      private mixin::ParameterWidget {
+      private mixin::ParameterWidget<ui::CanvasParameters> {
         Q_OBJECT
         OMNI_UI_SHARED_DATAMODEL(Session)
       public:
@@ -50,14 +50,16 @@ namespace omni {
       signals:
         void dataModelChanged();
         void canvasTypeChanged();
-        void sceneSizeChanged();
 
       public slots:
         /// Select canvas type with id
         void selectCanvasType(QString);
 
-        /// Set size of scene
-        void setSceneSize(float);
+        /// Set size of scene for canvas parameter widget
+        void updateSceneSize();
+
+        /// Set unit suffix string for canvas parameter widget
+        void updateUnits();
 
       private:
         /// Update widgets from current mapping

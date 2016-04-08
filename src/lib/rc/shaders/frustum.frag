@@ -10,6 +10,7 @@ uniform vec3 top_left;
 uniform vec3 top_right;
 uniform vec3 bottom_left;
 uniform vec3 bottom_right;
+uniform float frame_width;
 uniform int view_mode; // 0 = inside, 1 = outside, 2 = both
 
 /// Color of frustum border
@@ -56,7 +57,7 @@ void main()
       angle = 0.1;
   }
 
-  float alpha = d < 0.05 ? 1.0 : 0.1;
+  float alpha = d < frame_width ? 1.0 : 0.1;
 
   if (d > 0.0 && angle > 0.0)
   {

@@ -80,10 +80,10 @@ namespace omni {
 
             proj::Frustum _frustum(proj_);
             eye_         = QVector3D(0, 0, 0);
-            topLeft_     = _frustum.topLeft();
-            topRight_    = _frustum.topRight();
-            bottomLeft_  = _frustum.bottomLeft();
-            bottomRight_ = _frustum.bottomRight();
+            topLeft_     = _frustum.topLeft() *size_;
+            topRight_    = _frustum.topRight() *size_;
+            bottomLeft_  = _frustum.bottomLeft() *size_;
+            bottomRight_ = _frustum.bottomRight() * size_;
         }
 
         void Projector::draw() const

@@ -41,6 +41,7 @@ namespace omni {
         Q_OBJECT
         OMNI_UI_UNSHARED_DATAMODEL(omni::AffineTransform)
 
+        typedef mixin::Scale<RangedFloat> mixin_scale_type;
       public:
         AffineTransform(QWidget * = nullptr);
         ~AffineTransform();
@@ -69,6 +70,12 @@ namespace omni {
 
         /// Set new value for scale range (5.0 by default)
         void  setScaleRange(float);
+
+        /// Set unit suffix for offset
+        void setOffsetUnit(QString const& _unit);
+
+        /// Set scale of ranges for offsets
+        void setOffsetRangeScale(float);
 
       signals:
         void  dataModelChanged();

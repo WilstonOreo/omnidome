@@ -27,12 +27,17 @@ namespace omni {
     namespace mixin {
       /**@brief Setup and remove a parameter widget for a certain plugin
          interface
+         @tparam Base class of parameter widget
          @detail Interface can be a mapping, canvas or input interface
        **/
+      template<typename WIDGET = QWidget>
       class ParameterWidget {
         public:
+          typedef WIDGET widget_type;
+
           /// Remove parameter widget from given widget
-          inline void removeParameterWidget(QWidget *_widget) {
+          template<typename PARENT_WIDGET>
+          inline void removeParameterWidget(PARENT_WIDGET *_widget) {
             if (parameterWidget_) {
               _widget->layout()->removeWidget(parameterWidget_);
               parameterWidget_->hide();
@@ -42,8 +47,8 @@ namespace omni {
           }
 
           /// Setup widget for interface and place it onto widget
-          template<typename INTERFACE>
-          void setupParameterWidget(QWidget *_widget, INTERFACE *_interface) {
+          template<typename PARENT_WIDGET, typename INTERFACE>
+          void setupParameterWidget(PARENT_WIDGET *_widget, INTERFACE *_interface) {
             if (!_widget) return;
 
             if (!_widget->layout()) return;
@@ -64,16 +69,16 @@ namespace omni {
           }
 
           /// Return pointer to parameterWidget
-          inline QWidget* parameterWidget() {
+          inline widget_type* parameterWidget() {
             return parameterWidget_;
           }
 
         private:
           /// Additional options. Is called during setup process
-          inline virtual void parameterWidgetSetupOptions(QWidget *_paramWidget)
+          inline virtual void parameterWidgetSetupOptions(widget_type *_paramWidget)
           const {}
 
-          QWidget *parameterWidget_ = nullptr;
+          widget_type *parameterWidget_ = nullptr;
       };
     }
   }

@@ -334,24 +334,24 @@ namespace omni {
 
         /// Tower height slider (PeripheralSetup only)
         auto && _towerHeight = addOffsetWidget("Tower Height",
-                                               2.0,
-                                               -5.0,
-                                               10.0);
+                                               0.2,
+                                               -0.5,
+                                               1.0);
 
         /// Distance slider (PeripheralSetup only)
-        auto && _distance = addOffsetWidget("Distance", 4.0, 0.0, 10.0);
+        auto && _distance = addOffsetWidget("Distance", 0.4, 0.0, 1.0);
 
         /// Shift offset slider (PeripheralSetup only)
-        auto && _shift = addOffsetWidget("Shift", 0.0, -2.0, 2.0);
+        auto && _shift = addOffsetWidget("Shift", 0.0, -0.2, 0.2);
 
         /// X offset slider (FreeSetup only)
-        auto && _x = addOffsetWidget("X", 0.0, -10.0, 10.0);
+        auto && _x = addOffsetWidget("X", 0.0, -1.0, 1.0);
 
         /// Y offset slider (FreeSetup only)
-        auto && _y = addOffsetWidget("Y", 0.0, -10.0, 10.0);
+        auto && _y = addOffsetWidget("Y", 0.0, -1.0, 1.0);
 
         /// Z offset slider (FreeSetup only)
-        auto && _z = addOffsetWidget("Z", 0.0, -10.0, 10.0);
+        auto && _z = addOffsetWidget("Z", 0.0, -1.0, 1.0);
 
         /// Pitch angle slider (both setups)
         auto && _pitch = addAngleWidget("Pitch", 30.0, -180.0, 180.0);

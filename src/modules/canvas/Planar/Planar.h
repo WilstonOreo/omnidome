@@ -55,7 +55,7 @@ namespace omni
       void fromStream(QDataStream&);
       void toStream(QDataStream&) const;
 
-      QWidget* widget();
+      ui::CanvasParameters* widget();
 
     private:
       float width_ = 1.0, height_ = 1.0;

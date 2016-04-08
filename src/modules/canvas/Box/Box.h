@@ -67,7 +67,7 @@ namespace omni
       void toStream(QDataStream&) const;
 
       /// Make new box parameter widget
-      QWidget* widget();
+      ui::CanvasParameters* widget();
 
       QMatrix4x4 matrix() const;
 

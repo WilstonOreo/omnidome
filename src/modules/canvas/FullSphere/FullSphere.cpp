@@ -20,6 +20,8 @@
 #include "FullSphere.h"
 #include "FullSphereWidget.h"
 
+#include <omni/ui/CanvasParameters.h>
+
 namespace omni
 {
   namespace canvas
@@ -35,7 +37,7 @@ namespace omni
     {
     }
 
-    QWidget* FullSphere::widget() {
+    ui::CanvasParameters* FullSphere::widget() {
         return ui::makeWidget<ui::canvas::FullSphere>(this);
     }
   }

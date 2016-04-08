@@ -37,6 +37,13 @@ namespace omni {
         CanvasParameters(QWidget *_parent = nullptr);
         virtual ~CanvasParameters();
 
+      public slots:
+        /// Set slider ranges
+        virtual void     setScale(float);
+
+        /// Set slider units
+        virtual void     setUnit(QString const&);
+
       signals:
         void         dataModelChanged();
 

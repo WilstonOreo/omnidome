@@ -20,6 +20,8 @@
 #include "HalfDome.h"
 #include "HalfDomeWidget.h"
 
+#include <omni/ui/CanvasParameters.h>
+
 namespace omni
 {
   namespace canvas
@@ -35,7 +37,7 @@ namespace omni
     {
     }
 
-    QWidget* HalfDome::widget() {
+    ui::CanvasParameters* HalfDome::widget() {
         return ui::makeWidget<ui::canvas::HalfDome>(this);
     }
   }

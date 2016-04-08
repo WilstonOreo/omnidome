@@ -35,8 +35,7 @@ namespace omni
         FullSphere();
         ~FullSphere();
 
-        QWidget* widget();
-
+        ui::CanvasParameters* widget();
     };
   }
 }
