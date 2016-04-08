@@ -119,6 +119,8 @@ namespace omni {
         void Canvas::showParameterWidget() {
             this->setupParameterWidget(widget(),dataModel()->canvas());
             if (this->parameterWidget()) {
+                this->updateSceneSize();
+                this->updateUnits();
                 // Update parameter when canvas has changed
                 connect(this->parameterWidget(),SIGNAL(dataModelChanged()),
                         this,SIGNAL(dataModelChanged()));

@@ -109,6 +109,8 @@ namespace omni {
           setParamAsFloat("Tower Height", _p->towerHeight());
           setParamAsFloat("Shift",        _p->shift());
         }
+        setScale(dataModel()->scene().size());
+        setUnit(dataModel()->scene().unit().abbreviation());
       }
 
       bool Tuning::frontendToData() {
@@ -422,6 +424,7 @@ namespace omni {
 
           //    _widget->setFocusPolicy(Qt::TabFocus);
         }
+
       }
 
       /// Adds a new/changes a parameter group
