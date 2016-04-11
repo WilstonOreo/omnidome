@@ -420,6 +420,7 @@ namespace omni {
     }
 
     void Tuning::generateCalibrationData() {
+      calibration_.setRenderSize(QSize(tuning_.width()/2,tuning_.height()/2));
       tuning_.renderCalibration(calibration_);
 
       with_current_context([&](QOpenGLFunctions& _) {
