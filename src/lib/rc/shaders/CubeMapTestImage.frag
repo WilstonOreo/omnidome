@@ -1,8 +1,19 @@
 
 uniform vec2 ruler_pos;
 uniform bool flip_text;
+uniform bool display_numbers;
 varying vec2 vTexCoord;
 
+vec4 ch_0 = vec4(0x007CC6,0xD6D6D6,0xD6D6C6,0x7C0000);
+vec4 ch_1 = vec4(0x001030,0xF03030,0x303030,0xFC0000);
+vec4 ch_2 = vec4(0x0078CC,0xCC0C18,0x3060CC,0xFC0000);
+vec4 ch_3 = vec4(0x0078CC,0x0C0C38,0x0C0CCC,0x780000);
+vec4 ch_4 = vec4(0x000C1C,0x3C6CCC,0xFE0C0C,0x1E0000);
+vec4 ch_5 = vec4(0x00FCC0,0xC0C0F8,0x0C0CCC,0x780000);
+vec4 ch_6 = vec4(0x003860,0xC0C0F8,0xCCCCCC,0x780000);
+vec4 ch_7 = vec4(0x00FEC6,0xC6060C,0x183030,0x300000);
+vec4 ch_8 = vec4(0x0078CC,0xCCEC78,0xDCCCCC,0x780000);
+vec4 ch_9 = vec4(0x0078CC,0xCCCC7C,0x181830,0x700000);
 vec4 ch_A = vec4(0x003078,0xCCCCCC,0xFCCCCC,0xCC0000);
 vec4 ch_B = vec4(0x00FC66,0x66667C,0x666666,0xFC0000);
 vec4 ch_C = vec4(0x003C66,0xC6C0C0,0xC0C666,0x3C0000);
@@ -92,20 +103,25 @@ float sprite(vec4 spr, vec2 size, vec2 uv)
 
 vec2 print_pos = vec2(0.0);
 
+float print_char(vec4 ch, vec2 uv, float d)
+{
+  float px = sprite(ch, CHAR_SIZE, uv - print_pos);
+  print_pos.x += d;
+  return px;
+}
 
 //Prints a character and moves the print position forward by 1 character width.
 float print_char(vec4 ch, vec2 uv)
 {
-  float px = sprite(ch, CHAR_SIZE, uv - print_pos);
-  print_pos.x += CHAR_SPACING.x;
-  return px;
+  return print_char(ch,uv,CHAR_SPACING.x);
 }
+
 
 float text_front(vec2 pos)
 {
-	pos *= CHAR_SIZE*8.0;
-	pos.y -= 42.0;
-    pos.x -= 13.0;
+	pos *= CHAR_SIZE*10.0;
+	pos.y -= 53.5;
+  pos.x -= 20.0;
 	float col = 0.0;
 	col += print_char(ch_F,pos);
 	col += print_char(ch_R,pos);
@@ -117,9 +133,9 @@ float text_front(vec2 pos)
 
 float text_back(vec2 pos)
 {
-	pos *= CHAR_SIZE*8.0;
-	pos.y -= 42.0;
-    pos.x -= 16.0;
+	pos *= CHAR_SIZE*10.0;
+	pos.y -= 53.5;
+  pos.x -= 24.5;
 	float col = 0.0;
 	col += print_char(ch_B,pos);
 	col += print_char(ch_A,pos);
@@ -130,9 +146,9 @@ float text_back(vec2 pos)
 
 float text_left(vec2 pos)
 {
-	pos *= CHAR_SIZE*8.0;
-	pos.y -= 42.0;
-    pos.x -= 16.0;
+	pos *= CHAR_SIZE*10.0;
+	pos.y -= 53.5;
+  pos.x -= 24.5;
 	float col = 0.0;
 	col += print_char(ch_L,pos);
 	col += print_char(ch_E,pos);
@@ -144,9 +160,9 @@ float text_left(vec2 pos)
 
 float text_right(vec2 pos)
 {
-	pos *= CHAR_SIZE*8.0;
-	pos.y -= 42.0;
-    pos.x -= 13.0;
+	pos *= CHAR_SIZE*10.0;
+	pos.y -= 53.5;
+  pos.x -= 20.0;
 	float col = 0.0;
 	col += print_char(ch_R,pos);
 	col += print_char(ch_I,pos);
@@ -158,9 +174,9 @@ float text_right(vec2 pos)
 
 float text_top(vec2 pos)
 {
-	pos *= CHAR_SIZE*8.0;
-	pos.y -= 42.0;
-    pos.x -= 19.0;
+	pos *= CHAR_SIZE*10.0;
+	pos.y -= 53.5;
+  pos.x -= 29.0;
 	float col = 0.0;
 	col += print_char(ch_T,pos);
 	col += print_char(ch_O,pos);
@@ -171,9 +187,9 @@ float text_top(vec2 pos)
 
 float text_bottom(vec2 pos)
 {
-	pos *= CHAR_SIZE*8.0;
-	pos.y -= 42.0;
-    pos.x -= 10.0;
+	pos *= CHAR_SIZE*10.0;
+	pos.y -= 53.5;
+  pos.x -= 15.5;
 	float col = 0.0;
 	col += print_char(ch_B,pos);
 	col += print_char(ch_O,pos);
@@ -182,6 +198,28 @@ float text_bottom(vec2 pos)
 	col += print_char(ch_O,pos);
     col += print_char(ch_M,pos);
     return col;
+}
+
+vec4 get_digit(float d)
+{
+  d = floor(d);
+
+  if(d == 0.0) return ch_0;
+  if(d == 1.0) return ch_1;
+  if(d == 2.0) return ch_2;
+  if(d == 3.0) return ch_3;
+  if(d == 4.0) return ch_4;
+  if(d == 5.0) return ch_5;
+  if(d == 6.0) return ch_6;
+  if(d == 7.0) return ch_7;
+  if(d == 8.0) return ch_8;
+  if(d == 9.0) return ch_9;
+  return vec4(0.0);
+}
+
+float digit(vec2 pos, float number) {
+	pos *= CHAR_SIZE;
+  return print_char(get_digit(number),pos,0.0);
 }
 
 
@@ -209,6 +247,7 @@ float cross(in vec2 st, vec2 size){
 
 vec3 cubeSide(in vec3 color, vec2 uv) {
     // Grid
+    uv = fract(uv);
     vec3 result_color = vec3(0.0);
     vec2 grid_st = uv*100.;
     result_color += 1.5*color*grid(grid_st,1.0/100.0,1.0);
@@ -222,6 +261,13 @@ vec3 cubeSide(in vec3 color, vec2 uv) {
     vec2 crosses_st_f = fract(crosses_st);
     result_color  *= 1.-cross(crosses_st_f,vec2(.3,.3));
     result_color += vec3(.9)*cross(crosses_st_f,vec2(.2,.2));
+
+    if (display_numbers) {
+      vec2 number_coords = fract(uv*10.0);
+      vec2 numbers = floor(uv*10.0);
+      result_color += vec3(digit(number_coords*4.0 - vec2(1.125,1.5),numbers.x));
+      result_color += vec3(digit(number_coords*4.0 - vec2(2.125,1.5),numbers.y));
+    }
 
     return result_color;
 }
@@ -240,27 +286,33 @@ void main(void)
 
     if (t == 0.0) {
     	color += cubeSide(vec3(1.0,0.0,0.0),uv);
+      print_pos.x = 0.0;
         color += vec3(text_front(st));
     } else
     if (t == 1.0) {
     	color += cubeSide(vec3(0.0,1.0,1.0),uv);
+      print_pos.x = 0.0;
         color += vec3(text_back(st));
     } else
     if (t == 2.0) {
     	color += cubeSide(vec3(0.0,1.0,0.0),uv);
+      print_pos.x = 0.0;
         color += vec3(text_left(st));
     } else
     if (t == 3.0) {
     	color += cubeSide(vec3(1.0,0.0,1.0),uv);
+      print_pos.x = 0.0;
         color += vec3(text_right(st));
     } else
     if (t == 4.0) {
     	color += cubeSide(vec3(0.0,0.0,1.0),uv);
+      print_pos.x = 0.0;
         color += vec3(text_top(st));
 
     } else
     if (t == 5.0) {
     	color += cubeSide(vec3(1.0,1.0,0.0),uv);
+      print_pos.x = 0.0;
         color += vec3(text_bottom(st));
     }
 

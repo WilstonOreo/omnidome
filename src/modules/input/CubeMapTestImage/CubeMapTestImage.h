@@ -43,6 +43,9 @@ namespace omni
       void setFlipText(bool);
       bool flipText() const;
 
+      void setDisplayNumbers(bool);
+      bool displayNumbers() const;
+
       void toStream(QDataStream&) const;
       void fromStream(QDataStream&);
 
@@ -52,6 +55,7 @@ namespace omni
       void shaderUniformHandler();
 
       bool flipText_ = false;
+      bool displayNumbers_ = true;
     };
   }
 }

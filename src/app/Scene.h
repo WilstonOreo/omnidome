@@ -50,12 +50,21 @@ namespace omni {
         void setSceneScale();
         void fitSceneSizeToCanvas();
         void setUnit();
+        void showArrangeMode();
+        void showLiveMode();
+
+      protected:
+        void showEvent(QShowEvent*);
 
       private:
         std::unique_ptr<Ui::Scene> ui_;
 
+        /// Set of Widgets for manipulating scene size and units
+        std::set<QWidget*> sceneSizeWidgets_;
+
         void dataToFrontend();
         bool frontendToData();
+
     };
   }
 }

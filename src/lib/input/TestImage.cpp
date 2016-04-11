@@ -41,7 +41,7 @@ namespace omni
 
     GLuint TestImage::textureId() const
     {
-      return (!drawn_) ? 0 : framebuffer_->texture();
+      return framebuffer_->texture();
     }
 
     void TestImage::free()
@@ -68,8 +68,6 @@ namespace omni
     void TestImage::update()
     {
       if (!QOpenGLContext::currentContext()) return;
-
-      drawn_ = false;
 
       if (!shader_)
       {
@@ -115,8 +113,6 @@ namespace omni
         });
       }
 
-
-
       visual::draw_on_framebuffer(framebuffer_,
       [&](QOpenGLFunctions& _) // Projection Operation
       {
@@ -144,8 +140,6 @@ namespace omni
         }
         shader_->release();
       });
-
-      drawn_ = true;
     }
 
     void TestImage::toStream(QDataStream& _stream) const

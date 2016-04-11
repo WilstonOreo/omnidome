@@ -21,6 +21,7 @@
 
 #include "ui_omni_ui_Scene.h"
 
+#include <omni/util.h>
 
 namespace omni {
   namespace ui {
@@ -36,9 +37,11 @@ namespace omni {
                 this,
                 &Scene::updateDataModel);
         connect(ui_->chkGrid, &QCheckBox::clicked, this, &Scene::updateDataModel);
-        connect(ui_->chkProjectors, &QCheckBox::clicked, this,
-                &Scene::updateDataModel);
-        connect(ui_->chkProjectedAreas, &QCheckBox::clicked,
+        connect(ui_->boxProjectors,
+                static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                this, &Scene::updateDataModel);
+        connect(ui_->boxProjectedAreas,
+                static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                 this, &Scene::updateDataModel);
         connect(ui_->boxFrustumViewMode,
                 static_cast<void (QComboBox::*)(int)>(&QComboBox::
@@ -51,10 +54,49 @@ namespace omni {
                 SLOT(setUnit()));
         connect(ui_->btnFitToCanvas, SIGNAL(clicked()), this,
                 SLOT(fitSceneSizeToCanvas()));
+
+        sceneSizeWidgets_ = {
+          ui_->boxSize,
+          ui_->boxUnit,
+          ui_->btnFitToCanvas,
+          ui_->lbSceneSize,
+          ui_->lbUnit,
+          ui_->chkRescaleValues
+        };
       });
     }
 
-    Scene::~Scene() {}
+    Scene::~Scene() {
+    }
+
+    void Scene::showEvent(QShowEvent* _event) {
+      if (!dataModel()) return;
+
+      switch(dataModel()->mode()) {
+        case Session::Mode::ARRANGE:
+        showArrangeMode();
+        break;
+        default:
+        case Session::Mode::LIVE:
+        showLiveMode();
+        break;
+      }
+    }
+
+    void Scene::showArrangeMode() {
+      for (auto _widget :sceneSizeWidgets_) {
+        _widget->show();
+      }
+      show();
+    }
+
+    void Scene::showLiveMode() {
+      /// Display only the read only settings in live mode
+      for (auto _widget :sceneSizeWidgets_) {
+        _widget->hide();
+      }
+      show();
+    }
 
     void Scene::fitSceneSizeToCanvas() {
       if (!dataModel() || isLocked()) return;
@@ -107,8 +149,8 @@ namespace omni {
 
       ui_->chkInput->setChecked(_scene.displayInput());
       ui_->chkGrid->setChecked(_scene.displayGrid());
-      ui_->chkProjectors->setChecked(_scene.displayProjectors());
-      ui_->chkProjectedAreas->setChecked(_scene.displayProjectedAreas());
+      ui_->boxProjectors->setCurrentIndex(util::enumToInt(_scene.displayProjectors()));
+      ui_->boxProjectedAreas->setCurrentIndex(util::enumToInt(_scene.displayProjectedAreas()));
       ui_->boxFrustumViewMode->setCurrentIndex(util::enumToInt(_scene.
                                                                projectorViewMode()));
 
@@ -153,8 +195,8 @@ namespace omni {
 
       _scene.setDisplayInput(ui_->chkInput->isChecked());
       _scene.setDisplayGrid(ui_->chkGrid->isChecked());
-      _scene.setDisplayProjectors(ui_->chkProjectors->isChecked());
-      _scene.setDisplayProjectedAreas(ui_->chkProjectedAreas->isChecked());
+      _scene.setDisplayProjectors(util::intToEnum<visual::ProjectorSelectionMode>(ui_->boxProjectors->currentIndex()));
+      _scene.setDisplayProjectedAreas(util::intToEnum<visual::ProjectorSelectionMode>(ui_->boxProjectedAreas->currentIndex()));
       _scene.setProjectorViewMode(util::intToEnum<ProjectorViewMode>(ui_->
                                                                      boxFrustumViewMode
                                                                      ->

@@ -63,8 +63,6 @@ namespace omni {
         std::unique_ptr<QOpenGLShaderProgram> shader_;
 
       private:
-        bool drawn_ = false;
-
         /// String representing the fragment shader source
         virtual QString fragmentShaderSource() const = 0;
 

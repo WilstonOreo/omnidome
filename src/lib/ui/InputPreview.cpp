@@ -66,10 +66,12 @@ namespace omni {
 
     void InputPreview::setInput(input::Interface *_input) {
       input_ = _input;
+      makeCurrent();
     }
 
     bool InputPreview::initialize()
     {
+      makeCurrent();
       return context() != nullptr;
     }
 

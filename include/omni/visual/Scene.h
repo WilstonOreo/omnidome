@@ -53,6 +53,10 @@ namespace omni {
       ROLL
     };
 
+    enum class ProjectorSelectionMode {
+      ALL, SELECTED, NONE
+    };
+
     /**@brief A class that holds settings and elements for session 3d
        visualization
        @detail Belongs to a session
@@ -91,16 +95,16 @@ namespace omni {
         void           setDisplayGrid(bool);
 
         /// Display projector frustra (selected projector is always shown)
-        bool           displayProjectors() const;
+        ProjectorSelectionMode displayProjectors() const;
 
         /// Turn displaying of projectors on/off
-        void           setDisplayProjectors(bool);
+        void           setDisplayProjectors(ProjectorSelectionMode);
 
         /// Display projected areas
-        bool           displayProjectedAreas() const;
+        ProjectorSelectionMode           displayProjectedAreas() const;
 
         /// Turn displaying of projector areas on/off
-        void           setDisplayProjectedAreas(bool);
+        void           setDisplayProjectedAreas(ProjectorSelectionMode);
 
         /// Return scene element
         EditMode       editMode() const;
@@ -156,8 +160,8 @@ namespace omni {
         LengthUnit unit_;
         bool       displayInput_             = true;
         bool       displayGrid_              = true;
-        bool       displayProjectors_        = true;
-        bool       displayProjectedAreas_    = true;
+        ProjectorSelectionMode       displayProjectors_        = ProjectorSelectionMode::ALL;
+        ProjectorSelectionMode       displayProjectedAreas_    = ProjectorSelectionMode::ALL;
         EditMode   editMode_                 = EditMode::CAMERA;
         RotateMode rotateMode_               = RotateMode::YAW;
         MoveMode   moveMode_                 = MoveMode::MOVE_XY;
@@ -175,6 +179,7 @@ namespace omni {
 OMNI_DECL_ENUM_STREAM_OPERATORS(omni::visual::EditMode)
 OMNI_DECL_ENUM_STREAM_OPERATORS(omni::visual::MoveMode)
 OMNI_DECL_ENUM_STREAM_OPERATORS(omni::visual::RotateMode)
+OMNI_DECL_ENUM_STREAM_OPERATORS(omni::visual::ProjectorSelectionMode)
 
 OMNI_DECL_STREAM_OPERATORS(omni::visual::Scene)
 

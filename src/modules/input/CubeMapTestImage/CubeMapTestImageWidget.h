@@ -35,6 +35,8 @@ namespace omni {
 
             public slots:
                 void setFlipText(bool);
+                void setDisplayNumbers(bool);
+                void triggerUpdate();
 
             signals:
                 void inputChanged();

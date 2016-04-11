@@ -54,15 +54,26 @@ namespace omni
 
     void CubeMapTestImage::setFlipText(bool _flipText) {
         flipText_ = _flipText;
+        update();
     }
 
     bool CubeMapTestImage::flipText() const {
         return flipText_;
     }
 
+    void CubeMapTestImage::setDisplayNumbers(bool _displayNumbers) {
+        displayNumbers_ = _displayNumbers;
+        update();
+    }
+
+    bool CubeMapTestImage::displayNumbers() const {
+        return displayNumbers_;
+    }
+
     void CubeMapTestImage::shaderUniformHandler() {
         TestImage::shaderUniformHandler();
         this->shader_->setUniformValue("flip_text",flipText_);
+        this->shader_->setUniformValue("display_numbers",displayNumbers_);
     }
 
     QSize CubeMapTestImage::size() const

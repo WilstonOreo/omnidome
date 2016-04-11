@@ -213,19 +213,20 @@ namespace omni {
         int _sizeY = std::max(int(size().y() + 1), 2);
         buffer_.resize(_sizeX, _sizeY);
 
-        QVector2D _r(_sizeX * 0.5,_sizeY * 0.5);
+        float _r = 0.49;
+        float _innerRadius = _r - _r * feather();
 
-        // Calculate feather radius
-        QVector2D _innerRadius = feather() * (QVector2D(1.0,1.0) - _r) + _r;
 
         // For each pixel
         for (int y = 0; y < _sizeY; ++y)
             for (int x = 0; x < _sizeX; ++x)
             {
-                QVector2D _d = QVector2D(x - _r.x(), y - _r.y());
+              QVector2D _pos(float(x) / _sizeX - 0.5, float(y) / _sizeY - 0.5);
+
+                float _distance = _pos.length();
 
                 // Pixel value
-                float _v = ((_d - _innerRadius) / (_r - _innerRadius)).length() *
+                float _v = ((_distance - _innerRadius) / (_r - _innerRadius)) *
                            opacity_ + 1.0 - opacity_;
 
                 // Clamp and set pixel value

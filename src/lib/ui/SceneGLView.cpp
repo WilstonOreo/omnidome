@@ -92,9 +92,9 @@ namespace omni
       _vizSession->drawCanvas(_displayInput ?
           mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
 
-      _vizSession->drawProjectors(!_scene.displayProjectors());
-      _vizSession->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),!_scene.displayProjectedAreas());
-      _vizSession->drawProjectorHalos(!_scene.displayProjectors());
+      _vizSession->drawProjectors(_scene.displayProjectors());
+      _vizSession->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),_scene.displayProjectedAreas());
+      _vizSession->drawProjectorHalos(_scene.displayProjectors());
 
       /// Draw auxiliary elements of canvas, like bounding boxes etc
       dataModel()->canvas()->drawAux();

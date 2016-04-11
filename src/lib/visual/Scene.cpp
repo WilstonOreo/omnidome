@@ -87,20 +87,20 @@ namespace omni {
     }
 
     /// Display projector frustra (selected projector is always shown)
-    bool Scene::displayProjectors() const {
+    ProjectorSelectionMode Scene::displayProjectors() const {
       return displayProjectors_;
     }
 
-    void Scene::setDisplayProjectors(bool _displayProjectors) {
+    void Scene::setDisplayProjectors(ProjectorSelectionMode _displayProjectors) {
       displayProjectors_ = _displayProjectors;
     }
 
     /// Display projected areas
-    bool Scene::displayProjectedAreas() const {
+    ProjectorSelectionMode Scene::displayProjectedAreas() const {
       return displayProjectedAreas_;
     }
 
-    void Scene::setDisplayProjectedAreas(bool _displayProjectedAreas) {
+    void Scene::setDisplayProjectedAreas(ProjectorSelectionMode _displayProjectedAreas) {
       displayProjectedAreas_ = _displayProjectedAreas;
     }
 

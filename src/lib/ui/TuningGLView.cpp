@@ -61,6 +61,7 @@ namespace omni {
     {
       setIndex(_index);
       auto *_tuning = tuning();
+
       if (!_tuning) return;
 
       if (dataModel()->canvas()) {
@@ -71,7 +72,6 @@ namespace omni {
       if (_tuning->makeVisualizer()) {
         _tuning->visualizer()->update();
         update();
-
       }
     }
 
@@ -332,35 +332,40 @@ namespace omni {
 
     void TuningGLView::keyPressEvent(QKeyEvent *event)
     {
-      const float _distance = 0.005;
-      auto _moveWarpPoint   = [&](float _x, float _y) {
-                                auto& _warpGrid = tuning()->warpGrid();
+      auto _mode = dataModel()->mode();
 
-                                auto && _selectedPoints = _warpGrid.getSelected();
+      if (_mode == Session::Mode::WARP) {
+        const float _distance = 0.005;
+        auto _moveWarpPoint   = [&](float _x, float _y) {
+                                  auto& _warpGrid = tuning()->warpGrid();
 
-                                for (auto& _p : _selectedPoints) {
-                                  _p->pos() += QPointF(_x, _y);
-                                }
-                                tuning()->visualizer()->updateWarpGrid();
-                                updateWithChildViews();
-                              };
+                                  auto &&
+                                  _selectedPoints = _warpGrid.getSelected();
 
-      switch (event->key()) {
-      case Qt::Key_Down:
-        _moveWarpPoint(0.0, _distance);
-        break;
+                                  for (auto& _p : _selectedPoints) {
+                                    _p->pos() += QPointF(_x, _y);
+                                  }
+                                  tuning()->visualizer()->updateWarpGrid();
+                                  updateWithChildViews();
+                                };
 
-      case Qt::Key_Up:
-        _moveWarpPoint(0.0, -_distance);
-        break;
+        switch (event->key()) {
+        case Qt::Key_Down:
+          _moveWarpPoint(0.0, _distance);
+          break;
 
-      case Qt::Key_Left:
-        _moveWarpPoint(-_distance, 0.0);
-        break;
+        case Qt::Key_Up:
+          _moveWarpPoint(0.0, -_distance);
+          break;
 
-      case Qt::Key_Right:
-        _moveWarpPoint(_distance, 0.0);
-        break;
+        case Qt::Key_Left:
+          _moveWarpPoint(-_distance, 0.0);
+          break;
+
+        case Qt::Key_Right:
+          _moveWarpPoint(_distance, 0.0);
+          break;
+        }
       }
     }
 
@@ -433,7 +438,8 @@ namespace omni {
         _.glDisable(GL_CULL_FACE);
         _.glEnable(GL_DEPTH_TEST);
         dataModel()->visualizer()->drawCanvas(mapping::OutputMode::MAPPED_INPUT,
-                                tuning()->outputDisabled() && viewOnly());
+                                              tuning()->outputDisabled() &&
+                                              viewOnly());
         _.glDisable(GL_DEPTH_TEST);
       });
     }
@@ -565,6 +571,7 @@ namespace omni {
 
     void TuningGLView::showEvent(QShowEvent *event) {
       if (!tuning()) return;
+
       makeCurrent();
       tuning()->makeVisualizer();
       auto *_vizTuning = tuning()->visualizer();
@@ -580,6 +587,7 @@ namespace omni {
     void TuningGLView::paintGL()
     {
       if (!tuning()) return;
+
       tuning()->makeVisualizer();
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
@@ -621,8 +629,9 @@ namespace omni {
       case Session::Mode::EXPORT:
         drawExportView();
         break;
+
       case Session::Mode::LIVE:
-         drawLiveView();
+        drawLiveView();
         break;
 
       default: break;
@@ -633,6 +642,7 @@ namespace omni {
     void TuningGLView::dataToFrontend()
     {
       dataModel()->makeVisualizer();
+
       if (context() && !initialized()) {
         initializeGL();
       }

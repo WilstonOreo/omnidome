@@ -45,7 +45,7 @@ namespace omni {
 
         /// Canvas with frustum intersection of all projectors
         void drawCanvasWithFrustumIntersections(ProjectorViewMode,
-                                                bool _selectedOnly) const;
+                                                ProjectorSelectionMode) const;
 
         /// Draw frustum canvas intersection
         void drawFrustumIntersection(proj::Projector const &,
@@ -58,12 +58,12 @@ namespace omni {
         /**@brief Draw projectors.
            @detail If _selectedOnly true, only currently selected projector is drawn
          **/
-        void drawProjectors(bool _selectedOnly) const;
+        void drawProjectors(ProjectorSelectionMode = ProjectorSelectionMode::ALL) const;
 
         /**@brief Draw projector halos.
            @detail If _selectedOnly true, only currently selected projector is drawn
          **/
-        void drawProjectorHalos(bool _selectedOnly) const;
+        void drawProjectorHalos(ProjectorSelectionMode = ProjectorSelectionMode::ALL) const;
 
         /// Returns true if an update is required
         bool needsUpdate() const;
@@ -71,6 +71,10 @@ namespace omni {
       private:
         /// Draw canvas transform with matrix
         void drawCanvasWithMatrix() const;
+
+        template<typename F>
+        void projectorDrawFunction(ProjectorSelectionMode, F f) const;
+
 
         omni::Session const& session_;
         static std::unique_ptr<QOpenGLShaderProgram> frustumShader_;

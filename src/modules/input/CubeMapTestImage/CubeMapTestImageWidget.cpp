@@ -35,11 +35,20 @@ namespace omni {
 
             void CubeMapTestImage::setFlipText(bool _flipText) {
                 input_->setFlipText(_flipText);
-                input_->update();
                 preview_->update();
                 emit inputChanged();
             }
-            
+
+            void CubeMapTestImage::setDisplayNumbers(bool _displayNumbers) {
+                input_->setDisplayNumbers(_displayNumbers);
+                preview_->update();
+                emit inputChanged();
+            }
+
+            void CubeMapTestImage::triggerUpdate() {
+              preview_->triggerUpdate();
+            }
+
             void CubeMapTestImage::setup() {
                 QLayout *_layout = new QVBoxLayout;
                 _layout->setSpacing(2);
@@ -49,8 +58,10 @@ namespace omni {
 
                 preview_.reset(new InputPreview(input_));
                 _layout->addWidget(preview_.get());
-                auto* _checkBox = addCheckBox("Flip text",input_->flipText());
-                connect(_checkBox,SIGNAL(clicked(bool)),this,SLOT(setFlipText(bool)));
+                auto* _chkFlipText = addCheckBox("Flip text",input_->flipText());
+                connect(_chkFlipText,SIGNAL(clicked(bool)),this,SLOT(setFlipText(bool)));
+                auto* _chkDisplayNumbers = addCheckBox("Display numbers",input_->displayNumbers());
+                connect(_chkDisplayNumbers,SIGNAL(clicked(bool)),this,SLOT(setDisplayNumbers(bool)));
                 connect(preview_.get(),SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
             }
         }

@@ -261,8 +261,12 @@ namespace omni {
 
       void Tuning::updateViews()
       {
+        glView_->makeCurrent();
         glView_->triggerUpdate();
-        if (fullscreen_) fullscreen_->triggerUpdate();
+        if (fullscreen_) {
+          fullscreen_->makeCurrent();
+          fullscreen_->triggerUpdate();
+        }
       }
 
       void Tuning::setup()

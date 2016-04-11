@@ -412,12 +412,14 @@ void MainWindow::updateAllViews()
   switch (session_->mode()) {
   case Session::Mode::ARRANGE:
   case Session::Mode::LIVE:
+    sceneViewer_->view()->makeCurrent();
     sceneViewer_->view()->triggerUpdate();
     break;
   default:
   case Session::Mode::WARP:
   case Session::Mode::BLEND:
   case Session::Mode::COLORCORRECTION:
+    tuningView_->makeCurrent();
     tuningView_->triggerUpdate();
     break;
   }
@@ -535,8 +537,7 @@ void MainWindow::setMode()
   ui_->dockWarp->setVisible(_mode == Session::Mode::WARP);
   ui_->dockBlend->setVisible(_mode == Session::Mode::BLEND);
   ui_->dockColorCorrection->setVisible(_mode == Session::Mode::COLORCORRECTION);
-  ui_->dockScene->setVisible(_mode == Session::Mode::ARRANGE ||
-                             _mode == Session::Mode::LIVE);
+  ui_->dockScene->hide();
 
   switch (_mode)
   {
@@ -549,6 +550,7 @@ void MainWindow::setMode()
     ui_->dockInputs->show();
     ui_->dockMapping->setVisible(session_->inputs().current());
     ui_->dockCanvas->raise();
+    ui_->dockScene->show();
     break;
 
   case Session::Mode::WARP:
@@ -578,7 +580,7 @@ void MainWindow::setMode()
   case Session::Mode::LIVE:
     ui_->dockInputs->show();
     ui_->dockMapping->hide();
-    ui_->dockScene->hide();
+    ui_->dockScene->show();
   default:
     break;
   }
