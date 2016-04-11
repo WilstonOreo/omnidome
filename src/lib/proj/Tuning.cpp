@@ -127,8 +127,13 @@ namespace omni {
         }
 
         Tuning::visualizer_type* Tuning::makeVisualizer() {
-          if (!viz_ && QOpenGLContext::currentContext()) {
+          if (!QOpenGLContext::currentContext()) return nullptr;
+
+          if (!viz_) {
             viz_.reset(new visualizer_type(*this));
+          }
+          if (!viz_->initialized()) {
+            viz_->update();
           }
           return visualizer();
         }

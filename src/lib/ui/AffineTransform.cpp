@@ -88,6 +88,13 @@ namespace omni {
         /// Set scale of ranges for offsets
         void AffineTransform::setOffsetRangeScale(float _scale) {
           mixin_scale_type::setScale(_scale);
+          if (mixin_scale_type::rescaleValues()) {
+            emit dataModelChanged();
+          }
+        }
+
+        void AffineTransform::setRescaleOffsetValues(bool _rescaleValues) {
+          mixin_scale_type::setRescaleValues(_rescaleValues);
         }
 
         void AffineTransform::dataToFrontend() {

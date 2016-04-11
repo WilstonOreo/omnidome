@@ -63,7 +63,8 @@ namespace omni {
 
       Tuning::~Tuning()
       {
-        delete titleBar_;
+        glView_->free();
+        fullscreen_->free();
       }
 
       void Tuning::dataToFrontend() {
@@ -72,7 +73,9 @@ namespace omni {
         fullscreen_->setDataModel(dataModel());
         fullscreen_->setTuningIndex(index());
         titleBar_->setColor(tuning()->color());
-        this->setScale(dataModel()->scene().size());
+
+        setScale(dataModel()->scene().size());
+        setUnit(dataModel()->scene().unit().abbreviation());
 
         setParamAsFloat("FOV",
                         tuning()->projector().fov().degrees());
@@ -81,12 +84,12 @@ namespace omni {
         setParamAsFloat("Keystone",
                         tuning()->projector().keystone());
 
-        auto _projSetup = tuning()->projector().setup();
+        auto const* _projSetup = tuning()->projector().setup();
 
         if (_projSetup->getTypeId() == "FreeSetup")
         {
           auto *_p =
-            static_cast<omni::proj::FreeSetup *>(_projSetup);
+            static_cast<omni::proj::FreeSetup const*>(_projSetup);
           setParamAsFloat("Yaw",   _p->yaw().degrees());
           setParamAsFloat("Pitch", _p->pitch().degrees());
           setParamAsFloat("Roll",  _p->roll().degrees());
@@ -97,7 +100,7 @@ namespace omni {
         else if (_projSetup->getTypeId() == "PeripheralSetup")
         {
           auto *_p =
-            static_cast<omni::proj::PeripheralSetup *>(
+            static_cast<omni::proj::PeripheralSetup const*>(
               _projSetup);
           setParamAsFloat("Yaw",          _p->yaw().degrees());
           setParamAsFloat("Pitch",
@@ -109,8 +112,8 @@ namespace omni {
           setParamAsFloat("Tower Height", _p->towerHeight());
           setParamAsFloat("Shift",        _p->shift());
         }
-        setScale(dataModel()->scene().size());
-        setUnit(dataModel()->scene().unit().abbreviation());
+
+        updateColor();
       }
 
       bool Tuning::frontendToData() {
@@ -129,12 +132,12 @@ namespace omni {
 
       TuningGLView * Tuning::previewWidget()
       {
-        return glView_;
+        return glView_.get();
       }
 
       TuningGLView const * Tuning::previewWidget() const
       {
-        return glView_;
+        return glView_.get();
       }
 
       /// Enable or disable fullscreen display
@@ -151,7 +154,7 @@ namespace omni {
       void Tuning::resetToFreeSetup() {
         if (!tuning()) return;
 
-        tuning()->projector().setup("FreeSetup");
+        tuning()->projector().setup("FreeSetup",dataModel()->scene().size());
         sessionModeChange();
         emit projectorSetupChanged();
       }
@@ -160,7 +163,7 @@ namespace omni {
       void Tuning::resetToPeripheralSetup() {
         if (!tuning()) return;
 
-        tuning()->projector().setup("PeripheralSetup");
+        tuning()->projector().setup("PeripheralSetup",dataModel()->scene().size());
         sessionModeChange();
         emit projectorSetupChanged();
       }
@@ -169,7 +172,7 @@ namespace omni {
       {
         if (!tuning() || isLocked()) return;
 
-        auto *_projSetup = tuning()->projector().setup();
+        auto* _projSetup = tuning()->projector().setup();
 
         if (!_projSetup) return;
 
@@ -272,24 +275,24 @@ namespace omni {
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
         /// Setup title bar
-        titleBar_ = new TitleBar("Projector", this);
-        connect(titleBar_, SIGNAL(
+        titleBar_.reset(new TitleBar("Projector", this));
+        connect(titleBar_.get(), SIGNAL(
                   closeButtonClicked()),              this,
                 SLOT(prepareRemove()));
-        connect(titleBar_, SIGNAL(colorChanged(
+        connect(titleBar_.get(), SIGNAL(colorChanged(
                                     QColor const &)), this,
                 SLOT(updateParameters()));
-        connect(titleBar_, SIGNAL(
+        connect(titleBar_.get(), SIGNAL(
                   freeSetupSelected()),               this,
                 SLOT(
                   resetToFreeSetup()));
-        connect(titleBar_, SIGNAL(
+        connect(titleBar_.get(), SIGNAL(
                   peripheralSetupSelected()),         this,
                 SLOT(resetToPeripheralSetup()));
-        layout_->addWidget(titleBar_, TuningLayout::Role::TITLE);
+        layout_->addWidget(titleBar_.get(), TuningLayout::Role::TITLE);
 
         /// Setup preview window
-        glView_ = new TuningGLView(this);
+        glView_.reset(new TuningGLView(this));
         QSizePolicy _sizePolicy(QSizePolicy::Ignored,
                                 QSizePolicy::Expanding);
         glView_->setSizePolicy(_sizePolicy);
@@ -298,7 +301,7 @@ namespace omni {
         glView_->setViewOnly(true);
         glView_->setUpdateFrequency(10.0); // 10.0 fps
         glView_->installEventFilter(this);
-        layout_->addWidget(glView_, TuningLayout::Role::PREVIEW);
+        layout_->addWidget(glView_.get(), TuningLayout::Role::PREVIEW);
 
         fullscreen_.reset(new TuningGLView());
         fullscreen_->setShowCursor(true);
@@ -375,8 +378,8 @@ namespace omni {
 
         widgetgroup_type _titleAndPreview(
         {
-          { titleBar_, TuningLayout::Role::TITLE },
-          { glView_, TuningLayout::Role::PREVIEW }
+          { titleBar_.get(), TuningLayout::Role::TITLE },
+          { glView_.get(), TuningLayout::Role::PREVIEW }
         });
 
         auto addParameters =
@@ -394,7 +397,7 @@ namespace omni {
           };
 
         addGroup("Minimized",
-                 { { titleBar_,
+                 { { titleBar_.get(),
                      TuningLayout::Role::TITLE } });
 
         /// Make slider groups
@@ -421,10 +424,7 @@ namespace omni {
           if (!_widget) continue;
           _widget->installEventFilter(this);
           _widget->installEventFilter(this->parent());
-
-          //    _widget->setFocusPolicy(Qt::TabFocus);
         }
-
       }
 
       /// Adds a new/changes a parameter group
@@ -448,7 +448,7 @@ namespace omni {
           {
             // Show title bar only if group with that name does not
             // exist
-            layout_->setWidgets({ { titleBar_,
+            layout_->setWidgets({ { titleBar_.get(),
                                     TuningLayout::Role::TITLE } });
           }
           else
@@ -662,7 +662,7 @@ namespace omni {
         if (this->isLocked()) return QObject::eventFilter(_obj, _event);
 
         if ((_event->type() == QEvent::MouseMove) &&
-            ((_obj == glView_) || (_obj == titleBar_)))
+            ((_obj == glView_.get()) || (_obj == titleBar_.get())))
         {
           startDrag();
         }

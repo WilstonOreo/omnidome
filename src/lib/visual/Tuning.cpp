@@ -39,6 +39,8 @@ namespace omni {
     {
       warpGrid_.reset(new visual::WarpGrid(tuning_.warpGrid()));
     }
+    Tuning::~Tuning() {
+    }
 
     omni::proj::Tuning const& Tuning::tuning() const
     {
@@ -146,33 +148,24 @@ namespace omni {
 
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
-        bool _reset = !blendTex_;
-
-        if (!!blendTex_)
-        {
-          // Reset blend texture if its size has changed
-          _reset = blendTex_->width() != tuning_.width() || blendTex_->height() != tuning_.height();
-        }
-
-        if (_reset)
+        if (!blendTex_)
         {
           // Reset blend texture
           blendTextureUpdateRect_ =
             QRect(0, 0, tuning_.width(), tuning_.height());
-          blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().
+            blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().
                                              strokeBuffer().toQImage()));
-
             blendTex_->bind();
             glTexEnvf(GL_TEXTURE_ENV,
                       GL_TEXTURE_ENV_MODE,
                       GL_REPLACE);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+            _.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
                             GL_CLAMP_TO_EDGE);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+            _.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
                             GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+            _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                             GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+            _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                             GL_LINEAR);
             blendTex_->release();
         }
@@ -180,7 +173,6 @@ namespace omni {
         auto _ptr = _blendMask.strokeBufferData();
 
         auto _fullRect = QRect(0, 0, tuning_.width(), tuning_.height());
-
 
         /// Transform tuning sized rect to stroke buffer sized rect
         auto _transformRect = [&](QRect const& _rect) -> QRect {

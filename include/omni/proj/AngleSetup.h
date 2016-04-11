@@ -31,14 +31,13 @@ namespace omni {
       public EulerAngles // Inherit from this to get yaw, pitch, roll angle
     {
       public:
-        OMNI_REGISTER_CLASS(SetupFactory, AngleSetup)
-
         AngleSetup();
         ~AngleSetup();
 
+        virtual void setup(Projector&);
+
         virtual void toStream(QDataStream&) const;
         virtual void fromStream(QDataStream&);
-        virtual void setup(Projector&);
     };
   }
 }

@@ -47,12 +47,16 @@ namespace omni {
       };
     }
 
+    class Controller;
+
     /// Generic input interface
     class Interface :
       public SerializationInterface,
       public TypeIdInterface,
       private std::map<QString, std::unique_ptr<Interface> >{
       public:
+        friend class Controller;
+
         typedef Interface                                     interface_type;
         typedef std::map<QString, std::unique_ptr<Interface> >container_type;
         typedef std::function<void ()>                        callback_type;
@@ -106,6 +110,11 @@ namespace omni {
         /// Make new parameter widget
         virtual QWidget* widget();
 
+        /// Make new large control widget for live mode
+        inline virtual QWidget* controlWidget() {
+          return nullptr;
+        }
+
         /**@brief Returns true if this input can be added
            @detail E.g., an input can be added after an initial settings dialog
                   was approved or it has valid settings.
@@ -125,13 +134,6 @@ namespace omni {
 
         inline callback_type updatedCallback() {
           return updatedCallback_;
-        }
-
-        inline virtual void activate() {
-          this->update();
-        }
-
-        inline virtual void deactivate() {
         }
 
         /**@brief Add new input with given type id. Returns nullptr if input
@@ -160,9 +162,6 @@ namespace omni {
         Interface const     * getInput(QString const& _id) const;
 
         /// Return children
-        container_type      & children();
-
-        /// Return children
         container_type const& children() const;
 
         /// Return parent interface (const version)
@@ -170,6 +169,12 @@ namespace omni {
 
         /// Return absolute path of interface
         QString path() const;
+
+        /// Return pointer to parents controller
+        virtual Controller*         controller();
+
+        /// Return pointer to parents controller
+        virtual Controller const*   controller() const;
 
         /// Set new parent
         void                  setParent(Interface *);
@@ -179,8 +184,13 @@ namespace omni {
         virtual void          fromStream(QDataStream&);
 
       private:
+        inline virtual void activate() {
+        }
+
+        inline virtual void deactivate() {
+        }
+
         Interface const *parent_ = nullptr;
-        container_type children_;
         callback_type  updatedCallback_;
     };
 

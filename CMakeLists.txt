@@ -21,7 +21,7 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 ################################
 if(DEFINED QT_PATH)
     MESSAGE(STATUS "Qt Path: ${QT_PATH}")
-    setup_qt(5.5 ${QT_PATH})
+    setup_qt(5.6 ${QT_PATH})
 else()
     detect_qt()
 endif()

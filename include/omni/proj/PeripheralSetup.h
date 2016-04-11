@@ -38,7 +38,7 @@ namespace omni {
         /// Deserialize from stream
         void  fromStream(QDataStream&);
 
-        /// Setup projector
+        /// Setup projector with scene scale factor
         void  setup(Projector&);
 
         /// Delta yaw angle from rotating yaw angle
@@ -65,11 +65,14 @@ namespace omni {
         /// Set shift (distance to centric line)
         void setShift(qreal);
 
+        /// Scale projector setup by factor
+        void scale(qreal);
+
       private:
-        Angle deltaYaw_;
-        qreal distanceCenter_;
-        qreal towerHeight_;
-        qreal shift_;
+        Angle deltaYaw_ = 0.0;
+        qreal distanceCenter_ = 0.4;
+        qreal towerHeight_ = 0.2;
+        qreal shift_ = 0.0;
     };
   }
 }

@@ -27,11 +27,7 @@ namespace omni
 {
   namespace proj
   {
-    PeripheralSetup::PeripheralSetup() :
-      deltaYaw_(0.0),
-      distanceCenter_(4.0),
-      towerHeight_(2.0),
-      shift_(0.0)
+    PeripheralSetup::PeripheralSetup()
     {
     }
 
@@ -102,6 +98,12 @@ namespace omni
     void PeripheralSetup::setShift(qreal _shift)
     {
       shift_=_shift;
+    }
+
+    void PeripheralSetup::scale(qreal _scale) {
+      distanceCenter_ *= _scale;
+      shift_ *= _scale;
+      towerHeight_ *= _scale;
     }
   }
 }

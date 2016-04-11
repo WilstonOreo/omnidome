@@ -142,12 +142,6 @@ MainWindow::MainWindow(QMainWindow *parent) :
     connect(ui_->actionEnableSelectedTuningOnly, SIGNAL(triggered()),
             ui_->tuningList, SLOT(enableSelectedTuningOnly()));
 
-    // Detach tuning from screen setup when it was removed
-    connect(ui_->tuningList,
-            SIGNAL(tuningToBeRemoved(omni::ui::proj::Tuning *)),
-            screenSetup_.get(),
-            SLOT(detachTuning(omni::ui::proj::Tuning *)));
-
     // Connect canvas parameter change with view update
     connect(ui_->dockCanvasWidget, SIGNAL(
               dataModelChanged()),                     this,
@@ -163,19 +157,16 @@ MainWindow::MainWindow(QMainWindow *parent) :
             this, SLOT(updateAllViews()));
 
     /// Handle scene scale and unit events
-    connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged()),
-            ui_->tuningList, SLOT(updateSceneScale()));
-    connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged()),
-            ui_->dockCanvasWidget, SLOT(updateSceneSize()));
+    connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged(bool)),
+            ui_->tuningList, SLOT(updateSceneSize(bool)));
+    connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged(bool)),
+            ui_->dockCanvasWidget, SLOT(updateSceneSize(bool)));
     connect(ui_->dockSceneWidget, SIGNAL(unitChanged()),
             ui_->dockCanvasWidget, SLOT(updateUnits()));
     connect(ui_->dockSceneWidget, SIGNAL(unitChanged()),
             ui_->tuningList, SLOT(updateUnits()));
 
     // Update all views when input has changed
-    connect(ui_->dockInputsWidget, SIGNAL(
-              inputChanged()),                      this,
-            SLOT(modified()));
     connect(ui_->dockInputsWidget, SIGNAL(
               inputChanged()),                      this,
             SLOT(updateAllViews()));
@@ -243,7 +234,8 @@ MainWindow::MainWindow(QMainWindow *parent) :
   }
 
   readSettings();
-  setupSession();
+  setupSession(session_);
+  setMode();
   raise();
   show();
 }
@@ -267,28 +259,29 @@ void MainWindow::readSettings()
   recentSessions_->readFromSettings();
 }
 
-void MainWindow::setupSession()
+void MainWindow::setupSession(std::shared_ptr<Session>& _session)
 {
   using util::enumToInt;
   locked_ = true;
   {
-    toolBar_->setDataModel(session_);
+    toolBar_->setDataModel(_session);
+    screenSetup_->setDataModel(_session);
 
     // Set session to pages
-    sceneViewer_->setDataModel(session_);
-    tuningView_->setDataModel(session_);
-    export_->setDataModel(session_);
+    sceneViewer_->setDataModel(_session);
+    tuningView_->setDataModel(_session);
+    export_->setDataModel(_session);
 
-    ui_->tuningList->setDataModel(session_);
-    ui_->dockInputsWidget->setDataModel(session_);
-    ui_->dockSceneWidget->setDataModel(session_);
-    ui_->dockMappingWidget->setDataModel(session_);
-    ui_->dockCanvasWidget->setDataModel(session_);
-    ui_->dockWarpWidget->setDataModel(session_);
-    ui_->dockBlendWidget->setDataModel(session_);
-    ui_->dockColorCorrectionWidget->setDataModel(session_);
+    ui_->tuningList->setDataModel(_session);
+    ui_->dockInputsWidget->setDataModel(_session);
+    ui_->dockSceneWidget->setDataModel(_session);
+    ui_->dockMappingWidget->setDataModel(_session);
+    ui_->dockCanvasWidget->setDataModel(_session);
+    ui_->dockWarpWidget->setDataModel(_session);
+    ui_->dockBlendWidget->setDataModel(_session);
+    ui_->dockColorCorrectionWidget->setDataModel(_session);
+
   }
-  setMode();
 
   locked_ = false;
 }
@@ -301,7 +294,8 @@ void MainWindow::newProjection()
   }
 
   session_.reset(new Session());
-  setupSession();
+  setupSession(session_);
+  setMode();
   modified_ = false;
   buttonState();
 }
@@ -388,11 +382,12 @@ bool MainWindow::openProjection(const QString& _filename)
     _widget->exec();
   }
 
+  setupSession(_session);
   session_ = _session;
-  setupSession();
   modified_ = false;
   filename_ = _filename;
   recentSessions_->addFile(filename_);
+  setMode();
 
   return true;
 }

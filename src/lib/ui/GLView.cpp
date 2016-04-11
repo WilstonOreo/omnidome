@@ -39,6 +39,8 @@ namespace omni
 
     GLView::~GLView()
     {
+      // Kill timer
+      setUpdateFrequency(0.0);
     }
 
     void GLView::triggerUpdate() {
@@ -51,7 +53,6 @@ namespace omni
       if (!updateTriggered_) {
           update();
       }
-      updateTriggered_ = true;
     }
 
     float GLView::updateFrequency() const {

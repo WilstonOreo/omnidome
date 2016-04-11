@@ -42,10 +42,13 @@ namespace omni {
       signals:
         void dataModelChanged();
         void unitChanged();
-        void sceneScaleChanged();
+
+        /// Signal when scene scale has changed. Bool param tells if values should be rescaled
+        void sceneScaleChanged(bool);
 
       private slots:
         void setSceneScale();
+        void fitSceneSizeToCanvas();
         void setUnit();
 
       private:

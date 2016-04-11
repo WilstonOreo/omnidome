@@ -77,6 +77,9 @@ namespace omni {
         /// Set scale of ranges for offsets
         void setOffsetRangeScale(float);
 
+        /// Set value if offset values are rescaled
+        void setRescaleOffsetValues(bool);
+
       signals:
         void  dataModelChanged();
 

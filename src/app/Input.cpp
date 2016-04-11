@@ -68,6 +68,7 @@ namespace omni
       {
         addItem(_input.first,_input.second.get());
       }
+      selectInputId(dataModel()->inputs().currentId());
       showParameterWidget();
       emit inputIndexChanged();
     }
@@ -85,10 +86,9 @@ namespace omni
       if (_input->canAdd())
       {
         addItem(_id,_input);
+        //emit inputIndexChanged();
         selectInputId(_id);
-
         showParameterWidget();
-        emit inputIndexChanged();
       } else
       {
         dataModel()->inputs().removeInput(_id);
@@ -98,12 +98,11 @@ namespace omni
     void Input::selectInputId(QString const& _id) {
         dataModel()->inputs().setCurrentId(_id);
         auto* _current = dataModel()->inputs().current();
-
         if (_current) {
-          _current->setUpdateCallBack(std::bind(&Input::inputUpdatedEmitter,this));
           _current->update();
+          _current->setUpdateCallBack(std::bind(&Input::inputUpdatedEmitter,this));
+          emit inputChanged();
         }
-        emit inputChanged();
     }
 
     void Input::inputUpdatedEmitter() {
@@ -134,6 +133,7 @@ namespace omni
       dataModel()->inputs().clear();
       prepareModel();
       showParameterWidget();
+      emit inputIndexChanged();
     }
 
     QString Input::itemId(int _row) const {

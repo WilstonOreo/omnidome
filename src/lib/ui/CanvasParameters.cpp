@@ -47,6 +47,15 @@ namespace omni
         transform_ = addAffineTransformWidget("Transform", &dataModel()->transform());
     }
 
+
+    void CanvasParameters::setRescaleValues(bool _rescale) {
+      ParameterWidget::setRescaleValues(_rescale);
+      if (transform_) {
+        transform_->setRescaleOffsetValues(_rescale);
+      }
+      emit dataModelChanged();
+    }
+
     /// Set slider ranges
     void CanvasParameters::setScale(float _scale) {
       ParameterWidget::setScale(_scale);

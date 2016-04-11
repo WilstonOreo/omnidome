@@ -54,9 +54,6 @@ namespace omni {
         virtual void mouseMoveEvent(QMouseEvent *event);
         virtual void showEvent(QShowEvent* event);
 
-        /// Visualizer for session
-        std::unique_ptr<visual::Session> vizSession_;
-
       private:
         virtual void dataToFrontend();
         inline virtual bool frontendToData() {

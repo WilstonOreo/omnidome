@@ -41,7 +41,7 @@ namespace omni
 
     GLuint TestImage::textureId() const
     {
-      return framebuffer_->texture();
+      return (!drawn_) ? 0 : framebuffer_->texture();
     }
 
     void TestImage::free()
@@ -69,25 +69,7 @@ namespace omni
     {
       if (!QOpenGLContext::currentContext()) return;
 
-      if (!framebuffer_)
-      {
-        QOpenGLFramebufferObjectFormat _format;
-        _format.setMipmap(true);
-
-        auto _size = size();
-        framebuffer_.reset(new QOpenGLFramebufferObject(
-              _size.width(),
-              _size.height(),_format));
-
-        framebuffer_->setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
-
-        visual::with_current_context([&](QOpenGLFunctions& _) {
-          _.glBindTexture(GL_TEXTURE_2D, framebuffer_->texture());
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-          _.glBindTexture(GL_TEXTURE_2D, 0);
-        });
-      }
+      drawn_ = false;
 
       if (!shader_)
       {
@@ -98,6 +80,42 @@ namespace omni
         shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
         shader_->link();
       }
+
+      if (!framebuffer_)
+      {
+        QOpenGLFramebufferObjectFormat _format;
+        _format.setMipmap(false);
+        _format.setSamples(0);
+        _format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+        auto _size = size();
+        framebuffer_.reset(new QOpenGLFramebufferObject(
+              _size.width(),
+              _size.height(),_format));
+
+
+
+        visual::with_current_context([&](QOpenGLFunctions& _) {
+          _.glEnable(GL_DEPTH_TEST);
+          _.glDepthFunc(GL_LEQUAL);
+          _.glEnable(GL_BLEND);
+          _.glBindTexture(GL_TEXTURE_2D, framebuffer_->texture());
+          _.glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+          _.glPixelStorei(GL_UNPACK_ROW_LENGTH,  0);
+          _.glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+          _.glPixelStorei(GL_UNPACK_SKIP_ROWS,   0);
+          glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+          glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+          glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+          glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+          _.glBindTexture(GL_TEXTURE_2D, 0);
+        });
+      }
+
+
 
       visual::draw_on_framebuffer(framebuffer_,
       [&](QOpenGLFunctions& _) // Projection Operation
@@ -126,6 +144,8 @@ namespace omni
         }
         shader_->release();
       });
+
+      drawn_ = true;
     }
 
     void TestImage::toStream(QDataStream& _stream) const

@@ -89,8 +89,9 @@ namespace omni {
 
         void updateWithChildViews();
 
-      private slots:
         void free();
+
+      private slots:
 
       signals:
         void    dataModelChanged();
@@ -190,9 +191,6 @@ namespace omni {
         bool fullscreenMode_ = false;
 
         std::set<TuningGLView *> childViews_;
-
-        /// Visualizer for session
-        std::unique_ptr<visual::Session> vizSession_;
     };
   }
 }

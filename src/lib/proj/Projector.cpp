@@ -37,10 +37,11 @@ namespace omni {
       fov_(_fov)
     {}
 
-    Setup * Projector::setup(Id const& _setupId)
+    Setup * Projector::setup(Id const& _setupId, float _scale)
     {
       setup_.reset(SetupFactory::create(_setupId));
-      return setup_.get();
+      setup()->scale(_scale);
+      return setup();
     }
 
     Setup * Projector::setup()
@@ -115,13 +116,8 @@ namespace omni {
       float   _near = 0.01;
       QRectF  _rect = _frustum.rect(_near, 1000.0);
 
-      //      Angle _vertFov = Angle::fromRad(2.0 * atan(1.0 / (throwRatio() *
-      // 2.0) / aspectRatio()));
-
       _m.frustum(_rect.left(), _rect.right(), _rect.bottom(),
                  _rect.top(), _near, 1000.0);
-
-      // _m.perspective(_vertFov.degrees(), aspectRatio(), 0.01, 1000.0);
       _m.lookAt(pos(), pos() + matrix().column(0).toVector3D(), matrix().column(
                   2).toVector3D());
       return _m;

@@ -73,6 +73,9 @@ namespace omni {
       {
         if (!dataModel()) return;
 
+        auto* _vizSession = dataModel()->makeVisualizer();
+        if (!_vizSession) return;
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
                 GL_STENCIL_BUFFER_BIT);
         visual::viewport(this);
@@ -94,7 +97,7 @@ namespace omni {
 
           if (_canvas)
           {
-            this->vizSession_->drawCanvas(mapping::OutputMode::LIGHTING_ONLY);
+            _vizSession->drawCanvas(mapping::OutputMode::LIGHTING_ONLY);
           }
 
           _.glDisable(GL_DEPTH_TEST);
@@ -109,7 +112,7 @@ namespace omni {
           }
 
           for (auto& _projector :
-               projectors_) vizSession_->drawFrustumIntersection(_projector,
+               projectors_) _vizSession->drawFrustumIntersection(_projector,
                                                                  "#0088cc",
                                                                  ProjectorViewMode
                                                                  ::BOTH);

@@ -24,6 +24,7 @@
 #include <omni/util.h>
 #include <omni/serialization/PropertyMap.h>
 #include <omni/visual/Tuning.h>
+#include <omni/visual/Session.h>
 
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
@@ -216,6 +217,23 @@ namespace omni
       _map.get("blendSettings",blendSettings_);
       _map.get("exportSettings",exportSettings_);
   }
+
+  Session::visualizer_type* Session::makeVisualizer() {
+    if (!viz_ && QOpenGLContext::currentContext()) {
+      viz_.reset(new visualizer_type(*this));
+    }
+    return visualizer();
+  }
+
+
+  Session::visualizer_type* Session::visualizer() {
+    return viz_.get();
+  }
+
+  Session::visualizer_type const* Session::visualizer() const {
+    return viz_.get();
+  }
+
 
   bool operator==(Session const& _lhs,Session const& _rhs)
   {

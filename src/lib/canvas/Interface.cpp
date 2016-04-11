@@ -55,6 +55,15 @@ namespace omni {
             transform_ = _transform;
         }
 
+        Interface::ViewMode Interface::viewMode() const {
+          return viewMode_;
+        }
+
+        void Interface::setViewMode(ViewMode _viewMode) {
+          needsUpdate_ = viewMode_ != _viewMode;
+          viewMode_ = _viewMode;
+        }
+
         /// Transformation matrix for canvas
         QMatrix4x4 Interface::matrix() const
         {

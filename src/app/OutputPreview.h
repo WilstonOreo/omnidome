@@ -43,7 +43,7 @@ namespace omni {
         QRect desktopRect() const;
 
       public slots:
-        void  render();
+        void  triggerUpdate();
 
       signals:
         void  dataModelChanged();
@@ -51,6 +51,7 @@ namespace omni {
       protected:
         void  resizeEvent(QResizeEvent *);
         void  paintEvent(QPaintEvent *);
+        void  timerEvent(QTimerEvent *);
 
       private:
         void  drawBorder(QColor _color,
@@ -72,6 +73,8 @@ namespace omni {
           return false;
         }
 
+        int timerId_ = 0;
+        bool needsUpdate_ = true;
         QImage image_;
     };
   }

@@ -31,7 +31,7 @@ namespace omni {
 
     void List::clear()
     {
-      children().clear();
+      Interface::clear();
     }
 
     std::pair<QString, Input *>List::addInput(Id const& _typeId) {
@@ -43,31 +43,27 @@ namespace omni {
     void List::removeInput(QString const& _id)
     {
       input::Interface::removeInput(_id);
-
-      if (children().count(_id) == 0) {
+      if (_id == currentId_) {
         setCurrentId("");
       }
     }
 
     Input * List::operator[](QString const& _id)
     {
-      return (children().count(_id) != 0) ?
-             children().operator[](_id).get() :
-             nullptr;
+      return Interface::getInput(_id);
     }
 
     Input const * List::operator[](QString const& _id) const
     {
-      return (children().count(_id) != 0) ?
-             children().at(_id).get() :
-             nullptr;
+      return Interface::getInput(_id);
     }
 
     void List::fromStream(QDataStream& _stream)
     {
-      deserialize(_stream, currentId_);
+      QString _currentId;
+      deserialize(_stream, _currentId);
       input::Interface::fromStream(_stream);
-      setCurrentId(currentId_);
+      setCurrentId(_currentId);
     }
 
     void List::toStream(QDataStream& _stream) const {
@@ -77,16 +73,12 @@ namespace omni {
 
     Input const * List::current() const
     {
-      return
-        children().count(currentId_) > 0 ?
-        children().at(currentId_).get() : nullptr;
+      return getInput(currentId_);
     }
 
     Input * List::current()
     {
-      return
-        children().count(currentId_) > 0 ?
-        children().at(currentId_).get() : nullptr;
+      return getInput(currentId_);
     }
 
     QString List::currentId() const
@@ -96,20 +88,35 @@ namespace omni {
 
     void List::setCurrentId(QString const& _id)
     {
-      if (children().count(_id) == 0) {
+      if (getInput(_id) == nullptr) {
         currentId_ = "";
         return;
       }
+      qDebug() << currentId_;
 
-      for (auto& _child : children()) {
-        _child.second->deactivate();
+      /// Deactivate current input
+      if (current()) {
+        controller()->deactivate(current());
       }
 
       currentId_ = _id;
+      qDebug() << currentId_;
 
       if (current()) {
-        current()->activate();
+        current()->update();
+        controller()->activate(current());
       }
+      qDebug() << current();
+    }
+
+    /// Return pointer to controller
+    Controller *    List::controller() {
+      return &controller_;
+    }
+
+    /// Return pointer to controller (const version)
+    Controller const * List::controller() const {
+      return &controller_;
     }
 
     bool operator==(List const& _lhs, List const& _rhs)
@@ -133,10 +140,10 @@ namespace omni {
     QString List::generateId() const {
       QString _id("0");
 
-      for (size_t i = 0; i <= children().size(); ++i) {
+      for (size_t i = 0; i <= numberOfChildren(); ++i) {
         _id = QString("%1").arg(i);
 
-        if (children().count(_id) == 0)
+        if (getInput(_id) == nullptr)
         {
           return _id;
         }

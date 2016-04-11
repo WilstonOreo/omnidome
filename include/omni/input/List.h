@@ -25,18 +25,31 @@
 #include <map>
 #include <omni/Id.h>
 #include <omni/input/Interface.h>
+#include <omni/input/Controller.h>
+
 
 namespace omni {
   namespace input {
-    /**@brief Input List contains a list of inputs. A TestImage input is always
-       present at index 0
-     *@detail Input List is serializable via QDataStream
+    class Controller;
+
+    /**@brief Input List contains a list of inputs, accessible over an QString id
+     *@detail
+     Input List is the root input of the sessions input tree and holds as one and only
+     input object an instance of an input controller.
+     Input List is serializable via QDataStream.
      **/
     class List : public input::Interface {
       public:
-        OMNI_REGISTER_CLASS(Factory, List)
-
         List(Interface const * = nullptr);
+
+        /// A list cannot be registered in factory
+        inline void registerInFactory() const {
+        }
+
+        /// Type id is "List"
+        inline Id getTypeId() const {
+          return Id("List");
+        }
 
         /**@brief Add new input with given type id. Returns nullptr if input
            with typeid does not exist
@@ -50,14 +63,17 @@ namespace omni {
         /// Remove input and reset current index if necessary
         void                       removeInput(QString const& _id);
 
+        /// List can have children
         inline bool canHaveChildren() const {
           return true;
         }
 
+        /// List has no size
         inline QSize size() const {
           return QSize(0, 0);
         }
 
+        /// List does not have a texture
         inline GLuint textureId() const {
           return 0;
         }
@@ -91,6 +107,13 @@ namespace omni {
         /// Set current input by ID
         void          setCurrentId(QString const&);
 
+
+        /// Return pointer to controller
+        Controller*         controller();
+
+        /// Return pointer to controller (const version)
+        Controller const*   controller() const;
+
         /// Deserialize from stream
         void          fromStream(QDataStream&);
 
@@ -106,6 +129,8 @@ namespace omni {
         QString generateId() const;
 
         QString currentId_;
+
+        Controller controller_;
     };
   }
 

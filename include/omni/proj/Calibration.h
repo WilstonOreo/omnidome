@@ -52,6 +52,9 @@ namespace omni {
         /// Render to image
         QImage                 toImage() const;
 
+        /// Render to preview image
+        QImage                 toPreviewImage() const;
+
         /// Return output type
         CalibrationMode        mode() const;
 
@@ -66,6 +69,9 @@ namespace omni {
 
         /// Return actual size of rendered output
         QSize                  renderSize() const;
+
+        /// Set new size for renderer output. Resets calibration.
+        void                   setRenderSize(QSize const&);
 
         /// Return color correction
         ColorCorrection const& colorCorrection() const;
@@ -98,7 +104,7 @@ namespace omni {
         /// Encode color correction into selected image channel
         void encodeColorCorrection(QImage&, Channel) const;
 
-        bool  virtualScreen_;
+        bool  virtualScreen_ = true;
         QRect screenGeometry_;
         QRect contentGeometry_;
         CalibrationMode mode_;

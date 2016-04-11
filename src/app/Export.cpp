@@ -58,11 +58,14 @@ namespace omni {
     }
 
     void Export::renderPreview() {
-      ui_->outputPreview->render();
+      getExportSettings();
+      ui_->outputPreview->triggerUpdate();
     }
 
     void Export::getExportSettings()
     {
+      if (!dataModel()) return;
+
       using namespace omni::render;
       auto& _exportSettings = dataModel()->exportSettings();
 
@@ -138,7 +141,6 @@ namespace omni {
                                     ui_->rbTextureCoordinates,
                                     ui_->rbUVWMap })) {
         connect(_widget, SIGNAL(clicked()), this, SLOT(renderPreview()));
-        connect(_widget, SIGNAL(clicked()), this, SLOT(getExportSettings()));
       }
 
       selectOmniCalibration(true);

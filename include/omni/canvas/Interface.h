@@ -50,14 +50,22 @@ namespace omni {
         /// Virtual destructor
         virtual ~Interface();
 
+        enum class ViewMode {
+            INSIDE,
+            OUTSIDE,
+            BOTH
+        };
+
+        /// Return current view mode
+        ViewMode viewMode() const;
+
+        /// Set view mode
+        void setViewMode(ViewMode _viewMode);
+
         /// Draws auxiliary elements which are not used for mapping (e.g.
         // positioning grids)
         inline virtual void drawAux() const
         {}
-
-        inline virtual Id defaultMappingMode() const {
-          return "TexCoords";
-        }
 
         /// Abstract method for returning bounding box of canvas
         virtual Box            bounds() const = 0;
@@ -94,6 +102,7 @@ namespace omni {
 
       private:
         AffineTransform transform_;
+        ViewMode viewMode_ = ViewMode::BOTH;
     };
 
     /// Our canvas factory

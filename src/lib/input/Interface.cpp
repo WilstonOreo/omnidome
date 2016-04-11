@@ -18,6 +18,7 @@
  */
 
 #include <omni/input/Interface.h>
+#include <omni/input/Controller.h>
 
 #include <omni/util.h>
 #include <omni/serialization/pointer.h>
@@ -29,7 +30,11 @@ namespace omni {
     Interface::Interface(Interface const *_parent) : parent_(_parent) {}
 
     Interface::~Interface()
-    {}
+    {
+      if (controller()) {
+        controller()->deactivate(this);
+      }
+    }
 
     Input * Interface::addInput(QString const& _id, Id const& _typeId)
     {
@@ -38,8 +43,8 @@ namespace omni {
       if (!_input) return nullptr;
 
       _input->parent_ = this;
-      children()[_id] = std::move(_input);
-      return children().at(_id).get();
+      container_type::operator[](_id) = std::move(_input);
+      return container_type::at(_id).get();
     }
 
     Interface * Interface::addInput(QString const& _id, Interface *_i) {
@@ -84,13 +89,6 @@ namespace omni {
       return container_type::at(_id).get();
     }
 
-    Interface::container_type& Interface::children() {
-      if (!canHaveChildren()) {
-        throw exception::CannotHaveChildren();
-      }
-      return *this;
-    }
-
     Interface::container_type const& Interface::children() const {
       if (!canHaveChildren()) {
         throw exception::CannotHaveChildren();
@@ -101,7 +99,7 @@ namespace omni {
     QString Interface::getId(Interface const *_i) const {
       if (_i->parent() != this) return "";
 
-      for (auto& _child : children_) {
+      for (auto& _child : *this) {
         if (_i == _child.second.get()) {
           return _child.first;
         }
@@ -125,6 +123,16 @@ namespace omni {
     /// Return parent interface (const version)
     Interface const * Interface::parent() const {
       return parent_;
+    }
+
+    Controller*  Interface::controller() {
+      if (!parent_) return nullptr;
+      return const_cast<Interface*>(parent_)->controller();
+    }
+
+    Controller const*   Interface::controller() const {
+      if (!parent_) return nullptr;
+      return parent_->controller();
     }
 
     void Interface::setParent(Interface *_parent) {
@@ -162,7 +170,7 @@ namespace omni {
 
       if (canHaveChildren()) {
         // serialize map of inputs
-        serialize(_os, int(children().size()));
+        serialize(_os, int(numberOfChildren()));
 
         for (auto& _idInput : (*this))
         {

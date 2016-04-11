@@ -113,7 +113,7 @@ namespace omni {
                 if (!_tuning) return;
 
                 _tuning->setColor(getTuningColor());
-                _tuning->projector().setup(_projSetupId);
+                _tuning->projector().setup(_projSetupId,dataModel()->scene().size());
                 addTuning(_tuning);
 
                 // Select this tuning index
@@ -278,22 +278,22 @@ namespace omni {
 
                 auto& _widget = widgets_[_index];
                 contents_->layout()->removeWidget(_widget.get());
-                _widget->setParent(nullptr);
-                emit tuningToBeRemoved(_widget.get());
+                _widget->deleteLater();
                 _widget.reset();
-
                 widgets_.erase(widgets_.begin() + _index);
+
                 dataModel()->tunings().remove(_index);
 
                 // Re assign tuning indices to remaining widgets
                 for (int i = 0; i < dataModel()->tunings().size(); ++i)
                 {
+                    dataModel()->tunings()[i]->makeVisualizer();
                     widgets_[i]->setIndex(i);
                     widgets_[i]->setDataModel(dataModel());
                 }
-
                 setTuningIndex(std::max(_index - 1, 0));
 
+                emit tuningRemoved();
                 emit dataModelChanged();
             }
 
@@ -335,10 +335,11 @@ namespace omni {
             }
 
             /// Adjust sliders to scene scale
-            void TuningList::updateSceneScale() {
+            void TuningList::updateSceneSize(bool _rescaleValues) {
                 if (!dataModel() || isLocked()) return;
 
                 for (auto& _widget : widgets_) {
+                    _widget->setRescaleValues(_rescaleValues);
                     _widget->setScale(dataModel()->scene().size());
                 }
             }

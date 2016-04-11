@@ -95,7 +95,7 @@ namespace omni {
         void                        readSettings();
 
         /// Makes a new session
-        void                        setupSession();
+        void                        setupSession(std::shared_ptr<Session>& _session);
 
         /// Message Box for changing changes
         QMessageBox::StandardButton saveChangesPrompt();

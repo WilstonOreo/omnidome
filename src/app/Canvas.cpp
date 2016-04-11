@@ -79,10 +79,11 @@ namespace omni {
             return false;
         }
 
-        void Canvas::updateSceneSize() {
+        void Canvas::updateSceneSize(bool _rescaleValues) {
           auto* _paramWidget = this->parameterWidget();
 
           if (_paramWidget && dataModel()) {
+            _paramWidget->setRescaleValues(_rescaleValues);
             _paramWidget->setScale(dataModel()->scene().size());
           }
         }
@@ -119,7 +120,7 @@ namespace omni {
         void Canvas::showParameterWidget() {
             this->setupParameterWidget(widget(),dataModel()->canvas());
             if (this->parameterWidget()) {
-                this->updateSceneSize();
+                this->updateSceneSize(true);
                 this->updateUnits();
                 // Update parameter when canvas has changed
                 connect(this->parameterWidget(),SIGNAL(dataModelChanged()),

@@ -88,7 +88,7 @@ namespace omni
         void updateViews();
 
         /// Adjust sliders to scene scale
-        void updateSceneScale();
+        void updateSceneSize(bool _rescaleValues);
 
         /// Set unit of sliders
         void updateUnits();
@@ -113,9 +113,6 @@ namespace omni
 
         /// Signal which is emitted when parameters of one tuning have changed
         void dataModelChanged();
-
-        /// Signal which is returned after a tuning is to be removed
-        void tuningToBeRemoved(omni::ui::proj::Tuning*);
 
         /// Signal is emitted when a tuning was added
         void tuningAdded();

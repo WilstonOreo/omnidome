@@ -31,11 +31,17 @@
 namespace omni {
   class TuningList;
 
+  namespace visual {
+    class Session;
+  }
+
   /**@brief A session consists of a canvas, a mapping, a list of tunings and one
      or several inputs
    */
   class Session {
     public:
+      typedef omni::visual::Session visualizer_type;
+
       /// General mode of the User Interface
       enum class Mode
       {
@@ -137,6 +143,13 @@ namespace omni {
       friend bool operator==(Session const&,
                              Session const&);
 
+      /// Make visualizer if it is not instantiated yet
+      visualizer_type      * makeVisualizer();
+
+      visualizer_type* visualizer();
+      visualizer_type const* visualizer() const;
+
+
     private:
       /// List with all projector tunings
       proj::TuningList tunings_;
@@ -159,6 +172,8 @@ namespace omni {
       visual::Scene  scene_;
       BlendSettings  blendSettings_;
       ExportSettings exportSettings_;
+
+      std::unique_ptr<visualizer_type> viz_;
   };
 }
 

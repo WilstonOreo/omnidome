@@ -38,8 +38,15 @@ namespace omni {
         virtual ~CanvasParameters();
 
       public slots:
-        /// Set slider ranges
-        virtual void     setScale(float);
+       /**@brief Set flag if values are rescaled
+          @param _rescale Boolean which tells if values are rescaled
+        */
+        virtual void     setRescaleValues(bool _rescale);
+
+        /**@brief Set slider ranges
+           @param _factor Scale factor
+         **/
+        virtual void     setScale(float _factor);
 
         /// Set slider units
         virtual void     setUnit(QString const&);

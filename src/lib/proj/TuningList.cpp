@@ -22,6 +22,8 @@
 #include <omni/util.h>
 #include <omni/proj/Tuning.h>
 #include <omni/visual/Tuning.h>
+#include <omni/Session.h>
+#include <omni/visual/Scene.h>
 #include <omni/serialization/PropertyMap.h>
 
 namespace omni
@@ -42,7 +44,7 @@ namespace omni
 
       // Assign virtual screen initially, this also sets up projector aspectRatio correctly
       _tuning->assignVirtualScreen();
-      _tuning->projector().setup("PeripheralSetup");
+      _tuning->projector().setup("PeripheralSetup",session_.scene().size());
 
       return _tuning;
     }

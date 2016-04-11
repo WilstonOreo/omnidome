@@ -22,6 +22,7 @@
 #include <QPainter>
 #include <QRectF>
 #include <omni/render/Renderer.h>
+#include <omni/proj/Calibration.h>
 #include <map>
 
 namespace omni {
@@ -29,7 +30,9 @@ namespace omni {
         OutputPreview::OutputPreview(QWidget *_parent) :
             QWidget(_parent),
             TransformedRect<OutputPreview>(this)
-        {}
+        {
+          startTimer(500.0);
+        }
 
         OutputPreview::~OutputPreview() {}
 
@@ -50,35 +53,12 @@ namespace omni {
             return _rect;
         }
 
-        void OutputPreview::render() {
-            using namespace render;
-
-            if (!dataModel()) return;
-
-            return;
-
-            QRectF _rect = this->transformedRect(
-                dataModel()->screenSetup().combinedDesktopRect());
-
-            image_ = QImage(_rect.width(), _rect.height(), QImage::Format_ARGB32);
-
-            std::map<omni::proj::Tuning const *, QImage> _images;
-
-            switch (dataModel()->exportSettings().separationMode()) {
-            case SeparationMode::NONE:
-                break;
-
-            case SeparationMode::SCREENS:
-                break;
-
-            case SeparationMode::PROJECTORS:
-                break;
-            }
-            update();
+        void OutputPreview::triggerUpdate() {
+          needsUpdate_ = true;
         }
 
         void OutputPreview::resizeEvent(QResizeEvent *_event) {
-            render();
+            triggerUpdate();
         }
 
         void OutputPreview::paintEvent(QPaintEvent *_event) {
@@ -97,8 +77,7 @@ namespace omni {
             QRectF _imageRect(0, 0, image_.width(), image_.height());
 
             // _painter.drawImage(_imageRect,image_);
-            auto _screens = _screenSetup.screens(
-                _exportSettings.excludeUnassignedProjectors());
+            auto _screens = _screenSetup.usedScreens();
 
             if (_screens.empty()) {
                 QFont _font("Helvetica",30 / devicePixelRatio());
@@ -109,36 +88,48 @@ namespace omni {
                 return;
             }
 
-
             for (auto& _screen : _screens) {
                 drawScreen(_painter, _screen);
             }
 
-            for (auto& _tuning :
-                 _screenSetup.tunings(_exportSettings.
-                                      excludeUnassignedProjectors()))
-            {
-                drawTuning(_painter, _tuning);
+            for (auto& _tuning : dataModel()->tunings()) {
+              if (!_tuning->hasScreen() && _exportSettings.excludeUnassignedProjectors()) continue;
+
+              drawTuning(_painter,_tuning.get());
             }
+
+            needsUpdate_ = false;
+        }
+
+        void OutputPreview::timerEvent(QTimerEvent *) {
+          if (needsUpdate_) {
+            update();
+          }
         }
 
         void OutputPreview::drawTuning(QPainter          & _p,
                                        proj::Tuning const *_tuning) {
             auto & _screenSetup = dataModel()->screenSetup();
-            QRectF _imageRect(_tuning->contentGeometry().translated(_tuning->screenGeometry().topLeft()));
 
-            render::Renderer _renderer(*dataModel());
+            qDebug() << _tuning->screenGeometry();
+            QRectF _imageRect(_tuning->contentGeometry().translated(-ScreenSetup::desktopRect().topLeft() + _tuning->screenGeometry().topLeft()));
+            auto _tuningImageRect = this->transformedRect(_imageRect).toRect();
 
-            auto _tuningImageRect = this->transformedRect(_imageRect);
+            auto& _exportSettings = dataModel()->exportSettings();
 
-            QImage _image(_tuningImageRect.width(),
-                          _tuningImageRect.height(), QImage::Format_ARGB32);
-            _renderer.render(_tuning, _image);
-            QPainter _painter(&image_);
+            proj::Calibration _calib(_exportSettings.outputMode());
+            _calib.setRenderSize(_tuningImageRect.size());
+            _calib.render(*_tuning);
 
-            _p.drawImage(_tuningImageRect.x(),
-                         _tuningImageRect.y(), _image);
+            QImage _image;
 
+            if (_exportSettings.outputType() == render::OutputType::PLAIN_IMAGE) {
+              _image = _calib.toImage();
+            } else {
+              _image = _calib.toPreviewImage();
+            }
+
+            _p.drawImage(_tuningImageRect.topLeft(), _image);
             _p.setPen(QPen(_tuning->color(), 2));
             _p.setBrush(Qt::NoBrush);
 

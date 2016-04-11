@@ -58,12 +58,16 @@ namespace omni {
 
       public slots:
         void    triggerUpdate();
+        inline void paintGLDone() {
+          updateTriggered_ = true;
+        }
 
       private slots:
         /// Free OpenGL contents stored in widget
         inline virtual void free() {}
 
       protected:
+        bool   updateTriggered_ = false;
         /// Initialize OpenGL contents
         void         initializeGL();
 
@@ -92,7 +96,6 @@ namespace omni {
         bool initialized_ = false;
 
         float  updateFreq_     = 0.0;
-        bool   updateTriggered_ = false;
         int timerId_ = 0;
     };
   }

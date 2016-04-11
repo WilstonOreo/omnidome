@@ -38,9 +38,11 @@ namespace omni {
 
         /**@brief Make a new projector setup with a certain id and delete old
            one
+           @param Id _setupId Id of setup class
+           @param float _sceneSize Scale factor of setup positioning
          * @return Pointer to new projector setup
          **/
-        Setup           * setup(Id const& _setupId);
+        Setup           * setup(Id const& _setupId, float _sceneScale = 1.0);
 
         /// Update projector matrix by current setup and return setup
         Setup           * setup();
@@ -93,6 +95,7 @@ namespace omni {
         /// Test for equality
         friend bool       operator==(Projector const&,
                                      Projector const&);
+
 
       private:
         QMatrix4x4 matrix_;

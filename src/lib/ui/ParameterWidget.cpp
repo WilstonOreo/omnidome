@@ -139,6 +139,8 @@ namespace omni
     {
       auto* _widget = static_cast<RangedFloat*>(this->parameterMap_.at(_str));
       if (!_widget) return 0.0;
+
+
       return _widget->value();
     }
 

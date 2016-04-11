@@ -36,6 +36,7 @@ namespace omni {
     InputPreview::InputPreview(input::Interface *_input, QWidget *_parent) :
       GLView(_parent),
       input_(_input) {
+      input_->update();
       setUpdateFrequency(25.0);
     }
 
@@ -102,7 +103,6 @@ namespace omni {
 
         auto _rect = viewRect();
 
-
         visual::viewport(this);
 
         /// Setup orthogonal projection
@@ -123,6 +123,8 @@ namespace omni {
         visual::Rectangle::draw();
         _.glBindTexture(GL_TEXTURE_2D, 0);
       });
+
+      paintGLDone();
     }
   }
 }

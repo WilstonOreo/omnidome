@@ -23,9 +23,11 @@
 #include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
 
+#include <QPainter>
+
 namespace omni {
   namespace proj {
-    Calibration::Calibration(CalibrationMode _mode) {}
+    Calibration::Calibration(CalibrationMode _mode) : mode_(_mode) {}
 
     Calibration::Calibration(Tuning const& _tuning, CalibrationMode _mode) :
       mode_(_mode) {
@@ -36,6 +38,7 @@ namespace omni {
       int _w = buffer_.width() <= 0 ? _tuning.width() : buffer_.width();
       int _h = buffer_.height() <= 0 ? _tuning.height() : buffer_.height();
 
+      virtualScreen_ = !_tuning.screen(); // Screen is virtual when tuning has no screen
       colorCorrection_ = _tuning.colorCorrection();
       screenGeometry_ = _tuning.screenGeometry();
       contentGeometry_ = _tuning.contentGeometry();
@@ -138,31 +141,91 @@ namespace omni {
     }
 
     QImage Calibration::toImage() const {
-      QImage _image(buffer_.width(), buffer_.height(), QImage::Format_ARGB32);
-/*
-      int _pos = 0;
+      int _w = buffer_.width();
+      int _h = buffer_.height();
+      if (!_w || !_h) return QImage();
 
-      for (int y = 0; y < _image.height(); ++y)
+      if (mode_ == CalibrationMode::MAPPED_INPUT)
       {
-        uchar *_line = _image.scanLine(y);
-
-        for (int x = 0; x < _image.width() * 4; x += 4)
+        QImage _image(_w, _h, QImage::Format_RGB32);
+        bufferToImage(buffer_, _image,
+                      [&](RGBAFloat const& _input, RGBAFloat const& _pixel)
         {
-          RGBAFloat _imagePixel(
-            _line[x + 2] / 255.0,
-            _line[x + 1] / 255.0,
-            _line[x + 0] / 255.0,
-            _line[x + 3] / 255.0);
+          return _pixel;
+        });
+        return _image;
+      }
+      else
+      {
+        QImage _upper8bit(_w, _h, QImage::Format_ARGB32);
+        getUpper8bit(_upper8bit);
+        QImage _lower8bit(_w, _h, QImage::Format_ARGB32);
+        getLower8bit(_lower8bit);
 
-          RGBAFloat _pixel = _f(_imagePixel, buffer_.data()[_pos + x / 4]);
-          _line[x + 2] = qBound(0, int(_pixel.r * 255), 255);
-          _line[x + 1] = qBound(0, int(_pixel.g * 255), 255);
-          _line[x + 0] = qBound(0, int(_pixel.b * 255), 255);
-          _line[x + 3] = qBound(0, int(_pixel.a * 255), 255);
+        // Encode color correction information into the green channel
+
+        if (mode_ == CalibrationMode::TEXCOORDS) {
+          qDebug() << "CalibrationMode::TEXCOORDS";
+          getAlphaMask(_upper8bit, Channel::BLUE);
+          QImage _image(_w, _h * 2, QImage::Format_RGB32);
+          encodeColorCorrection(_lower8bit,Channel::BLUE);
+          QPainter _p(&_image);
+          _p.drawImage(QPoint(0, 0),                  _upper8bit);
+          _p.drawImage(QPoint(0, _h),     _lower8bit);
+          _p.end();
+          return _image;
         }
-        _pos += _image.width();
-      }*/
-      return _image;
+
+        if (mode_ == CalibrationMode::UVW) {
+          qDebug() << "CalibrationMode::UVW";
+          QImage _blendMask(_w, _h, QImage::Format_ARGB32);
+          getAlphaMask(_blendMask);
+          QImage _image(_w, _h * 3, QImage::Format_RGB32);
+          encodeColorCorrection(_blendMask, Channel::GREEN);
+          QPainter _p(&_image);
+          _p.drawImage(QPoint(0, 0),                  _upper8bit);
+          _p.drawImage(QPoint(0, _h),     _lower8bit);
+          _p.drawImage(QPoint(0, 2 * _h), _blendMask);
+          _p.end();
+          return _image;
+        }
+      }
+      return QImage();
+    }
+
+    QImage Calibration::toPreviewImage() const {
+      int _w = buffer_.width();
+      int _h = buffer_.height();
+      if (!_w || !_h) return QImage();
+
+      if (mode_ == CalibrationMode::MAPPED_INPUT)
+      {
+        QImage _image(_w, _h, QImage::Format_RGB32);
+        bufferToImage(buffer_, _image,
+                      [&](RGBAFloat const& _input, RGBAFloat const& _pixel)
+        {
+          return _pixel;
+        });
+        return _image;
+      }
+      else
+      {
+        QImage _upper8bit(_w, _h, QImage::Format_ARGB32);
+        getUpper8bit(_upper8bit);
+
+        // Encode color correction information into the green channel
+
+        if (mode_ == CalibrationMode::TEXCOORDS || mode_ == CalibrationMode::UVW) {
+          qDebug() << "CalibrationMode::TEXCOORDS";
+          getAlphaMask(_upper8bit, Channel::BLUE);
+          QImage _image(_w, _h, QImage::Format_RGB32);
+          QPainter _p(&_image);
+          _p.drawImage(QPoint(0, 0),                  _upper8bit);
+          _p.end();
+          return _upper8bit;
+        }
+      }
+      return QImage();
     }
 
     CalibrationMode Calibration::mode() const {
@@ -183,6 +246,10 @@ namespace omni {
 
     QSize Calibration::renderSize() const {
       return QSize(buffer_.width(),buffer_.height());
+    }
+
+    void Calibration::setRenderSize(QSize const& _size) {
+      buffer_.resize(_size.width(),_size.height());
     }
 
     ColorCorrection const& Calibration::colorCorrection() const {

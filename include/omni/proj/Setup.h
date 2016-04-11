@@ -32,8 +32,16 @@ namespace omni {
       public SerializationInterface,
       public TypeIdInterface {
       public:
-        /// Setup projector
+        /// Setup projector with scene size
         virtual void setup(Projector&) = 0;
+
+        inline virtual void setup(Projector& _proj, qreal _scale) {
+          setup(_proj);
+          scale(_scale);
+        }
+
+        /// Scale projector setup by factor, e.g. to adapt defaults to scene size
+        virtual void scale(qreal _factor) = 0;
     };
 
     /// Typedef for our factory

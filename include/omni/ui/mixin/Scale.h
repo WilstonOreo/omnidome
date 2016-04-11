@@ -41,15 +41,27 @@ namespace omni {
             for (auto& _slider_info : sliders_) {
               auto& _slider = _slider_info.first;
               auto& _info   = _slider_info.second;
-              auto  _value  = _slider->value() / _oldScale * scale_;
               _slider->setRange(_info.min_ * scale_, _info.max_ * scale_);
-              _slider->setValue(_value);
+
+              if (rescaleValues_) {
+                auto  _value  = _slider->value() / _oldScale * scale_;
+                _slider->setValue(_value);
+              }
+
               _slider->setSingleStep(_info.singleStep_ * scale_);
               _slider->setDefaultValue(_info.defaultValue_ * scale_);
               _slider->setPageStep(_info.pageStep_ * scale_);
               _slider->setPrecision(getPrecision(scale_));
               _slider->setPivot(_info.pivot_);
             }
+          }
+
+          bool rescaleValues() const {
+            return rescaleValues_;
+          }
+
+          void setRescaleValues(bool _rescaleValues) {
+            rescaleValues_ = _rescaleValues;
           }
 
           /// Return scale value
@@ -132,6 +144,7 @@ namespace omni {
           QString suffix_    = "m";
           int     precision_ = 2;
           float   scale_     = 1.0;
+          bool    rescaleValues_ = true;
           std::map<slider_type *, SliderInfo> sliders_;
       };
     }

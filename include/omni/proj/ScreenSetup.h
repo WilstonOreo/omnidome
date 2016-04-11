@@ -98,6 +98,8 @@ namespace omni {
         bool  noTuningsAssigned(QScreen const *)
         const;
 
+        std::set<QScreen const*> usedScreens() const;
+
         /// Return vector, optionally excluded standard screen
         static std::vector<QScreen const *>screens(
           bool _excludeStandardScreen = true);

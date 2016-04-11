@@ -38,7 +38,9 @@ namespace omni {
     }
 
     TuningGLView::~TuningGLView()
-    {}
+    {
+      free();
+    }
 
     void TuningGLView::free()
     {
@@ -46,22 +48,31 @@ namespace omni {
 
       if (!context()->isValid()) return;
 
-      makeCurrent();
-      vizSession_.reset();
+      if (tuning()) {
+        if (tuning()->visualizer()) {
+          tuning()->visualizer()->free();
+        }
+      }
+
       destroy();
-      doneCurrent();
     }
 
     void TuningGLView::setTuningIndex(int _index)
     {
       setIndex(_index);
       auto *_tuning = tuning();
-
       if (!_tuning) return;
 
-      // Make new visualizer
-      _tuning->makeVisualizer();
-      _tuning->visualizer()->update();
+      if (dataModel()->canvas()) {
+        dataModel()->canvas()->update();
+      }
+      dataModel()->makeVisualizer()->update();
+
+      if (_tuning->makeVisualizer()) {
+        _tuning->visualizer()->update();
+        update();
+
+      }
     }
 
     bool TuningGLView::keepAspectRatio() const
@@ -203,7 +214,7 @@ namespace omni {
       mousePosition_  = event->pos();
       cursorPosition_ = screenPos(mousePosition_);
 
-      if (!mouseDown_)
+      if (!mouseDown_ && showCursor())
       {
         for (auto& _childView : childViews_)
         {
@@ -421,7 +432,7 @@ namespace omni {
         _.glDisable(GL_LIGHTING);
         _.glDisable(GL_CULL_FACE);
         _.glEnable(GL_DEPTH_TEST);
-        vizSession_->drawCanvas(mapping::OutputMode::MAPPED_INPUT,
+        dataModel()->visualizer()->drawCanvas(mapping::OutputMode::MAPPED_INPUT,
                                 tuning()->outputDisabled() && viewOnly());
         _.glDisable(GL_DEPTH_TEST);
       });
@@ -495,7 +506,7 @@ namespace omni {
     void TuningGLView::drawOutput(float _blendMaskOpacity,
                                   float _inputOpacity,
                                   QColor _color) {
-      tuning()->visualizer()->updateWarpBuffer(vizSession_.get());
+      tuning()->visualizer()->updateWarpBuffer(dataModel()->visualizer());
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
@@ -554,23 +565,22 @@ namespace omni {
 
     void TuningGLView::showEvent(QShowEvent *event) {
       if (!tuning()) return;
-
+      makeCurrent();
+      tuning()->makeVisualizer();
       auto *_vizTuning = tuning()->visualizer();
-
-      if (!_vizTuning) return;
 
       if (dataModel()->canvas()) {
         dataModel()->canvas()->update();
       }
-      vizSession_->update();
+      dataModel()->makeVisualizer()->update();
       _vizTuning->update();
-      _vizTuning->updateWarpBuffer(vizSession_.get());
+      _vizTuning->updateWarpBuffer(dataModel()->visualizer());
     }
 
     void TuningGLView::paintGL()
     {
-      if (!context() || !initialized() || !tuning() || !vizSession_) return;
-
+      if (!tuning()) return;
+      tuning()->makeVisualizer();
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
@@ -584,7 +594,6 @@ namespace omni {
         return;
       }
 
-      if (!tuning()->visualizer()) return;
       if (tuning()->outputDisabled() && this->fullscreenMode()) return;
 
       switch (dataModel()->mode())
@@ -618,11 +627,12 @@ namespace omni {
 
       default: break;
       }
+      paintGLDone();
     }
 
     void TuningGLView::dataToFrontend()
     {
-      vizSession_.reset(new visual::Session(*dataModel()));
+      dataModel()->makeVisualizer();
       if (context() && !initialized()) {
         initializeGL();
       }

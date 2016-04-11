@@ -25,6 +25,7 @@
 
 namespace omni {
   namespace proj {
+    /// Free projector setup with euler angles and positioning
     class FreeSetup :
       public AngleSetup {
       public:
@@ -32,9 +33,11 @@ namespace omni {
 
         FreeSetup();
 
+        /// Setup projector with scene size
+        void      setup(Projector&);
+
         void      toStream(QDataStream&) const;
         void      fromStream(QDataStream&);
-        void      setup(Projector&);
 
         /// Return projector position
         QVector3D pos() const;
@@ -47,6 +50,8 @@ namespace omni {
                          float _y,
                          float _z);
 
+        /// Scale by factor
+        void      scale(qreal);
       private:
         QVector3D pos_;
     };

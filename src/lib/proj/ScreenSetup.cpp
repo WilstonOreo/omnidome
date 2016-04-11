@@ -104,8 +104,7 @@ namespace omni {
           if (noTuningsAssigned(_screen)) continue;
           _desktopRect |= _screen->geometry();
          }*/
-      return desktopRect() | virtualScreenRect().translated(
-        desktopRect().topRight());
+      return desktopRect() | virtualScreenRect();
     }
 
     QRect ScreenSetup::screenGeometry(QScreen const *_screen) const {
@@ -194,10 +193,26 @@ namespace omni {
       auto _allScreens = QGuiApplication::screens();
 
       for (auto& _screen : _allScreens) {
-        if (!_excludeStandardScreen || (_screen != standardScreen())) {
-          _screens.push_back(_screen);
-        }
+        if (_screen == standardScreen()) continue;
+
+        _screens.push_back(_screen);
       }
+
+      if (!_excludeStandardScreen) {
+        _screens.push_back(nullptr);
+      }
+      return _screens;
+    }
+
+    std::set<QScreen const*> ScreenSetup::usedScreens() const {
+      std::set<QScreen const*> _screens;
+
+      bool _excludeVirtualScreen = session_->exportSettings().excludeUnassignedProjectors();
+
+      for (auto& _tuning : session()->tunings()) {
+        if (!_tuning->hasScreen() && _excludeVirtualScreen) continue;
+        _screens.insert(_tuning->screen());
+        }
       return _screens;
     }
 

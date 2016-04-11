@@ -72,7 +72,7 @@ namespace omni {
                  QWidget *_parent = nullptr);
 
           /// Destructor
-          virtual ~Tuning();
+          ~Tuning();
 
           /// Return pointer to fullscreen widget
           TuningGLView      * fullscreenWidget();
@@ -200,10 +200,10 @@ namespace omni {
           void setGroup(QString const& _groupName);
 
           /// Title bar widget
-          TitleBar *titleBar_ = nullptr;
+          QUniquePtr<TitleBar> titleBar_;
 
           /// GL preview widget
-          TuningGLView *glView_ = nullptr;
+          QUniquePtr<TuningGLView> glView_;
 
           // Fullscreen GL widget
           QUniquePtr<TuningGLView> fullscreen_;

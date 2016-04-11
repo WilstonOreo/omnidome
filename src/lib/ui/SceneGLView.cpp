@@ -38,38 +38,49 @@ namespace omni
 
     bool SceneGLView::initialize()
     {
-      if (!dataModel() || initialized() || !context()) return false;
+//      qDebug() << "SceneGLView::initialize() " << dataModel().get() << initialized() << context();
+//      if (!dataModel() || initialized() || !context()) return false;
 
-      dataModel()->scene().updateLights();
+      dataModel()->makeVisualizer();
+      dataModel()->visualizer()->update();
 
       if (dataModel()->canvas()) {
         dataModel()->canvas()->update();
       }
 
-      vizSession_->update();
+      dataModel()->scene().updateGrid();
+      dataModel()->scene().updateLights();
       return true;
     }
 
 
     void SceneGLView::showEvent(QShowEvent* event) {
-        if (vizSession_) {
-          vizSession_->update();
-        }
+      makeCurrent();
+      dataModel()->makeVisualizer();
+      dataModel()->visualizer()->update();
+
+      if (dataModel()->canvas()) {
+        dataModel()->canvas()->update();
+      }
+
+      dataModel()->scene().updateGrid();
+      dataModel()->scene().updateLights();
     }
 
     void SceneGLView::paintGL()
     {
-      if (!dataModel() || this->isLocked() || !initialized()) return;
+      if (!dataModel()) return;
+      auto* _vizSession = dataModel()->makeVisualizer();
+      if (!_vizSession) return;
 
       auto& _scene = dataModel()->scene();
 
       glEnable(GL_DEPTH_TEST);
 
-    //  makeCurrent();
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
       visual::viewport(this);
 
-      vizSession_->update();
+      _vizSession->update();
 
       _scene.camera()->setup(aspect());
 
@@ -78,14 +89,18 @@ namespace omni
       _scene.updateLights();
 
       bool _displayInput = _scene.displayInput() && dataModel()->mapping() && dataModel()->inputs().current();
-      vizSession_->drawCanvas(_displayInput ?
+      _vizSession->drawCanvas(_displayInput ?
           mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
 
-      vizSession_->drawProjectors(!_scene.displayProjectors());
-      vizSession_->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),!_scene.displayProjectedAreas());
-      vizSession_->drawProjectorHalos(!_scene.displayProjectors());
+      _vizSession->drawProjectors(!_scene.displayProjectors());
+      _vizSession->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),!_scene.displayProjectedAreas());
+      _vizSession->drawProjectorHalos(!_scene.displayProjectors());
+
+      /// Draw auxiliary elements of canvas, like bounding boxes etc
+      dataModel()->canvas()->drawAux();
 
       _scene.drawGrid();
+      paintGLDone();
     }
 
     void SceneGLView::wheelEvent(QWheelEvent* event)
@@ -142,10 +157,6 @@ namespace omni
 
     void SceneGLView::dataToFrontend()
     {
-      vizSession_.reset(new visual::Session(*dataModel()));
-      if (context()) {
-        initializeGL();
-      }
     }
   }
 }

@@ -56,7 +56,7 @@ namespace omni {
         void selectCanvasType(QString);
 
         /// Set size of scene for canvas parameter widget
-        void updateSceneSize();
+        void updateSceneSize(bool);
 
         /// Set unit suffix string for canvas parameter widget
         void updateUnits();
