@@ -145,6 +145,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="chkUniformScale">
+     <property name="text">
+      <string>Uniform scale</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="omni::ui::RangedFloat" name="scaleX" native="true">
      <property name="minimumSize">
       <size>

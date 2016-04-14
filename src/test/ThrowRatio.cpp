@@ -20,6 +20,8 @@
 #include <omni/Angle.h>
 #include <omni/proj/Projector.h>
 
+#include <array>
+
 namespace omni {
     namespace test {
         /// Throw Ratio test
@@ -41,6 +43,49 @@ namespace omni {
             }
 
         };
+
+        struct EncodeFloatInByteArray {
+          EncodeFloatInByteArray() {
+            test();
+          }
+
+          void test() {
+
+            size_t _r = 123;
+            float _d = 1.43241;
+            float _s = _d;
+
+            for (size_t i = 0; i < _r; ++i) {
+              array_type _array;
+              encode(_s,_array);
+
+              float _result = 0.0;
+              decode(_array,_result);
+
+              qDebug() << _s << _result << (_s - _result);
+              _s *= _d;
+            }
+          }
+
+          typedef std::array<uint8_t,8> array_type;
+
+          static void encode(const float& _t, array_type& _array) {
+            for (int i = 0; i < _array.size(); ++i) {
+              float _n = _t / std::pow(256.0,float(i-int(_array.size()/2)));
+              float _intpart;
+              float _fractpart = std::modf (_n , &_intpart);
+              _array[i] = uint8_t(256.0*_fractpart);
+            }
+          }
+
+          static void decode(const array_type& _array, float& _t) {
+            float _sum = 0.0;
+            for (int i = 0; i < _array.size(); ++i) {
+              _sum += (_array[i] / 256.0) * std::pow(256.0,float(i-int(_array.size()/2)));
+            }
+            _t = _sum;
+          }
+        };
     }
 }
 
@@ -56,4 +101,6 @@ int main(int ac, char* av[]) {
     test::FOV(1.0);
     test::FOV(0.8);
     test::FOV(0.5);
+
+    test::EncodeFloatInByteArray();
 }

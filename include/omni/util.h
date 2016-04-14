@@ -36,7 +36,7 @@ namespace omni {
       template<typename QOBJECT>
       void operator()(QOBJECT *_obj)
       {
-        if (!_obj->parent()) delete _obj;
+        if (!_obj->parent()) _obj->deleteLater();
       }
     };
 

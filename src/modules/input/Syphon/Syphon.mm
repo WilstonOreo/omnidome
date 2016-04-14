@@ -77,10 +77,9 @@ namespace omni
 
     void Syphon::update() {
       if (!QOpenGLContext::currentContext()) return;
-      NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
       if(isSetup_)
-
     {
+      NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
       [(SyphonNameboundClient*)client_ lockClient];
           SyphonClient *client = [(SyphonNameboundClient*)client_ client];
 
@@ -141,10 +140,9 @@ namespace omni
         glDisable(GL_TEXTURE_RECTANGLE);
 
         });
+        [pool drain];
       } else
         qDebug()<<"syphonClient is not setup, or is not properly connected to server.  Cannot bind.\n";
-
-      [pool drain];
     }
 
     void Syphon::activate() {
@@ -156,23 +154,16 @@ namespace omni
 	     client_ = [[SyphonNameboundClient alloc] init];
 	     isSetup_ = true;
 
-       [pool drain];
+        NSString *nsAppName =
+        [NSString stringWithCString:description_.applicationNameAsConstChar() encoding:[NSString defaultCStringEncoding]];
 
-       if(isSetup_)
-       {
-         NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+        NSString *nsServerName =
+        [NSString stringWithCString:description_.serverNameAsConstChar() encoding:[NSString defaultCStringEncoding]];
 
-         NSString *nsAppName =
-          [NSString stringWithCString:description_.applicationNameAsConstChar() encoding:[NSString defaultCStringEncoding]];
+        [(SyphonNameboundClient*)client_ setAppName:nsAppName];
+        [(SyphonNameboundClient*)client_ setName:nsServerName];
 
-          NSString *nsServerName =
-          [NSString stringWithCString:description_.serverNameAsConstChar() encoding:[NSString defaultCStringEncoding]];
-
-          [(SyphonNameboundClient*)client_ setAppName:nsAppName];
-          [(SyphonNameboundClient*)client_ setName:nsServerName];
-
-          [pool drain];
-        }
+        [pool drain];
 
         int _timerId = this->startTimer(20);
         if (!timerId_) {
@@ -197,8 +188,8 @@ namespace omni
         {
           qDebug() << "syphonClient is not setup, or is not properly connected to server.  Cannot unbind.\n";
         }
-	       [pool drain];
 
+        [pool drain];
       }
 
     QWidget* Syphon::widget() {

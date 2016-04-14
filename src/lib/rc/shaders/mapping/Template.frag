@@ -3,7 +3,8 @@ varying vec3 uvw_normal;
 
 const float PI = 3.14159265358979323846264;
 
-uniform sampler2D texture; // Texture image
+uniform sampler2DRect texture; // Texture image
+uniform vec2 texture_size; // Texture image
 
 uniform mat4 matrix;
 

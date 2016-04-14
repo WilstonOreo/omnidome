@@ -111,10 +111,21 @@ MACRO(setup_qt VERSION FOLDER)
   set(QT_LIBRARY_DIR "${QT5_LOCATION}/lib" )
 
   if(IS_DIRECTORY ${QT5_LOCATION})
-    find_qt5_component(Core)
-    find_qt5_component(Gui)
-    find_qt5_component(Widgets)
-    find_qt5_component(OpenGL)
+    set(QT_VERSION "${VERSION}")
+    MESSAGE(STATUS "Using Qt ${QT_VERSION}")
+
+    if (NOT DEFINED QT_MODULES)
+      set(QT_MODULES "")
+      LIST(APPEND QT_MODULES "Core")
+      LIST(APPEND QT_MODULES "Gui")
+      LIST(APPEND QT_MODULES "Widgets")
+      LIST(APPEND QT_MODULES "OpenGL")
+    endif()
+
+    foreach(QT_MODULE ${QT_MODULES})
+      message(STATUS "Using Qt Module: ${QT_MODULE}")
+      find_qt5_component(${QT_MODULE})
+    endforeach()
 
     # The Qt5Widgets_INCLUDES also includes the include directories for
     # dependencies QtCore and QtGui
@@ -123,9 +134,7 @@ MACRO(setup_qt VERSION FOLDER)
     # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
     add_definitions(${Qt5Widgets_DEFINITIONS})
 
-    set(QT_VERSION "${VERSION}")
 
-    MESSAGE(STATUS "Using Qt ${QT_VERSION}")
     set(QT_FOUND TRUE)
   elseif()
     unset(QT5_LOCATION)
