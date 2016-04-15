@@ -323,6 +323,7 @@ namespace omni {
         // -------------------------
         // and now you can render to GL_TEXTURE_2D
         glPushAttrib(GL_ALL_ATTRIB_BITS);
+        glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
         _.glBindFramebuffer(GL_FRAMEBUFFER, fb);
         {
           _.glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -343,18 +344,17 @@ namespace omni {
           // -------------------------
           _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _buffer.ptr());
         }
-        _.glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-        // Delete resources
-        _.glDeleteTextures(1, &_colorTex);
-        _.glDeleteRenderbuffers(1, &_depthRb);
 
         // Bind 0, which means render to back buffer, as a result, fb is
         // unbound
         _.glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        _.glDeleteFramebuffers(1, &fb);
         glPopAttrib();
+        glPopClientAttrib();
+
+        // Delete resources
+        _.glDeleteTextures(1, &_colorTex);
+        _.glDeleteRenderbuffers(1, &_depthRb);
+        _.glDeleteFramebuffers(1, &fb);
       });
     }
 
