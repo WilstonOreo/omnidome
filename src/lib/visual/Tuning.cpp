@@ -359,6 +359,7 @@ namespace omni {
           blendTex_->release(1);
           blendBrushShader_->release();
           _.glDisable(GL_TEXTURE_2D);
+          _.glActiveTexture(GL_TEXTURE0 + 0);
         }
       });
     }

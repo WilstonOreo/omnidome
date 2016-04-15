@@ -71,10 +71,10 @@ namespace omni {
         _.glEnable(GL_TEXTURE_2D);
         _.glGenTextures(1, &_projTex);
         _.glBindTexture(GL_TEXTURE_2D, _projTex);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
                        _projBuffer.width(), _projBuffer.height(), 0,
                        GL_RGBA, GL_FLOAT, _projBuffer.ptr());
@@ -83,7 +83,6 @@ namespace omni {
 
       // 3rd step: Render warp grid
       RenderBuffer _warpBuffer(_w, _h);
-
       visual::Tuning _tuningViz(const_cast<proj::Tuning&>(_tuning));
       _tuningViz.update();
       _tuningViz.updateWarpGrid();
@@ -122,7 +121,6 @@ namespace omni {
       // Model view operation
                      [&](QOpenGLFunctions& _)
       {
-        _.glDisable(GL_TEXTURE_2D);
         _tuningViz.drawOutput();
       });
 

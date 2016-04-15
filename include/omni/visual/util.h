@@ -155,7 +155,6 @@ namespace omni {
           _.glActiveTexture(GL_TEXTURE0);
           glClientActiveTexture(GL_TEXTURE0);
           _.glClear(GL_DEPTH_BUFFER_BIT);
-          _.glEnable(GL_TEXTURE_2D);
           _.glDisable(GL_LIGHTING);
           _.glDepthFunc(GL_LEQUAL);
           _.glEnable(GL_BLEND);
