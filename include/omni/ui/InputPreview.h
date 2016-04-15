@@ -59,6 +59,7 @@ namespace omni
 
     protected:
       void paintGL();
+      void showEvent(QShowEvent*);
     signals:
       void inputChanged();
 

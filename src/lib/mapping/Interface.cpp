@@ -56,7 +56,6 @@ namespace omni {
                 shader_->bind();
                 shader_->setUniformValue("flip_horizontal", flipHorizontal_);
                 shader_->setUniformValue("flip_vertical",   flipVertical_);
-                shader_->setUniformValue("texture",   0);
 
                 if (isUVW()) {
                     shader_->setUniformValue("bound_to_canvas", boundToCanvas_);
@@ -65,15 +64,17 @@ namespace omni {
             }
         }
 
-        void Interface::bind(OutputMode _outputMode, bool _grayscale)
+        void Interface::bind(input::Interface const* _input, OutputMode _outputMode, bool _grayscale)
         {
             bind();
-
             if (shader_)
             {
                 shader_->setUniformValue("output_mode",
                                                         util::enumToInt(
                                              _outputMode));
+
+                shader_->setUniformValue("texture",   0);
+                shader_->setUniformValue("texture_size",QVector2D(_input->width(),_input->height()));
                 shader_->setUniformValue("gray_output", _grayscale);
             }
         }

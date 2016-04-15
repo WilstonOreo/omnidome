@@ -481,7 +481,9 @@ namespace omni {
 
           calibrationShader_->setUniformValue("image", GLint(2));
           _.glActiveTexture(GL_TEXTURE0 + 2);
-          _.glBindTexture(GL_TEXTURE_2D, _currentInput->textureId());
+          _.glBindTexture(GL_TEXTURE_RECTANGLE, _currentInput->textureId());
+
+          calibrationShader_->setUniformValue("image_size", QVector2D(_currentInput->width(),_currentInput->height()));
 
           calibrationShader_->setUniformValue("cc_red_vec",
                                               channelCorrectionAsVec(

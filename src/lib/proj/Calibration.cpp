@@ -68,6 +68,7 @@ namespace omni {
       // 2nd step: Update render buffer as floating point texture
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
+        _.glEnable(GL_TEXTURE_2D);
         _.glGenTextures(1, &_projTex);
         _.glBindTexture(GL_TEXTURE_2D, _projTex);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);

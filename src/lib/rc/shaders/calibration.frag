@@ -46,7 +46,8 @@ ChannelCorrection cc_all;
 uniform bool map_mirror_vertical;
 uniform bool map_mirror_horizontal;
 
-uniform sampler2D image;
+uniform sampler2DRect image;
+uniform vec2 image_size;
 uniform sampler2D uv_map;
 
 float brightness(float v, float brightness_value) {
@@ -114,7 +115,7 @@ void main()
         calib.t = 1.0 - calib.t;
     }
 
-    vec3 imagePixel = colorCorrection(texture2D(image,calib.st).rgb);
+    vec3 imagePixel = colorCorrection(texture2DRect(image,calib.st * image_size).rgb);
     float alpha =  calib.b;
     gl_FragColor = vec4(imagePixel*alpha,1.0);
 }

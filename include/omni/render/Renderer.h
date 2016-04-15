@@ -35,46 +35,15 @@ namespace omni {
   namespace render {
     class Renderer {
       public:
-        Renderer(Session& _session);
+        Renderer(Session const& _session);
 
         void renderToFile(QString const& _filename);
-
-        void render(proj::Tuning const *_tuning,
-                    RenderBuffer& _buffer) const;
-        void render(proj::Tuning const *_tuning,
-                    QImage& _image,
-                    int _height = 0) const;
-
-        // RenderOutput render();
 
         std::map<QScreen const *, QImage>
              stitchScreens(std::vector<const proj::Tuning *>const&) const;
 
       private:
-        void getUpper8bit(RenderBuffer const& _buffer,
-                          QImage& _image) const;
-        void getLower8bit(RenderBuffer const& _buffer,
-                          QImage& _image) const;
-        void getAlphaMask(RenderBuffer const & _buffer,
-                          QImage & _image,
-                          Channel = Channel::ALL) const;
-        void encodeColorCorrection(ColorCorrection const &, Channel,
-                                   QImage &) const;
-
-        void bufferToRGBImage(RenderBuffer const& _buffer,
-                              QImage& _image);
-
-        template<typename PROJECTION, typename MODELVIEW>
-        static void renderToBuffer(RenderBuffer& _buffer,
-                                   PROJECTION _proj,
-                                   MODELVIEW _mv);
-
-        template<typename OPERATION>
-        static void bufferToImage(RenderBuffer const& _buffer,
-                                  QImage& _image,
-                                  OPERATION _f);
-
-        Session& session_;
+        Session const& session_;
     };
   }
 }

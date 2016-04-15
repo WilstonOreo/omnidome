@@ -71,7 +71,7 @@ namespace omni
        int timerId_ = 0;
        GLuint texId_ = 0;
        bool isSetup_ = false;
-       std::unique_ptr<QOpenGLFramebufferObject> framebuffer_;
+       QSize size_;
        SyphonServerDescription description_;
     };
   }

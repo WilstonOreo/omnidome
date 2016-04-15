@@ -41,7 +41,7 @@ namespace omni
 
     GLuint TestImage::textureId() const
     {
-      return framebuffer_->texture();
+      return !framebuffer_ ? 0 : framebuffer_->texture();
     }
 
     void TestImage::free()
@@ -67,8 +67,6 @@ namespace omni
 
     void TestImage::update()
     {
-      if (!QOpenGLContext::currentContext()) return;
-
       if (!shader_)
       {
         QString _vertSrc = this->vertexShaderSource();
@@ -85,12 +83,11 @@ namespace omni
         _format.setMipmap(false);
         _format.setSamples(0);
         _format.setTextureTarget(GL_TEXTURE_RECTANGLE);
-        _format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+        _format.setAttachment(QOpenGLFramebufferObject::NoAttachment);
         auto _size = size();
         framebuffer_.reset(new QOpenGLFramebufferObject(
               _size.width(),
               _size.height(),_format));
-
 
         visual::with_current_context([&](QOpenGLFunctions& _) {
           _.glEnable(GL_DEPTH_TEST);
@@ -108,6 +105,7 @@ namespace omni
           glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
           glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
           glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_BASE_LEVEL, 0);
+          _.glTexImage2D(GL_TEXTURE_RECTANGLE,framebuffer_->texture(),0,GL_RGBA,framebuffer_->width(),framebuffer_->height(),GL_RGBA,GL_UNSIGNED_BYTE,nullptr);
           _.glBindTexture(GL_TEXTURE_RECTANGLE, 0);
         });
       }

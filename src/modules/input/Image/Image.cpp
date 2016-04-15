@@ -45,10 +45,12 @@ namespace omni {
       if (image_.width() == 0) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _) {
-        texture_.reset(new QOpenGLTexture(image_));
+        texture_.reset(new QOpenGLTexture(QOpenGLTexture::TargetRectangle));
+        texture_->setData(image_);
         texture_->setMinMagFilters(
           QOpenGLTexture::Linear,
           QOpenGLTexture::Linear);
+        texture_->allocateStorage();
       });
     }
 

@@ -65,8 +65,8 @@ namespace omni {
             QPointF _pos = screenPos(_eventPos);
             static_cast<input::TestImage*>(input())->setRulerPos(_pos);
             input()->update();
-            emit inputChanged();
             triggerUpdate();
+            emit inputChanged();
         }
     }
 }

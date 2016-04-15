@@ -56,7 +56,6 @@ namespace omni {
         void Session::drawCanvas(mapping::OutputMode _mode, bool _grayscale) const
         {
             auto _canvas = session_.canvas();
-
             if (!_canvas) return;
 
             with_current_context([&](QOpenGLFunctions& _)
@@ -66,26 +65,24 @@ namespace omni {
 
                 if (session_.inputs().current() && session_.mapping() && _mode != mapping::OutputMode::LIGHTING_ONLY)
                 {
-                    GLuint _texId = _input ? _input->textureId() : 0;
-                    _.glEnable(GL_TEXTURE_2D);
+                    _.glEnable(GL_TEXTURE_RECTANGLE);
                     _.glDisable(GL_LIGHTING);
-                    _mapping->bind(_mode, _grayscale);
                     _.glActiveTexture(GL_TEXTURE0);
-                    _.glBindTexture(GL_TEXTURE_2D, _texId);
+                    _.glBindTexture(GL_TEXTURE_RECTANGLE, _input->textureId());
+                    _mapping->bind(session_.inputs().current(),_mode, _grayscale);
                     drawCanvasWithMatrix();
-
-                    _.glBindTexture(GL_TEXTURE_2D, 0);
+                    _.glBindTexture(GL_TEXTURE_RECTANGLE, 0);
                     _mapping->release();
                 }
                 else
                 {
                     // Render canvas with lighting when there is no input
                     _.glEnable(GL_LIGHTING);
-                    _.glDisable(GL_TEXTURE_2D);
+                    _.glDisable(GL_TEXTURE_RECTANGLE);
                     glColor4f(1.0, 1.0, 1.0, 1.0);
                     drawCanvasWithMatrix();
                     _.glDisable(GL_LIGHTING);
-                    _.glEnable(GL_TEXTURE_2D);
+                    _.glEnable(GL_TEXTURE_RECTANGLE);
                 }
             });
         }

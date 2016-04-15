@@ -59,6 +59,11 @@ namespace omni {
       return input_;
     }
 
+    void InputPreview::showEvent(QShowEvent*) {
+      input_->update();
+      update();
+    }
+
     input::Interface const * InputPreview::input() const
     {
       return input_;
@@ -98,6 +103,8 @@ namespace omni {
     {
       if (!input_) return;
 
+      makeCurrent();
+
       visual::with_current_context([this](QOpenGLFunctions& _)
       {
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -120,10 +127,10 @@ namespace omni {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        _.glEnable(GL_TEXTURE_2D);
-        _.glBindTexture(GL_TEXTURE_2D, input_->textureId());
-        visual::Rectangle::draw();
-        _.glBindTexture(GL_TEXTURE_2D, 0);
+        _.glEnable(GL_TEXTURE_RECTANGLE);
+        _.glBindTexture(GL_TEXTURE_RECTANGLE, input_->textureId());
+        visual::Rectangle::draw(input_->size());
+        _.glBindTexture(GL_TEXTURE_RECTANGLE, 0);
       });
 
       paintGLDone();

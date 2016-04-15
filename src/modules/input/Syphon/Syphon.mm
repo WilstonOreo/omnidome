@@ -34,7 +34,8 @@ namespace omni
   namespace input
   {
     Syphon::Syphon(Interface const* _parent)  :
-      Interface(_parent)
+      Interface(_parent),
+      size_(0,0)
     {
     }
 
@@ -72,7 +73,7 @@ namespace omni
 
     QSize Syphon::size() const
     {
-      return (!framebuffer_) ? QSize(0,0) : framebuffer_->size();
+      return size_;
     }
 
     void Syphon::update() {
@@ -89,57 +90,12 @@ namespace omni
           if (_texSize.width == 0 || _texSize.height == 0) {
             [pool drain];
             texId_ = 0;
+            size_ = QSize(0,0);
             return;
           }
 		      GLuint _texId = [(SyphonImage*)latestImage_ textureName];
           texId_ = _texId;
-
-          if ( (!framebuffer_) || (_texSize.width != width()) ||
-               (_texSize.height != height())) {
-            QOpenGLFramebufferObjectFormat _format;
-            framebuffer_.reset(new QOpenGLFramebufferObject(_texSize.width,_texSize.height,_format));
-            framebuffer_->setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
-
-            glBindTexture(GL_TEXTURE_2D, framebuffer_->texture());
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glBindTexture(GL_TEXTURE_2D, 0);
-          }
-
-        GLfloat _w = width();
-        GLfloat _h = height();
-
-        visual::util::draw_on_framebuffer(framebuffer_,[&](QOpenGLFunctions& _){
-          QMatrix4x4 _m;
-          _m.ortho(0.0, _w, 0.0, _h, -1.0, 1.0);
-          glMultMatrixf(_m.constData());
-
-        }, [&](QOpenGLFunctions& _) {
-
-        glEnable(GL_TEXTURE_RECTANGLE);
-        glBindTexture(GL_TEXTURE_RECTANGLE,texId_);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-        glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-        glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
-
-        glBegin(GL_QUADS);
-        {
-          glColor4f(1.0,1.0,1.0,1.0);
-          glTexCoord2f(0.0f, 0.0f);
-          glVertex2f(0.0f, 0.0);
-          glTexCoord2f(_w, 0.0f);
-          glVertex2f(_w, 0.0f);
-          glTexCoord2f(_w, _h);
-          glVertex2f(_w, _h);
-          glTexCoord2f(0.0f, _h);
-          glVertex2f(0.0f, _h);
-        }
-        glEnd();
-        glBindTexture(GL_TEXTURE_RECTANGLE,0);
-        glDisable(GL_TEXTURE_RECTANGLE);
-
-        });
+          size_ = QSize(_texSize.width,_texSize.height);
         [pool drain];
       } else
         qDebug()<<"syphonClient is not setup, or is not properly connected to server.  Cannot bind.\n";
@@ -178,11 +134,11 @@ namespace omni
         NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
         if(isSetup_)
         {
-          framebuffer_.reset();
           [(SyphonNameboundClient*)client_ unlockClient];
           [(SyphonImage*)latestImage_ release];
           latestImage_ = nil;
           texId_ = 0;
+          size_ = QSize(0,0);
           isSetup_ = false;
         } else
         {
@@ -197,7 +153,7 @@ namespace omni
     }
 
     GLuint Syphon::textureId() const {
-      return (!framebuffer_) ? 0 : framebuffer_->texture();
+      return texId_;
     }
 
     void Syphon::toStream(QDataStream& _stream) const

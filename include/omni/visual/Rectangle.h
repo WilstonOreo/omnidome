@@ -33,6 +33,8 @@ namespace omni {
                        float _top = 0.5,
                        float _bottom = -0.5);
 
+      static void draw(QSize const& _size);
+
       /// Draw rectangle from given QRectF
       static void draw(QRectF const&);
 

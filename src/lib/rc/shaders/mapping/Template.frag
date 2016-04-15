@@ -135,11 +135,11 @@ void main()
     vec3 color;
 
     if (output_mode == 0) {
-       color = texture2D(texture, texCoords).rgb;
+       color = texture2DRect(texture, texCoords * texture_size).rgb;
     } else if (output_mode == 3) { // Output lighting only
         color = light_color(vec3(0.5));
     } else if (output_mode == 4) { // Output texture with lighting
-        color = light_color(texture2D(texture,texCoords).rgb);
+        color = light_color(texture2DRect(texture,texCoords * texture_size).rgb);
     }
 
     if (gray_output) {

@@ -19,6 +19,8 @@
 
 #include <omni/visual/Rectangle.h>
 
+#include <omni/visual/util.h>
+
 #include <QOpenGLFunctions>
 
 namespace omni {
@@ -37,6 +39,25 @@ namespace omni {
         glVertex2f(_left, _top);
       }
       glEnd();
+    }
+
+    void Rectangle::draw(QSize const& _size) {
+      with_current_context([&](QOpenGLFunctions& _) {
+        glBegin(GL_QUADS);
+        {
+          int _w = _size.width();
+          int _h = _size.height();
+          glTexCoord2f(0.0f, _h);
+          glVertex2f(-0.5, -0.5);
+          glTexCoord2f(_w,_h);
+          glVertex2f(0.5, -0.5);
+          glTexCoord2f(_w, 0.0f);
+          glVertex2f(0.5, 0.5);
+          glTexCoord2f(0.0f, 0.0f);
+          glVertex2f(-0.5, 0.5);
+        }
+        glEnd();
+      });
     }
 
     void Rectangle::draw(QRectF const& _rect)
