@@ -107,9 +107,7 @@ namespace omni {
 
       visual::with_current_context([this](QOpenGLFunctions& _)
       {
-        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        _.glDisable(GL_BLEND);
-
+        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         auto _rect = viewRect();
 
         visual::viewport(this);
@@ -127,7 +125,6 @@ namespace omni {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        _.glEnable(GL_TEXTURE_RECTANGLE);
         _.glBindTexture(GL_TEXTURE_RECTANGLE, input_->textureId());
         visual::Rectangle::draw(input_->size());
         _.glBindTexture(GL_TEXTURE_RECTANGLE, 0);

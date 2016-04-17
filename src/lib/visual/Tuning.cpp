@@ -53,46 +53,34 @@ namespace omni {
 
       if (!QOpenGLContext::currentContext()) return;
 
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
-        auto _color = tuning_.color();
-        GLfloat _red = _color.redF();
-        GLfloat _green = _color.greenF();
-        GLfloat _blue = _color.blueF();
-        testCardShader_->bind();
-        testCardShader_->setUniformValue("resolution",
-                                         GLfloat(tuning_.width()),
-                                         GLfloat(tuning_.height()));
-        testCardShader_->setUniformValue("test_color",   _red,
-                                         _green,
-                                         _blue);
-        testCardShader_->setUniformValue("projector_id", _id);
-        testCardShader_->setUniformValue("gray_output",  _grayscale);
-        Rectangle::draw();
-        testCardShader_->release();
-      });
+      auto _color = tuning_.color();
+      GLfloat _red = _color.redF();
+      GLfloat _green = _color.greenF();
+      GLfloat _blue = _color.blueF();
+      testCardShader_->bind();
+      testCardShader_->setUniformValue("resolution",
+                                       GLfloat(tuning_.width()),
+                                       GLfloat(tuning_.height()));
+      testCardShader_->setUniformValue("test_color",   _red,
+                                       _green,
+                                       _blue);
+      testCardShader_->setUniformValue("projector_id", _id);
+      testCardShader_->setUniformValue("gray_output",  _grayscale);
+      Rectangle::draw();
+      testCardShader_->release();
     }
 
     void Tuning::drawWarpGrid() const
     {
       if (!warpGrid_) return;
 
-      visual::with_current_context([this](QOpenGLFunctions& _)
-      {
-        warpGrid_->drawLines();
-        warpGrid_->drawHandles(tuning_.color(), tuningRect());
-      });
+      warpGrid_->drawLines();
+      warpGrid_->drawHandles(tuning_.color(), tuningRect());
     }
 
     void Tuning::drawWarpPatch() const
     {
-      visual::with_current_context([this](QOpenGLFunctions& _)
-      {
-        _.glEnable(GL_TEXTURE_2D);
-        _.glDisable(GL_BLEND);
-        glColor4f(1.0, 1.0, 1.0, 1.0);
-        warpGrid_->draw();
-      });
+      warpGrid_->draw();
     }
 
     void Tuning::update()
@@ -144,8 +132,6 @@ namespace omni {
 
     void Tuning::updateBlendTexture()
     {
-      if (!QOpenGLContext::currentContext()) return;
-
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
         if (!blendTex_)
@@ -156,9 +142,6 @@ namespace omni {
             blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().
                                              strokeBuffer().toQImage()));
             blendTex_->bind();
-            glTexEnvf(GL_TEXTURE_ENV,
-                      GL_TEXTURE_ENV_MODE,
-                      GL_REPLACE);
             _.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
                             GL_CLAMP_TO_EDGE);
             _.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
@@ -224,12 +207,9 @@ namespace omni {
         _.glDisable(GL_LINE_SMOOTH);
         _.glEnable(GL_BLEND);
 
-        glColor4f(0.0, 0.0, 0.0, 1.0);
-        _.glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
-
+        glColor4f(1.0, 1.0, 1.0, 1.0);
         float _r = tuning_.blendMask().brushSize() * 0.5 / tuning_.width();
         cursor_->drawLine(_pos, _r, _r * (_rect.height() / _rect.width()));
-        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         _.glEnable(GL_LINE_SMOOTH);
       });
     }
@@ -244,13 +224,13 @@ namespace omni {
                             float         _blendMaskOpacity,
                             bool          _grayscale) const
     {
-      if (!blendShader_ || !warpGridBuffer_) return;
+      if (!blendShader_) return;
 
-      GLuint _inputTexId = warpGridBuffer_->texture();
 
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
-        warpGrid_->draw();
+        if (warpGridBuffer_) {
+        GLuint _inputTexId = warpGridBuffer_->texture();
 
         auto& _mask = tuning().blendMask();
         glBlendColor(1.0, 1.0, 1.0, 1.0);
@@ -318,6 +298,7 @@ namespace omni {
         }
         _.glBindTexture(GL_TEXTURE_2D, 0);
         blendShader_->release();
+        }
 
         if (_blendMaskOpacity > 0.0) {
           _.glDisable(GL_BLEND);
@@ -348,7 +329,6 @@ namespace omni {
           glEnd();
 
           _.glEnable(GL_BLEND);
-          _.glEnable(GL_TEXTURE_2D);
           _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
           blendBrushShader_->bind();
           {
@@ -358,7 +338,7 @@ namespace omni {
           }
           blendTex_->release(1);
           blendBrushShader_->release();
-          _.glDisable(GL_TEXTURE_2D);
+  //        _.glDisable(GL_TEXTURE_2D);
           _.glActiveTexture(GL_TEXTURE0 + 0);
         }
       });
@@ -391,8 +371,6 @@ namespace omni {
       }
 
       // Draw projector's perspective on framebuffer texture
-      with_current_context([&](QOpenGLFunctions& _)
-      {
         draw_on_framebuffer(warpGridBuffer_,
                             [&](QOpenGLFunctions& _) // Projection
                                                      // Operation
@@ -402,10 +380,8 @@ namespace omni {
                             [&](QOpenGLFunctions& _) // Model View
                                                      // Operation
         {
-          _.glEnable(GL_DEPTH_TEST);
           _vizSession->drawCanvas();
         });
-      });
     }
 
     void Tuning::free()
@@ -502,6 +478,7 @@ namespace omni {
           Rectangle::draw(-0.5, 0.5, 0.5, -0.5);
         }
         calibrationShader_->release();
+        _.glActiveTexture(GL_TEXTURE0);
         _.glBindTexture(GL_TEXTURE_2D, 0);
       });
     }

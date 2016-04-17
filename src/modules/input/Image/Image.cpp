@@ -37,7 +37,9 @@ namespace omni {
 
     void Image::free()
     {
-      texture_.reset();
+      visual::with_current_context([&](QOpenGLFunctions& _) {
+        texture_.reset();
+      });
     }
 
     void Image::update()

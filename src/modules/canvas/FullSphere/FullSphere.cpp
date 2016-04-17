@@ -38,7 +38,10 @@ namespace omni
     }
 
     ui::CanvasParameters* FullSphere::widget() {
-        return ui::makeWidget<ui::canvas::FullSphere>(this);
+        // Make a new widget only. The canvas is later assigned
+        // because we do not know scene size yet which set
+        // the slider ranges of the widget
+        return new ui::canvas::FullSphere();
     }
   }
 }

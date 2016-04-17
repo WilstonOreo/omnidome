@@ -264,6 +264,8 @@ void MainWindow::setupSession(std::shared_ptr<Session>& _session)
   using util::enumToInt;
   locked_ = true;
   {
+    ui_->dockSceneWidget->setDataModel(_session);
+    ui_->dockInputsWidget->setDataModel(_session);
     toolBar_->setDataModel(_session);
     screenSetup_->setDataModel(_session);
 
@@ -273,14 +275,11 @@ void MainWindow::setupSession(std::shared_ptr<Session>& _session)
     export_->setDataModel(_session);
 
     ui_->tuningList->setDataModel(_session);
-    ui_->dockInputsWidget->setDataModel(_session);
-    ui_->dockSceneWidget->setDataModel(_session);
     ui_->dockMappingWidget->setDataModel(_session);
     ui_->dockCanvasWidget->setDataModel(_session);
     ui_->dockWarpWidget->setDataModel(_session);
     ui_->dockBlendWidget->setDataModel(_session);
     ui_->dockColorCorrectionWidget->setDataModel(_session);
-
   }
 
   locked_ = false;

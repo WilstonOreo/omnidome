@@ -65,7 +65,6 @@ namespace omni {
 
                 if (session_.inputs().current() && session_.mapping() && _mode != mapping::OutputMode::LIGHTING_ONLY)
                 {
-                    _.glEnable(GL_TEXTURE_RECTANGLE);
                     _.glDisable(GL_LIGHTING);
                     _.glActiveTexture(GL_TEXTURE0);
                     _.glBindTexture(GL_TEXTURE_RECTANGLE, _input->textureId());
@@ -77,12 +76,8 @@ namespace omni {
                 else
                 {
                     // Render canvas with lighting when there is no input
-                    _.glEnable(GL_LIGHTING);
-                    _.glDisable(GL_TEXTURE_RECTANGLE);
                     glColor4f(1.0, 1.0, 1.0, 1.0);
                     drawCanvasWithMatrix();
-                    _.glDisable(GL_LIGHTING);
-                    _.glEnable(GL_TEXTURE_RECTANGLE);
                 }
             });
         }

@@ -39,6 +39,9 @@ namespace omni
     }
 
     bool CanvasParameters::frontendToData() {
+        if (!dataModel()) {
+          return false;
+        }
         transform_->updateDataModel();
         return true;
     }
@@ -47,13 +50,24 @@ namespace omni
         transform_ = addAffineTransformWidget("Transform", &dataModel()->transform());
     }
 
+    void CanvasParameters::setDataModel(canvas::Interface* _canvas ,float _scale, QString const& _unit) {
+      this->locked([&]() {
+        mixin::UnsharedDataModel<canvas::Interface>::setDataModel(_canvas);
+        setScale(_scale);
+        setUnit(_unit);
+        updateFrontend();
+      });
+      emit dataModelChanged();
+    }
 
     void CanvasParameters::setRescaleValues(bool _rescale) {
       ParameterWidget::setRescaleValues(_rescale);
       if (transform_) {
         transform_->setRescaleOffsetValues(_rescale);
       }
-      emit dataModelChanged();
+      if (!this->isLocked()) {
+        emit dataModelChanged();
+      }
     }
 
     /// Set slider ranges
@@ -62,7 +76,9 @@ namespace omni
       if (transform_) {
         transform_->setOffsetRangeScale(_scale);
       }
-      emit dataModelChanged();
+      if (!this->isLocked()) {
+        emit dataModelChanged();
+      }
     }
 
     /// Set slider ranges
@@ -71,7 +87,6 @@ namespace omni
       if (transform_) {
         transform_->setOffsetUnit(_unit);
       }
-      emit dataModelChanged();
     }
   }
 }

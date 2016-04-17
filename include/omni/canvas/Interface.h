@@ -88,7 +88,7 @@ namespace omni {
         /// Transformation matrix for canvas
         virtual QMatrix4x4 matrix() const;
 
-        /// Returns pointer to parameter widget
+        /// Returns pointer to new parameter widget
         virtual ui::CanvasParameters* widget() = 0;
 
         /// Write mapping to stream

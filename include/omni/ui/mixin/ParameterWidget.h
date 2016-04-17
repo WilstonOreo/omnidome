@@ -48,14 +48,14 @@ namespace omni {
 
           /// Setup widget for interface and place it onto widget
           template<typename PARENT_WIDGET, typename INTERFACE>
-          void setupParameterWidget(PARENT_WIDGET *_widget, INTERFACE *_interface) {
-            if (!_widget) return;
+          bool setupParameterWidget(PARENT_WIDGET *_widget, INTERFACE *_interface) {
+            if (!_widget) return false;
 
-            if (!_widget->layout()) return;
+            if (!_widget->layout()) return false;
 
             removeParameterWidget(_widget);
 
-            if (!_interface) return;
+            if (!_interface) return false;
 
             /// Make a new parameter widget
             parameterWidget_ = _interface->widget();
@@ -65,7 +65,9 @@ namespace omni {
 
               _widget->layout()->addWidget(parameterWidget_);
               parameterWidget_->show();
+              return true;
             }
+            return false;
           }
 
           /// Return pointer to parameterWidget

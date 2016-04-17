@@ -79,6 +79,9 @@ namespace omni
     /// Adds a integer widget with a name, a value and min-max range
     RangedInt* ParameterWidget::addIntegerWidget(QString const& _str,int _value,int _min, int _max)
     {
+      if (getWidget(_str)) {
+        return static_cast<RangedInt*>(getWidget(_str));
+      }
       auto* _widget = new RangedInt(_str,_value,_min,_max,this);
       if (layout())
         layout()->addWidget(_widget);
@@ -101,6 +104,9 @@ namespace omni
 
     RangedFloat* ParameterWidget::addAngleWidget(QString const& _str,float _value,float _min,float _max)
     {
+      if (getWidget(_str)) {
+        return static_cast<RangedFloat*>(getWidget(_str));
+      }
       auto* _angle = addWidget(_str,_value,_min,_max);
       _angle->setSuffix("°");
       _angle->setSingleStep(5.0);
@@ -110,6 +116,9 @@ namespace omni
 
     RangedFloat* ParameterWidget::addOffsetWidget(QString const& _str,float _value, float _min, float _max)
     {
+      if (getWidget(_str)) {
+        return static_cast<RangedFloat*>(getWidget(_str));
+      }
       auto* _offset = addWidget(_str,_value,_min,_max);
       _offset->setSuffix("m");
       _offset->setSingleStep(0.001);
@@ -121,6 +130,10 @@ namespace omni
 
     QCheckBox* ParameterWidget::addCheckBox(QString const& _text, bool _checked)
     {
+      if (getWidget(_text)) {
+        return static_cast<QCheckBox*>(getWidget(_text));
+      }
+
       auto* _checkbox = new QCheckBox(_text, this);
       if (layout())
         layout()->addWidget(_checkbox);
@@ -262,6 +275,9 @@ namespace omni
 
     Rotation* ParameterWidget::addRotationWidget(QString const& _str)
     {
+      if (getWidget(_str)) {
+        return static_cast<Rotation*>(getWidget(_str));
+      }
       auto* _widget = new Rotation(0.0,0.0,0.0,this);
 
       if (layout())
@@ -282,6 +298,9 @@ namespace omni
 
     omni::ui::AffineTransform* ParameterWidget::addAffineTransformWidget(
         QString const& _id, omni::AffineTransform* _transform) {
+        if (getWidget(_id)) {
+            return static_cast<omni::ui::AffineTransform*>(getWidget(_id));
+          }
 
         auto* _widget = ui::makeWidget<omni::ui::AffineTransform>(_transform);
 

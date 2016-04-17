@@ -21,26 +21,30 @@
 #include "FullSphereWidget.h"
 
 namespace omni {
-    namespace ui {
-        namespace canvas {
-            FullSphere::FullSphere(QWidget *_parent) : CanvasParameters(_parent) {
-            }
+  namespace ui {
+    namespace canvas {
+      FullSphere::FullSphere(QWidget *_parent) : CanvasParameters(_parent) {}
 
-            FullSphere::~FullSphere() {}
+      FullSphere::~FullSphere() {}
 
-            bool FullSphere::frontendToData() {
-                auto *_fullsphere = static_cast<omni::canvas::FullSphere *>(dataModel());
-                _fullsphere->setDiameter(getParamAsFloat("Diameter"));
-                return CanvasParameters::frontendToData();
-            }
+      bool FullSphere::frontendToData() {
+        auto *_fullsphere = static_cast<omni::canvas::FullSphere *>(dataModel());
 
-            void FullSphere::dataToFrontend() {
-                auto* _diameter = addOffsetWidget("Diameter",0.5,0.01,1.0);
-                /// Retrieve parameters for FullSphere canvas
-                auto* _fullsphere = static_cast<omni::canvas::FullSphere*>(dataModel());
-                _diameter->setValue(_fullsphere->diameter());
-                CanvasParameters::dataToFrontend();
-            }
+        _fullsphere->setDiameter(getParamAsFloat("Diameter"));
+        return CanvasParameters::frontendToData();
+      }
+
+      void FullSphere::dataToFrontend() {
+        if (!getWidget("Diameter")) {
+          auto *_diameter = addOffsetWidget("Diameter", 0.5, 0.01, 1.0);
         }
+
+        /// Retrieve parameters for FullSphere canvas
+        auto *_fullsphere = static_cast<omni::canvas::FullSphere *>(dataModel());
+        static_cast<RangedFloat *>(getWidget("Diameter"))->setValue(
+          _fullsphere->diameter());
+        CanvasParameters::dataToFrontend();
+      }
     }
+  }
 }

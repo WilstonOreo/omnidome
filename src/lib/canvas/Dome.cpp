@@ -92,7 +92,9 @@ namespace omni {
       Envelope::fromStream(_stream);
       PropertyMap _map;
       _stream >> _map;
+
       qreal _radius = _map.getValue<qreal>("radius", qreal(5.0));
+      qDebug() << "Dome::fromStream(): " << _radius;
 
       setRadius(_radius);
     }

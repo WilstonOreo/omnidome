@@ -85,6 +85,8 @@ namespace omni
       _scene.camera()->setup(aspect());
 
       glMatrixMode(GL_MODELVIEW);
+      glEnable(GL_BLEND);
+      glEnable(GL_DEPTH_TEST);
       glLoadIdentity();
       _scene.updateLights();
 
@@ -100,6 +102,9 @@ namespace omni
       dataModel()->canvas()->drawAux();
 
       _scene.drawGrid();
+
+      glDisable(GL_BLEND);
+      glDisable(GL_DEPTH_TEST);
       paintGLDone();
     }
 
@@ -157,6 +162,7 @@ namespace omni
 
     void SceneGLView::dataToFrontend()
     {
+      makeCurrent();
     }
   }
 }

@@ -187,6 +187,8 @@ namespace omni {
         }
         dataModel()->scene().setUnit(_abbr);
         ui_->boxUnit->setCurrentIndex(_index);
+        emit sceneScaleChanged(false);
+        emit unitChanged();
       }
     }
 

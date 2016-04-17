@@ -30,12 +30,13 @@ float frustum_intersection(in vec3 point)
 
   /// Distances to frustum planes
   float d = dot(o,look_at);
+  if (d < 0.0) return -100000000.0;
+
   float d_top = dot(o,n_top);
   float d_bottom = dot(o,n_bottom);
   float d_left = dot(o,n_left);
   float d_right = dot(o,n_right);
 
-  if (d < 0.0) return -100000000.0;
   if ((d_top < 0.0) && (d_bottom < 0.0) && (d_left < 0.0) && (d_right < 0.0))
   {
     return -1000000.0; // min(min(-d_top,-d_bottom),min(-d_left,-d_right));

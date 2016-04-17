@@ -38,12 +38,6 @@ namespace omni {
         /// Draw envelope
         virtual void draw() const;
 
-        /// Serialize to stream
-        virtual void toStream(QDataStream&) const;
-
-        /// Deserialize from stream
-        virtual void fromStream(QDataStream&);
-
       protected:
         /// Protected bounding box member
         omni::Box bounds_;

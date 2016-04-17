@@ -42,16 +42,5 @@ namespace omni
     {
       return bounds_;
     }
-
-    void Envelope::toStream(QDataStream& _os) const {
-        canvas::Interface::toStream(_os);
-        PropertyMap _map;
-        _os << _map;
-    }
-    void Envelope::fromStream(QDataStream& _is) {
-        canvas::Interface::fromStream(_is);
-        PropertyMap _map;
-        _is >> _map;
-    }
   }
 }

@@ -35,6 +35,8 @@ namespace omni {
       }
 
     void Calibration::render(Tuning const& _tuning) {
+
+      visual::resetOpenGLState();
       int _w = buffer_.width() <= 0 ? _tuning.width() : buffer_.width();
       int _h = buffer_.height() <= 0 ? _tuning.height() : buffer_.height();
 
@@ -68,7 +70,6 @@ namespace omni {
       // 2nd step: Update render buffer as floating point texture
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
-        _.glEnable(GL_TEXTURE_2D);
         _.glGenTextures(1, &_projTex);
         _.glBindTexture(GL_TEXTURE_2D, _projTex);
         _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
@@ -85,9 +86,7 @@ namespace omni {
       RenderBuffer _warpBuffer(_w, _h);
       visual::Tuning _tuningViz(const_cast<proj::Tuning&>(_tuning));
       _tuningViz.update();
-      _tuningViz.updateWarpGrid();
       _tuningViz.updateWarpBuffer(&_sessionViz);
-      _tuningViz.updateBlendTexture();
 
       renderToBuffer(_warpBuffer,
         // Projection operation
@@ -104,7 +103,11 @@ namespace omni {
         _.glBindTexture(GL_TEXTURE_2D, _projTex);
         _tuningViz.drawWarpPatch();
         _.glBindTexture(GL_TEXTURE_2D, 0);
+
+        /// Delete texture of rendered canvas, it not needed anymore at this point
+        _.glDeleteTextures(1, &_projTex);
       });
+
 
       // 4th Step: Render blend mask
       RenderBuffer _blendBuffer(_w, _h);
@@ -124,13 +127,22 @@ namespace omni {
         _tuningViz.drawOutput();
       });
 
+
       // 5th step: Merge blend and warp buffer
       buffer_.resize(_w, _h);
       for (int i = 0; i < buffer_.data().size(); ++i)
       {
         auto& _wP = _warpBuffer[i]; // Pixel from warp grid buffer
+        auto& _pP = _projBuffer[i]; // Pixel from warp grid buffer
         buffer_[i] = RGBAFloat(_wP.r, _wP.g, _wP.b, _blendBuffer[i].r);
+
+        if (i % 30 == 0) {
+          qDebug() << _pP.r << _wP.r << _wP.g << _blendBuffer[i].r;
+
+        }
       }
+
+      visual::resetOpenGLState();
     }
 
     void Calibration::render(Tuning const& _tuning, CalibrationMode _mode) {
@@ -271,13 +283,13 @@ namespace omni {
       {
         GLuint fb = 0, _colorTex = 0, _depthRb = 0;
 
-        // RGBA8 2D texture, 24 bit depth texture, 256x256
+        // RGBA32F 2D texture to render to
         _.glGenTextures(1, &_colorTex);
         _.glBindTexture(GL_TEXTURE_2D, _colorTex);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         // NULL means reserve texture memory, but texels are undefined
         _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _w, _h, 0, GL_RGBA,
@@ -308,20 +320,16 @@ namespace omni {
         GLenum status;
         status = _.glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-        switch (status)
-        {
-        case GL_FRAMEBUFFER_COMPLETE:
-          qDebug() << "good";
-          break;
-
-        default:
+        if (status != GL_FRAMEBUFFER_COMPLETE) {
           qDebug() << "bad";
+          _.glDeleteTextures(1, &_colorTex);
+          _.glDeleteRenderbuffers(1, &_depthRb);
+          _.glDeleteFramebuffers(1, &fb);
+          return;
         }
 
         // -------------------------
         // and now you can render to GL_TEXTURE_2D
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
-        glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
         _.glBindFramebuffer(GL_FRAMEBUFFER, fb);
         {
           _.glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -329,14 +337,14 @@ namespace omni {
                     GL_STENCIL_BUFFER_BIT);
 
           // -------------------------
-          glViewport(0, 0, _w, _h);
+          _.glViewport(0, 0, _w, _h);
           glMatrixMode(GL_PROJECTION);
           glLoadIdentity();
           _proj(_); // Projection operation
 
           glMatrixMode(GL_MODELVIEW);
           glLoadIdentity();
-          glEnable(GL_DEPTH_TEST);
+          _.glEnable(GL_DEPTH_TEST);
           _mv(_); // Model view operation
 
           // -------------------------
@@ -346,8 +354,6 @@ namespace omni {
         // Bind 0, which means render to back buffer, as a result, fb is
         // unbound
         _.glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glPopAttrib();
-        glPopClientAttrib();
 
         // Delete resources
         _.glDeleteTextures(1, &_colorTex);

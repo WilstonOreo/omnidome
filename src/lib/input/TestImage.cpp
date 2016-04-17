@@ -90,21 +90,13 @@ namespace omni
               _size.height(),_format));
 
         visual::with_current_context([&](QOpenGLFunctions& _) {
-          _.glEnable(GL_DEPTH_TEST);
-          _.glDepthFunc(GL_LEQUAL);
-          _.glEnable(GL_BLEND);
           _.glBindTexture(GL_TEXTURE_RECTANGLE, framebuffer_->texture());
-          _.glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-          _.glPixelStorei(GL_UNPACK_ROW_LENGTH,  0);
-          _.glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-          _.glPixelStorei(GL_UNPACK_SKIP_ROWS,   0);
-          glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-          glTexParameterf( GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-          glTexParameterf( GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-          glTexParameterf( GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
-          glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-          glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-          glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_BASE_LEVEL, 0);
+          _.glTexParameterf( GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+          _.glTexParameterf( GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+          _.glTexParameterf( GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
+          _.glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+          _.glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+          _.glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_BASE_LEVEL, 0);
           _.glTexImage2D(GL_TEXTURE_RECTANGLE,framebuffer_->texture(),0,GL_RGBA,framebuffer_->width(),framebuffer_->height(),GL_RGBA,GL_UNSIGNED_BYTE,nullptr);
           _.glBindTexture(GL_TEXTURE_RECTANGLE, 0);
         });

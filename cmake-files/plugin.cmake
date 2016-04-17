@@ -8,7 +8,10 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
     get_filename_component(PLUGIN_NAME ${PLUGIN_DIR} NAME)
     SET(build_target plugin_${PLUGIN_PREFIX}_${PLUGIN_NAME})
 
+
     SET(${build_target}_PATH ${PLUGIN_DIR})
+
+    MESSAGE(STATUS ${build_target} ${${build_target}_PATH})
 
     if(EXISTS ${PLUGIN_DIR}/build.cmake)
         include(${PLUGIN_DIR}/build.cmake)
@@ -23,7 +26,7 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
 
 
     FILE(GLOB plugin_headers ${plugin_dir}/*.h )
-    FILE(GLOB plugin_sources ${plugin_dir}/*.cpp )
+    FILE(GLOB plugin_sources ${${build_target}_SOURCES} ${plugin_dir}/*.cpp )
     FILE(GLOB plugin_forms ${plugin_dir}/*.ui )
     FILE(GLOB plugin_resources ${plugin_dir}/*.qrc )
 

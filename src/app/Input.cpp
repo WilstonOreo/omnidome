@@ -63,6 +63,7 @@ namespace omni
 
     void Input::dataToFrontend()
     {
+      clear();
       prepareModel();
       for (auto& _input : dataModel()->inputs())
       {
@@ -130,6 +131,7 @@ namespace omni
 
     void Input::clear()
     {
+      if (!dataModel()) return;
       dataModel()->inputs().clear();
       prepareModel();
       showParameterWidget();

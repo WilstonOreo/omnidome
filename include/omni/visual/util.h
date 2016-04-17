@@ -28,6 +28,7 @@
 #include <QVector2D>
 #include <QVector3D>
 #include <QOpenGLFunctions>
+#include <QOpenGLFramebufferObject>
 
 
 namespace omni {
@@ -118,24 +119,54 @@ namespace omni {
         return _size.width() / qreal(_size.height());
       }
 
+
+      static inline void resetOpenGLState() {
+        with_current_context([&](QOpenGLFunctions& _gl) {
+
+          _gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
+          _gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+         if (QOpenGLContext::currentContext()->isOpenGLES() ||
+                    (_gl.openGLFeatures() & QOpenGLFunctions::FixedFunctionPipeline)) {
+                 int maxAttribs;
+                 _gl.glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxAttribs);
+                 for (int i=0; i<maxAttribs; ++i) {
+                     _gl.glVertexAttribPointer(i, 4, GL_FLOAT, GL_FALSE, 0, 0);
+                     _gl.glDisableVertexAttribArray(i);
+                 }
+              }
+             _gl.glActiveTexture(GL_TEXTURE0);
+             _gl.glBindTexture(GL_TEXTURE_2D, 0);
+             _gl.glDisable(GL_DEPTH_TEST);
+             _gl.glDisable(GL_STENCIL_TEST);
+             _gl.glDisable(GL_SCISSOR_TEST);
+             _gl.glColorMask(true, true, true, true);
+             _gl.glClearColor(0, 0, 0, 0);
+
+             _gl.glDepthMask(true);
+             _gl.glDepthFunc(GL_LESS);
+             _gl.glClearDepthf(1);
+
+             _gl.glStencilMask(0xff);
+             _gl.glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+             _gl.glStencilFunc(GL_ALWAYS, 0, 0xff);
+             _gl.glDisable(GL_BLEND);
+             _gl.glBlendFunc(GL_ONE, GL_ZERO);
+             _gl.glUseProgram(0);
+
+          QOpenGLFramebufferObject::bindDefault();
+        });
+      }
+
       /// Draw into QOpenGLFramebufferObject with given projection and model
       // view operations
       template<typename FRAMEBUFFER, typename PROJECTION, typename MODELVIEW>
       void draw_on_framebuffer(FRAMEBUFFER& _f, PROJECTION _p, MODELVIEW _m)
       {
         with_current_context([&](QOpenGLFunctions& _) {
-          glPushAttrib(GL_ALL_ATTRIB_BITS);
-          glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
-
           _f->bind();
           _.glViewport(0, 0, _f->width(), _f->height());
           _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
                     GL_STENCIL_BUFFER_BIT);
-
-          _.glDepthFunc(GL_LEQUAL);
-
-          // fix outlines z-fighting with quads
-          _.glPolygonOffset(1, 1);
 
           glMatrixMode(GL_TEXTURE);
           glPushMatrix();
@@ -151,31 +182,10 @@ namespace omni {
           // Model view matrix setup
           glMatrixMode(GL_MODELVIEW);
           glLoadIdentity();
-          _.glClearColor(0.0, 0.0, 0.0, 1.0);
-          _.glActiveTexture(GL_TEXTURE0);
-          glClientActiveTexture(GL_TEXTURE0);
-          _.glClear(GL_DEPTH_BUFFER_BIT);
-          _.glDisable(GL_LIGHTING);
-          _.glDepthFunc(GL_LEQUAL);
-          _.glEnable(GL_BLEND);
-          _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-          _.glEnable(GL_LINE_SMOOTH);
-          _.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-          _.glEnable(GL_POINT_SMOOTH);
-          _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-          _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-          glPolygonMode(GL_FRONT, GL_FILL);
-          glPolygonMode(GL_BACK, GL_FILL);
-          _.glEnable(GL_NORMALIZE);
 
-          // fix outlines z-fighting with quads
-          _.glPolygonOffset(1, 1);
           _m(_); // ModelView operation
 
           _f->release();
-
-          glPopAttrib();
-          glPopClientAttrib();
         });
       }
 
@@ -190,6 +200,8 @@ namespace omni {
         });
       }
     }
+
+    using util::resetOpenGLState;
     using util::with_current_context;
     using util::draw_on_framebuffer;
     using util::viewport;

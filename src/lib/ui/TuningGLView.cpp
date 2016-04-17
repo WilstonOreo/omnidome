@@ -641,6 +641,7 @@ namespace omni {
 
     void TuningGLView::dataToFrontend()
     {
+      makeCurrent();
       dataModel()->makeVisualizer();
 
       if (context() && !initialized()) {

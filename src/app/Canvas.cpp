@@ -111,18 +111,23 @@ namespace omni {
             dataModel()->setCanvas(_id);
             canvasMemory_.restore(dataModel()->canvas());
 
-            dataModel()->canvas()->update();
-
-            emit canvasTypeChanged();
             showParameterWidget();
+            emit canvasTypeChanged();
         }
 
         void Canvas::showParameterWidget() {
-            this->setupParameterWidget(widget(),dataModel()->canvas());
-            if (this->parameterWidget()) {
-                this->updateSceneSize(true);
-                this->updateUnits();
+            if (this->setupParameterWidget(widget(),dataModel()->canvas())) {
+                this->parameterWidget()->setRescaleValues(false);
+                auto& _scene = dataModel()->scene();
+
+                // Set datamodel with scene size and unit for correct initialization
+                this->parameterWidget()->setDataModel(
+                  dataModel()->canvas(),
+                  _scene.size(),
+                  _scene.unit().abbreviation());
+
                 // Update parameter when canvas has changed
+                dataModel()->canvas()->update();
                 connect(this->parameterWidget(),SIGNAL(dataModelChanged()),
                         this,SIGNAL(dataModelChanged()));
             }
