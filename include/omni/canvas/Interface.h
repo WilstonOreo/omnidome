@@ -23,11 +23,11 @@
 #include <set>
 #include <QMatrix4x4>
 #include <omni/PluginInfo.h>
-#include <omni/AffineTransform.h>
+#include <omni/geometry/Box.h>
+#include <omni/geometry/AffineTransform.h>
 #include <omni/serialization/Interface.h>
 #include <omni/mapping/Interface.h>
 #include <omni/visual/Interface.h>
-#include <omni/Box.h>
 
 namespace omni {
   namespace ui {

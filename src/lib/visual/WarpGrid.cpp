@@ -67,13 +67,6 @@ namespace omni {
             with_current_context([this](QOpenGLFunctions& _)
             {
               _.glDisable(GL_TEXTURE_2D);
-              /*
-
-                _.glEnable(GL_BLEND);
-                _.glDepthFunc(GL_LEQUAL);
-
-                _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                _.glDisable(GL_LIGHTING);*/
                 glColor4f(1.0, 1.0, 1.0, 0.2);
                 glLineWidth(2.0);
                 _.glBindBuffer(GL_ARRAY_BUFFER,         gridVertexVbo_.id());

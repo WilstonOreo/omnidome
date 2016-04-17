@@ -40,8 +40,13 @@ namespace omni {
 
   }
 
-  /// Namespace for serialization funcionality
+  /// Namespace for serialization functionality
   namespace serialization {
+
+  }
+
+  /// Namespace for geometry functionality
+  namespace geometry {
 
   }
 

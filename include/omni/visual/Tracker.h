@@ -20,7 +20,7 @@
 #ifndef OMNI_VISUAL_TRACKER_H_
 #define OMNI_VISUAL_TRACKER_H_
 
-#include <omni/PolarVec.h>
+#include <omni/geometry/PolarVec.h>
 
 namespace omni {
   namespace visual {

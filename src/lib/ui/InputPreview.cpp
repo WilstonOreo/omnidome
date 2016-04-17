@@ -105,6 +105,10 @@ namespace omni {
 
       makeCurrent();
 
+      if (!shader_) {
+        visual::initShader(shader_,"textureRect");
+      }
+
       visual::with_current_context([this](QOpenGLFunctions& _)
       {
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -125,9 +129,11 @@ namespace omni {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
+        shader_->bind();
         _.glBindTexture(GL_TEXTURE_RECTANGLE, input_->textureId());
         visual::Rectangle::draw(input_->size());
         _.glBindTexture(GL_TEXTURE_RECTANGLE, 0);
+        shader_->release();
       });
 
       paintGLDone();

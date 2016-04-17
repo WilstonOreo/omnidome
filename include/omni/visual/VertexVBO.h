@@ -21,7 +21,7 @@
 
 #include <vector>
 #include <omni/visual/VBO.h>
-#include <omni/Vertex.h>
+#include <omni/geometry/Vertex.h>
 
 namespace omni {
   namespace visual {

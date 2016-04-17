@@ -22,7 +22,7 @@
 
 #include <omni/visual/Interface.h>
 #include <omni/visual/VertexVBO.h>
-#include <omni/Box.h>
+#include <omni/geometry/Box.h>
 
 namespace omni {
   namespace visual {

@@ -22,7 +22,6 @@
 #include <functional>
 #include <omni/visual/VertexVBO.h>
 #include <omni/visual/Interface.h>
-#include <omni/EulerAngles.h>
 
 namespace omni {
   namespace visual {

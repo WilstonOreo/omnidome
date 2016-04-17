@@ -22,7 +22,6 @@
 
 #include <omni/visual/Plane.h>
 #include <omni/canvas/Interface.h>
-#include <omni/EulerAngles.h>
 
 namespace omni
 {

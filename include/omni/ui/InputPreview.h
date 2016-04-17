@@ -20,6 +20,7 @@
 #ifndef OMNI_UI_INPUTPREVIEW_H_
 #define OMNI_UI_INPUTPREVIEW_H_
 
+#include <QOpenGLShaderProgram>
 #include <omni/input/Interface.h>
 #include <omni/ui/GLView.h>
 
@@ -72,6 +73,7 @@ namespace omni
       /// Relative border
       float border_ = 0.0;
 
+      std::unique_ptr<QOpenGLShaderProgram> shader_;
       input::Interface* input_ = nullptr;
     };
   }

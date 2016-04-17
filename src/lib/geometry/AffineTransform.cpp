@@ -17,12 +17,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/AffineTransform.h>
+#include <omni/geometry/AffineTransform.h>
 
 #include <omni/util.h>
 #include <omni/serialization/PropertyMap.h>
 
 namespace omni {
+  namespace geometry {
     AffineTransform::AffineTransform() :
         scale_(1.0, 1.0, 1.0),
         translation_(0.0, 0.0, 0.0) {}
@@ -141,4 +142,5 @@ namespace omni {
             OMNI_TEST_MEMBER_EQUAL(translationEnabled_) &&
             OMNI_TEST_MEMBER_EQUAL(translation_);
     }
+  }
 }

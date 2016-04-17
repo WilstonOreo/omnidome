@@ -36,8 +36,8 @@ namespace omni {
             }
 
             void Planar::dataToFrontend() {
-                auto* _length = addOffsetWidget("Length",1.0,0.1,10.0);
-                auto* _width = addOffsetWidget("Width",1.0,0.1,10.0);
+                auto* _length = addOffsetWidget("Length",0.1,0.01,1.0);
+                auto* _width = addOffsetWidget("Width",0.1,0.01,1.0);
 
                 /// Retrieve parameters for Planar canvas
                 auto* _planar = static_cast<omni::canvas::Planar*>(dataModel());

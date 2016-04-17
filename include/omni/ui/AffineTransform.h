@@ -22,7 +22,7 @@
 
 #include <memory>
 #include <QWidget>
-#include <omni/AffineTransform.h>
+#include <omni/geometry/AffineTransform.h>
 #include <omni/ui/RangedFloat.h>
 #include <omni/ui/mixin/Scale.h>
 #include <omni/ui/mixin/DataModel.h>

@@ -21,7 +21,7 @@
 #define OMNI_PROJ_ANGLESETUP_H_
 
 #include "Setup.h"
-#include <omni/EulerAngles.h>
+#include <omni/geometry/EulerAngles.h>
 
 namespace omni {
   namespace proj {

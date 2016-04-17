@@ -21,7 +21,7 @@
 #define OMNI_PROJ_RINGARRAY_H_
 
 #include <omni/proj/MultiSetup.h>
-#include <omni/Angle.h>
+#include <omni/geometry/Angle.h>
 
 namespace omni {
   namespace proj {

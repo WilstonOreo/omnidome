@@ -21,8 +21,8 @@
 #define OMNI_VISUAL_WARPGRID_H_
 
 #include <memory>
-#include <omni/Vertex2D.h>
 #include <omni/WarpGrid.h>
+#include <omni/geometry/Vertex2D.h>
 #include <omni/visual/Interface.h>
 #include <omni/visual/Circle.h>
 #include <omni/visual/VBO.h>

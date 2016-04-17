@@ -47,6 +47,8 @@ namespace omni {
       if (image_.width() == 0) return;
 
       visual::with_current_context([&](QOpenGLFunctions& _) {
+        if (texture_) return;
+
         texture_.reset(new QOpenGLTexture(QOpenGLTexture::TargetRectangle));
         texture_->setData(image_);
         texture_->setMinMagFilters(
@@ -65,6 +67,7 @@ namespace omni {
     {
       imageLocation_.load(_path,image_);
       image_       = image_.mirrored();
+      texture_.reset();
       update();
     }
 

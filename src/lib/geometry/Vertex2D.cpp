@@ -17,44 +17,41 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/Vertex2D.h>
+#include <omni/geometry/Vertex2D.h>
 
 namespace omni {
-
-    Vertex2D::Vertex2D() {
-
-    }
+  namespace geometry {
+    Vertex2D::Vertex2D() {}
 
     Vertex2D::Vertex2D(
-        const QVector2D& _pos,
-        const QVector2D& _texCoord) :
-        texCoord_(_texCoord),
-        pos_(_pos)
-    {
-
-    }
+      const QVector2D& _pos,
+      const QVector2D& _texCoord) :
+      texCoord_(_texCoord),
+      pos_(_pos)
+    {}
 
     void Vertex2D::setPos(QVector2D const& _pos) {
-        pos_=_pos;
+      pos_ = _pos;
     }
 
     QVector2D& Vertex2D::pos() {
-        return pos_;
+      return pos_;
     }
 
     QVector2D const& Vertex2D::pos() const {
-        return pos_;
+      return pos_;
     }
 
     void Vertex2D::setTexCoord(QVector2D const& _texCoord) {
-        texCoord_ = _texCoord;
+      texCoord_ = _texCoord;
     }
 
     QVector2D& Vertex2D::texCoord() {
-        return texCoord_;
+      return texCoord_;
     }
 
     QVector2D const& Vertex2D::texCoord() const {
-        return texCoord_;
+      return texCoord_;
     }
+  }
 }

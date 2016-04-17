@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -16,31 +16,40 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef OMNI_VISUAL_FRAMEBUFFER32F_H_
+#define OMNI_VISUAL_FRAMEBUFFER32F_H_
 
-#ifndef OMNI_CANVAS_HALFDOME_H_
-#define OMNI_CANVAS_HALFDOME_H_
+#include <omni/visual/util.h>
 
-#include <omni/canvas/Dome.h>
+namespace omni {
+  namespace visual {
+      /// Framebuffer with 32-bit float pixel depth per channel
+      class Framebuffer32F {
+      public:
+        Framebuffer32F();
+        Framebuffer32F(QSize const&);
+        ~Framebuffer32F();
 
-namespace omni
-{
-  namespace canvas
-  {
-    /// A rotatable half sphere dome
-    class HalfDome : public QObject, public Dome
-    {
-        OMNI_CANVAS_PLUGIN_DECL
-        OMNI_PLUGIN_CR8TR("Halfdome canvas","Copyright (C) 2016")
-    public:
-      OMNI_REGISTER_CLASS(Factory,HalfDome)
+        int width() const;
+        int height() const;
 
-      HalfDome(qreal _diameter = 5.0);
-      ~HalfDome();
+        QSize const& size() const;
 
-      /// Make new box parameter widget
-      ui::CanvasParameters* widget();
-    };
+        void initialize(QSize const&);
+
+        void free();
+
+        void bind();
+
+        void release();
+
+      private:
+        QSize size_;
+        GLuint fb_ = 0;
+        GLuint colorTex_ = 0;
+        GLuint depthRb_ = 0;
+      };
   }
 }
 
-#endif /* OMNI_CANVAS_HALFDOME_H_ */
+#endif /* OMNI_VISUAL_FRAMEBUFFER32F_H_ */

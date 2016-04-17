@@ -20,7 +20,6 @@
 #ifndef OMNI_VISUAL_SPHERE_H_
 #define OMNI_VISUAL_SPHERE_H_
 
-#include <omni/Vertex.h>
 #include <omni/visual/Interface.h>
 #include <omni/visual/VertexVBO.h>
 

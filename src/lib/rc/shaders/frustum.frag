@@ -16,6 +16,13 @@ uniform int view_mode; // 0 = inside, 1 = outside, 2 = both
 /// Color of frustum border
 uniform vec3 color;
 
+uniform sampler2D image;
+
+vec2 frustum_coordinates(in vec3 point) {
+  vec2 uv = vec2(0.0);
+  return uv;
+}
+
 
 /// Tests if a point intersects frustum. Returns minimum distance from point to frustum
 /// If distance > 0, there is an intersection

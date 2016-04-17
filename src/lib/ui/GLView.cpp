@@ -106,9 +106,6 @@ namespace omni
         _.glEnable(GL_POINT_SMOOTH);
         _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
         _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-        glPolygonMode(GL_FRONT,GL_FILL);
-        glPolygonMode(GL_BACK,GL_FILL);
-        _.glEnable(GL_NORMALIZE);
         // fix outlines z-fighting with quads
         _.glPolygonOffset(1, 1);
         setAutoFillBackground(true);

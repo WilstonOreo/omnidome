@@ -23,7 +23,7 @@
 #include <memory>
 #include <QMatrix4x4>
 #include <QScreen>
-#include <omni/Angle.h>
+#include <omni/geometry/Angle.h>
 #include "Setup.h"
 
 namespace omni {

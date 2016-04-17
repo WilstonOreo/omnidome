@@ -23,7 +23,7 @@
 #include <map>
 #include <memory>
 #include <omni/PluginInfo.h>
-#include <omni/AffineTransform.h>
+#include <omni/geometry/AffineTransform.h>
 #include <omni/serialization/Interface.h>
 #include <omni/visual/Interface.h>
 

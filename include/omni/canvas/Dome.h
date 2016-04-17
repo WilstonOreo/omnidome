@@ -20,7 +20,7 @@
 #ifndef OMNI_CANVAS_DOME_H_
 #define OMNI_CANVAS_DOME_H_
 
-#include <omni/Vertex.h>
+#include <omni/geometry/Vertex.h>
 #include <omni/visual/Sphere.h>
 #include <omni/canvas/Envelope.h>
 

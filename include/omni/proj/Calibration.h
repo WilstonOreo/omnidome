@@ -80,12 +80,6 @@ namespace omni {
         bool                   virtualScreen() const;
 
       private:
-        /// Render to buffer with projection and modelview functors
-        template<typename PROJECTION, typename MODELVIEW>
-        static void renderToBuffer(RenderBuffer& _buffer,
-                                   PROJECTION _proj,
-                                   MODELVIEW _mv);
-
         template<typename OPERATION>
         static void bufferToImage(RenderBuffer const& _buffer,
                                   QImage& _image,

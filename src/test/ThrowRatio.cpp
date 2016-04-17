@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <omni/Angle.h>
+#include <omni/geometry/Angle.h>
 #include <omni/proj/Projector.h>
 
 #include <array>

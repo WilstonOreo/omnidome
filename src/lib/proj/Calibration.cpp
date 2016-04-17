@@ -22,6 +22,8 @@
 
 #include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
+#include <omni/visual/Rectangle.h>
+#include <omni/visual/Framebuffer32F.h>
 
 #include <QPainter>
 
@@ -35,8 +37,6 @@ namespace omni {
       }
 
     void Calibration::render(Tuning const& _tuning) {
-
-      visual::resetOpenGLState();
       int _w = buffer_.width() <= 0 ? _tuning.width() : buffer_.width();
       int _h = buffer_.height() <= 0 ? _tuning.height() : buffer_.height();
 
@@ -49,27 +49,46 @@ namespace omni {
       RenderBuffer _projBuffer(_w, _h);
       visual::Session _sessionViz(_tuning.session());
 
-      renderToBuffer(_projBuffer,
-        // Projection operation
-                     [&](QOpenGLFunctions& _)
-      {
-        glMultMatrixf(_tuning.projector().projectionMatrix().constData());
-      },
+      visual::Tuning _tuningViz(const_cast<proj::Tuning&>(_tuning));
+      _tuningViz.update();
+      _tuningViz.updateWarpBuffer(&_sessionViz);
 
-      // Model view operation
-                     [&](QOpenGLFunctions& _)
+      std::unique_ptr<visual::Framebuffer32F> _framebuffer;
+      _framebuffer.reset(new visual::Framebuffer32F(QSize(_w,_h)));
+
+      std::unique_ptr<QOpenGLShaderProgram> _shader;
+      visual::initShader(_shader,"texture");
+
+      visual::with_current_context([&](QOpenGLFunctions& _)
       {
-        // Draw canvas with
+        _.glEnable(GL_BLEND);
+        _.glEnable(GL_DEPTH_TEST);
+        _.glDepthFunc(GL_LEQUAL);
+        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      });
+
+      visual::draw_on_framebuffer(_framebuffer,[&](QOpenGLFunctions& _) {
+        // Projection operation
+        glMultMatrixf(_tuning.projector().projectionMatrix().constData());
+      },[&](QOpenGLFunctions& _) {
+        // Model view operation
         _sessionViz.update();
         _sessionViz.drawCanvas(_tuning.session().exportSettings().mappingOutputMode());
-      }
-        );
+        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _projBuffer.ptr());
+      });
 
       GLuint _projTex = 0;
 
-      // 2nd step: Update render buffer as floating point texture
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
+      RenderBuffer _warpBuffer(_w, _h);
+      visual::draw_on_framebuffer(_framebuffer,[&](QOpenGLFunctions& _) {
+        // Projection operation
+        QMatrix4x4 _m;
+        _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
+        glMultMatrixf(_m.constData());
+      },[&](QOpenGLFunctions& _) {
+        // Model view operation
+
+        // 2nd step: Update render buffer as floating point texture
         _.glGenTextures(1, &_projTex);
         _.glBindTexture(GL_TEXTURE_2D, _projTex);
         _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
@@ -80,74 +99,44 @@ namespace omni {
                        _projBuffer.width(), _projBuffer.height(), 0,
                        GL_RGBA, GL_FLOAT, _projBuffer.ptr());
         _.glBindTexture(GL_TEXTURE_2D, 0);
-      });
+        _tuningViz.updateWarpGrid();
 
-      // 3rd step: Render warp grid
-      RenderBuffer _warpBuffer(_w, _h);
-      visual::Tuning _tuningViz(const_cast<proj::Tuning&>(_tuning));
-      _tuningViz.update();
-      _tuningViz.updateWarpBuffer(&_sessionViz);
-
-      renderToBuffer(_warpBuffer,
-        // Projection operation
-                     [&](QOpenGLFunctions& _)
-      {
-        QMatrix4x4 _m;
-        _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
-        glMultMatrixf(_m.constData());
-      },
-
-      // Model view operation
-                     [&](QOpenGLFunctions& _)
-      {
-        _.glBindTexture(GL_TEXTURE_2D, _projTex);
-        _tuningViz.drawWarpPatch();
-        _.glBindTexture(GL_TEXTURE_2D, 0);
+        // 3rd step: Render warp grid
+        visual::useShader(*_shader,[&](visual::UniformHandler& _h) {
+          _h.uniform("texture",_projTex);
+          qDebug() << "render " << "drawWarpGrid()" << _projTex;
+          _tuningViz.drawWarpGrid();
+        });
+        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _warpBuffer.ptr());
 
         /// Delete texture of rendered canvas, it not needed anymore at this point
         _.glDeleteTextures(1, &_projTex);
       });
 
-
       // 4th Step: Render blend mask
       RenderBuffer _blendBuffer(_w, _h);
-      renderToBuffer(_blendBuffer,
-
-        // Projection operation
-                     [&](QOpenGLFunctions& _)
-      {
+      visual::draw_on_framebuffer(_framebuffer,[&](QOpenGLFunctions& _) {
+        // Model view operation
         QMatrix4x4 _m;
         _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
         glMultMatrixf(_m.constData());
-      },
-
-      // Model view operation
-                     [&](QOpenGLFunctions& _)
-      {
+      },[&](QOpenGLFunctions& _) {
+        // Projection operation
         _tuningViz.drawOutput();
+        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _blendBuffer.ptr());
       });
-
 
       // 5th step: Merge blend and warp buffer
       buffer_.resize(_w, _h);
       for (int i = 0; i < buffer_.data().size(); ++i)
       {
         auto& _wP = _warpBuffer[i]; // Pixel from warp grid buffer
-        auto& _pP = _projBuffer[i]; // Pixel from warp grid buffer
         buffer_[i] = RGBAFloat(_wP.r, _wP.g, _wP.b, _blendBuffer[i].r);
-
-        if (i % 30 == 0) {
-          qDebug() << _pP.r << _wP.r << _wP.g << _blendBuffer[i].r;
-
-        }
       }
-
-      visual::resetOpenGLState();
     }
 
     void Calibration::render(Tuning const& _tuning, CalibrationMode _mode) {
       mode_=_mode;
-//      outputGeometry_ = _tuning.rectangle
       render(_tuning);
     }
 
@@ -269,97 +258,6 @@ namespace omni {
 
     bool Calibration::virtualScreen() const {
       return virtualScreen_;
-    }
-
-    template<typename PROJECTION, typename MODELVIEW>
-    void Calibration::renderToBuffer(RenderBuffer& _buffer,
-                                  PROJECTION    _proj,
-                                  MODELVIEW     _mv)
-    {
-      int _w = _buffer.width();
-      int _h = _buffer.height();
-
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
-        GLuint fb = 0, _colorTex = 0, _depthRb = 0;
-
-        // RGBA32F 2D texture to render to
-        _.glGenTextures(1, &_colorTex);
-        _.glBindTexture(GL_TEXTURE_2D, _colorTex);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        // NULL means reserve texture memory, but texels are undefined
-        _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _w, _h, 0, GL_RGBA,
-                       GL_FLOAT, NULL);
-
-        // -------------------------
-        _.glGenFramebuffers(1, &fb);
-        _.glBindFramebuffer(GL_FRAMEBUFFER, fb);
-
-        //   Attach 2D texture to this FBO
-        _.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                 GL_TEXTURE_2D, _colorTex, 0);
-
-        // -------------------------
-        _.glGenRenderbuffers(1, &_depthRb);
-        _.glBindRenderbuffer(GL_RENDERBUFFER, _depthRb);
-        _.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, _w,
-                                _h);
-
-        // -------------------------
-        // Attach depth buffer to FBO
-        _.glFramebufferRenderbuffer(GL_FRAMEBUFFER,
-                                    GL_DEPTH_ATTACHMENT,
-                                    GL_RENDERBUFFER, _depthRb);
-
-        // -------------------------
-        // Does the GPU support current FBO configuration?
-        GLenum status;
-        status = _.glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
-        if (status != GL_FRAMEBUFFER_COMPLETE) {
-          qDebug() << "bad";
-          _.glDeleteTextures(1, &_colorTex);
-          _.glDeleteRenderbuffers(1, &_depthRb);
-          _.glDeleteFramebuffers(1, &fb);
-          return;
-        }
-
-        // -------------------------
-        // and now you can render to GL_TEXTURE_2D
-        _.glBindFramebuffer(GL_FRAMEBUFFER, fb);
-        {
-          _.glClearColor(0.0, 0.0, 0.0, 1.0);
-          _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-                    GL_STENCIL_BUFFER_BIT);
-
-          // -------------------------
-          _.glViewport(0, 0, _w, _h);
-          glMatrixMode(GL_PROJECTION);
-          glLoadIdentity();
-          _proj(_); // Projection operation
-
-          glMatrixMode(GL_MODELVIEW);
-          glLoadIdentity();
-          _.glEnable(GL_DEPTH_TEST);
-          _mv(_); // Model view operation
-
-          // -------------------------
-          _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _buffer.ptr());
-        }
-
-        // Bind 0, which means render to back buffer, as a result, fb is
-        // unbound
-        _.glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // Delete resources
-        _.glDeleteTextures(1, &_colorTex);
-        _.glDeleteRenderbuffers(1, &_depthRb);
-        _.glDeleteFramebuffers(1, &fb);
-      });
     }
 
     template<typename OPERATION>

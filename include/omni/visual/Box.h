@@ -19,7 +19,7 @@
 #ifndef OMNI_VISUAL_BOX_H_
 #define OMNI_VISUAL_BOX_H_
 
-#include <omni/Box.h>
+#include <omni/geometry/Box.h>
 #include <omni/visual/Plane.h>
 
 namespace omni {

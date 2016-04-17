@@ -35,14 +35,11 @@ namespace omni {
       }
 
       void FullSphere::dataToFrontend() {
-        if (!getWidget("Diameter")) {
-          auto *_diameter = addOffsetWidget("Diameter", 0.5, 0.01, 1.0);
-        }
+        auto* _diameter = addOffsetWidget("Diameter", 0.5, 0.01, 1.0);
 
         /// Retrieve parameters for FullSphere canvas
         auto *_fullsphere = static_cast<omni::canvas::FullSphere *>(dataModel());
-        static_cast<RangedFloat *>(getWidget("Diameter"))->setValue(
-          _fullsphere->diameter());
+        _diameter->setValue(_fullsphere->diameter());
         CanvasParameters::dataToFrontend();
       }
     }

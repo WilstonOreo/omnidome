@@ -39,8 +39,8 @@ namespace omni {
     {
       warpGrid_.reset(new visual::WarpGrid(tuning_.warpGrid()));
     }
-    Tuning::~Tuning() {
-    }
+
+    Tuning::~Tuning() {}
 
     omni::proj::Tuning const& Tuning::tuning() const
     {
@@ -53,10 +53,10 @@ namespace omni {
 
       if (!QOpenGLContext::currentContext()) return;
 
-      auto _color = tuning_.color();
-      GLfloat _red = _color.redF();
+      auto _color    = tuning_.color();
+      GLfloat _red   = _color.redF();
       GLfloat _green = _color.greenF();
-      GLfloat _blue = _color.blueF();
+      GLfloat _blue  = _color.blueF();
       testCardShader_->bind();
       testCardShader_->setUniformValue("resolution",
                                        GLfloat(tuning_.width()),
@@ -93,27 +93,10 @@ namespace omni {
         cursor_.reset(new Circle);
       }
 
-      auto _initShader = [&](
-        std::unique_ptr<QOpenGLShaderProgram>& _s,
-        QString const& _filename) {
-                           if (!!_s) return;
-
-                           QString _vertSrc =
-                             fileToStr(":/shaders/" + _filename + ".vert");
-                           QString _fragmentSrc =
-                             fileToStr(":/shaders/" + _filename + ".frag");
-                           _s.reset(new QOpenGLShaderProgram());
-                           _s->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                                       _vertSrc);
-                           _s->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                                       _fragmentSrc);
-                           _s->link();
-                         };
-
-      _initShader(testCardShader_, "testcard");
-      _initShader(blendShader_, "blend");
-      _initShader(blendBrushShader_, "blendbrush");
-      _initShader(calibrationShader_, "calibration");
+      initShader(testCardShader_, "testcard");
+      initShader(blendShader_, "blend");
+      initShader(blendBrushShader_, "blendbrush");
+      initShader(calibrationShader_, "calibration");
 
       updateWarpGrid();
       updateBlendTexture();
@@ -122,6 +105,7 @@ namespace omni {
     void Tuning::setBlendTextureUpdateRect(QRect const& _rect)
     {
       int _radius = tuning_.blendMask().brushSize() / 2 + 1;
+
       blendTextureUpdateRect_ = _rect.normalized().adjusted(-_radius,
                                                             -_radius,
                                                             _radius,
@@ -139,18 +123,18 @@ namespace omni {
           // Reset blend texture
           blendTextureUpdateRect_ =
             QRect(0, 0, tuning_.width(), tuning_.height());
-            blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().
+          blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().
                                              strokeBuffer().toQImage()));
-            blendTex_->bind();
-            _.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+          blendTex_->bind();
+          _.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
                             GL_CLAMP_TO_EDGE);
-            _.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+          _.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
                             GL_CLAMP_TO_EDGE);
-            _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                             GL_LINEAR);
-            _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                             GL_LINEAR);
-            blendTex_->release();
+          blendTex_->release();
         }
         auto& _blendMask = tuning().blendMask();
         auto _ptr = _blendMask.strokeBufferData();
@@ -159,13 +143,13 @@ namespace omni {
 
         /// Transform tuning sized rect to stroke buffer sized rect
         auto _transformRect = [&](QRect const& _rect) -> QRect {
-          auto _res = BlendMask::resolution();
-          return QRect(
-            _res * _rect.x() / tuning_.width(),
-            _res * _rect.y() / tuning_.height(),
-            _res * _rect.width() / tuning_.width(),
-            _res * _rect.height() / tuning_.height());
-        };
+                                auto _res = BlendMask::resolution();
+                                return QRect(
+                                  _res * _rect.x() / tuning_.width(),
+                                  _res * _rect.y() / tuning_.height(),
+                                  _res * _rect.width() / tuning_.width(),
+                                  _res * _rect.height() / tuning_.height());
+                              };
 
         /// Optimization for uploading only a portion of the blend
         // buffer to texture
@@ -226,82 +210,67 @@ namespace omni {
     {
       if (!blendShader_) return;
 
-
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
-        if (warpGridBuffer_) {
-        GLuint _inputTexId = warpGridBuffer_->texture();
-
-        auto& _mask = tuning().blendMask();
-        glBlendColor(1.0, 1.0, 1.0, 1.0);
+      visual::with_current_context([&](QOpenGLFunctions& _) {
         _.glEnable(GL_DEPTH_TEST);
-        _.glDepthFunc(GL_LEQUAL);
         _.glEnable(GL_BLEND);
         _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-        blendShader_->bind();
-        {
-          blendShader_->setUniformValue("top",
-                                        _mask.topWidth());
-          blendShader_->setUniformValue("right",
-                                        _mask.
-                                        rightWidth());
-          blendShader_->setUniformValue("bottom",
-                                        _mask.
-                                        bottomWidth());
-          blendShader_->setUniformValue("left",
-                                        _mask.leftWidth());
-          blendShader_->setUniformValue("edge_gamma",    _mask.gamma());
-          blendShader_->setUniformValue("input_tex",     0);
-          _.glActiveTexture(GL_TEXTURE0 + 0);
-          _.glBindTexture(GL_TEXTURE_2D, _inputTexId);
-          blendShader_->setUniformValue("input_opacity", _inputOpacity);
-          blendShader_->setUniformValue("color",         _color.redF(),
-                                        _color.greenF(),
-                                        _color.blueF());
-          blendShader_->setUniformValue("gray_output",   _grayscale);
+        if (!warpGridBuffer_) return;
+
+        GLuint _inputTexId = warpGridBuffer_->texture();
+
+        auto& _mask = tuning().blendMask();
+
+        useShader(*blendShader_, [&](UniformHandler& _h) {
+          _h.uniform("top", _mask.topWidth());
+          _h.uniform("right", _mask.rightWidth());
+          _h.uniform("bottom", _mask.bottomWidth());
+          _h.uniform("left", _mask.leftWidth());
+          _h.uniform("edge_gamma",    _mask.gamma());
+          _h.texUniform("input_tex",     _inputTexId);
+          _h.uniform("input_opacity", _inputOpacity);
+          _h.uniform("color",         _color.redF(),
+                     _color.greenF(),
+                     _color.blueF());
+          _h.uniform("gray_output",   _grayscale);
 
           auto& _cC = tuning().colorCorrection();
 
           if (_cC.isUsed()) {
-            blendShader_->setUniformValue("cc_gamma", QVector4D(
-                                            _cC.red().gamma(),
-                                            _cC.green().gamma(),
-                                            _cC.blue().gamma(),
-                                            _cC.all().gamma()));
-            blendShader_->setUniformValue("cc_brightness", QVector4D(
-                                            _cC.red().brightness(),
-                                            _cC.green().brightness(),
-                                            _cC.blue().brightness(),
-                                            _cC.all().brightness()));
-            blendShader_->setUniformValue("cc_contrast", QVector4D(
-                                            _cC.red().contrast(),
-                                            _cC.green().contrast(),
-                                            _cC.blue().contrast(),
-                                            _cC.all().contrast()));
-            blendShader_->setUniformValue("cc_multiplier", QVector4D(
-                                            _cC.red().multiplier(),
-                                            _cC.green().multiplier(),
-                                            _cC.blue().multiplier(),
-                                            _cC.all().multiplier()));
+            _h.uniform("cc_gamma", QVector4D(
+                         _cC.red().gamma(),
+                         _cC.green().gamma(),
+                         _cC.blue().gamma(),
+                         _cC.all().gamma()));
+            _h.uniform("cc_brightness", QVector4D(
+                         _cC.red().brightness(),
+                         _cC.green().brightness(),
+                         _cC.blue().brightness(),
+                         _cC.all().brightness()));
+            _h.uniform("cc_contrast", QVector4D(
+                         _cC.red().contrast(),
+                         _cC.green().contrast(),
+                         _cC.blue().contrast(),
+                         _cC.all().contrast()));
+            _h.uniform("cc_multiplier", QVector4D(
+                         _cC.red().multiplier(),
+                         _cC.green().multiplier(),
+                         _cC.blue().multiplier(),
+                         _cC.all().multiplier()));
           } else {
             QVector4D _null(0.0, 0.0, 0.0, 0.0);
-            blendShader_->setUniformValue("cc_multiplier", _null);
-            blendShader_->setUniformValue("cc_contrast",   _null);
-            blendShader_->setUniformValue("cc_brightness", _null);
-            blendShader_->setUniformValue("cc_gamma",      _null);
+            _h.uniform("cc_multiplier", _null);
+            _h.uniform("cc_contrast",   _null);
+            _h.uniform("cc_brightness", _null);
+            _h.uniform("cc_gamma",      _null);
           }
 
-          blendShader_->setUniformValue("mask",
-                                        GLfloat(_blendMaskOpacity));
+          _h.uniform("mask",
+                     GLfloat(_blendMaskOpacity));
           warpGrid_->draw();
-        }
-        _.glBindTexture(GL_TEXTURE_2D, 0);
-        blendShader_->release();
-        }
+        });
 
         if (_blendMaskOpacity > 0.0) {
-          _.glDisable(GL_BLEND);
           glColor4f(0.0, 0.0, 0.0, 1.0);
 
           float _b = 4.0;
@@ -328,18 +297,10 @@ namespace omni {
           }
           glEnd();
 
-          _.glEnable(GL_BLEND);
-          _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-          blendBrushShader_->bind();
-          {
-            blendBrushShader_->setUniformValue("blend_tex",1);
-            blendTex_->bind(1);
+          useShader(*blendBrushShader_, [&](UniformHandler& _h) {
+            _h.texUniform("blend_tex", *blendTex_);
             Rectangle::drawFlipped();
-          }
-          blendTex_->release(1);
-          blendBrushShader_->release();
-  //        _.glDisable(GL_TEXTURE_2D);
-          _.glActiveTexture(GL_TEXTURE0 + 0);
+          });
         }
       });
     }
@@ -371,17 +332,17 @@ namespace omni {
       }
 
       // Draw projector's perspective on framebuffer texture
-        draw_on_framebuffer(warpGridBuffer_,
-                            [&](QOpenGLFunctions& _) // Projection
-                                                     // Operation
-        {
-          glMultMatrixf(tuning().projector().projectionMatrix().constData());
-        },
-                            [&](QOpenGLFunctions& _) // Model View
-                                                     // Operation
-        {
-          _vizSession->drawCanvas();
-        });
+      draw_on_framebuffer(warpGridBuffer_,
+                          [&](QOpenGLFunctions& _) // Projection
+                                                   // Operation
+      {
+        glMultMatrixf(tuning().projector().projectionMatrix().constData());
+      },
+                          [&](QOpenGLFunctions& _) // Model View
+                                                   // Operation
+      {
+        _vizSession->drawCanvas();
+      });
     }
 
     void Tuning::free()
@@ -397,7 +358,8 @@ namespace omni {
     }
 
     void Tuning::generateCalibrationData() {
-      calibration_.setRenderSize(QSize(tuning_.width()/2,tuning_.height()/2));
+      calibration_.setRenderSize(QSize(tuning_.width() / 2,
+                                       tuning_.height() / 2));
       tuning_.renderCalibration(calibration_);
 
       with_current_context([&](QOpenGLFunctions& _) {
@@ -422,8 +384,9 @@ namespace omni {
 
     QVector4D Tuning::channelCorrectionAsVec(Channel _channel) const {
       QVector4D _vec(0.0, 0.0, 0.0, 0.0);
-      auto*_channelCorrection = calibration_.colorCorrection().correction(
+      auto     *_channelCorrection = calibration_.colorCorrection().correction(
         _channel);
+
       if (!_channelCorrection) return _vec;
 
       _vec.setX(_channelCorrection->gamma());
@@ -450,36 +413,30 @@ namespace omni {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        calibrationShader_->bind();
-        {
-          calibrationShader_->setUniformValue("uv_map", GLint(1));
-          _.glActiveTexture(GL_TEXTURE0 + 1);
-          _.glBindTexture(GL_TEXTURE_2D, calibrationTexId_);
+        useShader(*calibrationShader_, [&](UniformHandler& _h) {
+          _h.texUniform("uv_map", calibrationTexId_);
+          _h.texUniform("image", _currentInput->textureId(),
+                        GL_TEXTURE_RECTANGLE);
 
-          calibrationShader_->setUniformValue("image", GLint(2));
-          _.glActiveTexture(GL_TEXTURE0 + 2);
-          _.glBindTexture(GL_TEXTURE_RECTANGLE, _currentInput->textureId());
+          _h.uniform("image_size",
+                     QVector2D(_currentInput->width(),
+                               _currentInput->height()));
 
-          calibrationShader_->setUniformValue("image_size", QVector2D(_currentInput->width(),_currentInput->height()));
-
-          calibrationShader_->setUniformValue("cc_red_vec",
-                                              channelCorrectionAsVec(
-                                                Channel::RED));
-          calibrationShader_->setUniformValue("cc_green_vec",
-                                              channelCorrectionAsVec(Channel::
-                                                                     GREEN));
-          calibrationShader_->setUniformValue("cc_blue_vec",
-                                              channelCorrectionAsVec(
-                                                Channel::BLUE));
-          calibrationShader_->setUniformValue("cc_all_vec",
-                                              channelCorrectionAsVec(
-                                                Channel::ALL));
+          _h.uniform("cc_red_vec",
+                     channelCorrectionAsVec(
+                       Channel::RED));
+          _h.uniform("cc_green_vec",
+                     channelCorrectionAsVec(Channel::
+                                            GREEN));
+          _h.uniform("cc_blue_vec",
+                     channelCorrectionAsVec(
+                       Channel::BLUE));
+          _h.uniform("cc_all_vec",
+                     channelCorrectionAsVec(
+                       Channel::ALL));
 
           Rectangle::draw(-0.5, 0.5, 0.5, -0.5);
-        }
-        calibrationShader_->release();
-        _.glActiveTexture(GL_TEXTURE0);
-        _.glBindTexture(GL_TEXTURE_2D, 0);
+        });
       });
     }
 

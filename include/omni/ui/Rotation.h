@@ -20,7 +20,7 @@
 #ifndef OMNI_UI_ROTATION_H_
 #define OMNI_UI_ROTATION_H_
 
-#include <omni/EulerAngles.h>
+#include <omni/geometry/EulerAngles.h>
 #include <omni/ui/mixin/Locked.h>
 #include "Dial.h"
 
