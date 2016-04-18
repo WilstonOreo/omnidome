@@ -26,11 +26,13 @@
 #include <omni/visual/util.h>
 #include <omni/visual/Rectangle.h>
 #include <omni/visual/Session.h>
+#include <omni/visual/ContextManager.h>
 
 namespace omni {
   namespace visual {
     std::unique_ptr<QOpenGLShaderProgram> Tuning::blendShader_;
     std::unique_ptr<QOpenGLShaderProgram> Tuning::blendBrushShader_;
+    std::unique_ptr<QOpenGLShaderProgram> Tuning::blendBrushCursorShader_;
     std::unique_ptr<QOpenGLShaderProgram> Tuning::testCardShader_;
     std::unique_ptr<QOpenGLShaderProgram> Tuning::calibrationShader_;
 
@@ -40,7 +42,9 @@ namespace omni {
       warpGrid_.reset(new visual::WarpGrid(tuning_.warpGrid()));
     }
 
-    Tuning::~Tuning() {}
+    Tuning::~Tuning() {
+      free();
+    }
 
     omni::proj::Tuning const& Tuning::tuning() const
     {
@@ -89,13 +93,10 @@ namespace omni {
 
       using omni::util::fileToStr;
 
-      if (!cursor_) {
-        cursor_.reset(new Circle);
-      }
-
       initShader(testCardShader_, "testcard");
       initShader(blendShader_, "blend");
       initShader(blendBrushShader_, "blendbrush");
+      initShader(blendBrushCursorShader_, "blendBrushCursor");
       initShader(calibrationShader_, "calibration");
 
       updateWarpGrid();
@@ -182,19 +183,20 @@ namespace omni {
 
     void Tuning::drawCursor(QPointF const& _pos)
     {
-      if (!cursor_) return;
-
       auto _rect = tuningRect();
 
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
-        _.glDisable(GL_LINE_SMOOTH);
         _.glEnable(GL_BLEND);
 
-        glColor4f(1.0, 1.0, 1.0, 1.0);
-        float _r = tuning_.blendMask().brushSize() * 0.5 / tuning_.width();
-        cursor_->drawLine(_pos, _r, _r * (_rect.height() / _rect.width()));
-        _.glEnable(GL_LINE_SMOOTH);
+        useShader(*blendBrushCursorShader_, [&](UniformHandler& _h) {
+          float _rX = tuning_.blendMask().brushSize() * 0.5 / tuning_.width();
+          float _rY = _rX * (_rect.height() / _rect.width());
+          _h.uniform("width", GLfloat(0.002 / _rX));
+          _h.uniform("soft", GLfloat(0.0005 / _rX));
+          Rectangle::draw(_pos.x() - _rX, _pos.x() + _rX, _pos.y() + _rY,
+                          _pos.y() - _rY);
+        });
       });
     }
 
@@ -272,8 +274,8 @@ namespace omni {
 
         if (_blendMaskOpacity > 0.0) {
           glColor4f(0.0, 0.0, 0.0, 1.0);
-
           float _b = 4.0;
+
 
           // Draw masks for borders
           glBegin(GL_QUADS);
@@ -302,6 +304,57 @@ namespace omni {
             Rectangle::drawFlipped();
           });
         }
+      });
+    }
+
+    void Tuning::drawBlendMask() const {
+      visual::with_current_context([&](QOpenGLFunctions& _) {
+        _.glEnable(GL_DEPTH_TEST);
+        _.glEnable(GL_BLEND);
+        _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+        useShader(*blendShader_, [&](UniformHandler& _h) {
+          auto& _mask = tuning().blendMask();
+          _h.uniform("top", _mask.topWidth());
+          _h.uniform("right", _mask.rightWidth());
+          _h.uniform("bottom", _mask.bottomWidth());
+          _h.uniform("left", _mask.leftWidth());
+          _h.uniform("edge_gamma",    _mask.gamma());
+          _h.uniform("mask",
+                     GLfloat(1.0));
+          warpGrid_->draw();
+        });
+
+        glColor4f(0.0, 0.0, 0.0, 1.0);
+        float _b = 4.0;
+
+
+        // Draw masks for borders
+        glBegin(GL_QUADS);
+        {
+          glVertex2f(-0.5,      -0.5 - _b);
+          glVertex2f(0.5 - _b,  -0.5);
+          glVertex2f(0.5 - _b,  0.5);
+          glVertex2f(-0.5,      0.5 + _b);
+          glVertex2f(-0.5 + _b, -0.5 - _b);
+          glVertex2f(0.5,       -0.5);
+          glVertex2f(0.5,       0.5);
+          glVertex2f(-0.5 + _b, 0.5 + _b);
+          glVertex2f(-0.5 + _b, 0.5 + _b);
+          glVertex2f(0.5 - _b,  0.5 + _b);
+          glVertex2f(0.5 - _b,  0.5);
+          glVertex2f(-0.5 + _b, 0.5);
+          glVertex2f(-0.5 + _b, -0.5);
+          glVertex2f(0.5 - _b,  -0.5);
+          glVertex2f(0.5 - _b,  -0.5 - _b);
+          glVertex2f(-0.5 + _b, -0.5 - _b);
+        }
+        glEnd();
+
+        useShader(*blendBrushShader_, [&](UniformHandler& _h) {
+          _h.texUniform("blend_tex", *blendTex_);
+          Rectangle::drawFlipped();
+        });
       });
     }
 
@@ -347,38 +400,33 @@ namespace omni {
 
     void Tuning::free()
     {
-      if (!!blendTex_)
-      {
-        blendTex_->destroy();
-        blendTex_.reset();
-      }
+      visual::with_current_context([&](QOpenGLFunctions& _) {
+        if (!!blendTex_)
+        {
+          blendTex_->destroy();
+          blendTex_.reset();
+        }
 
-      blendShader_.reset();
-      testCardShader_.reset();
-    }
+        blendShader_.reset();
+        testCardShader_.reset();
 
-    void Tuning::generateCalibrationData() {
-      calibration_.setRenderSize(QSize(tuning_.width() / 2,
-                                       tuning_.height() / 2));
-      tuning_.renderCalibration(calibration_);
-
-      with_current_context([&](QOpenGLFunctions& _) {
         if (calibrationTexId_ != 0) {
           _.glDeleteTextures(1, &calibrationTexId_);
         }
+      });
+    }
 
-        _.glGenTextures(1, &calibrationTexId_);
-        _.glBindTexture(GL_TEXTURE_2D, calibrationTexId_);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    void Tuning::generateCalibrationData(std::function<void()> _contextSwitch) {
 
-        _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
-                       calibration_.renderSize().width(),
-                       calibration_.renderSize().height(), 0,
-                       GL_RGBA, GL_FLOAT, calibration_.buffer().ptr());
-        _.glBindTexture(GL_TEXTURE_2D, 0);
+      ContextManager::instance()->withPrimaryContext([&](QOpenGLFunctions& _) {
+        calibration_.setRenderSize(QSize(tuning_.width() / 2,
+                                       tuning_.height() / 2));
+        tuning_.renderCalibration(calibration_);
+      });
+
+      with_current_context([&](QOpenGLFunctions& _) {
+        _.glDeleteTextures(1, &calibrationTexId_);
+          calibrationTexId_ = 0;
       });
     }
 
@@ -404,6 +452,22 @@ namespace omni {
       if (!_currentInput) return;
 
       with_current_context([&](QOpenGLFunctions& _) {
+        if (calibrationTexId_ == 0) {
+          _.glGenTextures(1, &calibrationTexId_);
+          _.glBindTexture(GL_TEXTURE_2D, calibrationTexId_);
+          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
+          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
+          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+          _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
+                       calibration_.renderSize().width(),
+                       calibration_.renderSize().height(), 0,
+                       GL_RGBA, GL_FLOAT, calibration_.buffer().ptr());
+          _.glBindTexture(GL_TEXTURE_2D, 0);
+          _.glFlush();
+        }
+
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         QMatrix4x4 _m;
@@ -414,14 +478,11 @@ namespace omni {
         glLoadIdentity();
 
         useShader(*calibrationShader_, [&](UniformHandler& _h) {
+          _h.texUniform("image", _currentInput->textureId(),GL_TEXTURE_RECTANGLE);
           _h.texUniform("uv_map", calibrationTexId_);
-          _h.texUniform("image", _currentInput->textureId(),
-                        GL_TEXTURE_RECTANGLE);
-
           _h.uniform("image_size",
                      QVector2D(_currentInput->width(),
                                _currentInput->height()));
-
           _h.uniform("cc_red_vec",
                      channelCorrectionAsVec(
                        Channel::RED));
@@ -438,6 +499,7 @@ namespace omni {
           Rectangle::draw(-0.5, 0.5, 0.5, -0.5);
         });
       });
+
     }
 
     QRectF Tuning::tuningRect() const

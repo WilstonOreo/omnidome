@@ -63,12 +63,11 @@ namespace omni {
         auto *_screen  = _screenTunings.first;
         auto& _tunings = _screenTunings.second;
 
-        auto   _screenRect = _screen->geometry();
+        auto   _screenRect = session_.screenSetup().screenGeometry(_screen);
         QImage _image(_screenRect.width(),
                       _screenRect.height() * 3, QImage::Format_RGB32); // Overall
                                                                        // screen
                                                                        // image
-
         QPainter _p(&_image);
 
         for (auto& _tuning : _tunings)
@@ -117,7 +116,7 @@ namespace omni {
           auto *_screen = _screenImage.first;
           auto& _image  = _screenImage.second;
           _p.drawImage(
-            _screen->geometry().topLeft() - _desktopRect.topLeft(),
+            session_.screenSetup().screenGeometry(_screen).topLeft() - _desktopRect.topLeft(),
             _image);
         }
         _stitchedImage.save(_filename);
@@ -133,7 +132,8 @@ namespace omni {
         {
           auto *_screen = _screenImage.first;
           auto& _image  = _screenImage.second;
-          auto && _screenRect = _screen->geometry();
+          auto _desktopRect = proj::ScreenSetup::desktopRect();
+          auto && _screenRect = session_.screenSetup().screenGeometry(_screen);
           QString _screenDesc(QString("_%1_%2_%3x%4.png").
                               arg(_screenRect.left()).
                               arg(_screenRect.top()).

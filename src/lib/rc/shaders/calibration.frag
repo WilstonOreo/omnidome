@@ -19,17 +19,14 @@
  Michael Winkelmann aka Wilston Oreo by mail:
  me@wilstonoreo.net
  **************************************************************************/
-
+#version 120
 ////////////////////////////////////////////
 // Color correction
 ////////////////////////////////////////////
 
-struct ChannelCorrection {
-    float gamma;
-    float brightness;
-    float contrast;
-    float multiplier;
-};
+uniform sampler2DRect image;
+uniform sampler2D uv_map;
+uniform vec2 image_size;
 
 varying vec2 vTexCoord;
 
@@ -38,17 +35,22 @@ uniform vec4 cc_green_vec;
 uniform vec4 cc_blue_vec;
 uniform vec4 cc_all_vec;
 
+
+uniform bool map_mirror_vertical;
+uniform bool map_mirror_horizontal;
+
+struct ChannelCorrection {
+    float gamma;
+    float brightness;
+    float contrast;
+    float multiplier;
+};
+
 ChannelCorrection cc_red;
 ChannelCorrection cc_green;
 ChannelCorrection cc_blue;
 ChannelCorrection cc_all;
 
-uniform bool map_mirror_vertical;
-uniform bool map_mirror_horizontal;
-
-uniform sampler2DRect image;
-uniform vec2 image_size;
-uniform sampler2D uv_map;
 
 float brightness(float v, float brightness_value) {
     return max(v + brightness_value,0.0);
@@ -117,5 +119,7 @@ void main()
 
     vec3 imagePixel = colorCorrection(texture2DRect(image,calib.st * image_size).rgb);
     float alpha =  calib.b;
+
     gl_FragColor = vec4(imagePixel*alpha,1.0);
+  //gl_FragColor = vec4(calib.st,texture2DRect(image,uv * image_size).st);
 }

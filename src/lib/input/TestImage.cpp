@@ -88,18 +88,6 @@ namespace omni
         framebuffer_.reset(new QOpenGLFramebufferObject(
               _size.width(),
               _size.height(),_format));
-
-        visual::with_current_context([&](QOpenGLFunctions& _) {
-          _.glBindTexture(GL_TEXTURE_RECTANGLE, framebuffer_->texture());
-          _.glTexParameterf( GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-          _.glTexParameterf( GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-          _.glTexParameterf( GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
-          _.glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-          _.glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-          _.glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_BASE_LEVEL, 0);
-          _.glTexImage2D(GL_TEXTURE_RECTANGLE,framebuffer_->texture(),0,GL_RGBA,framebuffer_->width(),framebuffer_->height(),GL_RGBA,GL_UNSIGNED_BYTE,nullptr);
-          _.glBindTexture(GL_TEXTURE_RECTANGLE, 0);
-        });
       }
 
       visual::draw_on_framebuffer(framebuffer_,

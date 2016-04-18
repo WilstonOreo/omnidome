@@ -68,6 +68,15 @@ int main(int ac, char *av[])
   // QOpenGLWidgets in different windows!!!
   QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
+  QSurfaceFormat _format;
+  _format.setVersion(3,3);
+  _format.setProfile(QSurfaceFormat::CompatibilityProfile);
+#ifdef DEBUG
+  _format.setOption(QSurfaceFormat::DebugContext);
+#endif
+  QSurfaceFormat::setDefaultFormat(_format);
+
+
   omni::ui::Application _a(ac, av);
 
   /// Command line parser is only available in debug mode

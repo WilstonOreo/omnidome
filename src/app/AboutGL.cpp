@@ -56,18 +56,14 @@ AboutGL::~AboutGL()
 void AboutGL::initializeGL()
 {
   glEnable(GL_DEPTH_TEST);
-  glEnable(GL_BLEND);
   glEnable(GL_POINT_SMOOTH);
   glEnable(GL_LINE_SMOOTH);
-  glEnable(GL_NORMALIZE);
 
   glDepthFunc(GL_LEQUAL);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
   glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
   glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-  glPolygonMode(GL_FRONT, GL_FILL);
-  glPolygonMode(GL_BACK, GL_FILL);
 
   /// Initialize Shader
   static QString _vertSrc     = util::fileToStr(":/shaders/frustum.vert");
@@ -128,8 +124,6 @@ void AboutGL::paintGL()
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-
-  glEnable(GL_TEXTURE_2D);
 
   double _time =
                  std::chrono::high_resolution_clock::now().time_since_epoch().

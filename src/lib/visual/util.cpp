@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
@@ -17,14 +18,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_RENDERBUFFER_H_
-#define OMNI_RENDERBUFFER_H_
-
-#include <omni/Buffer.h>
+#include <omni/visual/util.h>
 
 namespace omni {
-
-  typedef Buffer<RGBAFloat> RenderBuffer;
+  namespace visual {
+    namespace util {
+    }
+  }
 }
-
-#endif /* OMNI_RENDERBUFFER_H_ */

@@ -8,4 +8,3 @@ void main() {
 
   vTexCoord = gl_TexCoord[0].xy;
 }
-

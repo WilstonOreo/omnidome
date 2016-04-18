@@ -23,23 +23,20 @@
 #include <omni/util.h>
 #include <omni/visual/util.h>
 
-namespace omni
-{
-  namespace ui
-  {
-    SceneGLView::SceneGLView(QWidget* _parent) :
+namespace omni {
+  namespace ui {
+    SceneGLView::SceneGLView(QWidget *_parent) :
       GLView(_parent)
-    {
-    }
+    {}
 
     SceneGLView::~SceneGLView()
-    {
-    }
+    {}
 
     bool SceneGLView::initialize()
     {
-//      qDebug() << "SceneGLView::initialize() " << dataModel().get() << initialized() << context();
-//      if (!dataModel() || initialized() || !context()) return false;
+      //      qDebug() << "SceneGLView::initialize() " << dataModel().get() <<
+      // initialized() << context();
+      //      if (!dataModel() || initialized() || !context()) return false;
 
       dataModel()->makeVisualizer();
       dataModel()->visualizer()->update();
@@ -53,8 +50,7 @@ namespace omni
       return true;
     }
 
-
-    void SceneGLView::showEvent(QShowEvent* event) {
+    void SceneGLView::showEvent(QShowEvent *event) {
       makeCurrent();
       dataModel()->makeVisualizer();
       dataModel()->visualizer()->update();
@@ -70,80 +66,86 @@ namespace omni
     void SceneGLView::paintGL()
     {
       if (!dataModel()) return;
-      auto* _vizSession = dataModel()->makeVisualizer();
+
+      makeCurrent();
+
+      auto *_vizSession = dataModel()->makeVisualizer();
+
       if (!_vizSession) return;
 
       auto& _scene = dataModel()->scene();
 
-      glEnable(GL_DEPTH_TEST);
+      visual::with_current_context([&](QOpenGLFunctions& _) {
+        glClear(
+          GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        visual::viewport(this);
 
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-      visual::viewport(this);
+        _vizSession->update();
 
-      _vizSession->update();
+        _scene.camera()->setup(aspect());
 
-      _scene.camera()->setup(aspect());
+        _.glEnable(GL_BLEND);
+        _.glEnable(GL_DEPTH_TEST);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        _scene.updateLights();
 
-      glMatrixMode(GL_MODELVIEW);
-      glEnable(GL_BLEND);
-      glEnable(GL_DEPTH_TEST);
-      glLoadIdentity();
-      _scene.updateLights();
+        bool _displayInput = _scene.displayInput() && dataModel()->mapping() && dataModel()->inputs().current();
+        _vizSession->drawCanvas(_displayInput ?
+                                mapping::OutputMode::MAPPED_INPUT : mapping::
+                                OutputMode::LIGHTING_ONLY);
 
-      bool _displayInput = _scene.displayInput() && dataModel()->mapping() && dataModel()->inputs().current();
-      _vizSession->drawCanvas(_displayInput ?
-          mapping::OutputMode::MAPPED_INPUT : mapping::OutputMode::LIGHTING_ONLY);
+        _vizSession->drawProjectors(_scene.displayProjectors());
+        _vizSession->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),
+                                                        _scene.
+                                                        displayProjectedAreas());
+        _vizSession->drawProjectorHalos(_scene.displayProjectors());
 
-      _vizSession->drawProjectors(_scene.displayProjectors());
-      _vizSession->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),_scene.displayProjectedAreas());
-      _vizSession->drawProjectorHalos(_scene.displayProjectors());
+        /// Draw auxiliary elements of canvas, like bounding boxes etc
+        dataModel()->canvas()->drawAux();
 
-      /// Draw auxiliary elements of canvas, like bounding boxes etc
-      dataModel()->canvas()->drawAux();
-
-      _scene.drawGrid();
-
-      glDisable(GL_BLEND);
-      glDisable(GL_DEPTH_TEST);
+        _scene.drawGrid();
+      });
       paintGLDone();
     }
 
-    void SceneGLView::wheelEvent(QWheelEvent* event)
+    void SceneGLView::wheelEvent(QWheelEvent *event)
     {
       if (!dataModel()) return;
 
-      auto* _cam = dataModel()->scene().camera();
+      auto *_cam = dataModel()->scene().camera();
+
       if (!_cam) return;
 
-      float _r = event->delta()/100.0;
-      _cam->track( 0, 0, _r );
+      float _r = event->delta() / 100.0;
+      _cam->track(0, 0, _r);
 
       auto _size = dataModel()->scene().size();
-      _cam->limitDistance(_size*0.1,_size*5.0);
+      _cam->limitDistance(_size * 0.1, _size * 5.0);
       triggerUpdate();
     }
 
-    void SceneGLView::keyPressEvent(QKeyEvent* event)
-    {
-    }
+    void SceneGLView::keyPressEvent(QKeyEvent *event)
+    {}
 
     void SceneGLView::mouseMoveEvent(QMouseEvent *event)
     {
       if (!dataModel()) return;
 
-      auto* _cam = dataModel()->scene().camera();
+      auto *_cam = dataModel()->scene().camera();
 
       if ((event->buttons() & Qt::LeftButton) && _cam)
       {
-        if( event->modifiers() & Qt::ShiftModifier )
+        if (event->modifiers() & Qt::ShiftModifier)
         {
-          _cam->strafe((event->pos().x() - mousePosition().x())/20.0);
-          _cam->lift((event->pos().y() - mousePosition().y())/20.0);
+          _cam->strafe((event->pos().x() - mousePosition().x()) / 20.0);
+          _cam->lift((event->pos().y() - mousePosition().y()) / 20.0);
         }
         else
         {
-          if( !(event->modifiers() & Qt::ControlModifier) )
-            _cam->track( event->pos().x() - mousePosition().x(), event->pos().y() - mousePosition().y(), 0 );
+          if (!(event->modifiers() & Qt::ControlModifier)) _cam->track(
+              event->pos().x() - mousePosition().x(),
+              event->pos().y() - mousePosition().y(), 0);
         }
       }
 
@@ -154,9 +156,12 @@ namespace omni
     void SceneGLView::changeZoom(int _value)
     {
       if (!dataModel()) return;
-      auto* _cam = dataModel()->scene().camera();
+
+      auto *_cam = dataModel()->scene().camera();
+
       if (!_cam) return;
-      _cam->setDistance(_value/5.0);
+
+      _cam->setDistance(_value / 5.0);
       triggerUpdate();
     }
 

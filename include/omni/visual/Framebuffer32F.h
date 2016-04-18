@@ -37,6 +37,8 @@ namespace omni {
 
         void initialize(QSize const&);
 
+        GLuint texture() const;
+
         void free();
 
         void bind();

@@ -22,6 +22,17 @@
 #include <QColor>
 
 namespace omni {
+  /// RGBA float pixel type
+  struct RGBAFloat
+  {
+    RGBAFloat() {}
+
+    RGBAFloat(float r, float g, float b, float a = 1.0) :
+      r(r), g(g), b(b), a(a) {}
+
+    float r, g, b, a;
+  };
+
   /// Template for converting IN pixel type to OUT pixel type
   template<typename IN, typename OUT>
   struct PixelConverter {
@@ -45,6 +56,20 @@ namespace omni {
     template<typename T>
     void operator()(T const& _in, QColor& _out) {
       _out = QColor(_in, _in, _in);
+    }
+  };
+
+
+  /// Convert RGBA to QColor
+  template<>
+  struct PixelConverter<RGBAFloat, QColor>{
+    template<typename T>
+    void operator()(T const& _in, QColor& _out) {
+      _out = QColor(
+        qBound(0.0,_in.r*255.0,255.0),
+        qBound(0.0,_in.g*255.0,255.0),
+        qBound(0.0,_in.b*255.0,255.0),
+        qBound(0.0,_in.a*255.0,255.0));
     }
   };
 

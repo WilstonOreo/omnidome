@@ -21,6 +21,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include <QFontDatabase>
+#include <QSurfaceFormat>
 #include <omni/PluginLoader.h>
 
 namespace omni {
@@ -34,7 +35,6 @@ namespace omni {
             QCoreApplication::setApplicationVersion(OMNIDOME_VERSION_STRING);
             QCoreApplication::setOrganizationName("cr8tr");
             QCoreApplication::setOrganizationDomain("cr8tr.org / omnido.me");
-
             loadPlugins();
 
             std::vector<QString> _fonts = {

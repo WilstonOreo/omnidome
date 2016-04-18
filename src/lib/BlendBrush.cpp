@@ -237,8 +237,8 @@ namespace omni {
     QVector2D BlendBrush::clampBrushSize(QVector2D const& _size) {
         float _aspect = _size.x() / _size.y();
         return QVector2D(
-          qBound(_size.x(), 2.0f, 512.0f),
-          qBound(_size.y(), 2.0f * _aspect, 512.0f * _aspect));
+          qBound(30.0f,_size.x(),  400.0f),
+          qBound(30.0f / _aspect,_size.y(),  400.0f / _aspect));
     }
 
     /// Write blend brush to stream

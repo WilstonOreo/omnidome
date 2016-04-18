@@ -36,6 +36,8 @@ namespace omni {
      **/
     class Calibration {
       public:
+        friend class CalibrationRenderer;
+
         /// Create empty calibration from with optional output mode
         Calibration(CalibrationMode = CalibrationMode::TEXCOORDS);
 

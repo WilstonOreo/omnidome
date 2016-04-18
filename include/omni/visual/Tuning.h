@@ -50,6 +50,8 @@ namespace omni
       /// Updates blend texture after it has changed by blend brush
       void updateBlendTexture();
 
+      void drawBlendMask() const;
+
       /// Update warp grid mesh
       void updateWarpGrid();
 
@@ -84,7 +86,7 @@ namespace omni
       /// Update warp buffer which contains image of projector perspective
       void updateWarpBuffer(visual::Session const* _vizSession);
 
-      void generateCalibrationData();
+      void generateCalibrationData(std::function<void()> _contextSwitch);
 
       void drawCalibratedInput();
 
@@ -101,7 +103,6 @@ namespace omni
 
       std::unique_ptr<visual::WarpGrid> warpGrid_;
       std::unique_ptr<QOpenGLTexture> blendTex_;
-      std::unique_ptr<Circle> cursor_;
 
       GLuint calibrationTexId_ = 0;
       proj::Calibration calibration_;
@@ -115,6 +116,7 @@ namespace omni
       static std::unique_ptr<QOpenGLShaderProgram> testCardShader_;
       static std::unique_ptr<QOpenGLShaderProgram> blendShader_;
       static std::unique_ptr<QOpenGLShaderProgram> blendBrushShader_;
+      static std::unique_ptr<QOpenGLShaderProgram> blendBrushCursorShader_;
     };
   }
 }

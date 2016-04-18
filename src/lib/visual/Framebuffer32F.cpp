@@ -19,6 +19,8 @@
 
 #include <omni/visual/Framebuffer32F.h>
 
+#include <QOpenGLFramebufferObject>
+
 namespace omni {
   namespace visual {
     Framebuffer32F::Framebuffer32F() {
@@ -47,28 +49,36 @@ namespace omni {
         _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         // NULL means reserve texture memory, but texels are undefined
-        _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _w, _h, 0, GL_RGBA,
+        _.glTexImage2D(GL_TEXTURE_2D, 0,  GL_RGBA32F , _w, _h, 0, GL_RGBA,
                        GL_FLOAT, NULL);
+         check_gl_error();
+         _.glFlush();
 
         // -------------------------
         _.glGenFramebuffers(1, &fb_);
         _.glBindFramebuffer(GL_FRAMEBUFFER, fb_);
+      check_gl_error();
 
         //   Attach 2D texture to this FBO
         _.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                  GL_TEXTURE_2D, colorTex_, 0);
 
+         _.glFlush();
+
+      check_gl_error();
         // -------------------------
         _.glGenRenderbuffers(1, &depthRb_);
         _.glBindRenderbuffer(GL_RENDERBUFFER, depthRb_);
         _.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, _w,
                                 _h);
+      check_gl_error();
 
         // -------------------------
         // Attach depth buffer to FBO
         _.glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                                     GL_DEPTH_ATTACHMENT,
                                     GL_RENDERBUFFER, depthRb_);
+      check_gl_error();
 
         // -------------------------
         // Does the GPU support current FBO configuration?
@@ -81,7 +91,10 @@ namespace omni {
           return;
         }
         size_ = QSize(_w,_h);
-        _.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        _.glBindTexture(GL_TEXTURE_2D, 0);
+        _.glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        QOpenGLFramebufferObject::bindDefault();
+        _.glFlush();
       });
     }
 
@@ -102,8 +115,13 @@ namespace omni {
 
     void Framebuffer32F::release() {
       visual::with_current_context([&](QOpenGLFunctions& _) {
-        _.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        QOpenGLFramebufferObject::bindDefault();
+        _.glFlush();
       });
+    }
+
+    GLuint Framebuffer32F::texture() const {
+      return colorTex_;
     }
 
     int Framebuffer32F::width() const {

@@ -32,7 +32,30 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QOpenGLDebugLogger>
+#include <omni/visual/ContextManager.h>
 #include <omni/util.h>
+
+#define check_gl_error() _check_gl_error(__FILE__,__LINE__)
+
+
+static inline void _check_gl_error(const char *file, int line) {
+        GLenum err (glGetError());
+
+        while(err!=GL_NO_ERROR) {
+                std::string error;
+
+                switch(err) {
+                        case GL_INVALID_OPERATION:      error="INVALID_OPERATION";      break;
+                        case GL_INVALID_ENUM:           error="INVALID_ENUM";           break;
+                        case GL_INVALID_VALUE:          error="INVALID_VALUE";          break;
+                        case GL_OUT_OF_MEMORY:          error="OUT_OF_MEMORY";          break;
+                        case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
+                }
+
+                qDebug() << "GL_" << error.c_str() <<" - "<<file<<":"<<line;
+                err=glGetError();
+        }
+}
 
 namespace omni {
   namespace visual {
@@ -62,8 +85,14 @@ namespace omni {
         auto _currentContext = QOpenGLContext::currentContext();
         if (!_currentContext) return;
 
+        QSurfaceFormat _format;
+        if (!_currentContext->isValid()) {
+          qDebug() << "Context is not valid!";
+          return;
+        }
         QOpenGLFunctions glFuncs(_currentContext);
         f(glFuncs);
+        glFuncs.glFlush();
       }
 
       /// Initialize shader: load from file and compile.
@@ -91,11 +120,11 @@ namespace omni {
           shader_(_shader) {}
 
         ~UniformHandler() {
-          if (currentTextureUnit_ > 0) {
-            gl_.glActiveTexture(GL_TEXTURE0);
-          }
-          for (auto& _usedTextureTarget : usedTextureTargets_) {
-            gl_.glBindTexture(_usedTextureTarget, 0);
+          for (GLint _unit = 0; _unit < currentTextureUnit_; ++_unit) {
+            gl_.glActiveTexture(GL_TEXTURE0 + _unit);
+            for (auto& _usedTextureTarget : usedTextureTargets_) {
+              gl_.glBindTexture(_usedTextureTarget, 0);
+            }
           }
         }
 
@@ -108,11 +137,11 @@ namespace omni {
 
         /// Set uniform value for texture with id and optional target
         void texUniform(const char* _name, int _texId, GLuint _target = GL_TEXTURE_2D) {
-          ++currentTextureUnit_;
           uniform(_name,currentTextureUnit_);
-          gl_.glActiveTexture(GL_TEXTURE0 + currentTextureUnit_);
           gl_.glBindTexture(_target, _texId);
+          gl_.glActiveTexture(GL_TEXTURE0 + currentTextureUnit_);
           usedTextureTargets_.insert(_target);
+          ++currentTextureUnit_;
         }
 
         /// Set uniform value for texture object
@@ -123,7 +152,7 @@ namespace omni {
       private:
         QOpenGLFunctions& gl_;
         QOpenGLShaderProgram& shader_;
-        int currentTextureUnit_ = 0;
+        GLint currentTextureUnit_ = 0;
         std::set<GLuint> usedTextureTargets_;
       };
 
@@ -231,7 +260,18 @@ namespace omni {
           _gl.glDisable(GL_BLEND);
           _gl.glBlendFunc(GL_ONE, GL_ZERO);
           _gl.glUseProgram(0);
-
+          _gl.glEnable(GL_DEPTH_TEST);
+          _gl.glDepthFunc(GL_LEQUAL);
+          _gl.glEnable(GL_BLEND);
+          _gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+          _gl.glEnable(GL_LINE_SMOOTH);
+          _gl.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+          _gl.glEnable(GL_POINT_SMOOTH);
+          _gl.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+          _gl.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+          _gl.glEnable(GL_NORMALIZE);
+          // fix outlines z-fighting with quads
+          _gl.glPolygonOffset(1, 1);
           QOpenGLFramebufferObject::bindDefault();
         });
       }
@@ -254,8 +294,6 @@ namespace omni {
           glMatrixMode(GL_PROJECTION);
           glLoadIdentity();
           _p(_); // Projection operation
-
-          _.glEnable(GL_DEPTH_TEST);
 
           // Model view matrix setup
           glMatrixMode(GL_MODELVIEW);

@@ -6,6 +6,8 @@
     <file>shaders/blend.vert</file>
     <file>shaders/blendbrush.frag</file>
     <file>shaders/blendbrush.vert</file>
+    <file>shaders/blendBrushCursor.frag</file>
+    <file>shaders/blendBrushCursor.vert</file>
     <file>shaders/calibration.frag</file>
     <file>shaders/calibration.vert</file>
     <file>shaders/halo.frag</file>

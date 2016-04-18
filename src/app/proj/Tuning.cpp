@@ -574,7 +574,15 @@ namespace omni {
           case Session::Mode::WARP:
           case Session::Mode::COLORCORRECTION:
           case Session::Mode::EXPORT:
+            setGroup("PreviewOnly");
+            break;
           case Session::Mode::LIVE:
+            /// Generate calibration data for visualizer when switching to live mode
+            tuning()->visualizer()->generateCalibrationData([&]( ) {
+              glView_->context()->functions()->glFlush();
+              glView_->makeCurrent();
+              fullscreen_->makeCurrent();
+            });
             setGroup("PreviewOnly");
             break;
 

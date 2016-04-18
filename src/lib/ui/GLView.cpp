@@ -22,6 +22,8 @@
 #include <omni/Session.h>
 #include <omni/util.h>
 #include <omni/visual/util.h>
+#include <omni/proj/CalibrationRenderer.h>
+#include <omni/visual/ContextManager.h>
 
 #include <QMouseEvent>
 #include <chrono>
@@ -41,6 +43,7 @@ namespace omni
     {
       // Kill timer
       setUpdateFrequency(0.0);
+      visual::ContextManager::instance()->remove(context());
     }
 
     void GLView::triggerUpdate() {
@@ -96,21 +99,14 @@ namespace omni
     {
       initializeOpenGLFunctions();
 
-      visual::with_current_context([this](QOpenGLFunctions& _) {
-        _.glEnable(GL_DEPTH_TEST);
-        _.glDepthFunc(GL_LEQUAL);
-        _.glEnable(GL_BLEND);
-        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        _.glEnable(GL_LINE_SMOOTH);
-        _.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-        _.glEnable(GL_POINT_SMOOTH);
-        _.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-        _.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-        // fix outlines z-fighting with quads
-        _.glPolygonOffset(1, 1);
-        setAutoFillBackground(true);
-      });
+      visual::ContextManager::instance()->add(context());
 
+      proj::CalibrationRenderer::instance()->initialize(context());
+
+      qDebug() << "Number of contexts: " << visual::ContextManager::instance()->contextCount();
+
+      makeCurrent();
+      visual::resetOpenGLState();
 
       initialized_ = initialize();
     }

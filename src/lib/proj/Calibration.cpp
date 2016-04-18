@@ -19,6 +19,7 @@
 
 #include <omni/proj/Tuning.h>
 #include <omni/proj/Calibration.h>
+#include <omni/proj/CalibrationRenderer.h>
 
 #include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
@@ -44,95 +45,9 @@ namespace omni {
       colorCorrection_ = _tuning.colorCorrection();
       screenGeometry_ = _tuning.screenGeometry();
       contentGeometry_ = _tuning.contentGeometry();
-
-      /// 1st Step: Render projectors view to texture
-      RenderBuffer _projBuffer(_w, _h);
-      visual::Session _sessionViz(_tuning.session());
-
-      visual::Tuning _tuningViz(const_cast<proj::Tuning&>(_tuning));
-      _tuningViz.update();
-      _tuningViz.updateWarpBuffer(&_sessionViz);
-
-      std::unique_ptr<visual::Framebuffer32F> _framebuffer;
-      _framebuffer.reset(new visual::Framebuffer32F(QSize(_w,_h)));
-
-      std::unique_ptr<QOpenGLShaderProgram> _shader;
-      visual::initShader(_shader,"texture");
-
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
-        _.glEnable(GL_BLEND);
-        _.glEnable(GL_DEPTH_TEST);
-        _.glDepthFunc(GL_LEQUAL);
-        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      });
-
-      visual::draw_on_framebuffer(_framebuffer,[&](QOpenGLFunctions& _) {
-        // Projection operation
-        glMultMatrixf(_tuning.projector().projectionMatrix().constData());
-      },[&](QOpenGLFunctions& _) {
-        // Model view operation
-        _sessionViz.update();
-        _sessionViz.drawCanvas(_tuning.session().exportSettings().mappingOutputMode());
-        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _projBuffer.ptr());
-      });
-
-      GLuint _projTex = 0;
-
-      RenderBuffer _warpBuffer(_w, _h);
-      visual::draw_on_framebuffer(_framebuffer,[&](QOpenGLFunctions& _) {
-        // Projection operation
-        QMatrix4x4 _m;
-        _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
-        glMultMatrixf(_m.constData());
-      },[&](QOpenGLFunctions& _) {
-        // Model view operation
-
-        // 2nd step: Update render buffer as floating point texture
-        _.glGenTextures(1, &_projTex);
-        _.glBindTexture(GL_TEXTURE_2D, _projTex);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
-                       _projBuffer.width(), _projBuffer.height(), 0,
-                       GL_RGBA, GL_FLOAT, _projBuffer.ptr());
-        _.glBindTexture(GL_TEXTURE_2D, 0);
-        _tuningViz.updateWarpGrid();
-
-        // 3rd step: Render warp grid
-        visual::useShader(*_shader,[&](visual::UniformHandler& _h) {
-          _h.uniform("texture",_projTex);
-          qDebug() << "render " << "drawWarpGrid()" << _projTex;
-          _tuningViz.drawWarpGrid();
-        });
-        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _warpBuffer.ptr());
-
-        /// Delete texture of rendered canvas, it not needed anymore at this point
-        _.glDeleteTextures(1, &_projTex);
-      });
-
-      // 4th Step: Render blend mask
-      RenderBuffer _blendBuffer(_w, _h);
-      visual::draw_on_framebuffer(_framebuffer,[&](QOpenGLFunctions& _) {
-        // Model view operation
-        QMatrix4x4 _m;
-        _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
-        glMultMatrixf(_m.constData());
-      },[&](QOpenGLFunctions& _) {
-        // Projection operation
-        _tuningViz.drawOutput();
-        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _blendBuffer.ptr());
-      });
-
-      // 5th step: Merge blend and warp buffer
       buffer_.resize(_w, _h);
-      for (int i = 0; i < buffer_.data().size(); ++i)
-      {
-        auto& _wP = _warpBuffer[i]; // Pixel from warp grid buffer
-        buffer_[i] = RGBAFloat(_wP.r, _wP.g, _wP.b, _blendBuffer[i].r);
-      }
+
+      CalibrationRenderer::instance()->render(_tuning,*this);
     }
 
     void Calibration::render(Tuning const& _tuning, CalibrationMode _mode) {

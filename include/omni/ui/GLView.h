@@ -60,6 +60,7 @@ namespace omni {
         void    triggerUpdate();
         inline void paintGLDone() {
           updateTriggered_ = true;
+          doneCurrent();
         }
 
       private slots:

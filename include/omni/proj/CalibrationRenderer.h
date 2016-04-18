@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -17,14 +17,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_RENDERBUFFER_H_
-#define OMNI_RENDERBUFFER_H_
+#ifndef OMNI_PROJ_CALIBRATIONRENDERER_H_
+#define OMNI_PROJ_CALIBRATIONRENDERER_H_
 
-#include <omni/Buffer.h>
+#include <QOpenGLContext>
+#include <QOpenGLShaderProgram>
+#include <QOffscreenSurface>
+#include <omni/util.h>
 
 namespace omni {
+  namespace proj {
+    class Calibration;
+    class Tuning;
+    class CalibrationRenderer {
+    public:
+      static CalibrationRenderer* instance();
 
-  typedef Buffer<RGBAFloat> RenderBuffer;
+      bool isInitialized() const;
+
+      void initialize(QOpenGLContext*);
+
+      void render(Tuning const& _tuning, Calibration& _calib);
+
+    private:
+      CalibrationRenderer();
+      ~CalibrationRenderer();
+      static CalibrationRenderer *instance_;
+
+      QUniquePtr<QOffscreenSurface> surface_;
+      QUniquePtr<QOpenGLContext> context_;
+      static std::unique_ptr<QOpenGLShaderProgram> shader_;
+    };
+  }
+
 }
 
-#endif /* OMNI_RENDERBUFFER_H_ */
+#endif /* OMNI_PROJ_CALIBRATIONRENDERER_H_ */
