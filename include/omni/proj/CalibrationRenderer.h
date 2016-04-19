@@ -45,7 +45,7 @@ namespace omni {
       static CalibrationRenderer *instance_;
 
       QUniquePtr<QOffscreenSurface> surface_;
-      QUniquePtr<QOpenGLContext> context_;
+      QOpenGLContext* context_ = nullptr;
       static std::unique_ptr<QOpenGLShaderProgram> shader_;
     };
   }

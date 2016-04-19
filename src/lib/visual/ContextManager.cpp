@@ -20,11 +20,13 @@
 
 #include <omni/visual/ContextManager.h>
 
+#include <omni/visual/util.h>
+
 namespace omni {
   namespace visual {
     ContextManager* ContextManager::instance_ = nullptr;
 
-    ContextManager::ContextManager() { makePrimaryContext(); }
+    ContextManager::ContextManager() {}
     ContextManager::~ContextManager() {}
 
     ContextManager * ContextManager::instance() {
@@ -35,46 +37,28 @@ namespace omni {
     }
 
     bool ContextManager::hasPrimaryContext() const {
-      return primaryContext_ && surface_;
-    }
-
-    void ContextManager::makePrimaryContext() {
-      if (!primaryContext_) {
-        primaryContext_.reset(new QOpenGLContext);
-        if (!primaryContext_->create()) {
-          qDebug() << "Could not create primary context!";
-          return;
-        }
-        if (!primaryContext_->isValid()) {
-          qDebug() << "Primary context is not valid!";
-        }
-      }
-
-      if (!this->surface_) {
-        surface_.reset(new QOffscreenSurface());
-        surface_->setFormat(this->primaryContext_->format());
-        surface_->create();
-      }
+      return primaryContext_;
     }
 
     QOpenGLContext* ContextManager::primaryContext() {
-      if (!hasPrimaryContext()) {
-        makePrimaryContext();
-      }
-      return primaryContext_.get();
+      return primaryContext_;
     }
 
     void ContextManager::add(QOpenGLContext* _ctx) {
-
+      if (!primaryContext_) {
+        primaryContext_ = _ctx;
+      }
       contexts_.insert(_ctx);
-      auto _primaryContext = primaryContext();
-      if (_primaryContext) {
-        _ctx->setShareContext(_primaryContext);
+      if (_ctx != primaryContext_) {
+        _ctx->setShareContext(primaryContext_);
       }
     }
 
     void ContextManager::remove(QOpenGLContext* _ctx) {
       contexts_.erase(_ctx);
+      if (_ctx == primaryContext_) {
+        primaryContext_ = nullptr;
+      }
     }
 
     int ContextManager::contextCount() const {

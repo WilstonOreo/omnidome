@@ -101,7 +101,7 @@ namespace omni
 
       visual::ContextManager::instance()->add(context());
 
-      proj::CalibrationRenderer::instance()->initialize(context());
+      proj::CalibrationRenderer::instance()->initialize(visual::ContextManager::instance()->primaryContext());
 
       qDebug() << "Number of contexts: " << visual::ContextManager::instance()->contextCount();
 

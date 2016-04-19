@@ -39,16 +39,14 @@ namespace omni {
 
       template<typename F>
       void withPrimaryContext(F f) {
-        if (!hasPrimaryContext()) {
-          makePrimaryContext();
-        }
+        if (!hasPrimaryContext()) return;
       /*  QSurface* _surface = nullptr;
         auto* _previousContext = QOpenGLContext::currentContext();
         if (_previousContext) {
           _surface = _previousContext->surface();
         }*/
 
-        primaryContext_->makeCurrent(surface_.get());
+        primaryContext_->makeCurrent(primaryContext_->surface());
         QOpenGLFunctions _glFuncs;
         _glFuncs.initializeOpenGLFunctions();
         f(_glFuncs);
@@ -68,14 +66,8 @@ namespace omni {
       ContextManager();
       ~ContextManager();
 
-      /**@brief Make a new primary if does not exist
-         @detail All framebuffers are stored in the primary context
-       **/
-      void makePrimaryContext();
-
       static ContextManager *instance_;
-      QUniquePtr<QOffscreenSurface> surface_;
-      QUniquePtr<QOpenGLContext> primaryContext_;
+      QOpenGLContext* primaryContext_ = nullptr;
       std::set<QOpenGLContext*> contexts_;
     };
   }

@@ -81,6 +81,7 @@ namespace omni {
         visual::viewport(this);
 
         _vizSession->update();
+        makeCurrent();
 
         _scene.camera()->setup(aspect());
 
@@ -91,6 +92,9 @@ namespace omni {
         _scene.updateLights();
 
         bool _displayInput = _scene.displayInput() && dataModel()->mapping() && dataModel()->inputs().current();
+
+        _.glEnable(GL_BLEND);
+        _.glEnable(GL_DEPTH_TEST);
         _vizSession->drawCanvas(_displayInput ?
                                 mapping::OutputMode::MAPPED_INPUT : mapping::
                                 OutputMode::LIGHTING_ONLY);

@@ -38,14 +38,7 @@ namespace omni {
 
     void CalibrationRenderer::initialize(QOpenGLContext *_context) {
       if (!this->context_) {
-        this->context_.reset(new QOpenGLContext);
-        this->context_->setFormat(_context->format());
-        this->context_->setShareContext(_context);
-
-        if (!this->context_->create()) {
-          qDebug() << "Could not create context!";
-          return;
-        }
+        context_=_context;
       }
 
       if (!this->surface_) {

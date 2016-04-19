@@ -582,6 +582,7 @@ namespace omni {
       }
       dataModel()->makeVisualizer()->update();
       _vizTuning->update();
+      makeCurrent();
       _vizTuning->updateWarpBuffer(dataModel()->visualizer());
     }
 
@@ -627,13 +628,13 @@ namespace omni {
         drawColorCorrected();
         break;
 
+      case Session::Mode::LIVE:
       case Session::Mode::EXPORT:
         drawExportView();
         break;
 
-      case Session::Mode::LIVE:
-        drawLiveView();
-        break;
+      //  drawLiveView();
+      //  break;
 
       default: break;
       }

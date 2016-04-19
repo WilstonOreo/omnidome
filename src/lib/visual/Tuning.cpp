@@ -367,6 +367,8 @@ namespace omni {
     /// Update warp buffer which contains image of projector perspective
     void Tuning::updateWarpBuffer(visual::Session const *_vizSession)
     {
+      with_current_context([&](QOpenGLFunctions& _) {
+
       // If tuning size has changed, reset warpGrid framebuffer
       if (warpGridBuffer_)
       {
@@ -396,6 +398,7 @@ namespace omni {
       {
         _vizSession->drawCanvas();
       });
+      });
     }
 
     void Tuning::free()
@@ -418,11 +421,9 @@ namespace omni {
 
     void Tuning::generateCalibrationData(std::function<void()> _contextSwitch) {
 
-      ContextManager::instance()->withPrimaryContext([&](QOpenGLFunctions& _) {
         calibration_.setRenderSize(QSize(tuning_.width() / 2,
                                        tuning_.height() / 2));
         tuning_.renderCalibration(calibration_);
-      });
 
       with_current_context([&](QOpenGLFunctions& _) {
         _.glDeleteTextures(1, &calibrationTexId_);

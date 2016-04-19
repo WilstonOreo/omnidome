@@ -59,6 +59,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
   ui_(new Ui::MainWindow)
 {
   ui_->setupUi(this);
+  visual::ContextManager::instance()->primaryContext();
 
   // Setup toolbar
   {
