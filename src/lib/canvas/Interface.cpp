@@ -64,6 +64,14 @@ namespace omni {
           viewMode_ = _viewMode;
         }
 
+        void Interface::setScene(visual::Scene const* _scene) {
+          scene_=_scene;
+        }
+
+        visual::Scene const* Interface::scene() const {
+          return scene_;
+        }
+
         /// Transformation matrix for canvas
         QMatrix4x4 Interface::matrix() const
         {

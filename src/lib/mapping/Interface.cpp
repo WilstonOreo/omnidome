@@ -22,6 +22,7 @@
 #include <omni/input/List.h>
 #include <omni/util.h>
 #include <omni/serialization/PropertyMap.h>
+#include <omni/visual/Scene.h>
 
 #include <QOpenGLShaderProgram>
 
@@ -58,10 +59,20 @@ namespace omni {
                 shader_->setUniformValue("flip_vertical",   flipVertical_);
 
                 if (isUVW()) {
+                  float _size = scene_ ? scene_->size() : 1.0;
                     shader_->setUniformValue("bound_to_canvas", boundToCanvas_);
                     shader_->setUniformValue("matrix",          matrix());
+                    shader_->setUniformValue("offset",          _size*matrix().column(3).toVector3D());
                 }
             }
+        }
+
+        visual::Scene const* Interface::scene() const {
+          return scene_;
+        }
+
+        void Interface::setScene(Scene const* _scene) {
+          scene_ = _scene;
         }
 
         void Interface::bind(input::Interface const* _input, OutputMode _outputMode, bool _grayscale)

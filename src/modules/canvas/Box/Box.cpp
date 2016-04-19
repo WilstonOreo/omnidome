@@ -85,10 +85,7 @@ namespace omni
     }
 
     ui::CanvasParameters* Box::widget() {
-        // Make a new widget only. The canvas is later assigned
-        // because we do not know scene size yet which set
-        // the slider ranges of the widget
-        return new ui::canvas::Box();
+        return ui::makeWidget<ui::canvas::Box>(this);
     }
 
     QMatrix4x4 Box::matrix() const {

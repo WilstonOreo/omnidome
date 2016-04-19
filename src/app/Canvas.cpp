@@ -117,15 +117,6 @@ namespace omni {
 
         void Canvas::showParameterWidget() {
             if (this->setupParameterWidget(widget(),dataModel()->canvas())) {
-                this->parameterWidget()->setRescaleValues(false);
-                auto& _scene = dataModel()->scene();
-
-                // Set datamodel with scene size and unit for correct initialization
-                this->parameterWidget()->setDataModel(
-                  dataModel()->canvas(),
-                  _scene.size(),
-                  _scene.unit().abbreviation());
-
                 // Update parameter when canvas has changed
                 dataModel()->canvas()->update();
                 connect(this->parameterWidget(),SIGNAL(dataModelChanged()),

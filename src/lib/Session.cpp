@@ -66,6 +66,9 @@ namespace omni
   Mapping* Session::setMapping(Id const& _id)
   {
     mapping_.reset(MappingFactory::create(_id));
+    if (mapping_) {
+      mapping_->setScene(&scene_);
+    }
     return mapping();
   }
 
@@ -92,6 +95,10 @@ namespace omni
   Canvas* Session::setCanvas(Id const& _id)
   {
     canvas_.reset(canvas::Factory::create(_id));
+    /// Attach scene to canvas
+    if (canvas_) {
+      canvas_->setScene(&scene());
+    }
     return canvas();
   }
 

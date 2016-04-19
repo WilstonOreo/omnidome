@@ -582,8 +582,9 @@ namespace omni {
       }
       dataModel()->makeVisualizer()->update();
       _vizTuning->update();
-      makeCurrent();
       _vizTuning->updateWarpBuffer(dataModel()->visualizer());
+      makeCurrent();
+      triggerUpdate();
     }
 
     void TuningGLView::paintGL()

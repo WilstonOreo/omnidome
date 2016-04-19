@@ -1,10 +1,5 @@
 
 uniform float stretch;
-uniform vec3 offset;
-
-float intersection(out vec3 uvw) {
-    return sphereIntersection(uvw,offset);
-}
 
 float mapping(in vec3 uvw, out vec2 texCoords)
 {

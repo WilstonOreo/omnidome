@@ -40,21 +40,19 @@ namespace omni {
       template<typename F>
       void withPrimaryContext(F f) {
         if (!hasPrimaryContext()) return;
-      /*  QSurface* _surface = nullptr;
+        QSurface* _surface = nullptr;
         auto* _previousContext = QOpenGLContext::currentContext();
         if (_previousContext) {
           _surface = _previousContext->surface();
-        }*/
+        }
 
         primaryContext_->makeCurrent(primaryContext_->surface());
-        QOpenGLFunctions _glFuncs;
-        _glFuncs.initializeOpenGLFunctions();
-        f(_glFuncs);
+        f(*primaryContext_->functions());
         primaryContext_->doneCurrent();
 
-    /*    if (_surface) {
+        if (_surface) {
           _previousContext->makeCurrent(_surface);
-        }*/
+        }
       }
 
       void add(QOpenGLContext*);

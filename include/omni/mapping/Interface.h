@@ -34,6 +34,9 @@ namespace omni {
     class Interface;
     class List;
   }
+  namespace visual {
+    class Scene;
+  }
 
   namespace mapping {
     enum class OutputMode
@@ -135,6 +138,14 @@ namespace omni {
         /// Read mapping from stream
         virtual void       fromStream(QDataStream&);
 
+        /// The scene this canvas belongs to
+        visual::Scene const*       scene() const;
+
+        /**@brief Set the scene this canvas belongs to.
+           @detail Is set automatically when a canvas is added to a session
+         **/
+        void               setScene(visual::Scene const*);
+
       protected:
         std::unique_ptr<QOpenGLShaderProgram> shader_;
 
@@ -154,6 +165,8 @@ namespace omni {
         bool boundToCanvas_  = true;
         bool flipHorizontal_ = false;
         bool flipVertical_   = false;
+
+        visual::Scene const* scene_ = nullptr;
     };
 
     /// Abstract mapping factory

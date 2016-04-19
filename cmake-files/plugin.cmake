@@ -24,8 +24,7 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
       return()
     endif()
 
-
-    FILE(GLOB plugin_headers ${plugin_dir}/*.h )
+    FILE(GLOB plugin_headers ${${build_target}_HEADERS} ${plugin_dir}/*.h )
     FILE(GLOB plugin_sources ${${build_target}_SOURCES} ${plugin_dir}/*.cpp )
     FILE(GLOB plugin_forms ${plugin_dir}/*.ui )
     FILE(GLOB plugin_resources ${plugin_dir}/*.qrc )

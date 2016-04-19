@@ -1,14 +1,12 @@
 
-uniform vec3 offset;
-
 void swap(inout float t0, inout float t1) {
     float t = t0;
     t0 = t1;
     t1 = t;
 }
 
-float intersection(out vec3 uvw) {
-    vec3 orig = uvw_vertex_position - offset;
+float intersection(in vec3 pos, out vec3 uvw) {
+    vec3 orig = pos;
     vec3 dir = normalize(orig);
   float tmin = (-0.5 - orig.x) / dir.x;
    float tmax = (0.5 - orig.x) / dir.x;
@@ -116,7 +114,7 @@ float mapping(in vec3 uvw, out vec2 texCoords)
     if (uvw.z > 0.0) {
         _off = CUBEMAP_TOP;
     } else {
-        _off = CUBEMAP_BOTTOM; 
+        _off = CUBEMAP_BOTTOM;
         texCoords.t = - texCoords.t;
     }
   }

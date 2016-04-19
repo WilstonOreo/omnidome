@@ -134,6 +134,9 @@ namespace omni {
   using util::QUniquePtr;
 }
 
+#define OMNI_DEBUG \
+  qDebug() << __FILE__ << ":" << __LINE__ << "\t" << __FUNCTION__
+
 #define OMNI_TEST_MEMBER_EQUAL(member) \
   (_lhs.member == _rhs.member)
 

@@ -100,10 +100,7 @@ namespace omni
     }
 
     ui::CanvasParameters* Planar::widget() {
-        // Make a new widget only. The canvas is later assigned
-        // because we do not know scene size yet which set
-        // the slider ranges of the widget
-        return new ui::canvas::Planar();
+        return ui::makeWidget<ui::canvas::Planar>(this);
     }
   }
 }

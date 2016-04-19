@@ -39,7 +39,7 @@ namespace omni {
 
       public slots:
         // Set data model with scale and unit
-        void setDataModel(canvas::Interface*,float,QString const&);
+        void setDataModel(canvas::Interface*);
 
        /**@brief Set flag if values are rescaled
           @param _rescale Boolean which tells if values are rescaled

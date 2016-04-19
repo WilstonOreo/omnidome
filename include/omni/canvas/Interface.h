@@ -33,6 +33,9 @@ namespace omni {
   namespace ui {
     class CanvasParameters;
   }
+  namespace visual {
+    class Scene;
+  }
 
   namespace canvas {
     /**@brief Abstract interface for a canvas
@@ -85,6 +88,14 @@ namespace omni {
         /// Set new affine transform
         void               setTransform(AffineTransform const& _transform);
 
+        /// The scene this canvas belongs to
+        visual::Scene const*       scene() const;
+
+        /**@brief Set the scene this canvas belongs to.
+           @detail Is set automatically when a canvas is added to a session
+         **/
+        void               setScene(visual::Scene const*);
+
         /// Transformation matrix for canvas
         virtual QMatrix4x4 matrix() const;
 
@@ -103,6 +114,7 @@ namespace omni {
       private:
         AffineTransform transform_;
         ViewMode viewMode_ = ViewMode::BOTH;
+        visual::Scene const* scene_ = nullptr;
     };
 
     /// Our canvas factory

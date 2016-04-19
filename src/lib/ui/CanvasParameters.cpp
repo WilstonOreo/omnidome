@@ -19,6 +19,8 @@
 
 #include <omni/ui/CanvasParameters.h>
 
+#include <omni/visual/Scene.h>
+
 namespace omni
 {
   namespace ui
@@ -50,12 +52,14 @@ namespace omni
         transform_ = addAffineTransformWidget("Transform", &dataModel()->transform());
     }
 
-    void CanvasParameters::setDataModel(canvas::Interface* _canvas ,float _scale, QString const& _unit) {
+    void CanvasParameters::setDataModel(canvas::Interface* _canvas) {
       this->locked([&]() {
         mixin::UnsharedDataModel<canvas::Interface>::setDataModel(_canvas);
-        setScale(_scale);
-        setUnit(_unit);
-        updateFrontend();
+        if (_canvas->scene()) {
+          setScale(_canvas->scene()->size());
+          setUnit(_canvas->scene()->unit().abbreviation());
+          updateFrontend();
+        }
       });
       emit dataModelChanged();
     }

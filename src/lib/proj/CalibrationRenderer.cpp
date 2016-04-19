@@ -67,7 +67,7 @@ namespace omni {
       std::unique_ptr<visual::Framebuffer32F> _framebuffer;
       std::unique_ptr<visual::Framebuffer32F> _warpFramebuffer;
 
-      this->context_->makeCurrent(surface_.get());
+      visual::ContextManager::instance()->withPrimaryContext([&](QOpenGLFunctions& _) {
       {
         visual::resetOpenGLState();
         _framebuffer.reset(new visual::Framebuffer32F(QSize(_w, _h)));
@@ -117,7 +117,7 @@ namespace omni {
         _framebuffer.reset();
         _warpFramebuffer.reset();
       }
-      context_->doneCurrent();
+    });
 
       // 5th step: Merge blend and warp buffer
       for (int i = 0; i < _calib.buffer_.data().size(); ++i)
