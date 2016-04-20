@@ -164,6 +164,32 @@ namespace omni {
       return new ui::InputPreview(this);
     }
 
+    Interface::inputlist_type  Interface::getAllInputs() const {
+      inputlist_type _inputs;
+      Interface const* _root = this;
+      while (_root->parent()) {
+        _root = _root->parent();
+      }
+      getInputsRecurse(_root,_inputs,true);
+      return _inputs;
+    }
+
+    void Interface::getInputsRecurse(
+      Interface const* _root,
+      inputlist_type& _list,
+      bool _excludeThis) const {
+      for (auto& _idChild : *this) {
+        auto* _child = _idChild.second.get();
+        if (!((_child == this) && _excludeThis)) {
+          _list.push_back(_child);
+        }
+
+        getInputsRecurse(_child,_list,_excludeThis);
+      }
+
+
+    }
+
     /// Serialize to stream
     void Interface::toStream(QDataStream& _os) const {
       using namespace omni::util;

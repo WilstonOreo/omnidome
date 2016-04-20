@@ -58,6 +58,7 @@ namespace omni {
         friend class Controller;
 
         typedef Interface                                     interface_type;
+        typedef std::vector<Interface const*>                 inputlist_type;
         typedef std::map<QString, std::unique_ptr<Interface> >container_type;
         typedef std::function<void ()>                        callback_type;
 
@@ -183,12 +184,17 @@ namespace omni {
 
         virtual void          fromStream(QDataStream&);
 
+        /// Returns a list of input maintained by controller, except this one
+        inputlist_type        getAllInputs() const;
+
       private:
         inline virtual void activate() {
         }
 
         inline virtual void deactivate() {
         }
+
+        void getInputsRecurse(Interface const* _root, inputlist_type& _list, bool _excludeThis = true) const;
 
         Interface const *parent_ = nullptr;
         callback_type  updatedCallback_;
