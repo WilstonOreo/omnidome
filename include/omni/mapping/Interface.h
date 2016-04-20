@@ -66,6 +66,7 @@ namespace omni {
         /// Bind shaders and set uniforms
         virtual void bind();
         void bind(input::Interface const*, OutputMode, bool _grayscale);
+        void bind(input::Interface const*, float _transparency);
 
         /// Release shader
         void release();

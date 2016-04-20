@@ -144,6 +144,15 @@ namespace omni {
       for (auto& _light : lights_) _light.setup(++_index);
     }
 
+    /// Inside / outside transparency for 3D canvas view
+    float Scene::insideOutside() const {
+      return insideOutside_;
+    }
+
+    void Scene::setInsideOutside(float _insideOutside) {
+      insideOutside_ = qBound(0.0f,_insideOutside,1.0f);
+    }
+
     /// Return reference to camera
     visual::CameraInterface * Scene::camera() {
       if (cameras_.count(cameraId_) == 0) return nullptr;
@@ -192,6 +201,7 @@ namespace omni {
       _map.get("rotateMode",            rotateMode_);
       _map.get("moveMode",              moveMode_);
       _map.get("projectorViewMode",     projectorViewMode_);
+      _map.get("insideOutside",     insideOutside_);
       _map.get("lights", lights_);
 
       // _map.get("cameras", cameras_);
@@ -210,6 +220,7 @@ namespace omni {
         ("rotateMode", rotateMode_)
         ("moveMode", moveMode_)
         ("projectorViewMode", projectorViewMode_)
+        ("insideOutside", insideOutside_)
         ("lights", lights_);
 
       //      ("cameras", cameras_);

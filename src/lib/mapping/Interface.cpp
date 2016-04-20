@@ -87,6 +87,20 @@ namespace omni {
                 shader_->setUniformValue("texture",   0);
                 shader_->setUniformValue("texture_size",QVector2D(_input->width(),_input->height()));
                 shader_->setUniformValue("gray_output", _grayscale);
+                shader_->setUniformValue("transparency",GLfloat(1.0));
+            }
+        }
+
+        void Interface::bind(input::Interface const* _input, float _transparency) {
+            bind();
+            if (shader_)
+            {
+                shader_->setUniformValue("output_mode",
+                                                        util::enumToInt(OutputMode::MAPPED_INPUT));
+                shader_->setUniformValue("texture",   0);
+                shader_->setUniformValue("texture_size",QVector2D(_input->width(),_input->height()));
+                shader_->setUniformValue("gray_output", false);
+                shader_->setUniformValue("transparency",_transparency);
             }
         }
 

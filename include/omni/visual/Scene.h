@@ -121,6 +121,15 @@ namespace omni {
         ProjectorViewMode projectorViewMode() const;
         void setProjectorViewMode(ProjectorViewMode);
 
+        /// Inside / outside transparency for 3D canvas view
+        float insideOutside() const;
+
+        /* @brief Set inside / outside transparency for 3D canvas view
+           @param _insideOutside Value 0.0 means inside is only visible
+                  1.0 means outside is visible.
+         */
+        void setInsideOutside(float _insideOutside);
+
         /// Update light for use in OpenGL
         void        updateLights();
 
@@ -155,7 +164,9 @@ namespace omni {
         /// Update grid
         void updateGrid();
 
+
       private:
+        float      insideOutside_            = 0.5;
         float      size_                     = 10.0;
         LengthUnit unit_;
         bool       displayInput_             = true;

@@ -73,7 +73,7 @@ namespace omni {
 
     Input const * List::current() const
     {
-      return getInput(currentId_);
+       return getInput(currentId_);
     }
 
     Input * List::current()

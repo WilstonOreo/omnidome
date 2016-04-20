@@ -26,6 +26,7 @@
 #include <omni/visual/Projector.h>
 #include <omni/visual/WarpGrid.h>
 
+
 namespace omni {
   namespace visual {
     /// Base class for drawing a session
@@ -42,6 +43,8 @@ namespace omni {
           mapping::OutputMode = mapping::OutputMode::MAPPED_INPUT,
           bool _grayscale = false) const;
 
+        /// Draw canvas for scene view
+        void drawCanvasFor3DView();
 
         /// Canvas with frustum intersection of all projectors
         void drawCanvasWithFrustumIntersections(ProjectorViewMode,

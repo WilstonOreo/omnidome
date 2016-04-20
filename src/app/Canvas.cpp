@@ -26,6 +26,7 @@
 
 #include <omni/Session.h>
 #include <omni/canvas/Interface.h>
+#include <omni/ui/ExceptionList.h>
 
 namespace omni {
     namespace ui {
@@ -101,24 +102,27 @@ namespace omni {
         {
             if (!dataModel() || this->isLocked()) return;
 
-            canvasMemory_.store(dataModel()->canvas());
+            tryWithExceptionList<Exception>([&]() {
+              canvasMemory_.store(dataModel()->canvas());
 
-            /// Dont do anything if type id has not changed
-            if (dataModel()->canvas()->getTypeId().str() == _id) {
+              /// Dont do anything if type id has not changed
+              if (dataModel()->canvas()->getTypeId().str() == _id) {
                 return;
-            }
+              }
 
-            dataModel()->setCanvas(_id);
-            canvasMemory_.restore(dataModel()->canvas());
+              dataModel()->setCanvas(_id);
+              canvasMemory_.restore(dataModel()->canvas());
+              showParameterWidget();
 
-            showParameterWidget();
-            emit canvasTypeChanged();
+              emit canvasTypeChanged();
+            });
         }
 
         void Canvas::showParameterWidget() {
             if (this->setupParameterWidget(widget(),dataModel()->canvas())) {
-                // Update parameter when canvas has changed
                 dataModel()->canvas()->update();
+
+                // Update parameters when canvas has changed
                 connect(this->parameterWidget(),SIGNAL(dataModelChanged()),
                         this,SIGNAL(dataModelChanged()));
             }

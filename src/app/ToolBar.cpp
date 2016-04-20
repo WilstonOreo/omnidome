@@ -216,6 +216,7 @@ namespace omni {
     }
 
     void ToolBar::buttonStates() {
+      if (!dataModel()) return;
       bool _hasOutput = dataModel()->hasOutput();
 
       btnWarp_->setEnabled(_hasOutput);

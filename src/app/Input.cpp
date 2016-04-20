@@ -89,6 +89,7 @@ namespace omni
         //emit inputIndexChanged();
         selectInputId(_id);
         showParameterWidget();
+        emit inputIndexChanged();
       } else
       {
         dataModel()->inputs().removeInput(_id);

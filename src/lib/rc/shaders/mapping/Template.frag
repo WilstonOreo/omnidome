@@ -10,6 +10,7 @@ uniform mat4 matrix;
 uniform vec3 offset;
 uniform bool flip_vertical;
 uniform bool flip_horizontal;
+uniform float transparency;
 
 /// Select whether output texture, texture coordintates
 /// or uvw coordinates
@@ -100,7 +101,7 @@ void main()
     if (gray_output) {
       color = grayscale(color);
     }
-    gl_FragColor = vec4(color,1.0);
+    gl_FragColor = vec4(color,transparency);
 
   } else {
       discard;

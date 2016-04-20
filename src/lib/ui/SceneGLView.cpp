@@ -90,13 +90,9 @@ namespace omni {
         glLoadIdentity();
         _scene.updateLights();
 
-        bool _displayInput = _scene.displayInput() && dataModel()->mapping() && dataModel()->inputs().current();
-
         _.glEnable(GL_BLEND);
         _.glEnable(GL_DEPTH_TEST);
-        _vizSession->drawCanvas(_displayInput ?
-                                mapping::OutputMode::MAPPED_INPUT : mapping::
-                                OutputMode::LIGHTING_ONLY);
+        _vizSession->drawCanvasFor3DView();
 
         _vizSession->drawProjectors(_scene.displayProjectors());
         _vizSession->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),

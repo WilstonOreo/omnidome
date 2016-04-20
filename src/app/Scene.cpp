@@ -48,6 +48,11 @@ namespace omni {
                                                       currentIndexChanged),
                 this, &Scene::updateDataModel);
 
+        ui_->sliderInsideOutside->setRange(0.0,1.0);
+
+        connect(ui_->sliderInsideOutside, &RangedFloat::valueChanged,
+                this, &Scene::updateDataModel);
+
         connect(ui_->boxSize, SIGNAL(currentIndexChanged(int)), this,
                 SLOT(setSceneScale()));
         connect(ui_->boxUnit, SIGNAL(currentIndexChanged(int)), this,
@@ -61,7 +66,8 @@ namespace omni {
           ui_->btnFitToCanvas,
           ui_->lbSceneSize,
           ui_->lbUnit,
-          ui_->chkRescaleValues
+          ui_->chkRescaleValues,
+          ui_->sliderInsideOutside
         };
       });
     }
@@ -147,6 +153,7 @@ namespace omni {
     void Scene::dataToFrontend() {
       auto& _scene = dataModel()->scene();
 
+      ui_->sliderInsideOutside->setValue(_scene.insideOutside());
       ui_->chkInput->setChecked(_scene.displayInput());
       ui_->chkGrid->setChecked(_scene.displayGrid());
       ui_->boxProjectors->setCurrentIndex(util::enumToInt(_scene.displayProjectors()));
@@ -195,6 +202,7 @@ namespace omni {
     bool Scene::frontendToData() {
       auto& _scene = dataModel()->scene();
 
+      _scene.setInsideOutside(ui_->sliderInsideOutside->value());
       _scene.setDisplayInput(ui_->chkInput->isChecked());
       _scene.setDisplayGrid(ui_->chkGrid->isChecked());
       _scene.setDisplayProjectors(util::intToEnum<visual::ProjectorSelectionMode>(ui_->boxProjectors->currentIndex()));

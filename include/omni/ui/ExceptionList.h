@@ -51,5 +51,19 @@ namespace omni {
         std::unique_ptr<Ui::ExceptionList> ui_;
         std::unique_ptr<QStandardItemModel> model_;
     };
+
+    // Function body template for a try...catch block with executing exception list widget
+    template<typename EXCEPTION, typename F>
+    void tryWithExceptionList(F f) {
+      std::unique_ptr<ExceptionList> _widget(new ExceptionList);
+      try {
+        f();
+      } catch(EXCEPTION& _e) {
+        _widget->addException(_e);
+      }
+      if (_widget->exceptionCount() > 0) {
+        _widget->exec();
+      }
+    }
   }
 }

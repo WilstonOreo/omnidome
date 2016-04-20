@@ -145,9 +145,6 @@ MainWindow::MainWindow(QMainWindow *parent) :
     // Connect canvas parameter change with view update
     connect(ui_->dockCanvasWidget, SIGNAL(
               dataModelChanged()),                     this,
-            SLOT(modified()));
-    connect(ui_->dockCanvasWidget, SIGNAL(
-              dataModelChanged()),                     this,
             SLOT(updateAllViews()));
     connect(ui_->dockCanvasWidget, SIGNAL(canvasTypeChanged()),
             this, SLOT(modified()));
@@ -168,14 +165,14 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
     // Update all views when input has changed
     connect(ui_->dockInputsWidget, SIGNAL(
-              inputChanged()),                      this,
-            SLOT(updateAllViews()));
-    connect(ui_->dockInputsWidget, SIGNAL(
               inputIndexChanged()),                 this,
             SLOT(modified()));
     connect(ui_->dockInputsWidget, SIGNAL(
-              inputChanged()),                      toolBar_.get(),
-            SLOT(buttonStates()));
+              inputIndexChanged()),                 this,
+            SLOT(setMode()));
+    connect(ui_->dockInputsWidget, SIGNAL(
+              inputChanged()),                 this,
+            SLOT(updateAllViews()));
 
     // Update all views when mapping mode has changed
     connect(ui_->dockMappingWidget, SIGNAL(
@@ -331,10 +328,6 @@ void MainWindow::saveProjectionAs()
       buttonState();
     } catch (Exception& e) {
       _widget->addException(e);
-    } catch (exception::Serialization& e) {
-      _widget->addException(e);
-    } catch (serialization::exception::ChecksumError& e) {
-      _widget->addException(e);
     }
     if (_widget->exceptionCount() > 0) {
       _widget->exec();
@@ -366,27 +359,15 @@ bool MainWindow::openProjection(const QString& _filename)
   std::shared_ptr<Session> _session(new Session);
 
   std::unique_ptr<ExceptionList> _widget(new ExceptionList);
-
-  try {
+  tryWithExceptionList<Exception>([&]() {
     _session->load(filename_);
-  } catch (exception::Serialization& e) {
-    _widget->addException(e);
-  } catch (serialization::exception::ChecksumError& e) {
-    _widget->addException(e);
-  } catch (serialization::exception::PropertyNotExisting& e) {
-    _widget->addException(e);
-  }
-
-  if (_widget->exceptionCount() > 0) {
-    _widget->exec();
-  }
-
-  setupSession(_session);
-  session_ = _session;
-  modified_ = false;
-  filename_ = _filename;
-  recentSessions_->addFile(filename_);
-  setMode();
+    setupSession(_session);
+    session_ = _session;
+    modified_ = false;
+    filename_ = _filename;
+    recentSessions_->addFile(filename_);
+    setMode();
+  });
 
   return true;
 }

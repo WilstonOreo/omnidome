@@ -138,6 +138,7 @@ namespace omni {
           _gl.glDisable(GL_DEPTH_TEST);
           _gl.glDisable(GL_STENCIL_TEST);
           _gl.glDisable(GL_SCISSOR_TEST);
+          _gl.glDisable(GL_CULL_FACE);
           _gl.glColorMask(true, true, true, true);
           _gl.glClearColor(0, 0, 0, 0);
 
