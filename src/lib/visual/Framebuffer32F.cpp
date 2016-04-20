@@ -51,13 +51,13 @@ namespace omni {
         // NULL means reserve texture memory, but texels are undefined
         _.glTexImage2D(GL_TEXTURE_2D, 0,  GL_RGBA32F , _w, _h, 0, GL_RGBA,
                        GL_FLOAT, NULL);
-         check_gl_error();
+         checkOpenGLError();
          _.glFlush();
 
         // -------------------------
         _.glGenFramebuffers(1, &fb_);
         _.glBindFramebuffer(GL_FRAMEBUFFER, fb_);
-      check_gl_error();
+        checkOpenGLError();
 
         //   Attach 2D texture to this FBO
         _.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
@@ -65,20 +65,17 @@ namespace omni {
 
          _.glFlush();
 
-      check_gl_error();
         // -------------------------
         _.glGenRenderbuffers(1, &depthRb_);
         _.glBindRenderbuffer(GL_RENDERBUFFER, depthRb_);
         _.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, _w,
                                 _h);
-      check_gl_error();
 
         // -------------------------
         // Attach depth buffer to FBO
         _.glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                                     GL_DEPTH_ATTACHMENT,
                                     GL_RENDERBUFFER, depthRb_);
-      check_gl_error();
 
         // -------------------------
         // Does the GPU support current FBO configuration?
@@ -86,7 +83,7 @@ namespace omni {
         status = _.glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
         if (status != GL_FRAMEBUFFER_COMPLETE) {
-          qDebug() << "bad";
+          OMNI_DEBUG << "bad";
           free();
           return;
         }

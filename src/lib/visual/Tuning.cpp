@@ -27,6 +27,7 @@
 #include <omni/visual/Rectangle.h>
 #include <omni/visual/Session.h>
 #include <omni/visual/ContextManager.h>
+#include <omni/visual/UniformHandler.h>
 
 namespace omni {
   namespace visual {
@@ -412,10 +413,7 @@ namespace omni {
 
         blendShader_.reset();
         testCardShader_.reset();
-
-        if (calibrationTexId_ != 0) {
-          _.glDeleteTextures(1, &calibrationTexId_);
-        }
+        calibrationTex_.reset();
       });
     }
 
@@ -424,11 +422,7 @@ namespace omni {
         calibration_.setRenderSize(QSize(tuning_.width() / 2,
                                        tuning_.height() / 2));
         tuning_.renderCalibration(calibration_);
-
-      with_current_context([&](QOpenGLFunctions& _) {
-        _.glDeleteTextures(1, &calibrationTexId_);
-          calibrationTexId_ = 0;
-      });
+        calibrationTex_.reset();
     }
 
     QVector4D Tuning::channelCorrectionAsVec(Channel _channel) const {
@@ -453,20 +447,8 @@ namespace omni {
       if (!_currentInput) return;
 
       with_current_context([&](QOpenGLFunctions& _) {
-        if (calibrationTexId_ == 0) {
-          _.glGenTextures(1, &calibrationTexId_);
-          _.glBindTexture(GL_TEXTURE_2D, calibrationTexId_);
-          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
-          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
-          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-          _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-          _.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
-                       calibration_.renderSize().width(),
-                       calibration_.renderSize().height(), 0,
-                       GL_RGBA, GL_FLOAT, calibration_.buffer().ptr());
-          _.glBindTexture(GL_TEXTURE_2D, 0);
-          _.glFlush();
+        if (!calibrationTex_) {
+          calibrationTex_.reset(new Texture32F(calibration_.buffer()));
         }
 
         glMatrixMode(GL_PROJECTION);
@@ -480,7 +462,7 @@ namespace omni {
 
         useShader(*calibrationShader_, [&](UniformHandler& _h) {
           _h.texUniform("image", _currentInput->textureId(),GL_TEXTURE_RECTANGLE);
-          _h.texUniform("uv_map", calibrationTexId_);
+          _h.texUniform("uv_map", *calibrationTex_);
           _h.uniform("image_size",
                      QVector2D(_currentInput->width(),
                                _currentInput->height()));

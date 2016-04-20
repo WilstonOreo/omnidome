@@ -27,6 +27,7 @@
 
 #include <omni/proj/Tuning.h>
 #include <omni/visual/WarpGrid.h>
+#include <omni/visual/Texture32F.h>
 #include <omni/proj/Calibration.h>
 
 namespace omni
@@ -103,8 +104,8 @@ namespace omni
 
       std::unique_ptr<visual::WarpGrid> warpGrid_;
       std::unique_ptr<QOpenGLTexture> blendTex_;
+      std::unique_ptr<Texture32F> calibrationTex_;
 
-      GLuint calibrationTexId_ = 0;
       proj::Calibration calibration_;
 
       /// Frame buffer which holds a texture with current view image

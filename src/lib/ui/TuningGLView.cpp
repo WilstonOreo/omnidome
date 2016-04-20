@@ -629,13 +629,13 @@ namespace omni {
         drawColorCorrected();
         break;
 
-      case Session::Mode::LIVE:
       case Session::Mode::EXPORT:
         drawExportView();
         break;
 
-      //  drawLiveView();
-      //  break;
+      case Session::Mode::LIVE:
+        drawLiveView();
+        break;
 
       default: break;
       }

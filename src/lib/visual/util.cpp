@@ -19,10 +19,154 @@
  */
 
 #include <omni/visual/util.h>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLTexture>
+#include <QOpenGLDebugLogger>
+#include <string>
+#include <omni/visual/ContextManager.h>
+#include <chrono>
 
 namespace omni {
   namespace visual {
     namespace util {
+      /// Get current time in nano seconds
+      double now() {
+        return std::chrono::high_resolution_clock::now().time_since_epoch().count()
+               /
+               1000000000.0;
+      }
+
+      void checkOpenGLError() {
+        with_current_context([&](QOpenGLFunctions& _) {
+          GLenum err(_.glGetError());
+
+          while (err != GL_NO_ERROR) {
+            std::string error = "GL_";
+
+            switch (err) {
+            case GL_INVALID_OPERATION:      error += "INVALID_OPERATION";      break;
+            case GL_INVALID_ENUM:           error += "INVALID_ENUM";           break;
+            case GL_INVALID_VALUE:          error += "INVALID_VALUE";          break;
+            case GL_OUT_OF_MEMORY:          error += "OUT_OF_MEMORY";          break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION:  error += "INVALID_FRAMEBUFFER_OPERATION";  break;
+            }
+
+            OMNI_DEBUG << error.c_str();
+            err = _.glGetError();
+          }
+        });
+      }
+
+      void with_current_context(std::function<void(QOpenGLFunctions&)>f)
+      {
+        auto _currentContext = QOpenGLContext::currentContext();
+        if (!_currentContext) return;
+
+        if (!_currentContext->isValid()) {
+          qDebug() << "Context is not valid!";
+          return;
+        }
+        QOpenGLFunctions glFuncs(_currentContext);
+        f(glFuncs);
+      }
+
+      void initShader(QOpenGLShaderProgram& _s, const char *_filename) {
+        QString _vertSrc =
+          omni::util::fileToStr(":/shaders/" + QString(_filename) + ".vert");
+        QString _fragmentSrc =
+          omni::util::fileToStr(":/shaders/" + QString(_filename) + ".frag");
+        _s.addShaderFromSourceCode(QOpenGLShader::Vertex,
+                                   _vertSrc);
+        _s.addShaderFromSourceCode(QOpenGLShader::Fragment,
+                                   _fragmentSrc);
+        _s.link();
+      }
+
+      void initShader(std::unique_ptr<QOpenGLShaderProgram>& _s,
+                      const char *_filename) {
+        /// Dont do anything if shader is already allocated
+        if (!!_s) return;
+
+        _s.reset(new QOpenGLShaderProgram());
+        initShader(*_s, _filename);
+      }
+
+      QRectF viewRect(int _imageWidth,
+                    int _imageHeight,
+                    int _canvasWidth,
+                    int _canvasHeight,
+                    float _border) {
+        float _projAspect = float(_imageWidth) /
+                            _imageHeight;
+        float _viewAspect = float(_canvasWidth) / _canvasHeight;
+        float b           = _border * 0.5;
+        float _left       = -0.5 - b, _right = 0.5 + b, _bottom = -0.5 - b,
+              _top        = 0.5 + b;
+
+        if (_projAspect > _viewAspect)
+        {
+          _top    *= _projAspect / _viewAspect;
+          _bottom *=  _projAspect / _viewAspect;
+        }
+        else
+        {
+          _left  *= _viewAspect / _projAspect;
+          _right *= _viewAspect / _projAspect;
+        }
+
+        return QRectF(QPointF(_left, _top), QPointF(_right, _bottom));
+      }
+
+      void resetOpenGLState() {
+        with_current_context([&](QOpenGLFunctions& _gl) {
+          _gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
+          _gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+          if (QOpenGLContext::currentContext()->isOpenGLES() ||
+              (_gl.openGLFeatures() & QOpenGLFunctions::FixedFunctionPipeline)) {
+            int maxAttribs;
+            _gl.glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxAttribs);
+
+            for (int i = 0; i < maxAttribs; ++i) {
+              _gl.glVertexAttribPointer(i, 4, GL_FLOAT, GL_FALSE, 0, 0);
+              _gl.glDisableVertexAttribArray(i);
+            }
+          }
+          _gl.glActiveTexture(GL_TEXTURE0);
+          _gl.glBindTexture(GL_TEXTURE_2D, 0);
+          _gl.glDisable(GL_DEPTH_TEST);
+          _gl.glDisable(GL_STENCIL_TEST);
+          _gl.glDisable(GL_SCISSOR_TEST);
+          _gl.glColorMask(true, true, true, true);
+          _gl.glClearColor(0, 0, 0, 0);
+
+          _gl.glDepthMask(true);
+          _gl.glDepthFunc(GL_LESS);
+          _gl.glClearDepthf(1);
+
+          _gl.glStencilMask(0xff);
+          _gl.glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+          _gl.glStencilFunc(GL_ALWAYS, 0, 0xff);
+          _gl.glDisable(GL_BLEND);
+          _gl.glBlendFunc(GL_ONE, GL_ZERO);
+          _gl.glUseProgram(0);
+          _gl.glEnable(GL_DEPTH_TEST);
+          _gl.glDepthFunc(GL_LEQUAL);
+          _gl.glEnable(GL_BLEND);
+          _gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+          _gl.glEnable(GL_LINE_SMOOTH);
+          _gl.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+          _gl.glEnable(GL_POINT_SMOOTH);
+          _gl.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+          _gl.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+          _gl.glEnable(GL_NORMALIZE);
+
+          // fix outlines z-fighting with quads
+          _gl.glPolygonOffset(1, 1);
+          QOpenGLFramebufferObject::bindDefault();
+        });
+      }
     }
   }
 }

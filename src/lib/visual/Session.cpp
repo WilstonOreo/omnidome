@@ -114,6 +114,7 @@ namespace omni {
             proj::Frustum _frustum(_proj);
             QVector3D _eye        = _m.column(3).toVector3D();
             QVector3D _lookAt      = _m * QVector3D(1.0, 0.0, 0.0) - _eye;
+            //QVector3D _up = _m * QVector3D(0.0, 0.0, 1.0) - _eye;
 
             // Setup frustum uniforms for intersection test
             frustumShader_->setUniformValue("eye",          _eye);
@@ -124,6 +125,7 @@ namespace omni {
             frustumShader_->setUniformValue("bottom_right", _frustum.bottomRight(_m));
             frustumShader_->setUniformValue("frame_width", GLfloat(0.005 * session_.scene().size()));
             frustumShader_->setUniformValue("matrix",       _rot);
+            frustumShader_->setUniformValue("proj_matrix",  _proj.matrix());
             frustumShader_->setUniformValue("scale",
                                             GLfloat(_canvas->bounds().radius()));
             frustumShader_->setUniformValue("opacity", GLfloat(0.8));

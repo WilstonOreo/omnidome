@@ -22,11 +22,12 @@
 #include <omni/proj/Calibration.h>
 #include <omni/proj/Tuning.h>
 
-#include <omni/visual/util.h>
+#include <omni/visual/UniformHandler.h>
 #include <omni/visual/Tuning.h>
 #include <omni/visual/Session.h>
 #include <omni/visual/Rectangle.h>
 #include <omni/visual/Framebuffer32F.h>
+#include <omni/visual/ContextManager.h>
 #include <omni/RenderBuffer.h>
 
 namespace omni {
@@ -38,7 +39,8 @@ namespace omni {
 
     void CalibrationRenderer::initialize(QOpenGLContext *_context) {
       if (!this->context_) {
-        context_=_context;
+        context_= _context;// QOpenGLContext::globalShareContext();
+        OMNI_DEBUG << context_->isValid();
       }
 
       if (!this->surface_) {

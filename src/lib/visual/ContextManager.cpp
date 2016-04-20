@@ -46,7 +46,11 @@ namespace omni {
 
     void ContextManager::add(QOpenGLContext* _ctx) {
       if (!primaryContext_) {
-        primaryContext_ = _ctx;
+        primaryContext_ = _ctx;/*
+        primaryContext_ = QOpenGLContext::globalShareContext();
+        primaryContext_->setFormat(_ctx->format());
+        primaryContext_->setScreen(_ctx->screen());
+        primaryContext_->create();*/
       }
       contexts_.insert(_ctx);
       if (_ctx != primaryContext_) {
