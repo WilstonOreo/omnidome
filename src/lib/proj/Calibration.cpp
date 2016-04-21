@@ -19,12 +19,12 @@
 
 #include <omni/proj/Tuning.h>
 #include <omni/proj/Calibration.h>
-#include <omni/proj/CalibrationRenderer.h>
 
 #include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
 #include <omni/visual/Rectangle.h>
 #include <omni/visual/Framebuffer32F.h>
+#include <omni/visual/UniformHandler.h>
 
 #include <QPainter>
 
@@ -34,30 +34,110 @@ namespace omni {
 
     Calibration::Calibration(Tuning const& _tuning, CalibrationMode _mode) :
       mode_(_mode) {
-        render(_tuning,mode_);
-      }
+      render(_tuning, mode_);
+    }
 
     void Calibration::render(Tuning const& _tuning) {
       int _w = buffer_.width() <= 0 ? _tuning.width() : buffer_.width();
       int _h = buffer_.height() <= 0 ? _tuning.height() : buffer_.height();
 
-      virtualScreen_ = !_tuning.screen(); // Screen is virtual when tuning has no screen
+      virtualScreen_ = !_tuning.screen(); // Screen is virtual when tuning has
+                                          // no screen
       colorCorrection_ = _tuning.colorCorrection();
-      screenGeometry_ = _tuning.screenGeometry();
+      screenGeometry_  = _tuning.screenGeometry();
       contentGeometry_ = _tuning.contentGeometry();
       buffer_.resize(_w, _h);
 
-      CalibrationRenderer::instance()->render(_tuning,*this);
+      RenderBuffer _projBuffer(_w, _h);
+      RenderBuffer _warpBuffer(_w, _h);
+      RenderBuffer _blendBuffer(_w, _h);
+
+      static std::unique_ptr<QOpenGLShaderProgram> _shader;
+      visual::initShader(_shader, "texture");
+
+      std::unique_ptr<visual::Framebuffer32F> _framebuffer;
+      std::unique_ptr<visual::Framebuffer32F> _warpFramebuffer;
+
+      _framebuffer.reset(new visual::Framebuffer32F(QSize(_w, _h)));
+      _warpFramebuffer.reset(new visual::Framebuffer32F(QSize(_w, _h)));
+
+      visual::Session *_sessionViz =
+        const_cast<Session&>(_tuning.session()).visualizer();
+      _sessionViz->update();
+
+      visual::Tuning *_tuningViz = const_cast<Tuning&>(_tuning).visualizer();
+
+      _tuningViz->update();
+      _tuningViz->updateWarpBuffer(_sessionViz);
+      _tuningViz->updateBlendTexture();
+
+      /// 1st Step: Render projectors view to framebuffer texture
+      visual::draw_on_framebuffer(_framebuffer.get(), [&](QOpenGLFunctions& _) {
+        // Projection operation
+        glMultMatrixf(_tuning.projector().projectionMatrix().constData());
+      }, [&](QOpenGLFunctions& _) {
+        // Model view operation
+        _.glClearColor(0.0,0.0,1.0,1.0);
+        _.glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        _sessionViz->drawCanvas(_tuning.session().exportSettings().
+                                mappingOutputMode());
+        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _projBuffer.ptr());
+        _.glClearColor(0.0,0.0,0.0,1.0);
+      });
+
+
+      visual::draw_on_framebuffer(_warpFramebuffer.get(), [&](
+                                    QOpenGLFunctions& _) {
+        // Projection operation
+        QMatrix4x4 _m;
+        _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
+        glMultMatrixf(_m.constData());
+      }, [&](QOpenGLFunctions& _) {
+        // Model view operation
+
+        // 3rd step: Render warp grid
+        visual::useShader(*_shader, [&](visual::UniformHandler& _h) {
+          _h.texUniform("tex", _framebuffer->texture());
+          _tuningViz->drawWarpPatch();
+        });
+        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _warpBuffer.ptr());
+
+        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+                  GL_STENCIL_BUFFER_BIT);
+
+        // 4th Step: Render blend mask
+        _tuningViz->drawOutput();
+        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _blendBuffer.ptr());
+        _.glFinish();
+      });
+
+      _framebuffer.reset();
+      _warpFramebuffer.reset();
+
+      // 5th step: Merge blend and warp buffer
+      for (int i = 0; i < buffer_.data().size(); ++i)
+      {
+        auto& _wP = _warpBuffer[i]; // Pixel from warp grid buffer
+
+        if (_wP.b == 1.0 && _wP.r == 0.0 && _wP.g == 0.0) {
+          buffer_[i] = RGBAFloat(0.0,0.0,0.0,0.0);
+          continue;
+        }
+
+        buffer_[i] =
+          RGBAFloat(_wP.r, _wP.g, _wP.b, _blendBuffer[i].r);
+      }
     }
 
     void Calibration::render(Tuning const& _tuning, CalibrationMode _mode) {
-      mode_=_mode;
+      mode_ = _mode;
       render(_tuning);
     }
 
     QImage Calibration::toImage() const {
       int _w = buffer_.width();
       int _h = buffer_.height();
+
       if (!_w || !_h) return QImage();
 
       if (mode_ == CalibrationMode::MAPPED_INPUT)
@@ -83,7 +163,7 @@ namespace omni {
           qDebug() << "CalibrationMode::TEXCOORDS";
           getAlphaMask(_upper8bit, Channel::BLUE);
           QImage _image(_w, _h * 2, QImage::Format_RGB32);
-          encodeColorCorrection(_lower8bit,Channel::BLUE);
+          encodeColorCorrection(_lower8bit, Channel::BLUE);
           QPainter _p(&_image);
           _p.drawImage(QPoint(0, 0),                  _upper8bit);
           _p.drawImage(QPoint(0, _h),     _lower8bit);
@@ -111,6 +191,7 @@ namespace omni {
     QImage Calibration::toPreviewImage() const {
       int _w = buffer_.width();
       int _h = buffer_.height();
+
       if (!_w || !_h) return QImage();
 
       if (mode_ == CalibrationMode::MAPPED_INPUT)
@@ -130,10 +211,11 @@ namespace omni {
 
         // Encode color correction information into the green channel
 
-        if (mode_ == CalibrationMode::TEXCOORDS || mode_ == CalibrationMode::UVW) {
+        if ((mode_ == CalibrationMode::TEXCOORDS) ||
+            ( mode_ == CalibrationMode::UVW)) {
           qDebug() << "CalibrationMode::TEXCOORDS";
           getAlphaMask(_upper8bit, Channel::BLUE);
-          QImage _image(_w, _h, QImage::Format_RGB32);
+          QImage   _image(_w, _h, QImage::Format_RGB32);
           QPainter _p(&_image);
           _p.drawImage(QPoint(0, 0),                  _upper8bit);
           _p.end();
@@ -152,19 +234,19 @@ namespace omni {
     }
 
     QRect const& Calibration::screenGeometry() const {
-        return screenGeometry_;
+      return screenGeometry_;
     }
 
     QRect const& Calibration::contentGeometry() const {
-        return contentGeometry_;
+      return contentGeometry_;
     }
 
     QSize Calibration::renderSize() const {
-      return QSize(buffer_.width(),buffer_.height());
+      return QSize(buffer_.width(), buffer_.height());
     }
 
     void Calibration::setRenderSize(QSize const& _size) {
-      buffer_.resize(_size.width(),_size.height());
+      buffer_.resize(_size.width(), _size.height());
     }
 
     ColorCorrection const& Calibration::colorCorrection() const {
@@ -177,8 +259,8 @@ namespace omni {
 
     template<typename OPERATION>
     void Calibration::bufferToImage(RenderBuffer const& _buffer,
-                                 QImage& _image,
-                                 OPERATION           _f)
+                                    QImage& _image,
+                                    OPERATION           _f)
     {
       if ((_image.width() != _buffer.width()) &&
           (_image.height() != _buffer.height())) {
@@ -276,7 +358,7 @@ namespace omni {
     }
 
     void Calibration::getAlphaMask(QImage& _image,
-                                  Channel _channel) const
+                                   Channel _channel) const
     {
       bufferToImage(buffer_, _image,
                     [&](RGBAFloat const& _input, RGBAFloat const& _pixel)
@@ -285,8 +367,11 @@ namespace omni {
 
         switch (_channel) {
         case Channel::RED: _output.r = _pixel.a; break;
+
         case Channel::GREEN: _output.g = _pixel.a; break;
+
         case Channel::BLUE: _output.b = _pixel.a; break;
+
         case Channel::ALL: return RGBAFloat(_pixel.a, _pixel.a, _pixel.a);
         }
         return _output;
@@ -317,8 +402,11 @@ namespace omni {
         if (_channelCorrection) {
           switch (_componentIndex) {
           case 0: _component = _channelCorrection->gamma(); break;
+
           case 1: _component = _channelCorrection->brightness(); break;
+
           case 2: _component = _channelCorrection->contrast(); break;
+
           case 3: _component = _channelCorrection->multiplier(); break;
           }
 
@@ -351,7 +439,5 @@ namespace omni {
         }
       }
     }
-
-
   }
 }

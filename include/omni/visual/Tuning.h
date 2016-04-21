@@ -87,7 +87,7 @@ namespace omni
       /// Update warp buffer which contains image of projector perspective
       void updateWarpBuffer(visual::Session const* _vizSession);
 
-      void generateCalibrationData(std::function<void()> _contextSwitch);
+      void generateCalibrationData();
 
       void drawCalibratedInput();
 

@@ -22,7 +22,6 @@
 #include <omni/Session.h>
 #include <omni/util.h>
 #include <omni/visual/util.h>
-#include <omni/proj/CalibrationRenderer.h>
 #include <omni/visual/ContextManager.h>
 
 #include <QMouseEvent>
@@ -100,8 +99,6 @@ namespace omni
       initializeOpenGLFunctions();
 
       visual::ContextManager::instance()->add(context());
-
-      proj::CalibrationRenderer::instance()->initialize(visual::ContextManager::instance()->primaryContext());
 
       qDebug() << "Number of contexts: " << visual::ContextManager::instance()->contextCount();
 

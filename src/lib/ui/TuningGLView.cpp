@@ -590,7 +590,10 @@ namespace omni {
     void TuningGLView::paintGL()
     {
       if (!tuning()) return;
+
       makeCurrent();
+
+      visual::viewport(this);
 
       visual::with_current_context([&](QOpenGLFunctions& _)
       {

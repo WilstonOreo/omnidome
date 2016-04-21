@@ -40,7 +40,6 @@ namespace omni {
     Tuning::Tuning(omni::proj::Tuning& _tuning) :
       tuning_(_tuning)
     {
-      warpGrid_.reset(new visual::WarpGrid(tuning_.warpGrid()));
     }
 
     Tuning::~Tuning() {
@@ -360,7 +359,9 @@ namespace omni {
     }
 
     void Tuning::updateWarpGrid() {
-      if (!warpGrid_) return;
+      if (!warpGrid_) {
+        warpGrid_.reset(new visual::WarpGrid(tuning_.warpGrid()));
+      }
 
       warpGrid_->update();
     }
@@ -417,12 +418,11 @@ namespace omni {
       });
     }
 
-    void Tuning::generateCalibrationData(std::function<void()> _contextSwitch) {
-
-        calibration_.setRenderSize(QSize(tuning_.width() / 2,
-                                       tuning_.height() / 2));
+    void Tuning::generateCalibrationData() {
+        calibration_.setRenderSize(QSize(tuning_.width()*2,
+                                       tuning_.height()*2));
         tuning_.renderCalibration(calibration_);
-        calibrationTex_.reset();
+        calibrationTex_.reset(new Texture32F(calibration_.buffer()));
     }
 
     QVector4D Tuning::channelCorrectionAsVec(Channel _channel) const {
@@ -448,7 +448,7 @@ namespace omni {
 
       with_current_context([&](QOpenGLFunctions& _) {
         if (!calibrationTex_) {
-          calibrationTex_.reset(new Texture32F(calibration_.buffer()));
+          generateCalibrationData();
         }
 
         glMatrixMode(GL_PROJECTION);

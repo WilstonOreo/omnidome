@@ -117,9 +117,9 @@ void main()
         calib.t = 1.0 - calib.t;
     }
 
-    vec3 imagePixel = colorCorrection(texture2DRect(image,calib.st * image_size).rgb);
+    vec3 imagePixel = colorCorrection(texture2DRect(image,calib.rg * image_size).rgb);
     float alpha =  calib.b;
 
     gl_FragColor = vec4(imagePixel*alpha,1.0);
-  //gl_FragColor = vec4(calib.st,texture2DRect(image,uv * image_size).st);
+  //gl_FragColor = vec4(calib.rg,texture2DRect(image,uv * image_size).st);
 }

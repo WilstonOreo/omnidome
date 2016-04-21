@@ -42,7 +42,9 @@ common_cxx_flags()
 # Setup libomni build target
 
 FILE(GLOB_RECURSE omni_lib_cpp_files ${CMAKE_SOURCE_DIR}/src/lib/*.cpp )
-FILE(GLOB_RECURSE omni_lib_ui_headers ${CMAKE_SOURCE_DIR}/include/omni/ui/*.h ${CMAKE_SOURCE_DIR}/include/slim/*.h )
+FILE(GLOB_RECURSE omni_lib_ui_headers
+  ${CMAKE_SOURCE_DIR}/include/omni/ui/*.h )
+
 FILE(GLOB_RECURSE omni_lib_ui_forms ${CMAKE_SOURCE_DIR}/src/lib/ui/*.ui )
 FILE(GLOB_RECURSE omni_lib_resources ${CMAKE_SOURCE_DIR}/src/lib/*.qrc )
 

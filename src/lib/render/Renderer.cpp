@@ -107,7 +107,7 @@ namespace omni {
         auto _desktopRect = proj::ScreenSetup::desktopRect();
         auto && _screens = stitchScreens(_tunings);
         QImage _stitchedImage(_desktopRect.width(),
-                              _desktopRect.height() * 3,
+                              _desktopRect.height() * 2,
                               QImage::Format_RGB32);
         QPainter _p(&_stitchedImage);
 
@@ -147,7 +147,6 @@ namespace omni {
       case SeparationMode::PROJECTORS:
       {
         int _tuningIndex = 0;
-
         for (auto& _tuning : _tunings)
         {
           proj::Calibration _calib(*_tuning,session_.exportSettings().outputMode());

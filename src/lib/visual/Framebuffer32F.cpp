@@ -35,8 +35,9 @@ namespace omni {
     }
 
     void Framebuffer32F::initialize(QSize const& _size) {
-      free();
+      if (_size == size()) return;
 
+      free();
       visual::with_current_context([&](QOpenGLFunctions& _) {
         int _h = _size.height();
         int _w = _size.width();
@@ -51,19 +52,15 @@ namespace omni {
         // NULL means reserve texture memory, but texels are undefined
         _.glTexImage2D(GL_TEXTURE_2D, 0,  GL_RGBA32F , _w, _h, 0, GL_RGBA,
                        GL_FLOAT, NULL);
-         checkOpenGLError();
-         _.glFlush();
 
         // -------------------------
         _.glGenFramebuffers(1, &fb_);
-        _.glBindFramebuffer(GL_FRAMEBUFFER, fb_);
-        checkOpenGLError();
+        bind();
 
         //   Attach 2D texture to this FBO
         _.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                  GL_TEXTURE_2D, colorTex_, 0);
 
-         _.glFlush();
 
         // -------------------------
         _.glGenRenderbuffers(1, &depthRb_);
@@ -83,24 +80,22 @@ namespace omni {
         status = _.glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
         if (status != GL_FRAMEBUFFER_COMPLETE) {
-          OMNI_DEBUG << "bad";
           free();
           return;
         }
         size_ = QSize(_w,_h);
-        _.glBindTexture(GL_TEXTURE_2D, 0);
-        _.glBindRenderbuffer(GL_RENDERBUFFER, 0);
-        QOpenGLFramebufferObject::bindDefault();
-        _.glFlush();
+        release();
       });
     }
 
     void Framebuffer32F::free() {
       visual::with_current_context([&](QOpenGLFunctions& _) {
+        bind();
         if (colorTex_) _.glDeleteTextures(1, &colorTex_);
         if (depthRb_) _.glDeleteRenderbuffers(1, &depthRb_);
         if (fb_) _.glDeleteFramebuffers(1, &fb_);
         size_ = QSize(0,0);
+        release();
       });
     }
 
@@ -113,7 +108,6 @@ namespace omni {
     void Framebuffer32F::release() {
       visual::with_current_context([&](QOpenGLFunctions& _) {
         QOpenGLFramebufferObject::bindDefault();
-        _.glFlush();
       });
     }
 

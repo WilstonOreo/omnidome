@@ -49,8 +49,8 @@ namespace omni {
                                     GLuint _texId,
                                     GLuint _target) {
       uniform(_name, currentTextureUnit_);
-      gl_.glBindTexture(_target, _texId);
       gl_.glActiveTexture(GL_TEXTURE0 + currentTextureUnit_);
+      gl_.glBindTexture(_target, _texId);
       usedTextureTargets_.insert(_target);
       ++currentTextureUnit_;
     }

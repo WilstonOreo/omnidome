@@ -51,9 +51,9 @@ namespace omni {
 
       dataModel()->renderToFile(_filename);
       ui_->editExportFilename->setText(_filename);
-      QMessageBox::information(this, "Session exported.",
+      QMessageBox::information(this, "Calibration data exported.",
                                QString(
-                                 "Session has been exported to '%1'").arg(
+                                 "Calibration data has been exported to '%1'").arg(
                                  _filename));
     }
 
@@ -91,33 +91,10 @@ namespace omni {
       {
         _exportSettings.setSeparationMode(SeparationMode::PROJECTORS);
       }
-
-      if (ui_->rbUVWMap->isChecked())
-      {
-        _exportSettings.setOutputMode(CalibrationMode::UVW);
-      } else
-      if (ui_->rbTextureCoordinates->isChecked())
-      {
-        _exportSettings.setOutputMode(CalibrationMode::TEXCOORDS);
-      } else
-      if (ui_->rbMappedInput->isChecked())
-      {
-        _exportSettings.setOutputMode(CalibrationMode::MAPPED_INPUT);
-      }
     }
 
     void Export::dataToFrontend() {
       ui_->outputPreview->setDataModel(dataModel());
-
-      if (dataModel()->mapping()) {
-        bool _isUVW = dataModel()->mapping()->isUVW();
-        ui_->rbUVWMap->setEnabled(_isUVW);
-
-        if (!_isUVW && ui_->rbUVWMap->isChecked()) {
-          ui_->rbTextureCoordinates->setChecked(true);
-          ui_->rbUVWMap->setChecked(false);
-        }
-      }
 
       renderPreview();
     }
@@ -136,10 +113,7 @@ namespace omni {
            std::vector<QWidget *>({ ui_->chkExcludeNonSelectedScreens,
                                     ui_->rbSepNone,
                                     ui_->rbSepScreens,
-                                    ui_->rbSepProj,
-                                    ui_->rbMappedInput,
-                                    ui_->rbTextureCoordinates,
-                                    ui_->rbUVWMap })) {
+                                    ui_->rbSepProj })) {
         connect(_widget, SIGNAL(clicked()), this, SLOT(renderPreview()));
       }
 
@@ -149,16 +123,12 @@ namespace omni {
     void Export::selectPlainImage(bool _selected) {
       ui_->lbSeparateOutput->setVisible(_selected);
       ui_->frameSeparation->setVisible(_selected);
-      ui_->lbCalibrationDataType->setVisible(_selected);
-      ui_->frameCalibrationDataType->setVisible(_selected);
       renderPreview();
     }
 
     void Export::selectOmniCalibration(bool _selected) {
       ui_->lbSeparateOutput->setVisible(!_selected);
       ui_->frameSeparation->setVisible(!_selected);
-      ui_->lbCalibrationDataType->setVisible(!_selected);
-      ui_->frameCalibrationDataType->setVisible(!_selected);
       renderPreview();
     }
   }

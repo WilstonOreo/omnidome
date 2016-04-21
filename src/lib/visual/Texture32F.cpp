@@ -59,14 +59,13 @@ namespace omni {
         _.glBindTexture(target_, texId_);
         _.glTexParameteri(target_, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
         _.glTexParameteri(target_, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
-        _.glTexParameteri(target_, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        _.glTexParameteri(target_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         _.glTexParameteri(target_, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         _.glTexImage2D(target_, 0, GL_RGBA32F,
                        size_.width(),
                        size_.height(), 0,
                        GL_RGBA, GL_FLOAT, _buf.ptr());
         _.glBindTexture(target_, 0);
-        _.glFlush();
       });
     }
 
