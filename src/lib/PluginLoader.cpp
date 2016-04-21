@@ -3,6 +3,7 @@
 #include <omni/input/Interface.h>
 #include <omni/mapping/Interface.h>
 #include <omni/canvas/Interface.h>
+#include <omni/patch/Interface.h>
 
 #include <QCoreApplication>
 #include <QDirIterator>
@@ -62,6 +63,12 @@ namespace omni {
             if (_canvasInterface) {
                 qDebug() << "Loaded canvas plugin: " << _canvasInterface->getTypeId();
                 _canvasInterface->registerInFactory();
+            }
+
+            auto* _patchInterface = qobject_cast<patch::Interface*>(plugin);
+            if (_patchInterface) {
+                qDebug() << "Loaded patch plugin: " << _patchInterface->getTypeId();
+                _patchInterface->registerInFactory();
             }
             delete plugin;
         } else {

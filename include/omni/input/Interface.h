@@ -61,6 +61,7 @@ namespace omni {
         typedef std::vector<Interface const*>                 inputlist_type;
         typedef std::map<QString, std::unique_ptr<Interface> >container_type;
         typedef std::function<void ()>                        callback_type;
+        typedef std::set<QString> categoryset_type;
 
         using container_type::empty;
         using container_type::begin;
@@ -101,6 +102,11 @@ namespace omni {
         inline int height() const
         {
           return size().height();
+        }
+
+        /// Input can have a fixed set of categories
+        virtual categoryset_type categories() const {
+          return categoryset_type();
         }
 
         /// Optional info text
@@ -170,12 +176,6 @@ namespace omni {
 
         /// Return absolute path of interface
         QString path() const;
-
-        /// Return pointer to parents controller
-        virtual Controller*         controller();
-
-        /// Return pointer to parents controller
-        virtual Controller const*   controller() const;
 
         /// Set new parent
         void                  setParent(Interface *);

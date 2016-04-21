@@ -105,7 +105,7 @@ namespace omni {
       /// Draw into QOpenGLFramebufferObject with given projection and model
       // view operations
       template<typename FRAMEBUFFER, typename PROJECTION, typename MODELVIEW>
-      void draw_on_framebuffer(FRAMEBUFFER& _f, PROJECTION _p, MODELVIEW _m)
+      void draw_on_framebuffer(FRAMEBUFFER* _f, PROJECTION _p, MODELVIEW _m)
       {
         with_current_context([&](QOpenGLFunctions& _) {
           _f->bind();

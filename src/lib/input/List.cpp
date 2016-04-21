@@ -111,12 +111,12 @@ namespace omni {
 
     /// Return pointer to controller
     Controller *    List::controller() {
-      return &controller_;
+      return Controller::instance();
     }
 
     /// Return pointer to controller (const version)
     Controller const * List::controller() const {
-      return &controller_;
+      return Controller::instance();
     }
 
     bool operator==(List const& _lhs, List const& _rhs)

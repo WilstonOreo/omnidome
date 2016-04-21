@@ -388,7 +388,7 @@ namespace omni {
       }
 
       // Draw projector's perspective on framebuffer texture
-      draw_on_framebuffer(warpGridBuffer_,
+      draw_on_framebuffer(warpGridBuffer_.get(),
                           [&](QOpenGLFunctions& _) // Projection
                                                    // Operation
       {

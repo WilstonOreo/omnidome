@@ -21,6 +21,22 @@
 
 namespace omni {
   namespace input {
+    Controller* Controller::instance_ = nullptr;
+
+    Controller::Controller() {
+
+    }
+
+    Controller::~Controller() {
+    }
+
+    Controller* Controller::instance() {
+      if (!instance_) {
+        instance_ = new Controller;
+      }
+      return instance_;
+    }
+
     bool Controller::isActive(input::Interface *_input) const {
       return activeCount(_input) > 0;
     }
@@ -37,7 +53,6 @@ namespace omni {
       if (!isActive(_input)) {
         // Activate input if it not in usage list
         _input->activate();
-        qDebug() << "Controller::activate: "<< _input;
 
         // Set usage count to 1 initially
         usage_[_input] = 1;
@@ -49,13 +64,27 @@ namespace omni {
 
     void Controller::deactivate(input::Interface *_input) {
       if (usage_.count(_input) == 0) return;
+      if (usage_[_input] == 0) return;
 
       --usage_[_input];
 
       if (!isActive(_input)) {
         _input->deactivate();
-        usage_.erase(_input);
       }
     }
+
+    void Controller::add(input::Interface* _input) {
+      if (usage_.count(_input) > 0) return;
+
+      usage_[_input] = 0; // Do not activate the input
+    }
+
+    void Controller::remove(input::Interface* _input) {
+      if (usage_.count(_input) == 0) return;
+      deactivate(_input);
+      usage_.erase(_input);
+    }
+
+
   }
 }

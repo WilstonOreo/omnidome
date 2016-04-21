@@ -84,7 +84,7 @@ namespace omni {
         _tuningViz.updateBlendTexture();
 
         /// 1st Step: Render projectors view to framebuffer texture
-        visual::draw_on_framebuffer(_framebuffer, [&](QOpenGLFunctions& _) {
+        visual::draw_on_framebuffer(_framebuffer.get(), [&](QOpenGLFunctions& _) {
           // Projection operation
           glMultMatrixf(_tuning.projector().projectionMatrix().constData());
         }, [&](QOpenGLFunctions& _) {
@@ -94,7 +94,7 @@ namespace omni {
           _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _projBuffer.ptr());
         });
 
-        visual::draw_on_framebuffer(_warpFramebuffer, [&](QOpenGLFunctions& _) {
+        visual::draw_on_framebuffer(_warpFramebuffer.get(), [&](QOpenGLFunctions& _) {
           // Projection operation
           QMatrix4x4 _m;
           _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);

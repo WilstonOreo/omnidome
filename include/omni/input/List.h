@@ -34,8 +34,7 @@ namespace omni {
 
     /**@brief Input List contains a list of inputs, accessible over an QString id
      *@detail
-     Input List is the root input of the sessions input tree and holds as one and only
-     input object an instance of an input controller.
+     Input List is the root input of a session's input tree.
      Input List is serializable via QDataStream.
      **/
     class List : public input::Interface {
@@ -129,8 +128,6 @@ namespace omni {
         QString generateId() const;
 
         QString currentId_;
-
-        Controller controller_;
     };
   }
 

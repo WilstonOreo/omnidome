@@ -27,13 +27,15 @@
 
 namespace omni {
   namespace input {
-    Interface::Interface(Interface const *_parent) : parent_(_parent) {}
+    Interface::Interface(Interface const *_parent) : parent_(_parent) {
+      Controller::instance()->add(this);
+    }
 
     Interface::~Interface()
     {
-      if (controller()) {
-        controller()->deactivate(this);
-      }
+      /// Removing input from global controller also deactivates it
+      Controller::instance()->remove(this);
+      free();
     }
 
     Input * Interface::addInput(QString const& _id, Id const& _typeId)
@@ -123,16 +125,6 @@ namespace omni {
     /// Return parent interface (const version)
     Interface const * Interface::parent() const {
       return parent_;
-    }
-
-    Controller*  Interface::controller() {
-      if (!parent_) return nullptr;
-      return const_cast<Interface*>(parent_)->controller();
-    }
-
-    Controller const*   Interface::controller() const {
-      if (!parent_) return nullptr;
-      return parent_->controller();
     }
 
     void Interface::setParent(Interface *_parent) {

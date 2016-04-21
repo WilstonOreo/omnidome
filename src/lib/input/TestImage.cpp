@@ -29,25 +29,15 @@ namespace omni
   namespace input
   {
     TestImage::TestImage(Interface const* _parent) :
-      Interface(_parent),
+      Framebuffer(_parent),
       rulerPos_(-1.0,-1.0)
     {
     }
 
-    TestImage::~TestImage()
+    void TestImage::destroy()
     {
-      free();
-    }
-
-    GLuint TestImage::textureId() const
-    {
-      return !framebuffer_ ? 0 : framebuffer_->texture();
-    }
-
-    void TestImage::free()
-    {
+      Framebuffer::destroy();
       shader_.reset();
-      framebuffer_.reset();
     }
 
     void TestImage::setRulerPos(QPointF const& _rulerPos)
@@ -77,20 +67,9 @@ namespace omni
         shader_->link();
       }
 
-      if (!framebuffer_)
-      {
-        QOpenGLFramebufferObjectFormat _format;
-        _format.setMipmap(false);
-        _format.setSamples(0);
-        _format.setTextureTarget(GL_TEXTURE_RECTANGLE);
-        _format.setAttachment(QOpenGLFramebufferObject::NoAttachment);
-        auto _size = size();
-        framebuffer_.reset(new QOpenGLFramebufferObject(
-              _size.width(),
-              _size.height(),_format));
-      }
+      setupFramebuffer(size());
 
-      visual::draw_on_framebuffer(framebuffer_,
+      visual::draw_on_framebuffer(framebuffer(),
       [&](QOpenGLFunctions& _) // Projection Operation
       {
         QMatrix4x4 _m;
@@ -121,13 +100,13 @@ namespace omni
 
     void TestImage::toStream(QDataStream& _stream) const
     {
-      input::Interface::toStream(_stream);
+      Framebuffer::toStream(_stream);
       _stream << rulerPos_;
     }
 
     void TestImage::fromStream(QDataStream& _stream)
     {
-      input::Interface::fromStream(_stream);
+      Framebuffer::fromStream(_stream);
       _stream >> rulerPos_;
       update();
     }

@@ -17,43 +17,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_INPUT_CONTROLLER_H_
-#define OMNI_INPUT_CONTROLLER_H_
 
-#include <unordered_map>
-#include "Interface.h"
+#ifndef OMNI_PATCH_PATCHHANDLE_H_
+#define OMNI_PATCH_PATCHHANDLE_H_
+
+#include <QPointF>
 
 namespace omni {
-  namespace input {
-    /**@brief Input controller controls which inputs are currently active
-       @detail Implemented as a singleton
-    **/
-    class Controller {
-      public:
-        static Controller* instance();
+  namespace patch {
+    /// Handle for single patch
+    class PatchHandle {
+    public:
+      PatchHandle();
+      virtual ~PatchHandle() {}
 
-        bool isActive(input::Interface *) const;
-        int activeCount(input::Interface *) const;
+      /// Position
+      QPointF pos() const;
 
-        void add(input::Interface*);
+      /// Set new position for handle
+      void setPos(QPointF const&);
 
-        void remove(input::Interface*);
+      /// Move patch handle
+      void move(QPointF const& _delta);
 
-        /// Activate input
-        void activate(input::Interface *);
+      bool isSelected() const;
+      void select(bool = true);
 
-        /// Deactivate input
-        void deactivate(input::Interface *);
-
-      private:
-        Controller();
-        ~Controller();
-
-        static Controller* instance_;
-
-        std::unordered_map<input::Interface *, int> usage_;
+    private:
+      bool isSelected_ = false;
+      QPointF pos_;
     };
   }
+
+  using patch::PatchHandle;
 }
 
-#endif /* OMNI_INPUT_CONTROLLER_H_ */
+#endif /* OMNI_PATCH_PATCHHANDLE_H_ */

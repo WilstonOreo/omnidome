@@ -22,26 +22,22 @@
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFramebufferObject>
-#include "Interface.h"
+#include <omni/input/Framebuffer.h>
 
 namespace omni {
   namespace input {
     /**@brief Abstract class for test images that are generated with a shader
     **/
     class TestImage :
-      public Interface {
+      public Framebuffer {
       public:
         TestImage(Interface const *_parent = nullptr);
-        virtual ~TestImage();
-
-        /// Texture id is tex id of internal framebuffer
-        GLuint       textureId() const;
-
-        /// Free framebuffer
-        void         free();
+        virtual ~TestImage() {}
 
         /// Update framebuffer image
         virtual void update();
+
+        virtual void destroy();
 
         /// Return ruler position
         QPointF      rulerPos() const;
@@ -70,7 +66,6 @@ namespace omni {
         virtual QString vertexShaderSource() const   = 0;
 
         QPointF rulerPos_;
-        std::unique_ptr<QOpenGLFramebufferObject> framebuffer_;
     };
   }
 }
