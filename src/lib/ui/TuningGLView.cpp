@@ -41,10 +41,6 @@ namespace omni {
     {
     }
 
-    void TuningGLView::free()
-    {
-    }
-
     void TuningGLView::setTuningIndex(int _index)
     {
       setIndex(_index);
@@ -355,16 +351,8 @@ namespace omni {
       }
     }
 
-    void TuningGLView::destroy()
-    {}
-
     bool TuningGLView::initialize()
     {
-      if (context())
-      {
-        connect(context(), SIGNAL(aboutToBeDestroyed()), this, SLOT(free()));
-      }
-
       return context() != nullptr;
     }
 

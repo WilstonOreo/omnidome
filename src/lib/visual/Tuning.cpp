@@ -401,21 +401,6 @@ namespace omni {
       });
     }
 
-    void Tuning::free()
-    {
-      visual::with_current_context([&](QOpenGLFunctions& _) {
-        if (!!blendTex_)
-        {
-          blendTex_->destroy();
-          blendTex_.reset();
-        }
-
-        blendShader_.reset();
-        testCardShader_.reset();
-        calibrationTex_.reset();
-      });
-    }
-
     void Tuning::generateCalibrationData() {
       calibration_.setRenderSize(QSize(tuning_.width(),
                                        tuning_.height()));

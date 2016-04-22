@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <omni/visual/VBO.h>
+#include <omni/visual/ContextBoundPtr.h>
 #include <omni/geometry/Vertex.h>
 
 namespace omni {
@@ -33,6 +34,12 @@ namespace omni {
 
         /// Index buffer type
         typedef std::vector<uint32_t>index_buffer_type;
+
+        VertexVBO();
+
+        VertexVBO(vertex_buffer_type const& _vertices,
+        index_buffer_type const& _indices);
+
 
         /// Copy buffers to GPU
         void buffer(
@@ -75,7 +82,7 @@ namespace omni {
 
       private:
         size_t numIndices_ = 0;
-        VBO    vertexVbo_, indexVbo_;
+        ContextBoundPtr<VBO>    vertexVbo_, indexVbo_;
     };
   }
 }

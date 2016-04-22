@@ -72,7 +72,7 @@ namespace omni {
 
             scaleRange_ = _range;
             this->locked([&] {
-                for (auto& _scale : { ui_->scaleX, ui_->scaleY, ui_->scaleZ }) {
+                for (auto& _scale : { ui_->scaleX, ui_->scaleY, ui_->scaleZ, ui_->scale }) {
                     _scale->setRange(1.0 / scaleRange_, scaleRange_);
                     _scale->setSingleStep(0.05 / scaleRange_);
                     _scale->setPageStep(0.5 / scaleRange_);
@@ -105,10 +105,15 @@ namespace omni {
 
             ui_->rotation->setVisible(ui_->btnRotate->isChecked());
 
+            bool _uniformScale = dataModel()->uniformScaleEnabled();
             bool _scaleVisible = isScaleVisible() && ui_->btnScale->isChecked();
-            ui_->scaleX->setVisible(_scaleVisible);
-            ui_->scaleY->setVisible(_scaleVisible);
-            ui_->scaleZ->setVisible(_scaleVisible);
+
+            ui_->chkUniformScale->setVisible(_scaleVisible);
+            ui_->chkUniformScale->setChecked(_uniformScale);
+            ui_->scale->setVisible(_scaleVisible && _uniformScale);
+            ui_->scaleX->setVisible(_scaleVisible && !_uniformScale);
+            ui_->scaleY->setVisible(_scaleVisible && !_uniformScale);
+            ui_->scaleZ->setVisible(_scaleVisible && !_uniformScale);
 
             bool _offsetVisible = isTranslationVisible() && ui_->btnTranslate->isChecked();
             ui_->offsetX->setVisible(_offsetVisible);
@@ -117,9 +122,13 @@ namespace omni {
 
             ui_->rotation->setRotation(dataModel()->rotation());
 
-            ui_->scaleX->setValue(dataModel()->scale().x());
-            ui_->scaleY->setValue(dataModel()->scale().y());
-            ui_->scaleZ->setValue(dataModel()->scale().z());
+            if (_uniformScale) {
+              ui_->scale->setValue(dataModel()->uniformScale());
+            } else {
+              ui_->scaleX->setValue(dataModel()->scale().x());
+              ui_->scaleY->setValue(dataModel()->scale().y());
+              ui_->scaleZ->setValue(dataModel()->scale().z());
+            }
 
             ui_->offsetX->setValue(dataModel()->translation().x());
             ui_->offsetY->setValue(dataModel()->translation().y());
@@ -133,9 +142,15 @@ namespace omni {
                             ui_->rotation->x()));
 
             dataModel()->setScaleEnabled(ui_->btnScale->isChecked());
-            dataModel()->setScale(QVector3D(
+            dataModel()->setUniformScaleEnabled(ui_->chkUniformScale->isChecked());
+
+            if (dataModel()->uniformScaleEnabled()) {
+              dataModel()->setScale(ui_->scale->value());
+            } else {
+              dataModel()->setScale(QVector3D(
                                      ui_->scaleX->value(), ui_->scaleY->value(),
                                      ui_->scaleZ->value()));
+            }
 
             dataModel()->setTranslationEnabled(ui_->btnTranslate->isChecked());
             dataModel()->setTranslation(QVector3D(
@@ -163,7 +178,10 @@ namespace omni {
             connect(ui_->rotation, &Rotation::rotationChanged,
                     this, &AffineTransform::updateDataModel);
 
-            for (auto& _scale : { ui_->scaleX, ui_->scaleY, ui_->scaleZ }) {
+            connect(ui_->chkUniformScale, &QCheckBox::clicked,
+                    this, &AffineTransform::updateDataModel);
+
+            for (auto& _scale : { ui_->scaleX, ui_->scaleY, ui_->scaleZ, ui_->scale }) {
                 connect(_scale, &RangedFloat::valueChanged,
                         this, &AffineTransform::updateDataModel);
                 _scale->setPivot(1.0);
@@ -172,6 +190,7 @@ namespace omni {
             }
             setScaleRange(5.0);
 
+            ui_->scale->setLabel("XYZ");
             ui_->scaleX->setLabel("X");
             ui_->scaleY->setLabel("Y");
             ui_->scaleZ->setLabel("Z");

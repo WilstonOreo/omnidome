@@ -30,6 +30,7 @@ namespace omni {
     struct ContextBoundPtr;
 
     namespace detail {
+      /// The internal structure responsible for deleting the object
       template<typename T, typename DELETER = std::default_delete<T>>
       struct ContextBoundPtrInternal {
         friend omni::visual::ContextBoundPtr<T,DELETER>;
@@ -41,25 +42,51 @@ namespace omni {
             delete this;
           });
           ptr_ = _ptr;
+          context_  = _context;
+          surface_  = _context->surface();
         }
 
         ~ContextBoundPtrInternal() {
-          DELETER()(ptr_);
-          ptr_ = nullptr;
-          QObject::disconnect(connection_);
-        }
+          /// Make sure object is destroyed in its context
+          auto _current = QOpenGLContext::currentContext();
+          QSurface* _surface = _current ? _current->surface() : nullptr;
+          if (_current) {
+            _current->doneCurrent();
+          }
 
-        T* get() const {
-          return ptr_;
+          if (context_ && surface_) {
+            if (context_ != _current) {
+              context_->makeCurrent(surface_);
+            }
+          }
+
+          /// Delete the object
+          DELETER()(ptr_);
+
+          /// Disconnect connection from object
+          QObject::disconnect(connection_);
+
+          /// Make last context the current one
+          if (context_) {
+            context_->doneCurrent();
+            if (_current && _surface) {
+              _current->makeCurrent(_surface);
+            }
+          }
         }
 
         private:
-          T                      *ptr_ = nullptr;
+          T                  *ptr_ = nullptr;
+          QSurface       *surface_ = nullptr;
+          QOpenGLContext *context_ = nullptr;
           QMetaObject::Connection connection_;
       };
     }
 
-    /// A pointer which is free'd together with its context
+    /**@brief A pointer template which is free'd together with its context
+       @detail Holds an internal object which is responsible for freeing the
+               held object when OpenGL context is free'd.
+     **/
     template<typename T, typename DELETER = std::default_delete<T>>
     struct ContextBoundPtr {
       ContextBoundPtr() {}
@@ -83,30 +110,8 @@ namespace omni {
 
       /// Delete held object and internal state
       void reset() {
-        auto _current = QOpenGLContext::currentContext();
-
-        QSurface* _surface = _current ? _current->surface() : nullptr;
-
-        if (context_ && surface_) {
-          if (context_ != _current) {
-            context_->makeCurrent(surface_);
-          }
-        }
-
-        if (internal_) {
-          delete internal_;
-          internal_ = nullptr;
-        }
-
-        if (context_) {
-          context_->doneCurrent();
-          if (_current && _surface) {
-            _current->makeCurrent(_surface);
-          }
-        }
-
-        context_ = nullptr;
-        surface_ = nullptr;
+        delete internal_;
+        internal_ = nullptr;
       }
 
       /// Reset and and assign neew pointer
@@ -114,30 +119,29 @@ namespace omni {
       T* reset(PTR *_p,
                QOpenGLContext *_context = QOpenGLContext::currentContext()) {
         /// No initialization without context!
-
         bool _valid = _context ? _context->surface() != nullptr : false;
         if (!_valid) {
           reset();
           return nullptr;
         }
 
-
+        /// Reset and make new internal object
         reset();
         internal_ = new detail::ContextBoundPtrInternal<T,DELETER>(_p, _context);
-        context_  = _context;
-        surface_  = _context->surface();
 
         return get();
       }
 
       T* get() const {
-        return internal_ ? internal_->get() : nullptr;
+        return internal_ ? internal_->ptr_ : nullptr;
       }
 
+      /// Cast to bool operator. Return true if pointer is not null
       explicit operator bool() const {
         return get() != nullptr;
       }
 
+      /// Return reference
       typename std::add_lvalue_reference<T>::type operator*() const {
         return *get();
       }
@@ -146,15 +150,13 @@ namespace omni {
         return get();
       }
 
+      /// Return pointer to associated context
       QOpenGLContext* context() const {
-        return context_;
+        return internal_ ? internal_->context_ : nullptr;
       }
 
       private:
         detail::ContextBoundPtrInternal<T> *internal_ = nullptr;
-
-        QSurface       *surface_ = nullptr;
-        QOpenGLContext *context_ = nullptr;
     };
   }
 

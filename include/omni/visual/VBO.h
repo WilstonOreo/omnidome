@@ -28,7 +28,7 @@ namespace omni {
     /// A small Vertex Buffer Object class
     struct VBO
     {
-      VBO(QOpenGLContext * = nullptr);
+      VBO();
 
       /// Destructor. Frees VBO if necessary
       ~VBO();
@@ -76,7 +76,7 @@ namespace omni {
       GLuint id() const;
 
       private:
-        GLuint id_;
+        GLuint id_ = 0;
     };
   }
 }

@@ -40,16 +40,25 @@ namespace omni {
         rotation_ = _rotation;
     }
 
-    QVector3D const& AffineTransform::scale() const {
-        return scale_;
+    QVector3D AffineTransform::scale() const {
+        float _s = uniformScale();
+        return uniformScaleEnabled_ ? QVector3D(_s,_s,_s) : scale_;
     }
 
-    QVector3D& AffineTransform::scale() {
-        return scale_;
+    /// Return scale factor
+    float AffineTransform::uniformScale()  const {
+      return uniformScale_;
     }
 
     void AffineTransform::setScale(QVector3D const& _scale) {
         scale_ = _scale;
+    }
+    
+    void AffineTransform::setScale(float _uniformScale) {
+        uniformScale_ = _uniformScale;
+        if (!uniformScaleEnabled_) {
+          scale_ = QVector3D(_uniformScale,_uniformScale,_uniformScale);
+        }
     }
 
     QVector3D const& AffineTransform::translation() const {
@@ -74,7 +83,10 @@ namespace omni {
         _m.translate(_center);
         if (translationEnabled()) _m.translate(translation_);
         if (rotationEnabled()) _m *= rotation_.matrix();
-        if (scaleEnabled()) _m.scale(scale_);
+        if (scaleEnabled()) {
+          _m.scale(scale());
+
+        }
         _m.translate(-_center);
         return _m;
     }
@@ -87,6 +99,16 @@ namespace omni {
     /// Enable or disable rotation
     void AffineTransform::setRotationEnabled(bool _enabled) {
         rotationEnabled_ = _enabled;
+    }
+
+    /// Return true if scaling is enabled
+    bool AffineTransform::uniformScaleEnabled() const {
+        return uniformScaleEnabled_;
+    }
+
+    /// Enable or disable scale
+    void AffineTransform::setUniformScaleEnabled(bool _enabled) {
+        uniformScaleEnabled_ = _enabled;
     }
 
     /// Return true if scaling is enabled
@@ -116,6 +138,8 @@ namespace omni {
             ("rotation",rotation_)
             ("scaleEnabled",scaleEnabled_)
             ("scale",scale_)
+            ("uniformScale",uniformScale_)
+            ("uniformScaleEnabled",uniformScaleEnabled_)
             ("translationEnabled",translationEnabled_)
             ("translation",translation_);
         _os << _map;
@@ -129,6 +153,8 @@ namespace omni {
         _map.get("rotation",rotation_);
         _map.get("scaleEnabled",scaleEnabled_);
         _map.get("scale",scale_);
+        _map.get("uniformScale",uniformScale_);
+        _map.get("uniformScaleEnabled",uniformScaleEnabled_);
         _map.get("translationEnabled",translationEnabled_);
         _map.get("translation",translation_);
     }
@@ -139,6 +165,7 @@ namespace omni {
             OMNI_TEST_MEMBER_EQUAL(rotation_) &&
             OMNI_TEST_MEMBER_EQUAL(scaleEnabled_) &&
             OMNI_TEST_MEMBER_EQUAL(scale_) &&
+            OMNI_TEST_MEMBER_EQUAL(uniformScaleEnabled_) &&
             OMNI_TEST_MEMBER_EQUAL(translationEnabled_) &&
             OMNI_TEST_MEMBER_EQUAL(translation_);
     }

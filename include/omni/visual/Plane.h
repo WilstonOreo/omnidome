@@ -22,6 +22,7 @@
 #include <functional>
 #include <omni/visual/VertexVBO.h>
 #include <omni/visual/Interface.h>
+#include <omni/visual/ContextBoundPtr.h>
 
 namespace omni {
   namespace visual {
@@ -66,7 +67,7 @@ namespace omni {
       private:
         size_t horizontal_ = 10;
         size_t vertical_   = 10;
-        VertexVBO vbo_;
+        ContextBoundPtr<VertexVBO> vbo_;
     };
   }
 }

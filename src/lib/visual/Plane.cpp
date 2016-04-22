@@ -27,7 +27,8 @@ namespace omni {
     Plane::~Plane() {}
 
     void Plane::draw() const {
-      vbo_.bindAndDraw(vbo_.numIndices(), GL_QUADS);
+      if (!vbo_) return;
+      vbo_->bindAndDraw(vbo_->numIndices(), GL_QUADS);
     }
 
     void Plane::update(texcoord_transform_functor_type _texTrans) {
@@ -63,7 +64,7 @@ namespace omni {
         }
       }
 
-      vbo_.buffer(_vertices, _indices);
+      vbo_.reset(new VertexVBO(_vertices, _indices));
     }
 
     void Plane::update() {

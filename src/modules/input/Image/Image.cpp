@@ -32,11 +32,7 @@ namespace omni {
       Interface(_parent)
     {}
 
-    Image::~Image()
-    {}
-
-    void Image::free()
-    {
+    Image::~Image() {
       visual::with_current_context([&](QOpenGLFunctions& _) {
         texture_.reset();
       });

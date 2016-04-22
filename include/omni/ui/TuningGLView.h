@@ -66,8 +66,6 @@ namespace omni {
         /// Set tuning index from session
         void setTuningIndex(int);
 
-        void destroy();
-
         /// If disabled, screen rect will be stretched over whole widget
         void setKeepAspectRatio(bool);
 
@@ -88,8 +86,6 @@ namespace omni {
         void setFullScreenMode(bool);
 
         void updateWithChildViews();
-
-        void free();
 
       private slots:
 

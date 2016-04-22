@@ -24,6 +24,7 @@
 #include <QOpenGLWidget>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <omni/visual/ContextBoundPtr.h>
 
 namespace omni {
   namespace ui {
@@ -45,7 +46,7 @@ namespace omni {
 
       private:
         QOpenGLShaderProgram *shader_ = nullptr;
-        std::unique_ptr<QOpenGLTexture> tex_;
+        ContextBoundPtr<QOpenGLTexture> tex_;
     };
   }
 }

@@ -30,22 +30,27 @@ namespace omni {
         Framebuffer32F(QSize const&);
         ~Framebuffer32F();
 
+        /// Return width of framebuffer
         int width() const;
+
+        /// Return height of framebuffer
         int height() const;
 
+        /// Return size of framebuffer
         QSize const& size() const;
 
         void initialize(QSize const&);
 
         GLuint texture() const;
 
-        void free();
-
         void bind();
 
         void release();
 
       private:
+        /// Free buffer from current context
+        void free();
+
         QSize size_;
         GLuint fb_ = 0;
         GLuint colorTex_ = 0;

@@ -79,12 +79,6 @@ namespace omni {
         /// Update interface
         inline virtual void update() {}
 
-        /**@brief Free stored OpenGL Content (like textures, shaders etc)
-         * @detail Is called before destructor, when there is still an active
-         * OpenGL context
-         **/
-        inline virtual void free() {}
-
         /// An input must return width and height information
         virtual QSize size() const = 0;
 

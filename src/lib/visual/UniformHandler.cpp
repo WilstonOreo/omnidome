@@ -32,10 +32,6 @@ namespace omni {
       shader_(_shader) {}
 
     UniformHandler::~UniformHandler() {
-      free();
-    }
-
-    void UniformHandler::free() {
       gl_.glActiveTexture(GL_TEXTURE0);
 
       for (auto& _usedTextureTarget : usedTextureTargets_) {

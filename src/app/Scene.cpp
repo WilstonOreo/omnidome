@@ -49,8 +49,16 @@ namespace omni {
                 this, &Scene::updateDataModel);
 
         ui_->sliderInsideOutside->setRange(0.0,1.0);
+        ui_->sliderInsideOutside->setGripSize(0.0);
 
         connect(ui_->sliderInsideOutside, &RangedFloat::valueChanged,
+                this, &Scene::updateDataModel);
+
+        ui_->sliderFOV->setRange(10.0,100.0);
+        ui_->sliderFOV->setLabel("FOV");
+        ui_->sliderFOV->setGripSize(0.0);
+
+        connect(ui_->sliderFOV, &RangedFloat::valueChanged,
                 this, &Scene::updateDataModel);
 
         connect(ui_->boxSize, SIGNAL(currentIndexChanged(int)), this,
@@ -154,6 +162,8 @@ namespace omni {
       auto& _scene = dataModel()->scene();
 
       ui_->sliderInsideOutside->setValue(_scene.insideOutside());
+      ui_->sliderFOV->setValue(_scene.camera()->fov());
+
       ui_->chkInput->setChecked(_scene.displayInput());
       ui_->chkGrid->setChecked(_scene.displayGrid());
       ui_->boxProjectors->setCurrentIndex(util::enumToInt(_scene.displayProjectors()));
@@ -202,6 +212,7 @@ namespace omni {
     bool Scene::frontendToData() {
       auto& _scene = dataModel()->scene();
 
+      _scene.camera()->setFov(ui_->sliderFOV->value());
       _scene.setInsideOutside(ui_->sliderInsideOutside->value());
       _scene.setDisplayInput(ui_->chkInput->isChecked());
       _scene.setDisplayGrid(ui_->chkGrid->isChecked());

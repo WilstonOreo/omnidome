@@ -3,6 +3,7 @@ MESSAGE("Build setup for syphon plugin...")
 IF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 # Plugin only works on Mac OS X
  SET(plugin_input_Syphon_IGNORE TRUE)
+ return()
 ENDIF()
 
 FIND_PATH(COCOA_INCLUDE_DIR Cocoa/Cocoa.h)

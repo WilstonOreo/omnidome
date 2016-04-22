@@ -125,6 +125,8 @@ void AboutGL::paintGL()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
+  visual::viewport(this);
+
   double _time =
                  std::chrono::high_resolution_clock::now().time_since_epoch().
                  count() / 1000000000.0 - startTime_;

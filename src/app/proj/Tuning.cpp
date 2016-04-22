@@ -63,8 +63,6 @@ namespace omni {
 
       Tuning::~Tuning()
       {
-        glView_->free();
-        fullscreen_->free();
       }
 
       void Tuning::dataToFrontend() {
@@ -526,7 +524,6 @@ namespace omni {
 
       void Tuning::prepareRemove()
       {
-        glView_->destroy();
         emit closed(index());
       }
 

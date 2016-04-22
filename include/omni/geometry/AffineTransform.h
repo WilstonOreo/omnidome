@@ -41,14 +41,17 @@ namespace omni {
         /// Set new rotation angles
         void               setRotation(EulerAngles const&);
 
-        /// Return reference to scale vector
-        QVector3D      & scale();
+        /// Return scale vector
+        QVector3D scale()  const;
 
-        /// Return const reference to scale vector
-        QVector3D const& scale() const;
+        /// Return scale factor
+        float uniformScale()  const;
 
         /// Set new scale vector
         void             setScale(QVector3D const&);
+
+        /// Set uniform value for scale
+        void             setScale(float);
 
         /// Return reference to translation vector
         QVector3D      & translation();
@@ -74,6 +77,12 @@ namespace omni {
         /// Return true if scaling is enabled
         bool             scaleEnabled() const;
 
+        /// Return true if scaling is uniform (means scaling is equal for xyz)
+        bool             uniformScaleEnabled() const;
+
+        /// Set whether scaling is uniform
+        void             setUniformScaleEnabled(bool);
+
         /// Enable or disable scale
         void             setScaleEnabled(bool);
 
@@ -98,7 +107,9 @@ namespace omni {
         EulerAngles rotation_;
 
         bool scaleEnabled_ = true;
+        bool uniformScaleEnabled_ = false;
         QVector3D scale_;
+        float uniformScale_ = 1.0;
 
         bool translationEnabled_ = true;
         QVector3D translation_;

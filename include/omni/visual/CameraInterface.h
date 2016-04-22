@@ -69,6 +69,14 @@ namespace omni {
         friend bool operator==(CameraInterface const&,
                     CameraInterface const&);
 
+        /// Expose field of field
+        inline virtual qreal fov() const {
+          return 0.0;
+        }
+
+        inline virtual void setFov(qreal _fov) {
+        }
+
       private:
         /// camera orientation
         QVector3D up_;

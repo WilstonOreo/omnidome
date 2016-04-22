@@ -38,9 +38,6 @@ namespace omni {
         /// Destructor
         ~Image();
 
-        /// Free image from OpenGL context
-        void     free();
-
         /// Update image
         void     update();
 

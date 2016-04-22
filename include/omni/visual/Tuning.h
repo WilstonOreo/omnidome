@@ -82,8 +82,6 @@ namespace omni
 
       bool initialized() const;
 
-      void free();
-
       /// Update warp buffer which contains image of projector perspective
       void updateWarpBuffer(visual::Session const* _vizSession);
 

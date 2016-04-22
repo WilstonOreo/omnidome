@@ -63,10 +63,6 @@ namespace omni {
       //    doneCurrent();
         }
 
-      private slots:
-        /// Free OpenGL contents stored in widget
-        inline virtual void free() {}
-
       protected:
         bool   updateTriggered_ = false;
         /// Initialize OpenGL contents

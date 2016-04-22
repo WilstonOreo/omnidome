@@ -34,6 +34,8 @@ namespace omni {
        **/
       struct UniformHandler {
         UniformHandler(QOpenGLFunctions& _gl, QOpenGLShaderProgram& _shader);
+
+        /// Destructor. Unbind all active texture units
         ~UniformHandler();
 
         /// Set uniform value
@@ -41,9 +43,6 @@ namespace omni {
         void uniform(const char* _name, ARGS&&..._args) {
           shader_.setUniformValue(_name,_args...);
         }
-
-        /// Unbind all active texture units
-        void free();
 
         /// Set uniform value for texture with id and optional target
         void texUniform(const char* _name, GLuint _texId, GLuint _target = GL_TEXTURE_2D);
