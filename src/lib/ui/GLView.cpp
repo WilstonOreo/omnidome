@@ -42,7 +42,6 @@ namespace omni
     {
       // Kill timer
       setUpdateFrequency(0.0);
-      visual::ContextManager::instance()->remove(context());
     }
 
     void GLView::triggerUpdate() {
@@ -98,9 +97,8 @@ namespace omni
     {
       initializeOpenGLFunctions();
 
-      visual::ContextManager::instance()->add(context());
-
-      qDebug() << "Number of contexts: " << visual::ContextManager::instance()->contextCount();
+      //visual::ContextManager::instance()->add(context());
+      //qDebug() << "Number of contexts: " << visual::ContextManager::instance()->contextCount();
 
       makeCurrent();
       visual::resetOpenGLState();

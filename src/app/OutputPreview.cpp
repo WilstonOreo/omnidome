@@ -111,7 +111,8 @@ namespace omni {
                                        proj::Tuning const *_tuning) {
             auto & _screenSetup = dataModel()->screenSetup();
 
-            qDebug() << _tuning->screenGeometry();
+
+            OMNI_DEBUG << _tuning->screenGeometry() << QOpenGLContext::currentContext();
             QRectF _imageRect(_tuning->contentGeometry().translated(-ScreenSetup::desktopRect().topLeft() + _tuning->screenGeometry().topLeft()));
             auto _tuningImageRect = this->transformedRect(_imageRect).toRect();
 

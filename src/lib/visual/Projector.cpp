@@ -25,7 +25,7 @@
 
 namespace omni {
     namespace visual {
-        std::unique_ptr<QOpenGLShaderProgram> Projector::haloShader_;
+        ContextBoundPtr<QOpenGLShaderProgram> Projector::haloShader_;
 
         Projector::Projector(const proj::Projector& _proj) :
             proj_(_proj)
@@ -66,17 +66,7 @@ namespace omni {
 
         void Projector::update()
         {
-            if (!haloShader_) {
-                using omni::util::fileToStr;
-                static QString _vertSrc     = fileToStr(":/shaders/halo.vert");
-                static QString _fragmentSrc = fileToStr(":/shaders/halo.frag");
-                haloShader_.reset(new QOpenGLShaderProgram);
-                haloShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                                     _vertSrc);
-                haloShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                                     _fragmentSrc);
-                haloShader_->link();
-            }
+            initShader(haloShader_,"halo");
 
             proj::Frustum _frustum(proj_);
             eye_         = QVector3D(0, 0, 0);
@@ -150,6 +140,7 @@ namespace omni {
 
         void Projector::drawHalo() const
         {
+          if (!haloShader_) return;
             glPushMatrix();
             {
                 glLoadIdentity();

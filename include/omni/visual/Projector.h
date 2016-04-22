@@ -26,6 +26,7 @@
 #include <QOpenGLShaderProgram>
 #include <omni/visual/Interface.h>
 #include <omni/proj/Projector.h>
+#include <omni/visual/ContextBoundPtr.h>
 
 namespace omni
 {
@@ -75,7 +76,7 @@ namespace omni
       QColor color_;
       QVector3D eye_, topLeft_, topRight_, bottomLeft_, bottomRight_;
 
-      static std::unique_ptr<QOpenGLShaderProgram> haloShader_;
+      static ContextBoundPtr<QOpenGLShaderProgram> haloShader_;
     };
   }
 }

@@ -38,8 +38,11 @@ namespace omni {
     }
 
     void Calibration::render(Tuning const& _tuning) {
+      using namespace visual;
+
       int _w = buffer_.width() <= 0 ? _tuning.width() : buffer_.width();
       int _h = buffer_.height() <= 0 ? _tuning.height() : buffer_.height();
+      QSize _size(_w,_h);
 
       virtualScreen_ = !_tuning.screen(); // Screen is virtual when tuning has
                                           // no screen
@@ -48,45 +51,63 @@ namespace omni {
       contentGeometry_ = _tuning.contentGeometry();
       buffer_.resize(_w, _h);
 
-      RenderBuffer _projBuffer(_w, _h);
-      RenderBuffer _warpBuffer(_w, _h);
-      RenderBuffer _blendBuffer(_w, _h);
-
-      static std::unique_ptr<QOpenGLShaderProgram> _shader;
-      visual::initShader(_shader, "texture");
-
-      std::unique_ptr<visual::Framebuffer32F> _framebuffer;
-      std::unique_ptr<visual::Framebuffer32F> _warpFramebuffer;
-
-      _framebuffer.reset(new visual::Framebuffer32F(QSize(_w, _h)));
-      _warpFramebuffer.reset(new visual::Framebuffer32F(QSize(_w, _h)));
-
       visual::Session *_sessionViz =
-        const_cast<Session&>(_tuning.session()).visualizer();
+        const_cast<omni::Session&>(_tuning.session()).visualizer();
       _sessionViz->update();
 
-      visual::Tuning *_tuningViz = const_cast<Tuning&>(_tuning).visualizer();
+      visual::Tuning *_tuningViz = const_cast<proj::Tuning&>(_tuning).visualizer();
 
       _tuningViz->update();
       _tuningViz->updateWarpBuffer(_sessionViz);
-      _tuningViz->updateBlendTexture();
+
+      static ContextBoundPtr<QOpenGLShaderProgram> _shader;
+      visual::initShader(_shader, "texture");
+
+      static ContextBoundPtr<QOpenGLShaderProgram> _mergeShader;
+      visual::initShader(_mergeShader, "merge");
+
+      ContextBoundPtr<Framebuffer32F> _framebuffer;
+      ContextBoundPtr<Framebuffer32F> _warpBuffer;
+      ContextBoundPtr<Framebuffer32F> _blendBuffer;
+
+      /// Init framebuffer only if it does not exist yet or if size has changed
+      auto _initFramebuffer = [&](ContextBoundPtr<Framebuffer32F>& _fb) {
+        bool _reset = _fb ? _fb->size() != _size : true;
+        if (_reset) {
+          _fb.reset(new Framebuffer32F(_size));
+        }
+      };
+      _initFramebuffer(_framebuffer);
+      _initFramebuffer(_warpBuffer);
+      _initFramebuffer(_blendBuffer);
 
       /// 1st Step: Render projectors view to framebuffer texture
-      visual::draw_on_framebuffer(_framebuffer.get(), [&](QOpenGLFunctions& _) {
+      draw_on_framebuffer(_framebuffer.get(), [&](QOpenGLFunctions& _) {
         // Projection operation
         glMultMatrixf(_tuning.projector().projectionMatrix().constData());
       }, [&](QOpenGLFunctions& _) {
         // Model view operation
         _.glClearColor(0.0,0.0,1.0,1.0);
-        _.glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        _.glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         _sessionViz->drawCanvas(_tuning.session().exportSettings().
                                 mappingOutputMode());
-        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _projBuffer.ptr());
-        _.glClearColor(0.0,0.0,0.0,1.0);
+        _.glClearColor(0.0,0.0,0.0,0.0);
       });
 
 
-      visual::draw_on_framebuffer(_warpFramebuffer.get(), [&](
+      // 3th Step: Render blend mask
+      draw_on_framebuffer(_blendBuffer.get(), [&](
+                                    QOpenGLFunctions& _) {
+        // Projection operation
+        QMatrix4x4 _m;
+        _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
+        glMultMatrixf(_m.constData()); }, [&](QOpenGLFunctions& _) {
+        // Model view operation
+        _tuningViz->drawOutput();
+      });
+
+      // 4rd step: Render warp grid
+      draw_on_framebuffer(_warpBuffer.get(), [&](
                                     QOpenGLFunctions& _) {
         // Projection operation
         QMatrix4x4 _m;
@@ -94,39 +115,30 @@ namespace omni {
         glMultMatrixf(_m.constData());
       }, [&](QOpenGLFunctions& _) {
         // Model view operation
-
-        // 3rd step: Render warp grid
-        visual::useShader(*_shader, [&](visual::UniformHandler& _h) {
+        useShader(*_shader, [&](visual::UniformHandler& _h) {
           _h.texUniform("tex", _framebuffer->texture());
           _tuningViz->drawWarpPatch();
         });
-        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _warpBuffer.ptr());
-
-        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-                  GL_STENCIL_BUFFER_BIT);
-
-        // 4th Step: Render blend mask
-        _tuningViz->drawOutput();
-        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, _blendBuffer.ptr());
-        _.glFinish();
       });
 
-      _framebuffer.reset();
-      _warpFramebuffer.reset();
-
       // 5th step: Merge blend and warp buffer
-      for (int i = 0; i < buffer_.data().size(); ++i)
-      {
-        auto& _wP = _warpBuffer[i]; // Pixel from warp grid buffer
+      draw_on_framebuffer(_framebuffer.get(),[&](QOpenGLFunctions& _) {
+        // Projection operation
+        QMatrix4x4 _m;
+        _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
+        glMultMatrixf(_m.constData());
 
-        if (_wP.b == 1.0 && _wP.r == 0.0 && _wP.g == 0.0) {
-          buffer_[i] = RGBAFloat(0.0,0.0,0.0,0.0);
-          continue;
-        }
+      }, [&](QOpenGLFunctions& _) {
+        // Model view operation
+        useShader(*_mergeShader, [&](visual::UniformHandler& _h) {
+          _h.texUniform("warp", _warpBuffer->texture());
+          _h.texUniform("blend", _blendBuffer->texture());
+          visual::Rectangle::draw();
+        });
 
-        buffer_[i] =
-          RGBAFloat(_wP.r, _wP.g, _wP.b, _blendBuffer[i].r);
-      }
+        // 6rd step: Read merged output to calibration data buffer
+        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, buffer_.ptr());
+      });
     }
 
     void Calibration::render(Tuning const& _tuning, CalibrationMode _mode) {

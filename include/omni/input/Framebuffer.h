@@ -22,6 +22,7 @@
 
 #include <QOpenGLFramebufferObject>
 #include <omni/input/Interface.h>
+#include <omni/visual/ContextBoundPtr.h>
 
 namespace omni {
   namespace input {
@@ -48,7 +49,7 @@ namespace omni {
       void setupFramebuffer(QSize const& _size);
 
     private:
-      std::unique_ptr<QOpenGLFramebufferObject> framebuffer_;
+      ContextBoundPtr<QOpenGLFramebufferObject> framebuffer_;
     };
   }
 }

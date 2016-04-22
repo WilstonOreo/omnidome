@@ -36,12 +36,10 @@ namespace omni {
     }
 
     void UniformHandler::free() {
-      for (GLint _unit = 0; _unit < currentTextureUnit_; ++_unit) {
-        gl_.glActiveTexture(GL_TEXTURE0 + _unit);
+      gl_.glActiveTexture(GL_TEXTURE0);
 
-        for (auto& _usedTextureTarget : usedTextureTargets_) {
-          gl_.glBindTexture(_usedTextureTarget, 0);
-        }
+      for (auto& _usedTextureTarget : usedTextureTargets_) {
+        gl_.glBindTexture(_usedTextureTarget, 0);
       }
     }
 

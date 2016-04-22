@@ -39,22 +39,10 @@ namespace omni {
 
     TuningGLView::~TuningGLView()
     {
-      free();
     }
 
     void TuningGLView::free()
     {
-      if (!initialized() || !context()) return;
-
-      if (!context()->isValid()) return;
-
-      if (tuning()) {
-        if (tuning()->visualizer()) {
-          tuning()->visualizer()->free();
-        }
-      }
-
-      destroy();
     }
 
     void TuningGLView::setTuningIndex(int _index)
@@ -228,7 +216,6 @@ namespace omni {
 
     void TuningGLView::mousePressEvent(QMouseEvent *event)
     {
-      makeCurrent();
       QOpenGLWidget::mousePressEvent(event);
 
       if (!dataModel() || !tuning() || viewOnly()) return;
@@ -290,7 +277,6 @@ namespace omni {
       if (!dataModel() || !tuning() || viewOnly()) return;
 
       mouseDown_ = false;
-      makeCurrent();
       auto _mode = dataModel()->mode();
 
       if (_mode == Session::Mode::BLEND)
@@ -447,7 +433,6 @@ namespace omni {
     template<typename F>
     void TuningGLView::drawOnSurface(F f)
     {
-      makeCurrent();
       visual::with_current_context([&](QOpenGLFunctions& _)
       {
         visual::viewport(this);
@@ -541,7 +526,6 @@ namespace omni {
     }
 
     void TuningGLView::drawLiveView() {
-      makeCurrent();
       tuning()->visualizer()->drawCalibratedInput();
     }
 
@@ -574,8 +558,7 @@ namespace omni {
       if (!tuning()) return;
 
       makeCurrent();
-      tuning()->makeVisualizer();
-      auto *_vizTuning = tuning()->visualizer();
+      auto *_vizTuning = tuning()->makeVisualizer();
 
       if (dataModel()->canvas()) {
         dataModel()->canvas()->update();
@@ -583,15 +566,12 @@ namespace omni {
       dataModel()->makeVisualizer()->update();
       _vizTuning->update();
       _vizTuning->updateWarpBuffer(dataModel()->visualizer());
-      makeCurrent();
       triggerUpdate();
     }
 
     void TuningGLView::paintGL()
     {
       if (!tuning()) return;
-
-      makeCurrent();
 
       visual::viewport(this);
 

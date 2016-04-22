@@ -28,7 +28,7 @@
 
 namespace omni {
   namespace visual {
-    std::unique_ptr<QOpenGLShaderProgram> Session::frustumShader_;
+    ContextBoundPtr<QOpenGLShaderProgram> Session::frustumShader_;
 
     Session::Session(omni::Session const& _session) :
       session_(_session)
@@ -288,16 +288,7 @@ namespace omni {
       // Setup frustum/canvas intersection shader
       if (!frustumShader_)
       {
-        using omni::util::fileToStr;
-        static QString _vertSrc     = fileToStr(":/shaders/frustum.vert");
-        static QString _fragmentSrc = fileToStr(":/shaders/frustum.frag");
-
-        frustumShader_.reset(new QOpenGLShaderProgram());
-        frustumShader_->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                                _vertSrc);
-        frustumShader_->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                                _fragmentSrc);
-        frustumShader_->link();
+        initShader(frustumShader_,"frustum");
       }
       needsUpdate_ = false;
     }

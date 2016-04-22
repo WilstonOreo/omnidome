@@ -61,7 +61,7 @@ namespace omni
       {
         QString _vertSrc = this->vertexShaderSource();
         QString _fragmentSrc = this->fragmentShaderSource();
-        shader_.reset(new QOpenGLShaderProgram());
+        if (!shader_.reset(new QOpenGLShaderProgram())) return;
         shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
         shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
         shader_->link();

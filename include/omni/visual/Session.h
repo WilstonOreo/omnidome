@@ -78,9 +78,8 @@ namespace omni {
         template<typename F>
         void projectorDrawFunction(ProjectorSelectionMode, F f) const;
 
-
         omni::Session const& session_;
-        static std::unique_ptr<QOpenGLShaderProgram> frustumShader_;
+        static ContextBoundPtr<QOpenGLShaderProgram> frustumShader_;
 
         std::list<visual::Projector> projectors_;
         bool needsUpdate_ = true;

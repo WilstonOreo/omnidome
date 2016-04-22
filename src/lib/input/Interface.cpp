@@ -35,7 +35,6 @@ namespace omni {
     {
       /// Removing input from global controller also deactivates it
       Controller::instance()->remove(this);
-      free();
     }
 
     Input * Interface::addInput(QString const& _id, Id const& _typeId)
@@ -67,7 +66,6 @@ namespace omni {
       if (!canHaveChildren()) {
         throw exception::CannotHaveChildren();
       }
-      this->operator[](_id)->free();
       container_type::erase(_id);
     }
 

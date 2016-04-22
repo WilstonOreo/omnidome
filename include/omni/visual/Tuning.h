@@ -103,21 +103,21 @@ namespace omni
       omni::proj::Tuning& tuning_;
 
       std::unique_ptr<visual::WarpGrid> warpGrid_;
-      std::unique_ptr<QOpenGLTexture> blendTex_;
-      std::unique_ptr<Texture32F> calibrationTex_;
+      ContextBoundPtr<QOpenGLTexture> blendTex_;
+      ContextBoundPtr<Texture32F> calibrationTex_;
 
       proj::Calibration calibration_;
 
       /// Frame buffer which holds a texture with current view image
-      std::unique_ptr<QOpenGLFramebufferObject> warpGridBuffer_;
+      ContextBoundPtr<QOpenGLFramebufferObject> warpGridBuffer_;
 
       QRect blendTextureUpdateRect_;
 
-      static std::unique_ptr<QOpenGLShaderProgram> calibrationShader_;
-      static std::unique_ptr<QOpenGLShaderProgram> testCardShader_;
-      static std::unique_ptr<QOpenGLShaderProgram> blendShader_;
-      static std::unique_ptr<QOpenGLShaderProgram> blendBrushShader_;
-      static std::unique_ptr<QOpenGLShaderProgram> blendBrushCursorShader_;
+      static ContextBoundPtr<QOpenGLShaderProgram> calibrationShader_;
+      static ContextBoundPtr<QOpenGLShaderProgram> testCardShader_;
+      static ContextBoundPtr<QOpenGLShaderProgram> blendShader_;
+      static ContextBoundPtr<QOpenGLShaderProgram> blendBrushShader_;
+      static ContextBoundPtr<QOpenGLShaderProgram> blendBrushCursorShader_;
     };
   }
 }

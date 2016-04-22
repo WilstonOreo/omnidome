@@ -28,6 +28,7 @@
 #include <QVector3D>
 #include <QOpenGLFunctions>
 #include <omni/util.h>
+#include <omni/visual/ContextBoundPtr.h>
 
 class QOpenGLShaderProgram;
 
@@ -36,6 +37,7 @@ namespace omni {
     namespace util {
       /// Get current time in nano seconds
       double now();
+
 
       template<typename F>
       void for_each_circle_point(size_t _numVertices, float _radius, F _f)
@@ -56,6 +58,9 @@ namespace omni {
 
       /// Initialize shader: load from file and compile.
       void initShader(std::unique_ptr<QOpenGLShaderProgram>& _s, const char* _filename);
+
+      /// Initialize shader: load from file and compile.
+      void initShader(ContextBoundPtr<QOpenGLShaderProgram>& _s, const char* _filename);
 
       /// Calculate view rectangle on 2D OpenGL surface
       QRectF viewRect(int _imageWidth,

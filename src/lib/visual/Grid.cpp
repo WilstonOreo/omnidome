@@ -23,6 +23,8 @@
 
 namespace omni {
   namespace visual {
+    ContextBoundPtr<QOpenGLShaderProgram> Grid::shader_;
+
     Grid::Grid(CameraInterface const* _camera) :
       camera_(_camera),
       size_(10.0, 10.0) {
@@ -59,15 +61,7 @@ namespace omni {
     void Grid::update() {
       visual::with_current_context([&](QOpenGLFunctions& _) {
 
-      if (!shader_) {
-          using omni::util::fileToStr;
-          static QString _vertSrc     = fileToStr(":/shaders/grid.vert");
-          static QString _fragmentSrc = fileToStr(":/shaders/grid.frag");
-          shader_.reset(new QOpenGLShaderProgram());
-          shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, _vertSrc);
-          shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, _fragmentSrc);
-          shader_->link();
-        }
+      initShader(shader_,"grid");
 
         plane_.update();
       });

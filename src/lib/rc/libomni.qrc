@@ -14,6 +14,8 @@
     <file>shaders/halo.vert</file>
     <file>shaders/grid.frag</file>
     <file>shaders/grid.vert</file>
+    <file>shaders/merge.frag</file>
+    <file>shaders/merge.vert</file>
     <file>shaders/texture.frag</file>
     <file>shaders/texture.vert</file>
     <file>shaders/textureRect.frag</file>

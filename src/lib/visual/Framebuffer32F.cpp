@@ -84,18 +84,18 @@ namespace omni {
           return;
         }
         size_ = QSize(_w,_h);
+        _.glBindTexture(GL_TEXTURE_2D,0);
+        _.glBindRenderbuffer(GL_RENDERBUFFER,0);
         release();
       });
     }
 
     void Framebuffer32F::free() {
       visual::with_current_context([&](QOpenGLFunctions& _) {
-        bind();
         if (colorTex_) _.glDeleteTextures(1, &colorTex_);
         if (depthRb_) _.glDeleteRenderbuffers(1, &depthRb_);
         if (fb_) _.glDeleteFramebuffers(1, &fb_);
         size_ = QSize(0,0);
-        release();
       });
     }
 

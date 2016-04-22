@@ -279,7 +279,6 @@ namespace omni {
                 auto& _widget = widgets_[_index];
                 contents_->layout()->removeWidget(_widget.get());
                 _widget->setParent(nullptr);
-                _widget.reset();
                 widgets_.erase(widgets_.begin() + _index);
 
                 dataModel()->tunings().remove(_index);

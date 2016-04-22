@@ -25,6 +25,7 @@
 #include <omni/visual/Interface.h>
 #include <omni/visual/CameraInterface.h>
 #include <omni/visual/Plane.h>
+#include <omni/visual/ContextBoundPtr.h>
 
 class QOpenGLShaderProgram;
 
@@ -66,7 +67,7 @@ namespace omni {
         CameraInterface const* camera_ = nullptr;
         Plane plane_;
         QVector2D size_;
-        std::unique_ptr<QOpenGLShaderProgram> shader_;
+        static ContextBoundPtr<QOpenGLShaderProgram> shader_;
     };
   }
 }

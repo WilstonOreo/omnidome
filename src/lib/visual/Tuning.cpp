@@ -31,20 +31,17 @@
 
 namespace omni {
   namespace visual {
-    std::unique_ptr<QOpenGLShaderProgram> Tuning::blendShader_;
-    std::unique_ptr<QOpenGLShaderProgram> Tuning::blendBrushShader_;
-    std::unique_ptr<QOpenGLShaderProgram> Tuning::blendBrushCursorShader_;
-    std::unique_ptr<QOpenGLShaderProgram> Tuning::testCardShader_;
-    std::unique_ptr<QOpenGLShaderProgram> Tuning::calibrationShader_;
+    ContextBoundPtr<QOpenGLShaderProgram> Tuning::blendShader_;
+    ContextBoundPtr<QOpenGLShaderProgram> Tuning::blendBrushShader_;
+    ContextBoundPtr<QOpenGLShaderProgram> Tuning::blendBrushCursorShader_;
+    ContextBoundPtr<QOpenGLShaderProgram> Tuning::testCardShader_;
+    ContextBoundPtr<QOpenGLShaderProgram> Tuning::calibrationShader_;
 
     Tuning::Tuning(omni::proj::Tuning& _tuning) :
       tuning_(_tuning)
-    {
-    }
+    {}
 
-    Tuning::~Tuning() {
-      free();
-    }
+    Tuning::~Tuning() {}
 
     omni::proj::Tuning const& Tuning::tuning() const
     {
@@ -370,36 +367,37 @@ namespace omni {
     void Tuning::updateWarpBuffer(visual::Session const *_vizSession)
     {
       with_current_context([&](QOpenGLFunctions& _) {
+        // If tuning size has changed, reset warpGrid framebuffer
+        if (warpGridBuffer_)
+        {
+          if ((warpGridBuffer_->width() != tuning().width()) ||
+              (warpGridBuffer_->height() !=
+               tuning().height())) warpGridBuffer_.reset();
+        }
 
-      // If tuning size has changed, reset warpGrid framebuffer
-      if (warpGridBuffer_)
-      {
-        if ((warpGridBuffer_->width() != tuning().width()) ||
-            (warpGridBuffer_->height() !=
-             tuning().height())) warpGridBuffer_.reset();
-      }
+        // If warp grid framebuffer is empty, make a new one
+        if (!warpGridBuffer_)
+        {
+          if (!warpGridBuffer_.reset(new QOpenGLFramebufferObject(
+                                       tuning().width(),
+                                       tuning().height()))) return;
 
-      // If warp grid framebuffer is empty, make a new one
-      if (!warpGridBuffer_)
-      {
-        warpGridBuffer_.reset(new QOpenGLFramebufferObject(
-                                tuning().width(),
-                                tuning().height()));
-        warpGridBuffer_->setAttachment(QOpenGLFramebufferObject::Depth);
-      }
+          warpGridBuffer_->setAttachment(QOpenGLFramebufferObject::Depth);
+        }
 
-      // Draw projector's perspective on framebuffer texture
-      draw_on_framebuffer(warpGridBuffer_.get(),
-                          [&](QOpenGLFunctions& _) // Projection
-                                                   // Operation
-      {
-        glMultMatrixf(tuning().projector().projectionMatrix().constData());
-      },
-                          [&](QOpenGLFunctions& _) // Model View
-                                                   // Operation
-      {
-        _vizSession->drawCanvas();
-      });
+        // Draw projector's perspective on framebuffer texture
+        draw_on_framebuffer(warpGridBuffer_.get(),
+                            [&](QOpenGLFunctions& _) // Projection
+                                                     // Operation
+        {
+          glMultMatrixf(tuning().projector().projectionMatrix().constData());
+        },
+                            [&](QOpenGLFunctions& _) // Model View
+                                                     // Operation
+        {
+          _.glEnable(GL_DEPTH_TEST);
+          _vizSession->drawCanvas();
+        });
       });
     }
 
@@ -419,10 +417,10 @@ namespace omni {
     }
 
     void Tuning::generateCalibrationData() {
-        calibration_.setRenderSize(QSize(tuning_.width()*2,
-                                       tuning_.height()*2));
-        tuning_.renderCalibration(calibration_);
-        calibrationTex_.reset(new Texture32F(calibration_.buffer()));
+      calibration_.setRenderSize(QSize(tuning_.width(),
+                                       tuning_.height()));
+      tuning_.renderCalibration(calibration_);
+      calibrationTex_.reset(new Texture32F(calibration_.buffer()));
     }
 
     QVector4D Tuning::channelCorrectionAsVec(Channel _channel) const {
@@ -461,7 +459,8 @@ namespace omni {
         glLoadIdentity();
 
         useShader(*calibrationShader_, [&](UniformHandler& _h) {
-          _h.texUniform("image", _currentInput->textureId(),GL_TEXTURE_RECTANGLE);
+          _h.texUniform("image", _currentInput->textureId(),
+                        GL_TEXTURE_RECTANGLE);
           _h.texUniform("uv_map", *calibrationTex_);
           _h.uniform("image_size",
                      QVector2D(_currentInput->width(),
@@ -482,7 +481,6 @@ namespace omni {
           Rectangle::draw(-0.5, 0.5, 0.5, -0.5);
         });
       });
-
     }
 
     QRectF Tuning::tuningRect() const

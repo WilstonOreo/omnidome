@@ -92,6 +92,15 @@ namespace omni {
         initShader(*_s, _filename);
       }
 
+      void initShader(ContextBoundPtr<QOpenGLShaderProgram>& _s,
+                      const char *_filename) {
+        /// Dont do anything if shader is already allocated
+        if (!!_s) return;
+        if (_s.reset(new QOpenGLShaderProgram())) {
+          initShader(*_s, _filename);
+        }
+      }
+
       QRectF viewRect(int _imageWidth,
                     int _imageHeight,
                     int _canvasWidth,

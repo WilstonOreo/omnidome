@@ -23,6 +23,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFramebufferObject>
 #include <omni/input/Framebuffer.h>
+#include <omni/visual/ContextBoundPtr.h>
 
 namespace omni {
   namespace input {
@@ -56,7 +57,7 @@ namespace omni {
          **/
         virtual void shaderUniformHandler();
 
-        std::unique_ptr<QOpenGLShaderProgram> shader_;
+        ContextBoundPtr<QOpenGLShaderProgram> shader_;
 
       private:
         /// String representing the fragment shader source
