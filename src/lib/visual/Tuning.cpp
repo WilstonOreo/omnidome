@@ -158,7 +158,7 @@ namespace omni {
         // buffer to texture
         if (blendTextureUpdateRect_ != _fullRect)
         {
-          auto _r = _transformRect(blendTextureUpdateRect_);
+          auto _r = _transformRect(blendTextureUpdateRect_) & _fullRect;
           auto _data = _blendMask.strokeBuffer().cropRect(_r);
           _ptr = (void *)(_data.data().data());
           _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
@@ -173,7 +173,7 @@ namespace omni {
           blendTextureUpdateRect_ = _fullRect;
         } else
         {
-          auto _r = _transformRect(_fullRect);
+          auto _r = _fullRect;
           _.glBindTexture(GL_TEXTURE_2D, blendTex_->textureId());
           _.glTexSubImage2D(GL_TEXTURE_2D, 0, _r.x(), _r.y(),
                             _r.width(), _r.height(), GL_RED,
