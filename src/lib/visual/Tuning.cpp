@@ -123,8 +123,11 @@ namespace omni {
         {
           // Reset blend texture
           blendTextureUpdateRect_ = _fullRect;
-          blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().
-                                             strokeBuffer().toQImage()));
+
+          if (!blendTex_.reset(new QOpenGLTexture(tuning_.blendMask().
+                                             strokeBuffer().toQImage()))) {
+                                               return;
+                                             }
           blendTex_->bind();
           _.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
                             GL_CLAMP_TO_EDGE);
@@ -139,6 +142,7 @@ namespace omni {
         auto& _blendMask = tuning().blendMask();
         auto _ptr = _blendMask.strokeBufferData();
 
+        OMNI_DEBUG << blendTex_.get();
 
         /// Transform tuning sized rect to stroke buffer sized rect
         auto _transformRect = [&](QRect const& _rect) -> QRect {
