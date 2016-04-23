@@ -137,7 +137,9 @@ namespace omni {
         auto& _blendMask = tuning().blendMask();
         auto _ptr = _blendMask.strokeBufferData();
 
-        auto _fullRect = QRect(0, 0, tuning_.width(), tuning_.height());
+
+        const int _resolution = BlendMask::resolution();
+        auto _fullRect = QRect(0, 0, _resolution, _resolution);
 
         /// Transform tuning sized rect to stroke buffer sized rect
         auto _transformRect = [&](QRect const& _rect) -> QRect {
