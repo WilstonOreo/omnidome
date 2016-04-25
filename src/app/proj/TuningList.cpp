@@ -314,7 +314,9 @@ namespace omni {
             void TuningList::clear()
             {
                 removeWidgets();
-                dataModel()->tunings().clear();
+                if (dataModel()) {
+                  dataModel()->tunings().clear();
+                }
             }
 
             void TuningList::removeWidgets()

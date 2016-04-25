@@ -4,8 +4,9 @@ uniform float strip_bottom; // 1.0
 
 float mapping(in vec3 uvw, out vec2 texCoords)
 {
-  texCoords.s = fract(atan(uvw.y,uvw.x) / (2.0*PI));
-  texCoords.t = 1.0 - acos(uvw.z) / PI;
+  vec3 norm = normalize(uvw);
+  texCoords.s = fract(atan(norm.y,norm.x) / (2.0*PI));
+  texCoords.t = 1.0 - acos(norm.z) / PI;
 
   if (texCoords.t < strip_bottom || texCoords.t > strip_top)
   {

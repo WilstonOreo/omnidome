@@ -201,6 +201,9 @@ namespace omni
   }
 
   void Session::fromStream(QDataStream& _is) {
+      /// Reset visualizer
+      viz_.reset();
+
       PropertyMap _map;
       _is >> _map;
       _map.get("tunings",tunings_);

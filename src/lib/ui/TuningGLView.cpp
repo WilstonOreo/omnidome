@@ -547,6 +547,7 @@ namespace omni {
 
       makeCurrent();
       auto *_vizTuning = tuning()->makeVisualizer();
+      OMNI_DEBUG << _vizTuning;
 
       if (dataModel()->canvas()) {
         dataModel()->canvas()->update();

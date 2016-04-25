@@ -30,21 +30,21 @@ namespace omni {
             class CubeMapTestImage : public omni::ui::ParameterWidget {
                 Q_OBJECT
             public:
-                CubeMapTestImage(omni::input::CubeMapTestImage*, QWidget* = nullptr);
-                ~CubeMapTestImage();
+              CubeMapTestImage(omni::input::CubeMapTestImage*, QWidget* = nullptr);
+              ~CubeMapTestImage();
 
-            public slots:
-                void setFlipText(bool);
-                void setDisplayNumbers(bool);
-                void triggerUpdate();
+          public slots:
+              void setFlipText(bool);
+              void setDisplayNumbers(bool);
+              void triggerUpdate();
 
-            signals:
-                void inputChanged();
+          signals:
+              void inputChanged();
 
-            private:
-                void setup();
+          private:
+              void setup();
 
-                omni::input::CubeMapTestImage* input_ = nullptr;
+              omni::input::CubeMapTestImage* input_ = nullptr;
                 QUniquePtr<InputPreview> preview_;
             };
         }

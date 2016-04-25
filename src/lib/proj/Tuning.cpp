@@ -233,6 +233,10 @@ namespace omni {
 
         /// Read tuning from stream
         void Tuning::fromStream(QDataStream& _is) {
+            /// Reset visualizer
+            viz_.reset();
+
+
             PropertyMap _map;
             _is >> _map;
             QRect _screenRect = _map.getValue<QRect>("screenRect");
