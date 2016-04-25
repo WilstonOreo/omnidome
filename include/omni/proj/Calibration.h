@@ -26,6 +26,8 @@
 #include <omni/RenderBuffer.h>
 #include <omni/proj/ColorCorrection.h>
 #include <omni/proj/CalibrationMode.h>
+#include <omni/visual/ContextBoundPtr.h>
+#include <omni/visual/Framebuffer32F.h>
 
 namespace omni {
   namespace proj {
@@ -50,6 +52,9 @@ namespace omni {
 
         /// Render calibration from tuning and set calibration mode
         void render(Tuning const &, CalibrationMode);
+
+        /// Render to framebuffer object
+        void render(Tuning const&, ContextBoundPtr<visual::Framebuffer32F>&);
 
         /// Render to image
         QImage                 toImage() const;

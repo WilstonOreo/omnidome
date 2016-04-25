@@ -23,7 +23,6 @@
 #include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
 #include <omni/visual/Rectangle.h>
-#include <omni/visual/Framebuffer32F.h>
 #include <omni/visual/UniformHandler.h>
 
 #include <QPainter>
@@ -37,7 +36,7 @@ namespace omni {
       render(_tuning, mode_);
     }
 
-    void Calibration::render(Tuning const& _tuning) {
+    void Calibration::render(Tuning const& _tuning, ContextBoundPtr<visual::Framebuffer32F>& _framebuffer) {
       using namespace visual;
 
       int _w = buffer_.width() <= 0 ? _tuning.width() : buffer_.width();
@@ -52,34 +51,39 @@ namespace omni {
       buffer_.resize(_w, _h);
 
       visual::Session *_sessionViz =
-        const_cast<omni::Session&>(_tuning.session()).visualizer();
-      _sessionViz->update();
-
+          const_cast<omni::Session&>(_tuning.session()).visualizer();
       visual::Tuning *_tuningViz = const_cast<proj::Tuning&>(_tuning).visualizer();
 
-      _tuningViz->update();
-      _tuningViz->updateWarpBuffer(_sessionViz);
-
-      static ContextBoundPtr<QOpenGLShaderProgram> _shader;
-      visual::initShader(_shader, "texture");
+      static ContextBoundPtr<Framebuffer32F> _warpBuffer;
+      static ContextBoundPtr<Framebuffer32F> _blendBuffer;
 
       static ContextBoundPtr<QOpenGLShaderProgram> _mergeShader;
-      visual::initShader(_mergeShader, "merge");
+      static ContextBoundPtr<QOpenGLShaderProgram> _shader;
 
-      ContextBoundPtr<Framebuffer32F> _framebuffer;
-      ContextBoundPtr<Framebuffer32F> _warpBuffer;
-      ContextBoundPtr<Framebuffer32F> _blendBuffer;
+      primaryContextSwitch([&](QOpenGLFunctions& _) {
 
-      /// Init framebuffer only if it does not exist yet or if size has changed
-      auto _initFramebuffer = [&](ContextBoundPtr<Framebuffer32F>& _fb) {
-        bool _reset = _fb ? _fb->size() != _size : true;
-        if (_reset) {
-          _fb.reset(new Framebuffer32F(_size));
-        }
-      };
-      _initFramebuffer(_framebuffer);
-      _initFramebuffer(_warpBuffer);
-      _initFramebuffer(_blendBuffer);
+        /// Update visualizers
+        _sessionViz->update();
+        _tuningViz->update();
+        _tuningViz->updateWarpBuffer(_sessionViz);
+
+        /// Initialize shaders
+        visual::initShader(_shader, "texture");
+        visual::initShader(_mergeShader, "merge");
+
+        /// Initialize framebuffers
+
+        /// Init framebuffer only if it does not exist yet or if size has changed
+        auto _initFramebuffer = [&](ContextBoundPtr<Framebuffer32F>& _fb) {
+          bool _reset = _fb ? _fb->size() != _size : true;
+          if (_reset) {
+            _fb.reset(new Framebuffer32F(_size));
+          }
+        };
+        _initFramebuffer(_warpBuffer);
+        _initFramebuffer(_blendBuffer);
+        _initFramebuffer(_framebuffer);
+      });
 
       /// 1st Step: Render projectors view to framebuffer texture
       draw_on_framebuffer(_framebuffer.get(), [&](QOpenGLFunctions& _) {
@@ -135,9 +139,23 @@ namespace omni {
           _h.texUniform("blend", _blendBuffer->texture());
           visual::Rectangle::draw();
         });
+      });
+    }
 
-        // 6rd step: Read merged output to calibration data buffer
-        _.glReadPixels(0, 0, _w, _h, GL_RGBA, GL_FLOAT, buffer_.ptr());
+    void Calibration::render(Tuning const& _tuning) {
+      ContextBoundPtr<visual::Framebuffer32F> _framebuffer;
+
+      render(_tuning,_framebuffer);
+      withCurrentContext([&](QOpenGLFunctions& _) {
+        _framebuffer->bind();
+        _.glViewport(0, 0, _framebuffer->width(), _framebuffer->height());
+        //  Read merged output to calibration data buffer
+        _.glReadPixels(0, 0, buffer_.width(), buffer_.height(), GL_RGBA, GL_FLOAT, buffer_.ptr());
+        _framebuffer->release();
+      });
+
+      primaryContextSwitch([&](QOpenGLFunctions& _) {
+        _framebuffer.reset();
       });
     }
 
@@ -145,6 +163,7 @@ namespace omni {
       mode_ = _mode;
       render(_tuning);
     }
+
 
     QImage Calibration::toImage() const {
       int _w = buffer_.width();

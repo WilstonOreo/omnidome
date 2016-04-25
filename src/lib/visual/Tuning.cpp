@@ -414,8 +414,7 @@ namespace omni {
     void Tuning::generateCalibrationData() {
       calibration_.setRenderSize(QSize(tuning_.width(),
                                        tuning_.height()));
-      tuning_.renderCalibration(calibration_);
-      calibrationTex_.reset(new Texture32F(calibration_.buffer()));
+      calibration_.render(tuning_,calibrationFramebuffer_);
     }
 
     QVector4D Tuning::channelCorrectionAsVec(Channel _channel) const {
@@ -440,7 +439,7 @@ namespace omni {
       if (!_currentInput) return;
 
       withCurrentContext([&](QOpenGLFunctions& _) {
-        if (!calibrationTex_) {
+        if (!calibrationFramebuffer_) {
           generateCalibrationData();
         }
 
@@ -456,7 +455,7 @@ namespace omni {
         useShader(*calibrationShader_, [&](UniformHandler& _h) {
           _h.texUniform("image", _currentInput->textureId(),
                         GL_TEXTURE_RECTANGLE);
-          _h.texUniform("uv_map", *calibrationTex_);
+          _h.texUniform("uv_map", calibrationFramebuffer_->texture());
           _h.uniform("image_size",
                      QVector2D(_currentInput->width(),
                                _currentInput->height()));

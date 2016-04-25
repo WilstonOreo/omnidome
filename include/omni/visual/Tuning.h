@@ -102,7 +102,7 @@ namespace omni
 
       ContextBoundPtr<visual::WarpGrid> warpGrid_;
       ContextBoundPtr<QOpenGLTexture> blendTex_;
-      ContextBoundPtr<Texture32F> calibrationTex_;
+      ContextBoundPtr<Framebuffer32F> calibrationFramebuffer_;
 
       proj::Calibration calibration_;
 

@@ -245,9 +245,9 @@ namespace omni {
     void Scene::drawGrid() const {
       if (!grid_ || !displayGrid()) return;
 
-      grid_->draw(0.5);
+      grid_->draw(insideOutside());
       glDisable(GL_DEPTH_TEST);
-      grid_->draw(0.5);
+      grid_->draw(1.0 - insideOutside());
       glEnable(GL_DEPTH_TEST);
     }
 
