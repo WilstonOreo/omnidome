@@ -42,7 +42,7 @@ namespace omni {
     }
 
     void Rectangle::draw(QSize const& _size) {
-      with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         glBegin(GL_QUADS);
         {
           int _w = _size.width();

@@ -82,7 +82,7 @@ namespace omni {
 
       private:
         size_t numIndices_ = 0;
-        ContextBoundPtr<VBO>    vertexVbo_, indexVbo_;
+        std::unique_ptr<VBO>    vertexVbo_, indexVbo_;
     };
   }
 }

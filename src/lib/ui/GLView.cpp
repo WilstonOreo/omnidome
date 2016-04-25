@@ -97,7 +97,7 @@ namespace omni
     {
       initializeOpenGLFunctions();
 
-      //visual::ContextManager::instance()->add(context());
+      ContextManager::instance()->add(context());
       //qDebug() << "Number of contexts: " << visual::ContextManager::instance()->contextCount();
 
       makeCurrent();
@@ -112,7 +112,7 @@ namespace omni
       _h = _h & ~1;
       makeCurrent();
       visual::viewport(this);
-      visual::with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         _.glClearColor(0.0,0.0,0.0,1.0);
       });
 

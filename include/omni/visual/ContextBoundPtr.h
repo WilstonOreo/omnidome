@@ -23,9 +23,11 @@
 #include <memory>
 #include <QOpenGLContext>
 #include <QOpenGLFramebufferObject>
+#include <omni/visual/ContextManager.h>
 
 namespace omni {
   namespace visual {
+
     template<typename T, typename DELETER>
     struct ContextBoundPtr;
 
@@ -36,7 +38,7 @@ namespace omni {
         friend omni::visual::ContextBoundPtr<T,DELETER>;
         template<typename PTR>
         ContextBoundPtrInternal(PTR *_ptr, QOpenGLContext *_context) {
-          connection_ = QObject::connect(_context,
+           QObject::connect(_context,
                                          &QOpenGLContext::aboutToBeDestroyed,
                                          [&]() {
             delete this;
@@ -47,42 +49,20 @@ namespace omni {
         }
 
         ~ContextBoundPtrInternal() {
+
           /// Make sure object is destroyed in its context
-    /*      auto _current = QOpenGLContext::currentContext();
-          QSurface* _surface = _current ? _current->surface() : nullptr;
-          if (_current) {
-            _current->doneCurrent();
-          }
-
-          if (context_ && surface_) {
-            if (context_ != _current) {
-              context_->makeCurrent(surface_);
+          contextSwitch(context_,[&](QOpenGLFunctions& _) {
+            if (ptr_) {
+              DELETER()(ptr_);
+              ptr_ = nullptr;
             }
-          }
-  */
-          /// Delete the object
-          if (ptr_) {
-            DELETER()(ptr_);
-            ptr_ = nullptr;
-          }
-
-          /// Disconnect connection from object
-          QObject::disconnect(connection_);
-/*
-          /// Make last context the current one
-          if (context_) {
-            context_->doneCurrent();
-            if (_current && _surface) {
-              _current->makeCurrent(_surface);
-            }
-          }*/
+          });
         }
 
         private:
           T                  *ptr_ = nullptr;
           QSurface       *surface_ = nullptr;
           QOpenGLContext *context_ = nullptr;
-          QMetaObject::Connection connection_;
       };
     }
 
@@ -97,7 +77,7 @@ namespace omni {
       template<typename PTR>
       ContextBoundPtr(PTR *_p,
                       QOpenGLContext *_context =
-                        QOpenGLContext::currentContext()) {
+                      ContextManager::primaryContext()) {
         reset(_p, _context);
       }
 
@@ -114,14 +94,16 @@ namespace omni {
 
       /// Delete held object and internal state
       void reset() {
-        delete internal_;
-        internal_ = nullptr;
+        if (internal_) {
+          delete internal_;
+          internal_ = nullptr;
+        }
       }
 
       /// Reset and and assign neew pointer
       template<typename PTR>
       T* reset(PTR *_p,
-               QOpenGLContext *_context = QOpenGLContext::currentContext()) {
+               QOpenGLContext *_context = ContextManager::primaryContext()) {
         /// Reset and make new internal object
         reset();
         /// No initialization without context!

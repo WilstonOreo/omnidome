@@ -47,9 +47,10 @@ namespace omni {
 
         void release();
 
-      private:
         /// Free buffer from current context
-        void free();
+        void destroy();
+
+      private:
 
         QSize size_;
         GLuint fb_ = 0;

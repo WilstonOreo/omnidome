@@ -86,15 +86,15 @@ namespace omni {
 
     void Tuning::update()
     {
-      if (!QOpenGLContext::currentContext()) return;
-
       using omni::util::fileToStr;
 
-      initShader(testCardShader_, "testcard");
-      initShader(blendShader_, "blend");
-      initShader(blendBrushShader_, "blendbrush");
-      initShader(blendBrushCursorShader_, "blendBrushCursor");
-      initShader(calibrationShader_, "calibration");
+      primaryContextSwitch([&](QOpenGLFunctions& _) {
+        initShader(testCardShader_, "testcard");
+        initShader(blendShader_, "blend");
+        initShader(blendBrushShader_, "blendbrush");
+        initShader(blendBrushCursorShader_, "blendBrushCursor");
+        initShader(calibrationShader_, "calibration");
+      });
 
       updateWarpGrid();
       updateBlendTexture();
@@ -114,13 +114,13 @@ namespace omni {
 
     void Tuning::updateBlendTexture()
     {
-      visual::with_current_context([&](QOpenGLFunctions& _)
-      {
         const int _resolution = BlendMask::resolution();
         auto _fullRect = QRect(0, 0, _resolution, _resolution);
 
         if (!blendTex_)
         {
+          primaryContextSwitch([&](QOpenGLFunctions& _) {
+
           // Reset blend texture
           blendTextureUpdateRect_ = _fullRect;
 
@@ -138,7 +138,12 @@ namespace omni {
           _.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                             GL_LINEAR);
           blendTex_->release();
+          });
         }
+
+
+      withCurrentContext([&](QOpenGLFunctions& _)
+      {
         auto& _blendMask = tuning().blendMask();
         auto _ptr = _blendMask.strokeBufferData();
 
@@ -187,7 +192,7 @@ namespace omni {
     {
       auto _rect = tuningRect();
 
-      visual::with_current_context([&](QOpenGLFunctions& _)
+      withCurrentContext([&](QOpenGLFunctions& _)
       {
         _.glEnable(GL_BLEND);
 
@@ -214,7 +219,7 @@ namespace omni {
     {
       if (!blendShader_) return;
 
-      visual::with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         _.glEnable(GL_DEPTH_TEST);
         _.glEnable(GL_BLEND);
         _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -310,7 +315,7 @@ namespace omni {
     }
 
     void Tuning::drawBlendMask() const {
-      visual::with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         _.glEnable(GL_DEPTH_TEST);
         _.glEnable(GL_BLEND);
         _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -362,7 +367,7 @@ namespace omni {
 
     void Tuning::updateWarpGrid() {
       if (!warpGrid_) {
-        warpGrid_.reset(new visual::WarpGrid(tuning_.warpGrid()));
+        if (!warpGrid_.reset(new visual::WarpGrid(tuning_.warpGrid()))) return;
       }
 
       warpGrid_->update();
@@ -371,7 +376,7 @@ namespace omni {
     /// Update warp buffer which contains image of projector perspective
     void Tuning::updateWarpBuffer(visual::Session const *_vizSession)
     {
-      with_current_context([&](QOpenGLFunctions& _) {
+        primaryContextSwitch([&](QOpenGLFunctions& _) {
         // If tuning size has changed, reset warpGrid framebuffer
         if (warpGridBuffer_)
         {
@@ -389,6 +394,7 @@ namespace omni {
 
           warpGridBuffer_->setAttachment(QOpenGLFramebufferObject::Depth);
         }
+      });
 
         // Draw projector's perspective on framebuffer texture
         draw_on_framebuffer(warpGridBuffer_.get(),
@@ -403,7 +409,6 @@ namespace omni {
           _.glEnable(GL_DEPTH_TEST);
           _vizSession->drawCanvas();
         });
-      });
     }
 
     void Tuning::generateCalibrationData() {
@@ -434,7 +439,7 @@ namespace omni {
 
       if (!_currentInput) return;
 
-      with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         if (!calibrationTex_) {
           generateCalibrationData();
         }

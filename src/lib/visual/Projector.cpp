@@ -66,7 +66,9 @@ namespace omni {
 
         void Projector::update()
         {
+          withCurrentContext([&](QOpenGLFunctions& _) {
             initShader(haloShader_,"halo");
+          });
 
             proj::Frustum _frustum(proj_);
             eye_         = QVector3D(0, 0, 0);
@@ -80,7 +82,7 @@ namespace omni {
         {
             Interface::color(color_);
 
-            with_current_context([this](QOpenGLFunctions& _)
+            withCurrentContext([this](QOpenGLFunctions& _)
             {
                 _.glLineWidth(selected_ ? 2.0 : 1.0);
 
@@ -109,7 +111,7 @@ namespace omni {
         {
             Interface::color(color_);
 
-            with_current_context([this](QOpenGLFunctions& _)
+            withCurrentContext([this](QOpenGLFunctions& _)
             {
                 _.glLineWidth(selected_ ? 4.0 : 1.5);
             });

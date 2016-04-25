@@ -100,7 +100,7 @@ namespace omni
 
       omni::proj::Tuning& tuning_;
 
-      std::unique_ptr<visual::WarpGrid> warpGrid_;
+      ContextBoundPtr<visual::WarpGrid> warpGrid_;
       ContextBoundPtr<QOpenGLTexture> blendTex_;
       ContextBoundPtr<Texture32F> calibrationTex_;
 

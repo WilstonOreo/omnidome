@@ -406,7 +406,7 @@ namespace omni {
 
       glLoadIdentity();
 
-      visual::with_current_context([this](QOpenGLFunctions& _)
+      withCurrentContext([this](QOpenGLFunctions& _)
       {
         _.glDisable(GL_LIGHTING);
         _.glDisable(GL_CULL_FACE);
@@ -421,7 +421,7 @@ namespace omni {
     template<typename F>
     void TuningGLView::drawOnSurface(F f)
     {
-      visual::with_current_context([&](QOpenGLFunctions& _)
+      withCurrentContext([&](QOpenGLFunctions& _)
       {
         visual::viewport(this);
         _.glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -545,16 +545,10 @@ namespace omni {
     void TuningGLView::showEvent(QShowEvent *event) {
       if (!tuning()) return;
 
-      makeCurrent();
-      auto *_vizTuning = tuning()->makeVisualizer();
-      OMNI_DEBUG << _vizTuning;
-
       if (dataModel()->canvas()) {
         dataModel()->canvas()->update();
       }
-      dataModel()->makeVisualizer()->update();
-      _vizTuning->update();
-      _vizTuning->updateWarpBuffer(dataModel()->visualizer());
+
       triggerUpdate();
     }
 
@@ -562,9 +556,10 @@ namespace omni {
     {
       if (!tuning()) return;
 
+      makeCurrent();
       visual::viewport(this);
 
-      visual::with_current_context([&](QOpenGLFunctions& _)
+      withCurrentContext([&](QOpenGLFunctions& _)
       {
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
                   GL_STENCIL_BUFFER_BIT);

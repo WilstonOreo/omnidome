@@ -67,14 +67,13 @@ namespace omni {
     {
       if (!dataModel()) return;
 
-      auto *_vizSession = dataModel()->makeVisualizer();
-
+      auto *_vizSession = dataModel()->visualizer();
       if (!_vizSession) return;
 
       auto& _scene = dataModel()->scene();
 
       makeCurrent();
-      visual::with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         glClear(
           GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         visual::viewport(this);

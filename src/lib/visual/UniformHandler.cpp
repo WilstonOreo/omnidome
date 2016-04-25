@@ -51,7 +51,7 @@ namespace omni {
 
     void useShader(QOpenGLShaderProgram& _s,
                    std::function<void(UniformHandler&)>f) {
-      with_current_context([&](QOpenGLFunctions& _gl) {
+      withCurrentContext([&](QOpenGLFunctions& _gl) {
         _s.bind();
         {
           UniformHandler _handler(_gl, _s);

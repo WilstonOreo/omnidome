@@ -1,4 +1,3 @@
-
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
@@ -18,44 +17,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_VISUAL_CONTEXTMANAGER_H_
-#define OMNI_VISUAL_CONTEXTMANAGER_H_
+#ifndef OMNI_VISUAL_CONTEXTSWITCH_H_
+#define OMNI_VISUAL_CONTEXTSWITCH_H_
 
-#include <set>
+#include <functional>
 #include <QOpenGLContext>
-#include <QOpenGLFunctions>
-#include <QOffscreenSurface>
-#include <omni/util.h>
-#include <omni/visual/ContextSwitch.h>
 
 namespace omni {
   namespace visual {
-    class ContextManager {
-    public:
-      static ContextManager* instance();
+    typedef std::function<void (QOpenGLFunctions&)>ContextFunctor;
 
-      bool hasPrimaryContext() const;
+    /// Do OpenGL operations with current context, if it exists
+    void withCurrentContext(ContextFunctor);
 
-      static QOpenGLContext* primaryContext();
+    void contextSwitch(QOpenGLContext*, ContextFunctor);
 
-      void add(QOpenGLContext*);
-      void remove(QOpenGLContext*);
-
-      int contextCount() const;
-
-    private:
-      ContextManager();
-      ~ContextManager();
-
-      void makePrimaryContext();
-
-      static ContextManager *instance_;
-      QUniquePtr<QOpenGLContext> primaryContext_;
-      QUniquePtr<QOffscreenSurface> surface_;
-      std::set<QOpenGLContext*> contexts_;
-    };
+    /// Switch to primary context to create OpenGL objects like textures etc
+    void primaryContextSwitch(ContextFunctor);
   }
-  using visual::ContextManager;
+
+  using visual::withCurrentContext;
+  using visual::contextSwitch;
+  using visual::primaryContextSwitch;
 }
 
-#endif /* OMNI_VISUAL_CONTEXTMANAGER_H_ */
+#endif /* OMNI_VISUAL_CONTEXTSWITCH_H_ */

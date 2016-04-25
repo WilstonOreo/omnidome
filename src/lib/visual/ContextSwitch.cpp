@@ -1,4 +1,3 @@
-
 /* Copyright (c) 2014-2015 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
@@ -18,44 +17,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_VISUAL_CONTEXTMANAGER_H_
-#define OMNI_VISUAL_CONTEXTMANAGER_H_
-
-#include <set>
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
-#include <QOffscreenSurface>
-#include <omni/util.h>
 #include <omni/visual/ContextSwitch.h>
+#include <omni/visual/ContextManager.h>
 
 namespace omni {
   namespace visual {
-    class ContextManager {
-    public:
-      static ContextManager* instance();
+    void contextSwitch(QOpenGLContext *_context, ContextFunctor f) {
+      auto *_current = QOpenGLContext::currentContext();
+      if (!_current) return;
 
-      bool hasPrimaryContext() const;
+      if (_context != _current) {
+        _context->makeCurrent(_current->surface());
+      }
 
-      static QOpenGLContext* primaryContext();
+      withCurrentContext(f);
 
-      void add(QOpenGLContext*);
-      void remove(QOpenGLContext*);
+      if (_context != _current) {
+        _current->makeCurrent(_current->surface());
+      }
+    }
 
-      int contextCount() const;
+    void primaryContextSwitch(ContextFunctor f) {
+      contextSwitch(ContextManager::primaryContext(), f);
+    }
 
-    private:
-      ContextManager();
-      ~ContextManager();
+    void withCurrentContext(ContextFunctor f)
+    {
+      auto _currentContext = QOpenGLContext::currentContext();
 
-      void makePrimaryContext();
+      if (!_currentContext) return;
 
-      static ContextManager *instance_;
-      QUniquePtr<QOpenGLContext> primaryContext_;
-      QUniquePtr<QOffscreenSurface> surface_;
-      std::set<QOpenGLContext*> contexts_;
-    };
+      if (!_currentContext->isValid()) {
+        qDebug() << "Context is not valid!";
+        return;
+      }
+      QOpenGLFunctions glFuncs(_currentContext);
+      f(glFuncs);
+    }
   }
-  using visual::ContextManager;
 }
-
-#endif /* OMNI_VISUAL_CONTEXTMANAGER_H_ */

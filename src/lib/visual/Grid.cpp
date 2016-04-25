@@ -40,7 +40,7 @@ namespace omni {
 
     void Grid::draw(float _alpha) const {
       if (!shader_) return;
-      with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         shader_->bind();
         shader_->setUniformValue("resolution",
                                  GLfloat(resolution_.width() * size().x()),
@@ -59,9 +59,8 @@ namespace omni {
     }
 
     void Grid::update() {
-      visual::with_current_context([&](QOpenGLFunctions& _) {
-
-      initShader(shader_,"grid");
+      primaryContextSwitch([&](QOpenGLFunctions& _) {
+        initShader(shader_,"grid");
 
         plane_.update();
       });

@@ -106,7 +106,10 @@ namespace omni {
         }
       }
 
-      vbo_.buffer(_vertices, _indices);
+      primaryContextSwitch([&](QOpenGLFunctions& _) {
+        vbo_.buffer(_vertices, _indices);
+
+      });
     }
   }
 }

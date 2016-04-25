@@ -42,7 +42,7 @@ namespace omni {
       /// Copy static vertex array onto GPU
       template<typename BUF>
       void bufferStaticArray(BUF const& _buf) {
-        with_current_context([&](QOpenGLFunctions& _) {
+        withCurrentContext([&](QOpenGLFunctions& _) {
           _.glBindBuffer(GL_ARRAY_BUFFER, id());
           {
             _.glBufferData(GL_ARRAY_BUFFER,
@@ -57,7 +57,7 @@ namespace omni {
       /// Copy static index array onto GPU
       template<typename BUF>
       void bufferStaticElementArray(BUF const& _buf) {
-        with_current_context([&](QOpenGLFunctions& _) {
+        withCurrentContext([&](QOpenGLFunctions& _) {
           _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id());
           {
             _.glBufferData(GL_ELEMENT_ARRAY_BUFFER,

@@ -59,12 +59,14 @@ namespace omni
     {
       if (!shader_)
       {
-        QString _vertSrc = this->vertexShaderSource();
-        QString _fragmentSrc = this->fragmentShaderSource();
-        if (!shader_.reset(new QOpenGLShaderProgram())) return;
-        shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
-        shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
-        shader_->link();
+        primaryContextSwitch([&](QOpenGLFunctions& _) {
+          QString _vertSrc = this->vertexShaderSource();
+          QString _fragmentSrc = this->fragmentShaderSource();
+          if (!shader_.reset(new QOpenGLShaderProgram())) return;
+          shader_->addShaderFromSourceCode(QOpenGLShader::Vertex,_vertSrc);
+          shader_->addShaderFromSourceCode(QOpenGLShader::Fragment,_fragmentSrc);
+          shader_->link();
+        });
       }
 
       setupFramebuffer(size());

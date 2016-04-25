@@ -31,14 +31,15 @@ namespace omni {
     }
 
     Framebuffer32F::~Framebuffer32F() {
-      free();
+      destroy();
     }
 
     void Framebuffer32F::initialize(QSize const& _size) {
       if (_size == size()) return;
 
-      free();
-      visual::with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
+        destroy();
+
         int _h = _size.height();
         int _w = _size.width();
         // RGBA32F 2D texture to render to
@@ -80,7 +81,7 @@ namespace omni {
         status = _.glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
         if (status != GL_FRAMEBUFFER_COMPLETE) {
-          free();
+          destroy();
           return;
         }
         size_ = QSize(_w,_h);
@@ -90,8 +91,8 @@ namespace omni {
       });
     }
 
-    void Framebuffer32F::free() {
-      visual::with_current_context([&](QOpenGLFunctions& _) {
+    void Framebuffer32F::destroy() {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         if (colorTex_) _.glDeleteTextures(1, &colorTex_);
         if (depthRb_) _.glDeleteRenderbuffers(1, &depthRb_);
         if (fb_) _.glDeleteFramebuffers(1, &fb_);
@@ -100,13 +101,13 @@ namespace omni {
     }
 
     void Framebuffer32F::bind() {
-      visual::with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         _.glBindFramebuffer(GL_FRAMEBUFFER, fb_);
       });
     }
 
     void Framebuffer32F::release() {
-      visual::with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         QOpenGLFramebufferObject::bindDefault();
       });
     }

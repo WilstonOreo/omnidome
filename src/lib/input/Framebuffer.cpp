@@ -68,7 +68,7 @@ namespace omni {
       // Framebuffer is already setup, no work to do
       if (!_reset) return;
 
-      visual::with_current_context([&](QOpenGLFunctions& _) {
+      primaryContextSwitch([&](QOpenGLFunctions& _) {
         QOpenGLFramebufferObjectFormat _format;
         _format.setMipmap(false);
         _format.setSamples(0);

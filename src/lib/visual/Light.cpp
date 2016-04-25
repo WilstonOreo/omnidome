@@ -67,7 +67,7 @@ namespace omni {
     void Light::setup(GLuint _index)
     {
       // light and material
-      visual::with_current_context([&](QOpenGLFunctions& _)
+      withCurrentContext([&](QOpenGLFunctions& _)
       {
         _.glEnable(GL_LIGHTING);
         _.glEnable(GL_COLOR_MATERIAL);

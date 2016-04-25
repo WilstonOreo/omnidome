@@ -37,32 +37,48 @@ namespace omni {
     }
 
     bool ContextManager::hasPrimaryContext() const {
-      return primaryContext_;
+      return !!primaryContext_;
     }
 
     QOpenGLContext* ContextManager::primaryContext() {
-      return primaryContext_;
+      instance()->makePrimaryContext();
+      return instance()->primaryContext_.get();
+    }
+
+    void ContextManager::makePrimaryContext() {
+      if (instance()->primaryContext_.get()) {
+        return;
+      }
+
+      primaryContext_.reset(new QOpenGLContext());
+      primaryContext_->setFormat(QOpenGLContext::globalShareContext()->format());
+      primaryContext_->setShareContext(QOpenGLContext::globalShareContext());
+
+      surface_.reset(new QOffscreenSurface());
+      surface_->setFormat(primaryContext_->format());
+      surface_->create();
+
+      OMNI_DEBUG << primaryContext_->create();
     }
 
     void ContextManager::add(QOpenGLContext* _ctx) {
-      if (!primaryContext_) {
-        primaryContext_ = _ctx;/*
-        primaryContext_ = QOpenGLContext::globalShareContext();
-        primaryContext_->setFormat(_ctx->format());
-        primaryContext_->setScreen(_ctx->screen());
-        primaryContext_->create();*/
-      }
+      makePrimaryContext();
+
+      _ctx->connect(_ctx,&QOpenGLContext::aboutToBeDestroyed,[&]() {
+        this->remove(_ctx);
+      });
+
+      OMNI_DEBUG << "New context:" << _ctx << contextCount();
+
       contexts_.insert(_ctx);
-      if (_ctx != primaryContext_) {
-        _ctx->setShareContext(primaryContext_);
+      if (_ctx != primaryContext_.get()) {
+        _ctx->setShareContext(primaryContext_.get());
       }
     }
 
     void ContextManager::remove(QOpenGLContext* _ctx) {
       contexts_.erase(_ctx);
-      if (_ctx == primaryContext_) {
-        primaryContext_ = nullptr;
-      }
+      OMNI_DEBUG << "Context removed:" << contextCount();
     }
 
     int ContextManager::contextCount() const {

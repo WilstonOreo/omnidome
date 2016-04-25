@@ -29,7 +29,7 @@ namespace omni {
 
     void Circle::drawLine(QPointF const& _pos, float _rX, float _rY) const
     {
-      with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         glPushMatrix();
         glScalef(_rX, _rY, 1.0);
         glTranslatef(_pos.x() / _rX, _pos.y() / _rY, 0.0);
@@ -47,7 +47,7 @@ namespace omni {
 
     void Circle::drawFill(QPointF const& _pos, float _rX, float _rY) const
     {
-      with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         glPushMatrix();
         glLoadIdentity();
         glScalef(_rX, _rY, 1.0);

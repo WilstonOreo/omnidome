@@ -110,7 +110,7 @@ namespace omni {
         visual::initShader(shader_,"textureRect");
       }
 
-      visual::with_current_context([this](QOpenGLFunctions& _)
+      withCurrentContext([this](QOpenGLFunctions& _)
       {
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         auto _rect = viewRect();

@@ -38,7 +38,7 @@ namespace omni {
       }
 
       void checkOpenGLError() {
-        with_current_context([&](QOpenGLFunctions& _) {
+        withCurrentContext([&](QOpenGLFunctions& _) {
           GLenum err(_.glGetError());
 
           while (err != GL_NO_ERROR) {
@@ -56,19 +56,6 @@ namespace omni {
             err = _.glGetError();
           }
         });
-      }
-
-      void with_current_context(std::function<void(QOpenGLFunctions&)>f)
-      {
-        auto _currentContext = QOpenGLContext::currentContext();
-        if (!_currentContext) return;
-
-        if (!_currentContext->isValid()) {
-          qDebug() << "Context is not valid!";
-          return;
-        }
-        QOpenGLFunctions glFuncs(_currentContext);
-        f(glFuncs);
       }
 
       void initShader(QOpenGLShaderProgram& _s, const char *_filename) {
@@ -128,7 +115,7 @@ namespace omni {
       }
 
       void resetOpenGLState() {
-        with_current_context([&](QOpenGLFunctions& _gl) {
+        withCurrentContext([&](QOpenGLFunctions& _gl) {
           _gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
           _gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 

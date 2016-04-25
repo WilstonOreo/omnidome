@@ -87,7 +87,7 @@ namespace omni {
 
         dataModel()->scene().updateLights();
 
-        visual::with_current_context([&](QOpenGLFunctions& _)
+        withCurrentContext([&](QOpenGLFunctions& _)
         {
           auto *_canvas = dataModel()->canvas();
 

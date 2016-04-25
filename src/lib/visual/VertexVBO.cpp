@@ -35,8 +35,9 @@ namespace omni {
       vertexVbo_.reset(new VBO());
       indexVbo_.reset(new VBO());
 
-      with_current_context([&](QOpenGLFunctions& _)
+      withCurrentContext([&](QOpenGLFunctions& _)
       {
+
         // bind VBO in order to use
         _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_->id());
         {
@@ -57,7 +58,7 @@ namespace omni {
     }
 
     void VertexVBO::bind() const {
-      with_current_context([this](QOpenGLFunctions& _)
+      withCurrentContext([this](QOpenGLFunctions& _)
       {
         _.glBindBuffer(GL_ARRAY_BUFFER, vertexVbo_->id());
         _.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo_->id());
@@ -76,7 +77,7 @@ namespace omni {
       if ((_numElements < 4) || (_numElements > numIndices_)) {
         return;
       }
-      with_current_context([&](QOpenGLFunctions& _)
+      withCurrentContext([&](QOpenGLFunctions& _)
       {
         glTexCoordPointer(3, GL_FLOAT, sizeof(Vertex),
                           (void *)Vertex::texCoordOffset());
@@ -87,7 +88,7 @@ namespace omni {
     }
 
     void VertexVBO::unbind() const {
-      with_current_context([this](QOpenGLFunctions& _)
+      withCurrentContext([this](QOpenGLFunctions& _)
       {
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisableClientState(GL_NORMAL_ARRAY);

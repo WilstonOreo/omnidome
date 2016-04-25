@@ -33,17 +33,14 @@ namespace omni {
     {}
 
     Image::~Image() {
-      visual::with_current_context([&](QOpenGLFunctions& _) {
-        texture_.reset();
-      });
     }
 
     void Image::update()
     {
       if (image_.width() == 0) return;
+      if (texture_) return;
 
-      visual::with_current_context([&](QOpenGLFunctions& _) {
-        if (texture_) return;
+      withCurrentContext([&](QOpenGLFunctions& _) {
 
         texture_.reset(new QOpenGLTexture(QOpenGLTexture::TargetRectangle));
         texture_->setData(image_);

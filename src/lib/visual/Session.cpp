@@ -58,7 +58,7 @@ namespace omni {
 
       if (!_canvas) return;
 
-      with_current_context([&](QOpenGLFunctions& _)
+      withCurrentContext([&](QOpenGLFunctions& _)
       {
         auto *_input = session_.inputs().current();
         auto *_mapping = const_cast<mapping::Interface *>(session_.mapping());
@@ -121,7 +121,7 @@ namespace omni {
 
       if (!_canvas) return;
 
-      with_current_context([&](QOpenGLFunctions& _)
+      withCurrentContext([&](QOpenGLFunctions& _)
       {
         auto *_input = session_.inputs().current();
         auto *_mapping = const_cast<mapping::Interface *>(session_.mapping());
@@ -240,21 +240,25 @@ namespace omni {
     {
       if (needsUpdate()) return;
 
-      glDisable(GL_DEPTH_TEST);
+      withCurrentContext([&](QOpenGLFunctions& _) {
+        _.glDisable(GL_DEPTH_TEST);
 
-      projectorDrawFunction(_selectedMode, [&](Projector const& _proj, int) {
-        _proj.draw();
+        projectorDrawFunction(_selectedMode, [&](Projector const& _proj, int) {
+          _proj.draw();
+        });
+
+        if (session_.canvas())
+        {
+          projectorDrawFunction(_selectedMode, [&](Projector const& _proj, int) {
+            _proj.drawPositioning(
+              session_.canvas()->center());
+            });
+          }
+
+          _.glEnable(GL_DEPTH_TEST);
+
       });
 
-      if (session_.canvas())
-      {
-        projectorDrawFunction(_selectedMode, [&](Projector const& _proj, int) {
-          _proj.drawPositioning(
-            session_.canvas()->center());
-        });
-      }
-
-      glEnable(GL_DEPTH_TEST);
     }
 
     void Session::drawProjectorHalos(ProjectorSelectionMode _selectionMode) const

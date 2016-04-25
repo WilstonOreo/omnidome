@@ -35,7 +35,7 @@ namespace omni {
 
     void Texture32F::destroy() {
       if (texId_ != 0) {
-        with_current_context([&](QOpenGLFunctions& _) {
+        withCurrentContext([&](QOpenGLFunctions& _) {
           _.glDeleteTextures(1, &texId_);
           texId_ = 0;
         });
@@ -54,7 +54,7 @@ namespace omni {
       destroy();
       target_ = _target;
       size_= QSize(_buf.width(), _buf.height());
-      with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         _.glGenTextures(1, &texId_);
         _.glBindTexture(target_, texId_);
         _.glTexParameteri(target_, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
@@ -70,13 +70,13 @@ namespace omni {
     }
 
     void Texture32F::bind() {
-      with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         _.glBindTexture(target_, texId_);
       });
     }
 
     void Texture32F::release() {
-      with_current_context([&](QOpenGLFunctions& _) {
+      withCurrentContext([&](QOpenGLFunctions& _) {
         _.glBindTexture(target_, 0);
       });
     }

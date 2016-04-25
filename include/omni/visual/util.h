@@ -29,6 +29,7 @@
 #include <QOpenGLFunctions>
 #include <omni/util.h>
 #include <omni/visual/ContextBoundPtr.h>
+#include <omni/visual/ContextSwitch.h>
 
 class QOpenGLShaderProgram;
 
@@ -50,8 +51,6 @@ namespace omni {
         }
       }
 
-      /// Do OpenGL operations with current context, if it exists
-      void with_current_context(std::function<void(QOpenGLFunctions&)> f);
 
       /// Initialize shader: load from file and compile.
       void initShader(QOpenGLShaderProgram& _s, const char* _filename);
@@ -112,7 +111,7 @@ namespace omni {
       template<typename FRAMEBUFFER, typename PROJECTION, typename MODELVIEW>
       void draw_on_framebuffer(FRAMEBUFFER* _f, PROJECTION _p, MODELVIEW _m)
       {
-        with_current_context([&](QOpenGLFunctions& _) {
+        withCurrentContext([&](QOpenGLFunctions& _) {
           _f->bind();
           _.glViewport(0, 0, _f->width(), _f->height());
           _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
@@ -140,7 +139,7 @@ namespace omni {
       template<typename WIDGET>
       void viewport(WIDGET *_widget)
       {
-        with_current_context([&_widget](QOpenGLFunctions& _)
+        withCurrentContext([&_widget](QOpenGLFunctions& _)
         {
           int d = _widget->devicePixelRatio();
           _.glViewport(0, 0, _widget->width() * d, _widget->height() * d);
@@ -151,7 +150,6 @@ namespace omni {
     using util::checkOpenGLError;
     using util::resetOpenGLState;
     using util::initShader;
-    using util::with_current_context;
     using util::draw_on_framebuffer;
     using util::viewport;
   }

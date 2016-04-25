@@ -64,7 +64,9 @@ namespace omni {
         }
       }
 
-      vbo_.reset(new VertexVBO(_vertices, _indices));
+      primaryContextSwitch([&](QOpenGLFunctions& _) {
+        vbo_.reset(new VertexVBO(_vertices, _indices));
+      });
     }
 
     void Plane::update() {

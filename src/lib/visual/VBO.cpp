@@ -37,7 +37,7 @@ namespace omni
 
     void VBO::gen()
     {
-      with_current_context([this](QOpenGLFunctions& _)
+      withCurrentContext([this](QOpenGLFunctions& _)
       {
         if (!id_)
           _.glGenBuffers(1, &id_);
@@ -46,7 +46,7 @@ namespace omni
 
     void VBO::freeAndGen()
     {
-      with_current_context([this](QOpenGLFunctions& _)
+      withCurrentContext([this](QOpenGLFunctions& _)
       {
         if (id_) free();
         _.glGenBuffers(1,&id_);
@@ -55,7 +55,7 @@ namespace omni
 
     void VBO::free()
     {
-      with_current_context([this](QOpenGLFunctions& _)
+      withCurrentContext([this](QOpenGLFunctions& _)
       {
         if (id_)
           _.glDeleteBuffers(1,&id_);
