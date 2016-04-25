@@ -107,7 +107,9 @@ namespace omni {
       makeCurrent();
 
       if (!shader_) {
-        visual::initShader(shader_,"textureRect");
+        primaryContextSwitch([&](QOpenGLFunctions& _) {
+          visual::initShader(shader_,"textureRect");
+        });
       }
 
       withCurrentContext([this](QOpenGLFunctions& _)
