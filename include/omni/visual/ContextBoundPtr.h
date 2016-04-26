@@ -38,7 +38,7 @@ namespace omni {
         friend omni::visual::ContextBoundPtr<T,DELETER>;
         template<typename PTR>
         ContextBoundPtrInternal(PTR *_ptr, QOpenGLContext *_context) {
-           QObject::connect(_context,
+           connection_ = QObject::connect(_context,
                                          &QOpenGLContext::aboutToBeDestroyed,
                                          [&]() {
             delete this;
@@ -49,6 +49,8 @@ namespace omni {
         }
 
         ~ContextBoundPtrInternal() {
+          QObject::disconnect(connection_);
+          if (!QOpenGLContext::currentContext()) return;
 
           /// Make sure object is destroyed in its context
           contextSwitch(context_,[&](QOpenGLFunctions& _) {
@@ -60,6 +62,7 @@ namespace omni {
         }
 
         private:
+          QMetaObject::Connection connection_;
           T                  *ptr_ = nullptr;
           QSurface       *surface_ = nullptr;
           QOpenGLContext *context_ = nullptr;
@@ -83,7 +86,7 @@ namespace omni {
 
       ~ContextBoundPtr() {
         // Internal is not deleted here because its done by the bound context
-        reset();
+        //reset();
       }
 
       /// Delete copy constructor

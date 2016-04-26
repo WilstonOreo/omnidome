@@ -71,6 +71,7 @@ namespace omni
 
       setupFramebuffer(size());
 
+
       visual::draw_on_framebuffer(framebuffer(),
       [&](QOpenGLFunctions& _) // Projection Operation
       {

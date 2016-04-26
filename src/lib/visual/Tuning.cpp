@@ -147,8 +147,6 @@ namespace omni {
         auto& _blendMask = tuning().blendMask();
         auto _ptr = _blendMask.strokeBufferData();
 
-        OMNI_DEBUG << blendTex_.get();
-
         /// Transform tuning sized rect to stroke buffer sized rect
         auto _transformRect = [&](QRect const& _rect) -> QRect {
                                 auto _res = BlendMask::resolution();
