@@ -57,6 +57,9 @@ namespace omni {
       surface_.reset(new QOffscreenSurface());
       surface_->setFormat(primaryContext_->format());
       surface_->create();
+
+      /// Create primary context
+      primaryContext_->create();
     }
 
     void ContextManager::add(QOpenGLContext* _ctx) {
