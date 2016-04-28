@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -23,7 +23,6 @@
 #include <type_traits>
 #include <memory>
 #include <QDebug>
-#include <QFile>
 #include <QByteArray>
 #include <QString>
 #include <omni/exception.h>
@@ -52,27 +51,13 @@ namespace omni {
     }
 
     /// Return content of file from a file name
-    inline static QString fileToStr(const QString& _filename)
-    {
-      QFile _f(_filename);
-
-      _f.open(QIODevice::ReadOnly | QIODevice::Text);
-      return _f.readAll();
-    }
+    QString fileToStr(const QString& _filename);
 
     /// Remove file extension and return string without file extension
-    template<typename STRING>
-    STRING removeFileExt(STRING const& _filename)
-    {
-      int _lastIndex = _filename.lastIndexOf(".");
+    QString removeFileExt(QString const& _filename);
 
-      if (_lastIndex == -1) return _filename;
-
-      QString _rawName;
-
-      for (int i = 0; i < _lastIndex; ++i) _rawName.push_back(_filename[i]);
-      return _rawName;
-    }
+    /// Checks if file exists and is actually a file and not a directory
+    bool fileExists(QString const&);
 
     /// Test if two instances (which inherit from SerializationInterface) have
     // equal data

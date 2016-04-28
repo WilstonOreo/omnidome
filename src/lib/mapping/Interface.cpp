@@ -23,8 +23,7 @@
 #include <omni/util.h>
 #include <omni/serialization/PropertyMap.h>
 #include <omni/visual/Scene.h>
-
-#include <QOpenGLShaderProgram>
+#include <omni/visual/Shader.h>
 
 namespace omni {
     namespace mapping {
@@ -190,14 +189,14 @@ namespace omni {
 
         QString Interface::vertexShaderSourceCode() const
         {
-            return util::fileToStr(":/shaders/mapping/common.vert");
+            return visual::ShaderCompiler::compile(":/shaders/mapping/common.vert");
         }
 
         QString Interface::fragmentShaderSourceCode() const
         {
             return
-                util::fileToStr(":/shaders/mapping/Template.frag") +
-                util::fileToStr(QString(
+                visual::ShaderCompiler::compile(":/shaders/mapping/Template.frag") +
+                visual::ShaderCompiler::compile(QString(
                                     ":/shaders/mapping/") + getTypeId().str() +
                                 ".frag");
         }

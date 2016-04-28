@@ -22,6 +22,7 @@
 #include <QFileInfo>
 
 #include "Application.h"
+#include <omni/util.h>
 
 namespace omni {
   namespace ui {
@@ -41,12 +42,7 @@ namespace omni {
     }
 
     bool RecentFileAction::fileExists() const {
-      QFileInfo checkFile(file_);
-
-      // check if file exists and if yes: Is it really a file and no directory?
-      if (checkFile.exists() && checkFile.isFile()) return true;
-
-      return false;
+      return util::fileExists(file_);
     }
 
     void RecentFileAction::setState() {

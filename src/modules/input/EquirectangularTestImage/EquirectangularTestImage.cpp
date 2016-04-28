@@ -20,6 +20,7 @@
 #include "EquirectangularTestImage.h"
 
 #include <omni/util.h>
+#include <omni/visual/Shader.h>
 #include <omni/ui/TestInputPreview.h>
 
 namespace omni
@@ -39,14 +40,14 @@ namespace omni
     {
       static QString _fragmentSrc;
       if (_fragmentSrc.isEmpty())
-        _fragmentSrc = util::fileToStr(":/shaders/EquirectangularTestImage.frag");
+        _fragmentSrc = visual::ShaderCompiler::compile(":/shaders/EquirectangularTestImage.frag");
       return _fragmentSrc;
     }
     QString EquirectangularTestImage::vertexShaderSource() const
     {
       static QString _vertSrc;
       if (_vertSrc.isEmpty())
-        _vertSrc = util::fileToStr(":/shaders/test_image.vert");
+        _vertSrc = visual::ShaderCompiler::compile(":/shaders/test_image.vert");
       return _vertSrc;
     }
 

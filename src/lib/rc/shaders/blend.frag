@@ -17,61 +17,8 @@ uniform vec4 cc_brightness;
 uniform vec4 cc_contrast;
 uniform vec4 cc_multiplier;
 
-struct ChannelCorrection {
-    float gamma;
-    float brightness;
-    float contrast;
-    float multiplier;
-};
-
-ChannelCorrection
-    cc_red = ChannelCorrection(cc_gamma.r, cc_brightness.r, cc_contrast.r, cc_multiplier.r),
-    cc_green = ChannelCorrection(cc_gamma.g, cc_brightness.g, cc_contrast.g, cc_multiplier.g),
-    cc_blue = ChannelCorrection(cc_gamma.b, cc_brightness.b, cc_contrast.b, cc_multiplier.b),
-    cc_all = ChannelCorrection(cc_gamma.a, cc_brightness.a, cc_contrast.a, cc_multiplier.a);
-
-float brightness(float v, float brightness_value) {
-    return max(v + brightness_value,0.0);
-}
-
-/// Calculate contrast corrected value
-float contrast(float v, float contrast_value) {
-    float _c = (contrast_value <= 0.0) ?
-        contrast_value + 1.0 :
-        (1.0 / (1.0 - contrast_value));
-    return (v - 0.5) * max(_c, 0.0f) + 0.5;
-}
-
-/// Calculate gamma corrected value
-float gamma(float v, float gamma_value) {
-    float g = 0.0;
-    if (gamma_value >= 0.0) {
-        g = 1.0 / (1.0 + gamma_value);
-    } else {
-        g = (1.0 - gamma_value);
-    }
-    return pow(v,g*g*g*g);
-}
-
-float corrected(in ChannelCorrection c, in float v) {
-    return brightness(contrast(gamma(v,
-        c.gamma * c.multiplier),
-        c.contrast * c.multiplier),
-        c.brightness * c.multiplier);
-}
-
-
-vec3 color_correction(vec3 color) {
-    if (cc_all.multiplier == 0.0) {
-        return color;
-    }
-    return clamp(vec3(
-        corrected(cc_all,corrected(cc_red,color.r)),
-        corrected(cc_all,corrected(cc_green,color.g)),
-        corrected(cc_all,corrected(cc_blue,color.b))
-    ),vec3(0.0,0.0,0.0),vec3(1.0,1.0,1.0));
-}
-
+#include ":/shaders/colorcorrection.h"
+#include ":/shaders/grayscale.h"
 
 float edgeblend_border(in vec2 coord)
 {
@@ -104,14 +51,13 @@ vec4 edgeblend_color(in float value)
   return vec4(mv,mv,mv,1.0);
 }
 
-vec3 grayscale(vec3 c)
-{
-  float v = c.r*0.299 + c.g*0.587 + c.b*0.114;
-  return vec3(v);
-}
 
 void main()
 {
+  cc_red = ChannelCorrection(cc_gamma.r, cc_brightness.r, cc_contrast.r, cc_multiplier.r);
+  cc_green = ChannelCorrection(cc_gamma.g, cc_brightness.g, cc_contrast.g, cc_multiplier.g);
+  cc_blue = ChannelCorrection(cc_gamma.b, cc_brightness.b, cc_contrast.b, cc_multiplier.b);
+  cc_all = ChannelCorrection(cc_gamma.a, cc_brightness.a, cc_contrast.a, cc_multiplier.a);
   vec2 texCoords = gl_TexCoord[0].st;
 
   vec3 output_color = mix(

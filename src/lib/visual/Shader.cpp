@@ -19,13 +19,16 @@
 
 #include <omni/visual/Shader.h>
 
+#include <omni/util.h>
+#include <QFile>
+
 namespace omni {
   namespace visual {
     void initShader(QOpenGLShaderProgram& _s, const char *_filename) {
       QString _vertSrc =
-        omni::util::fileToStr(":/shaders/" + QString(_filename) + ".vert");
+        ShaderCompiler::compile(":/shaders/" + QString(_filename) + ".vert");
       QString _fragmentSrc =
-        omni::util::fileToStr(":/shaders/" + QString(_filename) + ".frag");
+        ShaderCompiler::compile(":/shaders/" + QString(_filename) + ".frag");
 
       _s.addShaderFromSourceCode(QOpenGLShader::Vertex,
                                  _vertSrc);
@@ -66,6 +69,68 @@ namespace omni {
         }
         _s.release();
       });
+    }
+
+
+    QString ShaderCompiler::compile(QString const& _sourceFile) {
+      std::set<QString> _includedFiles;
+      return compileRecursive(_sourceFile,_includedFiles);
+    }
+
+    QString ShaderCompiler::compileRecursive(QString const& _sourceFile, std::set<QString>& _includedFiles) {
+      if (_includedFiles.count(_sourceFile) > 0) return QString();
+
+      QFile _f(_sourceFile);
+      _includedFiles.insert(_sourceFile);
+
+      QString _outputFile;
+
+      if (_f.open(QIODevice::ReadOnly))
+      {
+         QTextStream in(&_f);
+         while (!in.atEnd())
+         {
+            QString _line = in.readLine().trimmed();
+            if (_line.startsWith("#include")) {
+              // Handle include
+              auto _includedFilename = parseIncludeLine("",_line);
+              _outputFile += compileRecursive(_includedFilename,_includedFiles);
+            } else {
+              _outputFile += _line + '\n';
+            }
+         }
+         _f.close();
+      }
+      return _outputFile;
+    }
+
+    QString ShaderCompiler::parseIncludeLine(QString const& _baseDir, QString const& _line) {
+      QString _file = _line;
+      _file = _file.remove("#include").trimmed();
+      if (_file.isEmpty()) return QString();
+
+      int _separatorBegin = 0;
+      for (; _separatorBegin < _file.length(); ++_separatorBegin) {
+        if (_file[_separatorBegin] == '"' || _file[_separatorBegin] == '<') break;
+      }
+      int _separatorEnd = _separatorBegin + 1;
+      bool _haveSep = false;
+
+      for (; _separatorEnd < _file.length(); ++_separatorEnd) {
+        auto _sep = _file[_separatorBegin];
+        if ((_sep == '"' && _file[_separatorEnd] == '"') ||
+            (_sep == '<' && _file[_separatorEnd] == '>')) {
+              _haveSep = true;
+              break;
+            }
+      }
+
+
+      if (!_haveSep) return QString();
+      _separatorBegin += 1;
+      _file = _file.remove(0,_separatorBegin);
+      _file.truncate(_separatorEnd - _separatorBegin);
+      return _file.trimmed();
     }
   }
 }

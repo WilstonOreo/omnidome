@@ -21,6 +21,7 @@
 
 #include <QDebug>
 #include <omni/util.h>
+#include <omni/visual/Shader.h>
 #include "CubeMapTestImageWidget.h"
 
 namespace omni
@@ -40,7 +41,7 @@ namespace omni
     {
       static QString _fragmentSrc;
       if (_fragmentSrc.isEmpty())
-        _fragmentSrc = util::fileToStr(":/shaders/CubeMapTestImage.frag");
+        _fragmentSrc = visual::ShaderCompiler::compile(":/shaders/CubeMapTestImage.frag");
       return _fragmentSrc;
     }
 
@@ -48,7 +49,7 @@ namespace omni
     {
       static QString _vertSrc;
       if (_vertSrc.isEmpty())
-        _vertSrc = util::fileToStr(":/shaders/test_image.vert");
+        _vertSrc = visual::ShaderCompiler::compile(":/shaders/test_image.vert");
       return _vertSrc;
     }
 
@@ -89,12 +90,14 @@ namespace omni
     {
       TestImage::toPropertyMap(_map);
       _map("flipText",flipText_);
+      _map("displayNumbers",displayNumbers_);
     }
 
     void CubeMapTestImage::fromPropertyMap(PropertyMap const& _map)
     {
       TestImage::fromPropertyMap(_map);
       _map.get("flipText",flipText_);
+      _map.get("displayNumbers",displayNumbers_);
       update();
     }
   }

@@ -19,6 +19,7 @@
 
 #include <omni/Session.h>
 
+#include <QFile>
 #include <QDataStream>
 
 #include <omni/util.h>

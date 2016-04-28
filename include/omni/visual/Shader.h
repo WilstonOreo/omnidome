@@ -21,6 +21,7 @@
 
 #include <functional>
 #include <memory>
+#include <set>
 #include <omni/visual/ContextBoundPtr.h>
 #include <omni/visual/UniformHandler.h>
 
@@ -37,6 +38,24 @@ namespace omni {
 
       /// Initialize shader: load from file and compile.
       void initShader(ContextBoundPtr<QOpenGLShaderProgram>& _s, const char* _filename);
+
+      /**@brief Adds #include functionality to shader source code
+         @detail Compiles source code file with included files or
+                 compiles a shader
+       **/
+      class ShaderCompiler {
+      public:
+
+        static QString compile(QString const& _sourceFile);
+
+      private:
+
+        static QString compileRecursive(QString const& _sourceFile, std::set<QString>& _includedFiles);
+
+        /// Parses filename from the #include macro
+        static QString parseIncludeLine(QString const& _baseDir, QString const& _line);
+      };
+
   }
 }
 

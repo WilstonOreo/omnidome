@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/shaders">
+    <file>FisheyeTestImage.frag</file>
+  </qresource>
+</RCC>
