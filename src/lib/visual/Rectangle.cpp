@@ -49,7 +49,7 @@ namespace omni {
           int _h = _size.height();
           glTexCoord2f(0.0f, _h);
           glVertex2f(-0.5, -0.5);
-          glTexCoord2f(_w,_h);
+          glTexCoord2f(_w, _h);
           glVertex2f(0.5, -0.5);
           glTexCoord2f(_w, 0.0f);
           glVertex2f(0.5, 0.5);

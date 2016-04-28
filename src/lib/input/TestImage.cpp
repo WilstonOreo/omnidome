@@ -84,7 +84,7 @@ namespace omni
         shader_->bind();
         {
           shaderUniformHandler();
-          visual::Rectangle::draw();
+          visual::Rectangle::drawFlipped();
         }
         shader_->release();
       });
