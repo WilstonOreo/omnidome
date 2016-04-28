@@ -82,21 +82,18 @@ namespace omni
       return Box(-_v,_v);
     }
 
-    void Planar::fromStream(QDataStream& _stream)
+    void Planar::fromPropertyMap(PropertyMap const& _map)
     {
-      canvas::Interface::fromStream(_stream);
-      PropertyMap _map(_stream);
+      canvas::Interface::fromPropertyMap(_map);
       _map.get("width",width_)
           .get("height",height_);
     }
 
-    void Planar::toStream(QDataStream& _stream) const
+    void Planar::toPropertyMap(PropertyMap& _map) const
     {
-      canvas::Interface::toStream(_stream);
-      PropertyMap _map;
+      canvas::Interface::toPropertyMap(_map);
       _map("width",width_)
           ("height",height_);
-      _stream << _map;
     }
 
     ui::CanvasParameters* Planar::widget() {

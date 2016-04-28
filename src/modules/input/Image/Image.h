@@ -60,10 +60,10 @@ namespace omni {
         QSize    size() const;
 
         /// Serialize image path to stream
-        void     toStream(QDataStream&) const;
+        void     toPropertyMap(PropertyMap&) const;
 
         /// Deserialize from stream and load image
-        void     fromStream(QDataStream&);
+        void     fromPropertyMap(PropertyMap const&);
 
         bool     canAdd();
 

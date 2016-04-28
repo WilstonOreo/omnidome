@@ -31,16 +31,16 @@ namespace omni
     {
     }
 
-    void FreeSetup::toStream(QDataStream& _stream) const
+    void FreeSetup::toPropertyMap(PropertyMap& _map) const
     {
-      AngleSetup::toStream(_stream);
-      _stream << pos_;
+      AngleSetup::toPropertyMap(_map);
+      _map("pos",pos_);
     }
 
-    void FreeSetup::fromStream(QDataStream& _stream)
+    void FreeSetup::fromPropertyMap(PropertyMap const& _map)
     {
-      AngleSetup::fromStream(_stream);
-      _stream >> pos_;
+      AngleSetup::fromPropertyMap(_map);
+      _map.get("pos",pos_);
     }
 
     void FreeSetup::setup(Projector& _proj)

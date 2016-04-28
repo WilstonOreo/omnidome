@@ -32,7 +32,6 @@
 #include "Application.h"
 #include "RecentSessions.h"
 #include <omni/Session.h>
-#include <omni/proj/MultiSetup.h>
 #include <omni/ui/SceneGLView.h>
 #include <omni/ui/TuningGLView.h>
 #include <omni/ui/ExceptionList.h>
@@ -40,7 +39,6 @@
 
 #include "proj/Tuning.h"
 #include "proj/TuningList.h"
-#include "proj/MultiSetupDialog.h"
 
 #include "SceneViewer.h"
 #include "ScreenSetup.h"
@@ -101,13 +99,6 @@ MainWindow::MainWindow(QMainWindow *parent) :
     _menu->addAction("FreeSetup")->setData(QString("FreeSetup"));
     _menu->addSeparator();
 
-    for (auto& _idMultiSetup : omni::proj::MultiSetupFactory::classes())
-    {
-      auto& _id     = _idMultiSetup.first;
-      auto *_action = _menu->addAction(_id);
-      _action->setData(QString(_id));
-    }
-
     connect(_menu, SIGNAL(triggered(QAction *)), this,
             SLOT(addProjector(QAction *)));
 
@@ -167,6 +158,10 @@ MainWindow::MainWindow(QMainWindow *parent) :
     connect(ui_->dockInputsWidget, SIGNAL(
               inputIndexChanged()),                 this,
             SLOT(modified()));
+
+    connect(ui_->dockInputsWidget, SIGNAL(
+              inputIndexChanged()),                 sceneViewer_.get(),
+            SLOT(showInputControlWidget()));
     connect(ui_->dockInputsWidget, SIGNAL(
               inputIndexChanged()),                 this,
             SLOT(setMode()));
@@ -428,9 +423,10 @@ void MainWindow::closeEvent(QCloseEvent *_event)
   }
 
   // Delete screen setup manually, so all fullscreen widgets are free'd too
-  screenSetup_->hide();
-  screenSetup_->setParent(nullptr);
-  screenSetup_.reset();
+  if (screenSetup_) {
+    screenSetup_->setParent(nullptr);
+    screenSetup_.reset();
+  }
 
   Application::settings().setValue("geometry", saveGeometry());
   Application::settings().setValue("windowState", saveState());
@@ -478,16 +474,6 @@ void MainWindow::addProjector(QAction *_action)
     if (_idSetup.first.str() == _id)
     {
       ui_->tuningList->addTuning(_id);
-      return;
-    }
-  }
-
-  /// Check for multi projector setups
-  for (auto& _idMultiSetup : omni::proj::MultiSetupFactory::classes())
-  {
-    if (_idMultiSetup.first.str() == _id)
-    {
-      ui_->tuningList->addMultiSetup(_id);
       return;
     }
   }

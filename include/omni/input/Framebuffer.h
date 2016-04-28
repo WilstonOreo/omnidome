@@ -39,16 +39,18 @@ namespace omni {
 
       virtual void destroy();
 
-      void     toStream(QDataStream& _os) const;
-      void     fromStream(QDataStream& _is);
+      virtual void     toPropertyMap(PropertyMap&) const;
+      virtual void     fromPropertyMap(PropertyMap const&);
 
     protected:
       QOpenGLFramebufferObject* framebuffer();
       QOpenGLFramebufferObject const* framebuffer() const;
 
       void setupFramebuffer(QSize const& _size);
+      void setupFramebuffer();
 
     private:
+      QSize size_;
       ContextBoundPtr<QOpenGLFramebufferObject> framebuffer_;
     };
   }

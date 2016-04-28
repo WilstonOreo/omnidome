@@ -28,7 +28,6 @@
 
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
-#include <omni/proj/RingArray.h>
 
 #include <omni/render/Renderer.h>
 
@@ -43,8 +42,6 @@ namespace omni
       using namespace proj;
       SetupFactory::reg<FreeSetup>();
       SetupFactory::reg<PeripheralSetup>();
-
-      MultiSetupFactory::reg<RingArray>();
     }
     // END Register Projector Setups
   }

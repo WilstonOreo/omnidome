@@ -51,8 +51,8 @@ namespace omni
 
       omni::Box bounds() const;
 
-      void fromStream(QDataStream&);
-      void toStream(QDataStream&) const;
+      void fromPropertyMap(PropertyMap const&);
+      void toPropertyMap(PropertyMap&) const;
 
       ui::CanvasParameters* widget();
 

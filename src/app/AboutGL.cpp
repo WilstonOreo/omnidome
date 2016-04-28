@@ -29,6 +29,7 @@
 #include <chrono>
 #include <type_traits>
 #include <omni/util.h>
+#include <omni/visual/Shader.h>
 #include <omni/visual/util.h>
 #include <omni/visual/Rectangle.h>
 
@@ -36,7 +37,7 @@
 using namespace omni::ui;
 
 AboutGL::AboutGL(QWidget *_parent) :
-  QOpenGLWidget(_parent)
+  GLView(_parent)
 {
   QTimer *timer = new QTimer(this);
 
@@ -45,52 +46,47 @@ AboutGL::AboutGL(QWidget *_parent) :
 
   /// "Random" start time
   startTime_ = visual::util::now() +
-    double(reinterpret_cast<long long>(timer) & ((1 << 16) - 1));
+               double(reinterpret_cast<long long>(timer) & ((1 << 16) - 1));
 }
 
 AboutGL::~AboutGL()
+{}
+
+bool AboutGL::initialize()
 {
-
-}
-
-void AboutGL::initializeGL()
-{
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_POINT_SMOOTH);
-  glEnable(GL_LINE_SMOOTH);
-
-  glDepthFunc(GL_LEQUAL);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-  glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
   /// Initialize Shader
   static QString _vertSrc     = util::fileToStr(":/shaders/frustum.vert");
   static QString _fragmentSrc = util::fileToStr(":/shaders/slow_fractal.frag");
 
-  shader_ = new QOpenGLShaderProgram(this);
-  shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, _vertSrc);
-  shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, _fragmentSrc);
-  shader_->link();
+  primaryContextSwitch([&](QOpenGLFunctions& _) {
+    shader_.reset(new QOpenGLShaderProgram(this));
+    shader_->addShaderFromSourceCode(QOpenGLShader::Vertex, _vertSrc);
+    shader_->addShaderFromSourceCode(QOpenGLShader::Fragment, _fragmentSrc);
+    shader_->link();
 
-  QImage _image(1024, 1024, QImage::Format_ARGB32);
+    QImage _image(QString(":/omnicredits.png"));//, QImage::Format_ARGB32);
 
-  QPainter _p(&_image);
-  {
-    _p.setBrush(QBrush("#000000"));
-    _p.setPen(QPen("#FFFFFF"));
-    QFont _font;
-    _font.setPixelSize(44);
-    _p.setFont(_font);
-    _p.drawText(8,60,"Omnidome is a product by CR8TR.");
-    _p.drawText(8,124,"Code written by Michael Winkelmann.");
-    _p.drawText(8,188,"GUI design by Brook Cronin + Michael Winkelmann.");
-    _p.drawText(8,252,QString("Version ") + OMNIDOME_VERSION_STRING);
-    _p.drawText(8,316,"Copyright (C) 2016");
-  }
-  _p.end();
-  tex_.reset(new QOpenGLTexture(_image.mirrored()));
+/*
+    _image.fill(Qt::transparent);
+    QPainter _p(&_image);
+    {
+      _p.setBrush(QBrush("#000000"));
+      _p.setPen(QPen("#FFFFFF"));
+      QFont _font;
+      _font.setPixelSize(44);
+      _p.setFont(_font);
+      _p.drawText(8, 60, "Omnidome is a product by CR8TR.");
+      _p.drawText(8, 124, "Code written by Michael Winkelmann.");
+      _p.drawText(8, 188, "GUI design by Brook Cronin + Michael Winkelmann.");
+      _p.drawText(8, 252, QString("Version ") + OMNIDOME_VERSION_STRING);
+      _p.drawText(8, 316, "Copyright (C) 2016");
+    }
+    _p.end();*/
+    tex_.reset(new QOpenGLTexture(_image.rgbSwapped().mirrored()));
+
+    _.glFinish();
+  });
+  return true;
 }
 
 void AboutGL::resizeGL(int _w, int _h)
@@ -108,8 +104,11 @@ void AboutGL::mousePressEvent(QMouseEvent *)
 
 void AboutGL::paintGL()
 {
-  if (!shader_) return;
+  if (!shader_ || !tex_) {
+    return;
+  }
 
+  makeCurrent();
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glDisable(GL_CULL_FACE);
 
@@ -125,34 +124,20 @@ void AboutGL::paintGL()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  visual::viewport(this);
+  using namespace visual;
+
+  viewport(this);
 
   double _time =
-                 std::chrono::high_resolution_clock::now().time_since_epoch().
-                 count() / 1000000000.0 - startTime_;
+    std::chrono::high_resolution_clock::now().time_since_epoch().
+    count() / 1000000000.0 - startTime_;
 
-  tex_->bind();
-  shader_->bind();
-  {
-    shader_->setUniformValue("time", GLfloat(_time));
-    shader_->setUniformValue("resolution", GLfloat(width()), GLfloat(height()));
+  useShader(*shader_, [&](UniformHandler& _handler) {
+    _handler.uniform("time", GLfloat(_time));
+    _handler.uniform("resolution", GLfloat(width()), GLfloat(height()));
+    _handler.texUniform("tex", *tex_);
+    _handler.uniform("tex_size", QVector2D(tex_->width(),tex_->height()));
 
-    glActiveTexture(GL_TEXTURE0);
-    shader_->setUniformValue("tex",0);
-
-    glBegin(GL_QUADS);
-    {
-      glTexCoord2f(0.0f, 0.0f);
-      glVertex2f(-0.5f, -0.5f);
-      glTexCoord2f(1.0f, 0.0f);
-      glVertex2f(0.5f, -0.5f);
-      glTexCoord2f(1.0f, 1.0f);
-      glVertex2f(0.5f, 0.5f);
-      glTexCoord2f(0.0f, 1.0f);
-      glVertex2f(-0.5f, 0.5f);
-    }
-    glEnd();
-  }
-  shader_->release();
-  tex_->release();
+    visual::Rectangle::draw();
+  });
 }

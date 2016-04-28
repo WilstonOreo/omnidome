@@ -21,6 +21,8 @@
 
 #include <QPainter>
 
+#include <fstream>
+
 #include <omni/util.h>
 #include <omni/visual/util.h>
 #include <omni/visual/Session.h>
@@ -73,8 +75,9 @@ namespace omni {
         for (auto& _tuning : _tunings)
         {
           auto _rect = _tuning->contentGeometry();
-          proj::Calibration _calib(*_tuning,session_.exportSettings().outputMode());
-          auto&& _tuningImage = _calib.toImage();
+          proj::Calibration _calib(*_tuning,
+                                   session_.exportSettings().outputMode());
+          auto && _tuningImage = _calib.toImage();
           _p.drawImage(_rect.x(), 0, _tuningImage);
         }
         _p.end();
@@ -116,7 +119,8 @@ namespace omni {
           auto *_screen = _screenImage.first;
           auto& _image  = _screenImage.second;
           _p.drawImage(
-            session_.screenSetup().screenGeometry(_screen).topLeft() - _desktopRect.topLeft(),
+            session_.screenSetup().screenGeometry(
+              _screen).topLeft() - _desktopRect.topLeft(),
             _image);
         }
         _stitchedImage.save(_filename);
@@ -130,9 +134,9 @@ namespace omni {
 
         for (auto& _screenImage : _screens)
         {
-          auto *_screen = _screenImage.first;
-          auto& _image  = _screenImage.second;
-          auto _desktopRect = proj::ScreenSetup::desktopRect();
+          auto *_screen      = _screenImage.first;
+          auto& _image       = _screenImage.second;
+          auto  _desktopRect = proj::ScreenSetup::desktopRect();
           auto && _screenRect = session_.screenSetup().screenGeometry(_screen);
           QString _screenDesc(QString("_%1_%2_%3x%4.png").
                               arg(_screenRect.left()).
@@ -147,14 +151,77 @@ namespace omni {
       case SeparationMode::PROJECTORS:
       {
         int _tuningIndex = 0;
+
         for (auto& _tuning : _tunings)
         {
-          proj::Calibration _calib(*_tuning,session_.exportSettings().outputMode());
-          auto&& _image = _calib.toImage();
+          proj::Calibration _calib(*_tuning,
+                                   session_.exportSettings().outputMode());
+          auto && _image = _calib.toImage();
           _image.save(_rawName + QString("_%1.png").arg(_tuningIndex + 1));
         }
         break;
       }
+      }
+    }
+
+    void Renderer::renderOmniCalibration(QString const& _filename) {
+      auto& _settings = session_.exportSettings();
+
+      std::vector<proj::Tuning const *> _tunings;
+
+      // Get all tunings
+      for (auto& _tuning : session_.tunings())
+      {
+        if (!_tuning->hasScreen() &&
+            _settings.excludeUnassignedProjectors()) continue;
+        _tunings.push_back(_tuning.get());
+      }
+
+      std::ofstream _file(_filename.toStdString(),std::ofstream::out);
+
+      // Write header
+      std::string _header("OMNIC_v1.0.0.0");
+      _header.resize(80);
+      _file.write(_header.c_str(),80);
+
+      _file << uint32_t(_settings.outputMode());
+      _file << uint32_t(_tunings.size());
+
+      auto _writeRect = [&](QRect const& _r) {
+        _file << int32_t(_r.left()); // offset_x
+        _file << int32_t(_r.top()); // offset_y
+        _file << uint32_t(_r.width()); // width
+        _file << uint32_t(_r.height()); // height
+      };
+
+      auto _writeChannelCorrection = [&](proj::ChannelCorrection const& _c) {
+        _file << float(_c.gamma());
+        _file << float(_c.brightness());
+        _file << float(_c.contrast());
+        _file << float(_c.multiplier());
+      };
+
+      for (auto* _tuning : _tunings) {
+          proj::Calibration _calib(*_tuning,_settings.outputMode());
+
+          _file << uint32_t(_calib.virtualScreen());
+          _writeRect(_calib.screenGeometry());
+          _writeRect(_calib.contentGeometry());
+
+          _writeChannelCorrection(_calib.colorCorrection().red());
+          _writeChannelCorrection(_calib.colorCorrection().green());
+          _writeChannelCorrection(_calib.colorCorrection().blue());
+          _writeChannelCorrection(_calib.colorCorrection().all());
+
+          /// Write render buffer
+          uint32_t _w = _calib.renderSize().width();
+          uint32_t _h = _calib.renderSize().height();
+          _file << _w;
+          _file << _h;
+          _file.write((const char*)_calib.buffer().ptr(),sizeof(RGBAFloat)*_w*_h);
+
+          /// Brightness correction, not used currently
+          _file << uint32_t(0) << uint32_t(0);
       }
     }
   }

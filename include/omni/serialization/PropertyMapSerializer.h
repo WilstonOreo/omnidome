@@ -16,39 +16,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef OMNI_SERIALIZATION_PROPERTYMAPSERIALIZER_H_
+#define OMNI_SERIALIZATION_PROPERTYMAPSERIALIZER_H_
 
-#ifndef OMNI_RENDER_RENDERER_H_
-#define OMNI_RENDER_RENDERER_H_
-
-#include <map>
-#include <QScreen>
-#include <QImage>
-#include <omni/RenderBuffer.h>
-#include <omni/proj/ColorCorrection.h>
+#include <omni/serialization/Interface.h>
+#include <omni/serialization/PropertyMap.h>
 
 namespace omni {
-  class Session;
-  namespace proj {
-    class Tuning;
-  }
+  namespace serialization {
+    /// Interface for serializing data into a property map
+    class PropertyMapSerializer : public serialization::Interface {
+    public:
+      virtual void fromPropertyMap(PropertyMap const& _map) = 0;
+      virtual void toPropertyMap(PropertyMap& _map) const = 0;
 
-  namespace render {
-    class Renderer {
-      public:
-        Renderer(Session const& _session);
+      inline void fromStream(QDataStream& _is) {
+        PropertyMap _map;
+        _is >> _map;
+        fromPropertyMap(_map);
+      }
 
-        void renderToFile(QString const& _filename);
-
-        /// Render to omni calibration (OmniC) file
-        void renderOmniCalibration(QString const& _filename);
-
-        std::map<QScreen const *, QImage>
-             stitchScreens(std::vector<const proj::Tuning *>const&) const;
-
-      private:
-        Session const& session_;
+      inline void toStream(QDataStream& _os) const {
+        PropertyMap _map;
+        toPropertyMap(_map);
+        _os << _map;
+      }
     };
   }
+
+  using serialization::PropertyMapSerializer;
 }
 
-#endif /* OMNI_RENDER_RENDERER_H_ */
+#endif /* OMNI_SERIALIZATION_PROPERTYMAPSERIALIZER_H_ */

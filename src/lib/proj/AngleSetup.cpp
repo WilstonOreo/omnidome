@@ -35,14 +35,14 @@ namespace omni
     {
     }
 
-    void AngleSetup::toStream(QDataStream& _stream) const
+    void AngleSetup::toPropertyMap(PropertyMap& _map) const
     {
-      _stream << static_cast<EulerAngles const&>(*this);
+      _map("angles",static_cast<EulerAngles const&>(*this));
     }
 
-    void AngleSetup::fromStream(QDataStream& _stream)
+    void AngleSetup::fromPropertyMap(PropertyMap const& _map)
     {
-      _stream >> static_cast<EulerAngles&>(*this);
+      _map.get("angles",static_cast<EulerAngles&>(*this));
     }
 
     void AngleSetup::setup(Projector& _proj)

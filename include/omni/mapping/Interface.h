@@ -24,7 +24,7 @@
 #include <memory>
 #include <omni/PluginInfo.h>
 #include <omni/geometry/AffineTransform.h>
-#include <omni/serialization/Interface.h>
+#include <omni/serialization/PropertyMapSerializer.h>
 #include <omni/visual/Interface.h>
 
 class QOpenGLShaderProgram;
@@ -52,8 +52,8 @@ namespace omni {
      * @detail Holds inputs and shader
      */
     class Interface :
-      public SerializationInterface,
       public TypeIdInterface,
+      public PropertyMapSerializer,
       public visual::Interface {
       public:
         Interface();
@@ -134,10 +134,10 @@ namespace omni {
         void               setBoundToCanvas(bool);
 
         /// Write mapping to stream
-        virtual void       toStream(QDataStream&) const;
+        virtual void       toPropertyMap(PropertyMap&) const;
 
         /// Read mapping from stream
-        virtual void       fromStream(QDataStream&);
+        virtual void       fromPropertyMap(PropertyMap const&);
 
         /// The scene this canvas belongs to
         visual::Scene const*       scene() const;

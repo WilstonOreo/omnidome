@@ -28,6 +28,8 @@ namespace omni {
     {
       ui_->setupUi(this);
       ui_->toolBar->hide();
+      ui_->inputWidget->setLayout(new QVBoxLayout);
+      removeInputControlWidget();
     }
 
     SceneViewer::~SceneViewer() {}
@@ -46,6 +48,44 @@ namespace omni {
 
     bool SceneViewer::frontendToData() {
       return false;
+    }
+
+    /// Show large widget from current input
+    void SceneViewer::showInputControlWidget() {
+      if (!dataModel()) return;
+      showInputControlWidget(dataModel()->inputs().current());
+    }
+
+    /// Show large widget from given input
+    void SceneViewer::showInputControlWidget(omni::input::Interface* _input) {
+      removeInputControlWidget();
+      if (!_input) return;
+
+      inputControlWidget_ = _input->controlWidget();
+      if (!inputControlWidget_) return;
+
+      ui_->inputWidget->layout()->addWidget(_input->controlWidget());
+
+      QList<int> _sizes;
+      _sizes << width() / 2;
+      _sizes << width() / 2;
+      ui_->splitter->setSizes(_sizes);
+      ui_->inputWidget->show();
+    }
+
+    /// Remove large input widget
+    void SceneViewer::removeInputControlWidget() {
+      ui_->inputWidget->hide();
+      QList<int> _sizes;
+      _sizes << width();
+      _sizes << 0;
+      ui_->splitter->setSizes(_sizes);
+
+      if (!inputControlWidget_) return;
+
+      ui_->inputWidget->layout()->removeWidget(inputControlWidget_);
+      inputControlWidget_->deleteLater();
+      inputControlWidget_ = nullptr;
     }
   }
 }

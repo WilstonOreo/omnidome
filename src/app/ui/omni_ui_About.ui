@@ -23,7 +23,7 @@
    <enum>Qt::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>About Omnidome Mapper</string>
+   <string>About Omnidome</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

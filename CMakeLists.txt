@@ -113,6 +113,7 @@ TARGET_LINK_LIBRARIES(test_ThrowRatio ${Qt5_LIBRARIES} ${omni_gl_LIBRARIES}  omn
 
 # Main Application
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  SET(OMNIDOME_APP_OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/omnidome.app )
 
   SET(MACOSX_BUNDLE_INFO_STRING "Omnidome")
   SET(MACOSX_BUNDLE_GUI_IDENTIFIER "com.cr8tr.omnidome")
@@ -122,7 +123,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0.0")
   SET(MACOSX_BUNDLE_ICON_FILE "omnidome_icon")
 
-  SET(MACOSX_BUNDLE_COPYRIGHT "(C) 2015, Michael Winkelmann, cr8tr.org, omnido.me")
+  SET(MACOSX_BUNDLE_COPYRIGHT "(C) 2016, Michael Winkelmann, cr8tr.org, omnido.me")
 
   SET_SOURCE_FILES_PROPERTIES("cmake-files/${MACOSX_BUNDLE_ICON_FILE}.icns"
     PROPERTIES
@@ -130,9 +131,23 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   )
 
   ADD_EXECUTABLE(omnidome MACOSX_BUNDLE ${omni_src} )
+
   set_target_properties(omnidome PROPERTIES
                MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/cmake-files/Info.plist")
   TARGET_LINK_LIBRARIES(omnidome omni ${omni_gl_LIBRARIES} ${Qt5_LIBRARIES} )
+
+
+
+  # Make directory for icon and copy it to Contents/Resources
+  add_custom_command(TARGET omnidome PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E make_directory
+                  ${OMNIDOME_APP_OUTPUT_DIR}/Contents/Resources
+                 )
+  add_custom_command(TARGET omnidome POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy
+                   "${CMAKE_SOURCE_DIR}/cmake-files/omnidome_icon.icns"
+                 "${OMNIDOME_APP_OUTPUT_DIR}/Contents/Resources" )
+
 
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 

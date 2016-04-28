@@ -69,9 +69,6 @@ namespace omni
         /// Add tuning with specific projector setup
         void addTuning(QString const& _projSetupId);
 
-        /// Opens multi setup dialog and appends/replaces new projections when dialogs was accepted
-        void addMultiSetup(QString const& _multiSetupId);
-
         /// Remove tuning
         void removeTuning(int _index);
 

@@ -56,7 +56,7 @@ namespace omni {
       /// Return pointer to widget
       virtual inline QWidget* widget() { return nullptr; }
 
-      virtual input::Interface* input() = 0;
+      virtual input::Interface* input() const = 0;
 
       virtual void assignInput(input::Interface const*) = 0;
       virtual void removeInput() = 0;

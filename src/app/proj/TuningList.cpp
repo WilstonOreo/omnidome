@@ -20,8 +20,6 @@
 #include "proj/TuningList.h"
 
 #include <omni/Session.h>
-#include <omni/proj/MultiSetup.h>
-#include "proj/MultiSetupDialog.h"
 
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -118,50 +116,6 @@ namespace omni {
 
                 // Select this tuning index
                 setTuningIndex(dataModel()->tunings().size() - 1);
-            }
-
-            /// Opens multi setup dialog and appends/replaces new projections
-            // when dialogs was accepted
-            void TuningList::addMultiSetup(QString const& _multiSetupId)
-            {
-                std::unique_ptr<omni::proj::MultiSetup> _multiSetup;
-
-                _multiSetup.reset(omni::proj::MultiSetupFactory::create(
-                                      _multiSetupId));
-
-                if (!_multiSetup) return;
-
-                auto _result = proj::MultiSetupDialog::open(
-                    _multiSetup.get(), dataModel());
-                auto && _projectors = _multiSetup->projectors();
-
-                int _numTunings = dataModel()->tunings().size();
-
-                switch (_result)
-                {
-                case MultiSetupDialog::Result::REPLACE:
-                    this->clear();
-                    _numTunings = 0; // Set number of tunings zero because it is
-                                     // not up-to-date anymore
-
-                case MultiSetupDialog::Result::APPEND:
-
-                    for (auto& _projector : _projectors)
-                    {
-                        auto *_tuning = dataModel()->tunings().add();
-
-                        if (!_tuning) return;
-
-                        _tuning->setColor(getTuningColor());
-                        _tuning->projector() = std::move(_projector);
-                        addTuning(_tuning);
-                        setTuningIndex(_numTunings);
-                    }
-
-                case MultiSetupDialog::Result::CANCELLED:
-                default:
-                    return;
-                }
             }
 
             void TuningList::addTuning(omni::proj::Tuning *_tuning)

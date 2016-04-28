@@ -58,10 +58,10 @@ namespace omni {
         virtual void update();
 
         /// Serialize to stream
-        virtual void toStream(QDataStream&) const;
+        virtual void toPropertyMap(PropertyMap&) const;
 
         /// Deserialize from stream
-        virtual void fromStream(QDataStream&);
+        virtual void fromPropertyMap(PropertyMap const&);
 
       protected:
         /// Sphere visualizer

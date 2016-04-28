@@ -78,16 +78,12 @@ namespace omni {
             return transform_.matrix();
         }
         /// Write mapping to stream
-        void Interface::toStream(QDataStream& _os) const {
-            PropertyMap _map;
+        void Interface::toPropertyMap(PropertyMap& _map) const {
             _map("transform",transform_);
-            _os << _map;
         }
 
         /// Read mapping from stream
-        void Interface::fromStream(QDataStream& _is) {
-            PropertyMap _map;
-            _is >> _map;
+        void Interface::fromPropertyMap(PropertyMap const& _map) {
             _map.get("transform",transform_);
         }
     }

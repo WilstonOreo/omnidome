@@ -27,7 +27,7 @@
 #include <QOpenGLTexture>
 #include <omni/exception.h>
 #include <omni/PluginInfo.h>
-#include <omni/serialization/Interface.h>
+#include <omni/serialization/PropertyMapSerializer.h>
 #include <omni/mapping/Interface.h>
 
 namespace omni {
@@ -51,8 +51,8 @@ namespace omni {
 
     /// Generic input interface
     class Interface :
-      public SerializationInterface,
       public TypeIdInterface,
+      public PropertyMapSerializer,
       private std::map<QString, std::unique_ptr<Interface> >{
       public:
         friend class Controller;
@@ -174,9 +174,11 @@ namespace omni {
         /// Set new parent
         void                  setParent(Interface *);
 
-        virtual void          toStream(QDataStream&) const;
+        /// Serialize to property map
+        virtual void          toPropertyMap(PropertyMap&) const;
 
-        virtual void          fromStream(QDataStream&);
+        /// Deserialize from property map
+        virtual void          fromPropertyMap(PropertyMap const&);
 
         /// Returns a list of input maintained by controller, except this one
         inputlist_type        getAllInputs() const;

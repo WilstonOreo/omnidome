@@ -16,39 +16,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef OMNI_VISUAL_SHADER_H_
+#define OMNI_VISUAL_SHADER_H_
 
-#ifndef OMNI_RENDER_RENDERER_H_
-#define OMNI_RENDER_RENDERER_H_
-
-#include <map>
-#include <QScreen>
-#include <QImage>
-#include <omni/RenderBuffer.h>
-#include <omni/proj/ColorCorrection.h>
+#include <functional>
+#include <memory>
+#include <omni/visual/ContextBoundPtr.h>
+#include <omni/visual/UniformHandler.h>
 
 namespace omni {
-  class Session;
-  namespace proj {
-    class Tuning;
-  }
+  namespace visual {
+      /// Use shader with and do uniform assignment and drawing inside functor
+      void useShader(QOpenGLShaderProgram& _s, std::function<void(UniformHandler&)> f);
 
-  namespace render {
-    class Renderer {
-      public:
-        Renderer(Session const& _session);
+      /// Initialize shader: load from file and compile.
+      void initShader(QOpenGLShaderProgram& _s, const char* _filename);
 
-        void renderToFile(QString const& _filename);
+      /// Initialize shader: load from file and compile.
+      void initShader(std::unique_ptr<QOpenGLShaderProgram>& _s, const char* _filename);
 
-        /// Render to omni calibration (OmniC) file
-        void renderOmniCalibration(QString const& _filename);
-
-        std::map<QScreen const *, QImage>
-             stitchScreens(std::vector<const proj::Tuning *>const&) const;
-
-      private:
-        Session const& session_;
-    };
+      /// Initialize shader: load from file and compile.
+      void initShader(ContextBoundPtr<QOpenGLShaderProgram>& _s, const char* _filename);
   }
 }
 
-#endif /* OMNI_RENDER_RENDERER_H_ */
+#endif /* OMNI_VISUAL_SHADER_H_ */

@@ -2,6 +2,7 @@
 uniform float time;
 uniform vec2 resolution;
 uniform sampler2D tex;
+uniform vec2 tex_size;
 
 #define N 30
 void main()
@@ -34,8 +35,12 @@ void main()
   cos(0.163*rsum),
   cos(0.5*rsum), 1.0 );
 
-  vec2 uv = clamp((gl_FragCoord.xy / resolution) * vec2(aspect, 1.0) * 0.5,0.0,1.0);
-  col += texture2D(tex,uv);
+  float tex_aspect = tex_size.x / tex_size.y;
+  vec2 uv = (gl_FragCoord.xy / resolution) * vec2(aspect / tex_aspect, 1.0) * 0.5;
+
+  uv += vec2( - aspect / tex_aspect * 0.5 + 0.5,0.0);
+  uv = clamp(uv,0.0,1.0);
+  col += vec4(5.0*vec3(1.0 - texture2D(tex,uv).r),0.0);
 
 	gl_FragColor = col;
 }

@@ -67,21 +67,17 @@ namespace omni
         return QVector3D(_center.x(),_center.y(),0.0);
     }
 
-    void Box::fromStream(QDataStream& _stream)
+    void Box::fromPropertyMap(PropertyMap const& _map)
     {
-      Envelope::fromStream(_stream);
-      PropertyMap _map;
-      _stream >> _map;
+      Envelope::fromPropertyMap(_map);
       auto _size = _map.getValue<QVector3D>("size",QVector3D(5,5,5));
       setSize(_size);
     }
 
-    void Box::toStream(QDataStream& _stream) const
+    void Box::toPropertyMap(PropertyMap& _map) const
     {
-      Envelope::toStream(_stream);
-      PropertyMap _map;
+      Envelope::toPropertyMap(_map);
       _map("size",size());
-      _stream << _map;
     }
 
     ui::CanvasParameters* Box::widget() {

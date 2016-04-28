@@ -156,20 +156,21 @@ namespace omni
       return texId_;
     }
 
-    void Syphon::toStream(QDataStream& _stream) const
+    void Syphon::toPropertyMap(PropertyMap& _map) const
     {
-      input::Interface::toStream(_stream);
-      _stream << description_;
+      input::Interface::toPropertyMap(_map);
+      _map("description",description_);
     }
 
-    void Syphon::fromStream(QDataStream& _stream)
+    void Syphon::fromPropertyMap(PropertyMap const& _map)
     {
       int _oldTimerId = timerId_;
       if (timerId_) {
         deactivate();
       }
-      input::Interface::fromStream(_stream);
-      _stream >> description_;
+
+      input::Interface::fromPropertyMap(_map);
+      _map.get("description",description_);
       if (_oldTimerId) {
         activate();
       }

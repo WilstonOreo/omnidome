@@ -58,36 +58,6 @@ namespace omni {
         });
       }
 
-      void initShader(QOpenGLShaderProgram& _s, const char *_filename) {
-        QString _vertSrc =
-          omni::util::fileToStr(":/shaders/" + QString(_filename) + ".vert");
-        QString _fragmentSrc =
-          omni::util::fileToStr(":/shaders/" + QString(_filename) + ".frag");
-        _s.addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                   _vertSrc);
-        _s.addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                   _fragmentSrc);
-        _s.link();
-      }
-
-      void initShader(std::unique_ptr<QOpenGLShaderProgram>& _s,
-                      const char *_filename) {
-        /// Dont do anything if shader is already allocated
-        if (!!_s) return;
-
-        _s.reset(new QOpenGLShaderProgram());
-        initShader(*_s, _filename);
-      }
-
-      void initShader(ContextBoundPtr<QOpenGLShaderProgram>& _s,
-                      const char *_filename) {
-        /// Dont do anything if shader is already allocated
-        if (!!_s) return;
-        if (_s.reset(new QOpenGLShaderProgram())) {
-          initShader(*_s, _filename);
-        }
-      }
-
       QRectF viewRect(int _imageWidth,
                     int _imageHeight,
                     int _canvasWidth,

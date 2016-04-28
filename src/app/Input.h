@@ -74,6 +74,8 @@ namespace omni {
           return false;
         }
 
+        void setupInputMenu(QMenu*);
+
         void    inputUpdatedEmitter();
 
         void    selectInputId(QString const&);

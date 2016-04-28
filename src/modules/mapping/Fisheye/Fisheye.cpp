@@ -54,20 +54,15 @@ namespace omni
       stretch_ = _stretch;
     }
 
-    void Fisheye::fromStream(QDataStream& _stream)
+    void Fisheye::fromPropertyMap(PropertyMap const& _map)
     {
-      Interface::fromStream(_stream);
-      PropertyMap _map(_stream);
       _map.get("stretch",stretch_);
       setStretch(stretch_);
     }
 
-    void Fisheye::toStream(QDataStream& _stream) const
+    void Fisheye::toPropertyMap(PropertyMap& _map) const
     {
-      Interface::toStream(_stream);
-      PropertyMap _map;
       _map("stretch",stretch_);
-      _stream << _map;
     }
 
     QWidget* Fisheye::widget() {

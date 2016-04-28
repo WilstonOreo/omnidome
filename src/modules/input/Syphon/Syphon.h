@@ -24,7 +24,6 @@
 #include <QOpenGLFramebufferObject>
 #include "SyphonServerDescription.h"
 
-
 namespace omni
 {
   namespace input
@@ -58,8 +57,8 @@ namespace omni
 
       void update();
 
-      void toStream(QDataStream&) const;
-      void fromStream(QDataStream&);
+      void toPropertyMap(PropertyMap&) const;
+      void fromPropertyMap(PropertyMap const&);
 
     protected:
       void timerEvent(QTimerEvent *);

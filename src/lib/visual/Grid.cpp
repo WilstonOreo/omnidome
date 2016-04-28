@@ -19,7 +19,7 @@
 
 #include <omni/visual/Grid.h>
 #include <omni/util.h>
-#include <QOpenGLShaderProgram>
+#include <omni/visual/Shader.h>
 
 namespace omni {
   namespace visual {

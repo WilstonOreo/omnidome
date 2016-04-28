@@ -19,11 +19,8 @@
 
 #include <omni/visual/Session.h>
 
-#include <QOpenGLShaderProgram>
-#include <QOpenGLShader>
-
 #include <omni/util.h>
-#include <omni/visual/util.h>
+#include <omni/visual/Shader.h>
 #include <omni/proj/Frustum.h>
 
 namespace omni {

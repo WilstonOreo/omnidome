@@ -20,7 +20,7 @@
 #include <omni/visual/Projector.h>
 
 #include <omni/util.h>
-#include <omni/visual/util.h>
+#include <omni/visual/Shader.h>
 #include <omni/proj/Frustum.h>
 
 namespace omni {

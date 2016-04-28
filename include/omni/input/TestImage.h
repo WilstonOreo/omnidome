@@ -47,10 +47,14 @@ namespace omni {
         void         setRulerPos(QPointF const&);
 
         /// Serialize to stream
-        virtual void toStream(QDataStream&) const;
+        virtual void toPropertyMap(PropertyMap&) const;
 
         /// Deserialize from stream
-        virtual void fromStream(QDataStream&);
+        virtual void fromPropertyMap(PropertyMap const&);
+
+        inline virtual categoryset_type categories() const {
+          return categoryset_type({"Test images"});
+        }
 
       protected:
         /**@brief Virtual method to handle additional shader uniforms in derived classes

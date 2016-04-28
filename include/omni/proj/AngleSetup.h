@@ -36,8 +36,8 @@ namespace omni {
 
         virtual void setup(Projector&);
 
-        virtual void toStream(QDataStream&) const;
-        virtual void fromStream(QDataStream&);
+        virtual void toPropertyMap(PropertyMap&) const;
+        virtual void fromPropertyMap(PropertyMap const&);
     };
   }
 }

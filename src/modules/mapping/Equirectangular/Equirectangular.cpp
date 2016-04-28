@@ -72,22 +72,17 @@ namespace omni
       if (stripBottom_ > stripTop_) std::swap(stripBottom_,stripTop_);
     }
 
-    void Equirectangular::fromStream(QDataStream& _stream)
+    void Equirectangular::fromPropertyMap(PropertyMap const& _map)
     {
-      mapping::Interface::fromStream(_stream);
-      PropertyMap _map(_stream);
       _map.get("stripBottom",stripBottom_)
           .get("stripTop",stripTop_);
       validate();
     }
 
-    void Equirectangular::toStream(QDataStream& _stream) const
+    void Equirectangular::toPropertyMap(PropertyMap& _map) const
     {
-      mapping::Interface::toStream(_stream);
-      PropertyMap _map;
       _map("stripBottom",stripBottom_)
           ("stripTop",stripTop_);
-      _stream << _map;
     }
 
     bool operator==(Equirectangular const& _lhs, Equirectangular const& _rhs)

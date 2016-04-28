@@ -98,16 +98,22 @@ namespace omni
       tileVertical_ = _tileVertical;
     }
 
-    void TexCoords::fromStream(QDataStream& _stream)
+    void TexCoords::fromPropertyMap(PropertyMap const& _map)
     {
-      Interface::fromStream(_stream);
-      _stream >> offset_ >> stretch_ >> tileHorizontal_ >> tileVertical_;
+      Interface::fromPropertyMap(_map);
+      _map.get("offset",offset_).
+           get("stretch",stretch_).
+           get("tileHorizontal",tileHorizontal_).
+           get("tileVertical",tileVertical_);
     }
 
-    void TexCoords::toStream(QDataStream& _stream) const
+    void TexCoords::toPropertyMap(PropertyMap& _map) const
     {
-      Interface::toStream(_stream);
-      _stream << offset_ << stretch_ << tileHorizontal_ << tileVertical_;
+      Interface::toPropertyMap(_map);
+      _map("offset",offset_)
+          ("stretch",stretch_)
+          ("tileHorizontal",tileHorizontal_)
+          ("tileVertical",tileVertical_);
     }
 
     QWidget* TexCoords::widget() {

@@ -23,6 +23,7 @@
 #include <QResizeEvent>
 #include <QMatrix4x4>
 #include <omni/visual/util.h>
+#include <omni/visual/Shader.h>
 #include <omni/visual/Rectangle.h>
 
 namespace omni {

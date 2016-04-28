@@ -33,10 +33,10 @@ namespace omni {
         PeripheralSetup();
 
         /// Serialize to stream
-        void  toStream(QDataStream&) const;
+        void  toPropertyMap(PropertyMap&) const;
 
         /// Deserialize from stream
-        void  fromStream(QDataStream&);
+        void  fromPropertyMap(PropertyMap const&);
 
         /// Setup projector with scene scale factor
         void  setup(Projector&);

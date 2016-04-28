@@ -25,10 +25,11 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <omni/visual/ContextBoundPtr.h>
+#include <omni/ui/GLView.h>
 
 namespace omni {
   namespace ui {
-    class AboutGL : public QOpenGLWidget {
+    class AboutGL : public GLView {
       Q_OBJECT
 
       public:
@@ -38,14 +39,14 @@ namespace omni {
       protected:
         void mousePressEvent(QMouseEvent *);
 
-        void initializeGL();
         void resizeGL(int _w,
                       int _h);
         void paintGL();
         double startTime_;
 
       private:
-        QOpenGLShaderProgram *shader_ = nullptr;
+        bool initialize();
+        ContextBoundPtr<QOpenGLShaderProgram> shader_;
         ContextBoundPtr<QOpenGLTexture> tex_;
     };
   }

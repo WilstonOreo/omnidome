@@ -22,6 +22,7 @@
 #include <QOpenGLContext>
 #include <QOpenGLFramebufferObjectFormat>
 #include <omni/visual/util.h>
+#include <omni/visual/Rectangle.h>
 #include <omni/util.h>
 
 namespace omni
@@ -71,7 +72,6 @@ namespace omni
 
       setupFramebuffer(size());
 
-
       visual::draw_on_framebuffer(framebuffer(),
       [&](QOpenGLFunctions& _) // Projection Operation
       {
@@ -84,33 +84,22 @@ namespace omni
         shader_->bind();
         {
           shaderUniformHandler();
-          glBegin(GL_QUADS);
-          {
-            glTexCoord2f(0.0f,0.0f);
-            glVertex2f(-0.5f,-0.5f);
-            glTexCoord2f(1.0f,0.0f);
-            glVertex2f(0.5f,-0.5f);
-            glTexCoord2f(1.0f,1.0f);
-            glVertex2f(0.5f,0.5f);
-            glTexCoord2f(0.0f,1.0f);
-            glVertex2f(-0.5f,0.5f);
-          }
-          glEnd();
+          visual::Rectangle::draw();
         }
         shader_->release();
       });
     }
 
-    void TestImage::toStream(QDataStream& _stream) const
+    void TestImage::toPropertyMap(PropertyMap& _map) const
     {
-      Framebuffer::toStream(_stream);
-      _stream << rulerPos_;
+      Framebuffer::toPropertyMap(_map);
+      _map("rulerPos",rulerPos_);
     }
 
-    void TestImage::fromStream(QDataStream& _stream)
+    void TestImage::fromPropertyMap(PropertyMap const& _map)
     {
-      Framebuffer::fromStream(_stream);
-      _stream >> rulerPos_;
+      Framebuffer::fromPropertyMap(_map);
+      _map.get("rulerPos",rulerPos_);
       update();
     }
   }

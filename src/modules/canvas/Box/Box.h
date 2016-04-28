@@ -61,10 +61,10 @@ namespace omni
       void setSize(QVector3D const&);
 
       /// Deserialize from stream
-      void fromStream(QDataStream&);
+      void fromPropertyMap(PropertyMap const&);
 
       /// Serialize to stream
-      void toStream(QDataStream&) const;
+      void toPropertyMap(PropertyMap&) const;
 
       /// Make new box parameter widget
       ui::CanvasParameters* widget();

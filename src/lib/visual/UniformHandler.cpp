@@ -48,20 +48,5 @@ namespace omni {
       usedTextureTargets_.insert(_target);
       ++currentTextureUnit_;
     }
-
-    void useShader(QOpenGLShaderProgram& _s,
-                   std::function<void(UniformHandler&)>f) {
-      withCurrentContext([&](QOpenGLFunctions& _gl) {
-        _s.bind();
-        {
-          UniformHandler _handler(_gl, _s);
-          f(_handler);
-
-          // Destructor of handler is called here implicitly
-          // by RAII to unbind all textures
-        }
-        _s.release();
-      });
-    }
   }
 }

@@ -54,8 +54,8 @@ namespace omni
       bool tileVertical() const;
       void setTileVertical(bool);
 
-      void fromStream(QDataStream&);
-      void toStream(QDataStream&) const;
+      void fromPropertyMap(PropertyMap const&);
+      void toPropertyMap(PropertyMap&) const;
 
       bool isUVW() const
       {

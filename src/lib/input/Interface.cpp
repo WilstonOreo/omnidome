@@ -129,26 +129,6 @@ namespace omni {
       parent_ = _parent;
     }
 
-    /// Deserialize from stream
-    void Interface::fromStream(QDataStream& _is) {
-      using namespace omni::util;
-      clear();
-
-      int _size = deserializeReturn<int>(_is, 0);
-
-      if (canHaveChildren()) {
-        // Deserialize map of inputs
-        for (int i = 0; i < _size; ++i)
-        {
-          auto _id = deserializeReturn<QString>(_is);
-          deserializePtr(_is, [&](Id const& _typeId) ->
-                         input::Interface *
-          {
-            return addInput(_id, _typeId);
-          });
-        }
-      }
-    }
 
     QWidget * Interface::widget() {
       return new ui::InputPreview(this);
@@ -181,10 +161,12 @@ namespace omni {
     }
 
     /// Serialize to stream
-    void Interface::toStream(QDataStream& _os) const {
+    void Interface::toPropertyMap(PropertyMap& _map) const {
       using namespace omni::util;
-
+/*
       if (canHaveChildren()) {
+
+
         // serialize map of inputs
         serialize(_os, int(numberOfChildren()));
 
@@ -198,6 +180,29 @@ namespace omni {
       } else {
         serialize(_os, int(0));
       }
+      _map("children",children());
+*/
+    }
+
+    /// Deserialize from stream
+    void Interface::fromPropertyMap(PropertyMap const& _map) {
+      using namespace omni::util;
+      clear();
+/*
+      int _size = deserializeReturn<int>(_is, 0);
+
+      if (canHaveChildren()) {
+        // Deserialize map of inputs
+        for (int i = 0; i < _size; ++i)
+        {
+          auto _id = deserializeReturn<QString>(_is);
+          deserializePtr(_is, [&](Id const& _typeId) ->
+                         input::Interface *
+          {
+            return addInput(_id, _typeId);
+          });
+        }
+      }*/
     }
   }
 }

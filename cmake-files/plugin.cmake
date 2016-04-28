@@ -95,6 +95,11 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
         RUNTIME_OUTPUT_DIRECTORY ${PLUGIN_OUTPUT_DIR}
         LIBRARY_OUTPUT_DIRECTORY ${PLUGIN_OUTPUT_DIR}
     )
+
+    if(EXISTS ${PLUGIN_DIR}/postbuild.cmake)
+        include(${PLUGIN_DIR}/postbuild.cmake)
+    endif()
+
 endfunction()
 
 macro(load_plugins PLUGIN_FOLDER)

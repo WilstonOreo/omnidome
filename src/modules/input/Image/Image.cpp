@@ -85,18 +85,16 @@ namespace omni {
       return image_.size();
     }
 
-    void Image::toStream(QDataStream& _stream) const
+    void Image::toPropertyMap(PropertyMap& _map) const
     {
-      input::Interface::toStream(_stream);
-
-      _stream << imageLocation_;
+      input::Interface::toPropertyMap(_map);
+      _map("location",imageLocation_);
     }
 
-    void Image::fromStream(QDataStream& _stream)
+    void Image::fromPropertyMap(PropertyMap const& _map)
     {
-      input::Interface::fromStream(_stream);
-
-      _stream >> imageLocation_;
+      input::Interface::fromPropertyMap(_map);
+      _map.get("location",imageLocation_);
       reload();
     }
 

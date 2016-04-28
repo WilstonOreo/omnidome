@@ -1,5 +1,4 @@
-
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -28,42 +27,42 @@ class QOpenGLFunctions;
 
 namespace omni {
   namespace visual {
-      /**@brief Uniform handler for a shader program
-         @detail Cares about bind and releasing shaders and texture uniforms.
-                 Should only be used with the visual::useShader function.
+    /**@brief Uniform handler for a shader program
+       @detail Cares about bind and releasing shaders and texture uniforms.
+               Should only be used with the visual::useShader function.
+     **/
+    struct UniformHandler {
+      UniformHandler(QOpenGLFunctions& _gl,
+                     QOpenGLShaderProgram& _shader);
+
+      /// Destructor. Unbind all active texture units
+      ~UniformHandler();
+
+      /// Set uniform value
+      template<typename ... ARGS>
+      void uniform(const char *_name, ARGS&& ... _args) {
+        shader_.setUniformValue(_name, _args ...);
+      }
+
+      /// Set uniform value for texture with id and optional target
+      void texUniform(const char *_name,
+                      GLuint _texId,
+                      GLuint _target = GL_TEXTURE_2D);
+
+      /**@brief Set uniform value for texture object
+         @detail Texture object can be either QOpenGLTexture or Texture32F
        **/
-      struct UniformHandler {
-        UniformHandler(QOpenGLFunctions& _gl, QOpenGLShaderProgram& _shader);
-
-        /// Destructor. Unbind all active texture units
-        ~UniformHandler();
-
-        /// Set uniform value
-        template<typename...ARGS>
-        void uniform(const char* _name, ARGS&&..._args) {
-          shader_.setUniformValue(_name,_args...);
-        }
-
-        /// Set uniform value for texture with id and optional target
-        void texUniform(const char* _name, GLuint _texId, GLuint _target = GL_TEXTURE_2D);
-
-        /**@brief Set uniform value for texture object
-           @detail Texture object can be either QOpenGLTexture or Texture32F
-         **/
-        template<typename TEXTURE>
-        void texUniform(const char* _name, TEXTURE& _tex) {
-          texUniform(_name, _tex.textureId(), _tex.target());
-        }
+      template<typename TEXTURE>
+      void texUniform(const char *_name, TEXTURE& _tex) {
+        texUniform(_name, _tex.textureId(), _tex.target());
+      }
 
       private:
-        QOpenGLFunctions& gl_;
+        QOpenGLFunctions    & gl_;
         QOpenGLShaderProgram& shader_;
-        GLint currentTextureUnit_ = 0;
-        std::set<GLuint> usedTextureTargets_;
-      };
-
-      /// Use shader with and do uniform assignment and drawing inside functor
-      void useShader(QOpenGLShaderProgram& _s, std::function<void(UniformHandler&)> f);
+        GLint                 currentTextureUnit_ = 0;
+        std::set<GLuint>      usedTextureTargets_;
+    };
   }
 }
 

@@ -20,8 +20,9 @@
 #ifndef OMNI_PROJ_SETUP_H_
 #define OMNI_PROJ_SETUP_H_
 
-#include <QDataStream>
-#include <omni/serialization/Interface.h>
+#include <vector>
+#include <omni/TypeIdInterface.h>
+#include <omni/serialization/PropertyMapSerializer.h>
 
 namespace omni {
   namespace proj {
@@ -29,11 +30,15 @@ namespace omni {
 
     /// Interface for a projector setup
     class Setup :
-      public SerializationInterface,
+      public PropertyMapSerializer,
       public TypeIdInterface {
       public:
         /// Setup projector with scene size
         virtual void setup(Projector&) = 0;
+
+        inline virtual bool isMultiSetup() const {
+          return false;
+        }
 
         inline virtual void setup(Projector& _proj, qreal _scale) {
           setup(_proj);

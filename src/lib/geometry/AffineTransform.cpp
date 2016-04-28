@@ -53,7 +53,7 @@ namespace omni {
     void AffineTransform::setScale(QVector3D const& _scale) {
         scale_ = _scale;
     }
-    
+
     void AffineTransform::setScale(float _uniformScale) {
         uniformScale_ = _uniformScale;
         if (!uniformScaleEnabled_) {

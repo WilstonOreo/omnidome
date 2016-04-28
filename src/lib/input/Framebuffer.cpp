@@ -25,8 +25,8 @@
 namespace omni {
   namespace input {
     Framebuffer::Framebuffer(input::Interface const* _input) :
-      input::Interface(_input) {
-
+      input::Interface(_input),
+      size_(0,0) {
     }
 
     void Framebuffer::destroy() {
@@ -39,7 +39,7 @@ namespace omni {
     }
 
     QSize Framebuffer::size() const {
-      return !framebuffer_ ? QSize(0,0) : framebuffer_->size();
+      return !framebuffer_ ? size_ : framebuffer_->size();
     }
 
     void Framebuffer::setSize(QSize const& _size)  {
@@ -82,22 +82,23 @@ namespace omni {
         _.glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         _.glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         _.glBindTexture(GL_TEXTURE_RECTANGLE, 0);
+        size_ = _size;
       });
     }
 
-    void Framebuffer::toStream(QDataStream& _os) const {
-      input::Interface::toStream(_os);
-      PropertyMap _map;
-      _map("size",size());
-      _os << _map;
+    void Framebuffer::setupFramebuffer() {
+      setupFramebuffer(size());
     }
 
-    void Framebuffer::fromStream(QDataStream& _is) {
-      input::Interface::fromStream(_is);
-      PropertyMap _map;
-      _is >> _map;
-      QSize _size = _map.getValue("size",QSize(0,0));
-      setupFramebuffer(_size);
+    void Framebuffer::toPropertyMap(PropertyMap& _map) const {
+      input::Interface::toPropertyMap(_map);
+      _map("size",size());
+    }
+
+    void Framebuffer::fromPropertyMap(PropertyMap const& _map) {
+      input::Interface::fromPropertyMap(_map);
+      size_ = _map.getValue("size",QSize(0,0));
+      setupFramebuffer(size_);
     }
   }
 }

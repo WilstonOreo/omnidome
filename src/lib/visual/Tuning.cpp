@@ -27,7 +27,7 @@
 #include <omni/visual/Rectangle.h>
 #include <omni/visual/Session.h>
 #include <omni/visual/ContextManager.h>
-#include <omni/visual/UniformHandler.h>
+#include <omni/visual/Shader.h>
 
 namespace omni {
   namespace visual {

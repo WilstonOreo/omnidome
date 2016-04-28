@@ -23,7 +23,7 @@
 #include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
 #include <omni/visual/Rectangle.h>
-#include <omni/visual/UniformHandler.h>
+#include <omni/visual/Shader.h>
 
 #include <QPainter>
 
@@ -243,7 +243,7 @@ namespace omni {
         // Encode color correction information into the green channel
 
         if ((mode_ == CalibrationMode::TEXCOORDS) ||
-            ( mode_ == CalibrationMode::UVW)) {
+            (mode_ == CalibrationMode::UVW)) {
           qDebug() << "CalibrationMode::TEXCOORDS";
           getAlphaMask(_upper8bit, Channel::BLUE);
           QImage   _image(_w, _h, QImage::Format_RGB32);

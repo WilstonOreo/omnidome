@@ -36,8 +36,8 @@ namespace omni {
         /// Setup projector with scene size
         void      setup(Projector&);
 
-        void      toStream(QDataStream&) const;
-        void      fromStream(QDataStream&);
+        void      toPropertyMap(PropertyMap&) const;
+        void      fromPropertyMap(PropertyMap const&);
 
         /// Return projector position
         QVector3D pos() const;

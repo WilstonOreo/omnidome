@@ -52,15 +52,6 @@ namespace omni {
       }
 
 
-      /// Initialize shader: load from file and compile.
-      void initShader(QOpenGLShaderProgram& _s, const char* _filename);
-
-      /// Initialize shader: load from file and compile.
-      void initShader(std::unique_ptr<QOpenGLShaderProgram>& _s, const char* _filename);
-
-      /// Initialize shader: load from file and compile.
-      void initShader(ContextBoundPtr<QOpenGLShaderProgram>& _s, const char* _filename);
-
       /// Calculate view rectangle on 2D OpenGL surface
       QRectF viewRect(int _imageWidth,
                                     int _imageHeight,
@@ -149,7 +140,6 @@ namespace omni {
 
     using util::checkOpenGLError;
     using util::resetOpenGLState;
-    using util::initShader;
     using util::draw_on_framebuffer;
     using util::viewport;
   }

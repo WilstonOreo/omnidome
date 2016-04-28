@@ -78,24 +78,16 @@ namespace omni {
       sphere_.update();
     }
 
-    void Dome::toStream(QDataStream& _stream) const
+    void Dome::toPropertyMap(PropertyMap& _map) const
     {
-      Envelope::toStream(_stream);
-      PropertyMap _map;
-
+      Envelope::toPropertyMap(_map);
       _map("radius", radius());
-      _stream << _map;
     }
 
-    void Dome::fromStream(QDataStream& _stream)
+    void Dome::fromPropertyMap(PropertyMap const& _map)
     {
-      Envelope::fromStream(_stream);
-      PropertyMap _map;
-      _stream >> _map;
-
+      Envelope::fromPropertyMap(_map);
       qreal _radius = _map.getValue<qreal>("radius", qreal(5.0));
-      qDebug() << "Dome::fromStream(): " << _radius;
-
       setRadius(_radius);
     }
   }

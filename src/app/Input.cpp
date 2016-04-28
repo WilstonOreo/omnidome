@@ -40,13 +40,8 @@ namespace omni
       // Make popup menu for adding inputs
       {
         QMenu* _menu = new QMenu();
+        setupInputMenu(_menu);
         ui_->btnAddInput->setMenu(_menu);
-        for (auto& _idInputClass : omni::input::Factory::classes())
-        {
-          QString _id = _idInputClass.first.str();
-          QAction* _menuItem = new QAction(QIcon(QString(":/input/")+ _id + QString(".png")),_id,_menu);
-          _menu->addAction(_menuItem);
-        }
         connect(_menu,SIGNAL(triggered(QAction*)),this,SLOT(addInput(QAction*)));
       }
 
@@ -59,6 +54,37 @@ namespace omni
 
     Input::~Input()
     {
+    }
+
+    void Input::setupInputMenu(QMenu* _menu) {
+      std::map<QString,QMenu*> _categoryMenus;
+      /// Find all categories
+      for (auto& _idInputClass : omni::input::Factory::classes()) {
+        auto* _input = omni::input::Factory::create(_idInputClass.first,nullptr);
+        if (!_input) continue;
+
+        auto _id = _idInputClass.first.str();
+
+        auto _categories = _input->categories();
+        if (_categories.empty()) {
+            QAction* _menuItem = new QAction(QIcon(QString(":/input/")+ _id + QString(".png")),_id,_menu);
+            _menu->addAction(_menuItem);
+        }
+
+        for (auto& _category : _categories) {
+          if (!_categoryMenus.count(_category)) {
+            _categoryMenus[_category] = new QMenu(_category);
+          }
+          auto* _catMenu = _categoryMenus[_category];
+          QAction* _menuItem = new QAction(QIcon(QString(":/input/")+ _id + QString(".png")),_id,_menu);
+          _catMenu->addAction(_menuItem);
+        }
+      }
+
+      /// No categories exist
+      for (auto& _categoryMenu : _categoryMenus) {
+        _menu->addMenu(_categoryMenu.second);
+      }
     }
 
     void Input::dataToFrontend()

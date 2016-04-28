@@ -41,8 +41,8 @@ namespace omni
       qreal stretch() const;
       void setStretch(qreal _stretch);
 
-      void fromStream(QDataStream&);
-      void toStream(QDataStream&) const;
+      void fromPropertyMap(PropertyMap const&);
+      void toPropertyMap(PropertyMap&) const;
 
       QWidget* widget();
 

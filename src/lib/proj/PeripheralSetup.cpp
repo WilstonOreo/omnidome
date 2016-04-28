@@ -31,16 +31,22 @@ namespace omni
     {
     }
 
-    void PeripheralSetup::toStream(QDataStream& _stream) const
+    void PeripheralSetup::toPropertyMap(PropertyMap& _map) const
     {
-      AngleSetup::toStream(_stream);
-      _stream << deltaYaw_ << distanceCenter_ << towerHeight_ << shift_;
+      AngleSetup::toPropertyMap(_map);
+      _map("deltaYaw",deltaYaw_)
+          ("distanceCenter",distanceCenter_)
+          ("towerHeight",towerHeight_)
+          ("shift",shift_);
     }
 
-    void PeripheralSetup::fromStream(QDataStream& _stream)
+    void PeripheralSetup::fromPropertyMap(PropertyMap const& _map)
     {
-      AngleSetup::fromStream(_stream);
-      _stream >> deltaYaw_ >> distanceCenter_ >> towerHeight_ >> shift_;
+      AngleSetup::fromPropertyMap(_map);
+      _map.get("deltaYaw",deltaYaw_);
+      _map.get("distanceCenter",distanceCenter_);
+      _map.get("towerHeight",towerHeight_);
+      _map.get("shift",shift_);
     }
 
     void PeripheralSetup::setup(Projector& _proj)

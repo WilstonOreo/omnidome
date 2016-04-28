@@ -72,19 +72,15 @@ namespace omni {
 
       auto& _scene = dataModel()->scene();
 
-      makeCurrent();
       withCurrentContext([&](QOpenGLFunctions& _) {
-        glClear(
+        _.glClear(
           GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         visual::viewport(this);
 
         _vizSession->update();
-        makeCurrent();
 
         _scene.camera()->setup(aspect());
 
-        _.glEnable(GL_BLEND);
-        _.glEnable(GL_DEPTH_TEST);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         _scene.updateLights();

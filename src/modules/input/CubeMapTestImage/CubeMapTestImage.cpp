@@ -85,16 +85,16 @@ namespace omni
         return new omni::ui::input::CubeMapTestImage(this);
     }
 
-    void CubeMapTestImage::toStream(QDataStream& _stream) const
+    void CubeMapTestImage::toPropertyMap(PropertyMap& _map) const
     {
-      TestImage::toStream(_stream);
-      _stream << flipText_;
+      TestImage::toPropertyMap(_map);
+      _map("flipText",flipText_);
     }
 
-    void CubeMapTestImage::fromStream(QDataStream& _stream)
+    void CubeMapTestImage::fromPropertyMap(PropertyMap const& _map)
     {
-      TestImage::fromStream(_stream);
-      _stream >> flipText_;
+      TestImage::fromPropertyMap(_map);
+      _map.get("flipText",flipText_);
       update();
     }
   }

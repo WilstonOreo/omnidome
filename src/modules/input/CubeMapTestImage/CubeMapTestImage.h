@@ -46,8 +46,8 @@ namespace omni
       void setDisplayNumbers(bool);
       bool displayNumbers() const;
 
-      void toStream(QDataStream&) const;
-      void fromStream(QDataStream&);
+      void toPropertyMap(PropertyMap&) const;
+      void fromPropertyMap(PropertyMap const&);
 
     private:
       QString fragmentShaderSource() const;

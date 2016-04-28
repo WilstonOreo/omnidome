@@ -203,18 +203,15 @@ namespace omni {
         }
 
         /// Write mapping to stream
-        void Interface::toStream(QDataStream& _os) const {
-            PropertyMap _map;
+        void Interface::toPropertyMap(PropertyMap& _map) const {
             _map("transform",transform_)
                 ("boundToCanvas",boundToCanvas_)
                 ("flipHorizontal",flipHorizontal_)
                 ("flipVertical",flipVertical_);
-            _os << _map;
         }
 
         /// Read mapping from stream
-        void Interface::fromStream(QDataStream& _is) {
-            PropertyMap _map(_is);
+        void Interface::fromPropertyMap(PropertyMap const& _map) {
             _map.get("transform",transform_)
                 .get("boundToCanvas",boundToCanvas_)
                 .get("flipHorizontal",flipHorizontal_)

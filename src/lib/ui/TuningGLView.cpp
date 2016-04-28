@@ -48,11 +48,6 @@ namespace omni {
 
       if (!_tuning) return;
 
-      if (dataModel()->canvas()) {
-        dataModel()->canvas()->update();
-      }
-      dataModel()->makeVisualizer()->update();
-
       if (_tuning->makeVisualizer()) {
         _tuning->visualizer()->update();
         update();
@@ -556,7 +551,6 @@ namespace omni {
     {
       if (!tuning()) return;
 
-      makeCurrent();
       visual::viewport(this);
 
       withCurrentContext([&](QOpenGLFunctions& _)

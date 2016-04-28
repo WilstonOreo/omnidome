@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <omni/Session.h>
 #include <omni/ui/mixin/DataModel.h>
+#include <omni/input/Interface.h>
 
 namespace omni {
   namespace ui {
@@ -46,6 +47,16 @@ namespace omni {
         /// Return pointer to view (const version)
         SceneGLView const* view() const;
 
+      public slots:
+        /// Show large widget from current input
+        void showInputControlWidget();
+
+        /// Show large widget from given input
+        void showInputControlWidget(omni::input::Interface*);
+
+        /// Remove large input widget
+        void removeInputControlWidget();
+
       signals:
         void            dataModelChanged();
 
@@ -53,6 +64,7 @@ namespace omni {
         void            dataToFrontend();
         bool            frontendToData();
 
+        QWidget* inputControlWidget_ = nullptr;
         std::unique_ptr<Ui::SceneViewer> ui_;
     };
   }

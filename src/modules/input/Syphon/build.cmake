@@ -23,3 +23,5 @@ find_library(CORE_FOUNDATION CoreFoundation)
 
 SET(plugin_input_Syphon_FRAMEWORKS ${SYPHON} ${COCOA} ${CORE_FOUNDATION})
 MARK_AS_ADVANCED(${SYPHON} ${COCOA} ${CORE_FOUNDATION})
+
+# Copy Syphon framework file into omnidome app folder
