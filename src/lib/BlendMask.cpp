@@ -124,7 +124,7 @@ namespace omni {
       transformedPoint(_p1), strokeBuffer_, _leftOver);
   }
 
-  BlendMask::Buffer const& BlendMask::strokeBuffer() const
+  BlendMask::buffer_type const& BlendMask::strokeBuffer() const
   {
     return strokeBuffer_;
   }

@@ -32,6 +32,8 @@ namespace omni {
           typedef SLIDER slider_type;
           typedef SCALAR scalar_type;
 
+	  Scale() : suffix_("m") {}
+
           /// Set scale and apply to sliders
           virtual void setScale(float _scale) {
             float _oldScale = scale_;
@@ -141,7 +143,7 @@ namespace omni {
           };
 
           /// Common suffix is meter
-          QString suffix_    = "m";
+          QString suffix_;
           int     precision_ = 2;
           float   scale_     = 1.0;
           bool    rescaleValues_ = true;

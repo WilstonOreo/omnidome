@@ -39,7 +39,7 @@ namespace omni {
         return 1024;
       }
 
-      typedef Buffer<uint8_t>Buffer;
+      typedef Buffer<uint8_t> buffer_type;
 
       BlendMask(proj::Tuning const& _tuning);
 
@@ -100,7 +100,7 @@ namespace omni {
                                  float          _leftOver = 0.0);
 
       /// Returns stroke buffer (read only)
-      Buffer const& strokeBuffer() const;
+      buffer_type const& strokeBuffer() const;
 
       void          resize(int width,
                            int height);
@@ -130,7 +130,7 @@ namespace omni {
       QRectF rect_;
       float  gamma_;
       BlendBrush brush_;
-      Buffer     strokeBuffer_;
+      buffer_type     strokeBuffer_;
   };
 }
 

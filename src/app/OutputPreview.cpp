@@ -93,7 +93,7 @@ namespace omni {
             }
 
             for (auto& _tuning : dataModel()->tunings()) {
-              if (!_tuning->hasScreen() && _exportSettings.excludeUnassignedProjectors()) continue;
+	if (!_tuning->hasScreen() && _exportSettings.excludeUnassignedProjectors()) continue;
 
               drawTuning(_painter,_tuning.get());
             }
@@ -126,7 +126,7 @@ namespace omni {
 
             if (_exportSettings.outputType() == render::OutputType::PLAIN_IMAGE) {
               _image = _calib.toImage();
-            } else {
+	 } else {
               _image = _calib.toPreviewImage();
             }
 

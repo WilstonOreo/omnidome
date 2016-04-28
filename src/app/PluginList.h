@@ -20,6 +20,7 @@
 #ifndef OMNI_UI_PLUGINLIST_H_
 #define OMNI_UI_PLUGINLIST_H_
 
+#include <memory>
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <omni/PluginInfo.h>

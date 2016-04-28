@@ -37,6 +37,9 @@ namespace omni {
         struct PointerType<T, true>{
           typedef T                 data_type;
           typedef std::shared_ptr<T>type;
+	  
+	  static void initialize(type& _t) {
+	  }
 
           static T* raw_pointer(type _t) {
             return _t.get();
@@ -51,6 +54,10 @@ namespace omni {
         template<typename T>
         struct PointerType<T, false>{
           typedef T *type;
+
+	  static void initialize(type& _t) {
+		_t = nullptr;
+	  }
 
           static T* raw_pointer(type _t) {
             return _t;
@@ -81,7 +88,8 @@ namespace omni {
         public DataModelInterface,
         protected Locked {
         public:
-          /// Data type
+
+	  /// Data type
           typedef DATAMODEL data_model_type;
 
           /// This type
@@ -93,6 +101,10 @@ namespace omni {
 
           /// Derived pointer type
           typedef typename pointer_type_handler::type pointer_type;
+          
+	  DataModel() {
+		pointer_type_handler::initialize(dataModel_);
+		}
 
           /// Set new data model
           void setDataModel(pointer_type _dataModel) {
@@ -141,7 +153,7 @@ namespace omni {
           /// Internal method used to emit dataModelChanged signal
           inline virtual void emitDataModelChangedSignal() {}
 
-          pointer_type dataModel_ = nullptr;
+          pointer_type dataModel_;
       };
 
       /// Template alias for shared data model
