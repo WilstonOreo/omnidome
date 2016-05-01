@@ -103,7 +103,7 @@ namespace omni {
 
     void InputPreview::paintGL()
     {
-      if (!input_ || !isVisible()) return;
+      if (!input_ || !isVisible()) return;
 
       makeCurrent();
 

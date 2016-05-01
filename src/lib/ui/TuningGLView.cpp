@@ -348,6 +348,15 @@ namespace omni {
 
     bool TuningGLView::initialize()
     {
+      dataModel()->makeVisualizer();
+      dataModel()->visualizer()->update();
+
+      if (dataModel()->canvas()) {
+        dataModel()->canvas()->update();
+      }
+
+      dataModel()->scene().updateGrid();
+      dataModel()->scene().updateLights();
       return context() != nullptr;
     }
 
@@ -538,11 +547,17 @@ namespace omni {
     }
 
     void TuningGLView::showEvent(QShowEvent *event) {
-      if (!tuning()) return;
+
+      makeCurrent();
+      dataModel()->makeVisualizer();
+      dataModel()->visualizer()->update();
 
       if (dataModel()->canvas()) {
         dataModel()->canvas()->update();
       }
+
+      dataModel()->scene().updateGrid();
+      dataModel()->scene().updateLights();
 
       triggerUpdate();
     }
@@ -550,16 +565,20 @@ namespace omni {
     void TuningGLView::paintGL()
     {
       if (!tuning()) return;
+      makeCurrent();
+      
+auto *_vizSession = dataModel()->visualizer();
+      if (!_vizSession) return;
 
-      visual::viewport(this);
 
       withCurrentContext([&](QOpenGLFunctions& _)
       {
+
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
                   GL_STENCIL_BUFFER_BIT);
-        _.glClearColor(0.0, 0.0, 0.0, 1.0);
-      });
 
+      	visual::viewport(this);
+        _.glClearColor(0.0, 0.0, 0.0, 1.0);
       if (!dataModel()->hasOutput())
       {
         drawTestCard();
@@ -600,6 +619,8 @@ namespace omni {
 
       default: break;
       }
+      });
+
       paintGLDone();
     }
 

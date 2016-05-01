@@ -69,7 +69,8 @@ int main(int ac, char *av[])
   QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
   QSurfaceFormat _format;
-  _format.setVersion(3,3);
+
+//  _format.setVersion(3,3);
   _format.setProfile(QSurfaceFormat::CompatibilityProfile);
 #ifdef DEBUG
   _format.setOption(QSurfaceFormat::DebugContext);

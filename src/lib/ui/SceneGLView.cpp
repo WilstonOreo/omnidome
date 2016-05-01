@@ -34,10 +34,6 @@ namespace omni {
 
     bool SceneGLView::initialize()
     {
-      //      qDebug() << "SceneGLView::initialize() " << dataModel().get() <<
-      // initialized() << context();
-      //      if (!dataModel() || initialized() || !context()) return false;
-
       dataModel()->makeVisualizer();
       dataModel()->visualizer()->update();
 
