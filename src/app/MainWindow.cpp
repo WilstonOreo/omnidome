@@ -163,6 +163,9 @@ MainWindow::MainWindow(QMainWindow *parent) :
               inputIndexChanged()),                 sceneViewer_.get(),
             SLOT(showInputControlWidget()));
     connect(ui_->dockInputsWidget, SIGNAL(
+              inputRemoved()),                 sceneViewer_.get(),
+            SLOT(removeInputControlWidget()));
+    connect(ui_->dockInputsWidget, SIGNAL(
               inputIndexChanged()),                 this,
             SLOT(setMode()));
     connect(ui_->dockInputsWidget, SIGNAL(

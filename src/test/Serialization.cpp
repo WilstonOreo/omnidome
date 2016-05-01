@@ -22,8 +22,10 @@
 #include <QDataStream>
 #include <QFile>
 #include <QDebug>
+#include <QApplication>
 #include <omni/util.h>
 #include <omni/visual/Tuning.h>
+#include <omni/PluginLoader.h>
 
 namespace omni
 {
@@ -106,7 +108,6 @@ int main(int ac, char* av[])
 {
   using namespace omni;
 
-  Session _session;
   {
       try {
 
@@ -136,6 +137,9 @@ int main(int ac, char* av[])
   }
   }
 
+  QApplication _app(ac,av);
+  PluginLoader::load(PluginLoader::defaultPaths());
+
 
   /// Test WarpPoint
   {
@@ -158,14 +162,9 @@ int main(int ac, char* av[])
   /// Test InputList
   {
     InputList _inputs;
-    _inputs.addInput("TestImage");
+//    _inputs.addInput("TestImage");
     _inputs.addInput("Image");
+    _inputs.addInput("Rewonderland");
     test::Serialization<InputList>("inputs",_inputs);
-  }
-  /// Test session
-  {
-    Session _session;
-    _session.tunings().add();
-    test::Serialization<Session> _test("Session",_session);
   }
 }

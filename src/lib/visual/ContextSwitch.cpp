@@ -38,6 +38,7 @@ namespace omni {
     }
 
     void primaryContextSwitch(ContextFunctor f) {
+      if (!ContextManager::primaryContext()) return;
       contextSwitch(ContextManager::primaryContext(), f);
     }
 

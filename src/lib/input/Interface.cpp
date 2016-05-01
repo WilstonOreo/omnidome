@@ -146,6 +146,7 @@ namespace omni {
       using namespace omni::util;
       PropertyMap _children;
       for (auto& _idChild : children()) {
+        OMNI_DEBUG << _idChild.first << _idChild.second.get();
         _children.put(_idChild.first,_idChild.second);
       }
       _map.put("children",_children);
@@ -157,6 +158,7 @@ namespace omni {
       clear();
       PropertyMap _children = _map.getValue("children",PropertyMap());
       auto _ids = _children.ids();
+
       for (auto& _id : _ids) {
         _children.getPtr(_id,[&](Id const& _typeId) ->
                          input::Interface *

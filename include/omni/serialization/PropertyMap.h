@@ -40,7 +40,7 @@ namespace omni {
         public:
           OMNI_EXCEPTION(ChecksumError)
 
-          ChecksumError(QString _got, QString _expected, Id const& _id = Id()) :
+          ChecksumError(QString _got, QString _expected, QString const& _id = QString()) :
             got_(_got),
             expected_(_expected),
             id_(_id) {}
@@ -50,7 +50,7 @@ namespace omni {
 
             _s = _s.arg(expected_).arg(got_);
 
-            if (!QString(id_).isEmpty()) {
+            if (!id_.isEmpty()) {
               _s += QString(" On id %1.").arg(QString(id_));
             }
             return _s;
@@ -59,35 +59,35 @@ namespace omni {
         private:
           QString got_;
           QString expected_;
-          Id id_;
+          QString id_;
       };
 
       class PropertyExisting : public Error {
         public:
           OMNI_EXCEPTION(PropertyExisting)
 
-          PropertyExisting(Id const& _id) : id_(_id) {}
+          PropertyExisting(QString const& _id) : id_(_id) {}
 
           inline QString message() const throw() {
             return QString("Property with id %1 already exists!").arg(QString(id_));
           }
 
         private:
-          Id id_;
+          QString id_;
       };
 
       class PropertyNotExisting : public Error {
         public:
           OMNI_EXCEPTION(PropertyNotExisting)
 
-          PropertyNotExisting(Id const& _id) : id_(_id) {}
+          PropertyNotExisting(QString const& _id) : id_(_id) {}
 
           inline QString message() const throw() {
-            return QString("Property with id %1 does not exist!").arg(QString(id_));
+            return QString("Property with id %1 does not exist!").arg(id_);
           }
 
         private:
-          Id id_;
+          QString id_;
       };
     }
 

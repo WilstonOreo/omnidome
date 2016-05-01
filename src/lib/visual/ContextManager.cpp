@@ -49,6 +49,7 @@ namespace omni {
       if (instance()->primaryContext_.get()) {
         return;
       }
+      if (!QOpenGLContext::globalShareContext()) return;
 
       primaryContext_.reset(new QOpenGLContext());
       primaryContext_->setFormat(QOpenGLContext::globalShareContext()->format());

@@ -53,7 +53,7 @@ namespace omni {
 
             for (size_t i = 0; i < _size; ++i) {
                 QString _propertyHash;
-                Id _propertyId;
+                QString _propertyId;
                 QByteArray _propertyData;
                 deserialize(_is,_propertyHash);
                 deserialize(_is,_propertyId);

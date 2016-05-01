@@ -62,6 +62,7 @@ namespace omni {
 
       signals:
         void inputChanged();
+        void inputRemoved();
         void dataModelChanged();
         void inputIndexChanged();
 
