@@ -270,23 +270,9 @@
     <property name="title">
      <string>View</string>
     </property>
-    <widget class="QMenu" name="menuSet_scene_view_FPS">
-     <property name="title">
-      <string>Scene View FPS</string>
-     </property>
-     <addaction name="action5_fps"/>
-     <addaction name="action10_fps"/>
-     <addaction name="action25_fps"/>
-     <addaction name="action30_fps"/>
-     <addaction name="action60_fps"/>
-     <addaction name="actionNo_limit"/>
-    </widget>
     <addaction name="actionDisableAllTunings"/>
     <addaction name="actionEnableAllTunings"/>
     <addaction name="actionEnableSelectedTuningOnly"/>
-    <addaction name="separator"/>
-    <addaction name="menuSet_scene_view_FPS"/>
-    <addaction name="actionProjector_View_FPS"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuHelp">

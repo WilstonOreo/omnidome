@@ -129,12 +129,25 @@ namespace omni {
           return false;
         }
 
-        inline void setUpdateCallBack(callback_type _updatedCallback) {
-          updatedCallback_ = _updatedCallback;
+        /// Insert a new callback when input has updated and returns its unique id
+        inline int setUpdateCallback(callback_type _updatedCallback) {
+          int _id = genCallbackId();
+          updatedCallbacks_[_id] = _updatedCallback;
+          return _id;
         }
 
-        inline callback_type updatedCallback() {
-          return updatedCallback_;
+        inline callback_type updatedCallback(int _id) {
+          return updatedCallbacks_.at(_id);
+        }
+
+        void triggerUpdateCallbacks() const {
+          for (auto& _idCallback : updatedCallbacks_) {
+            _idCallback.second();
+          }
+        }
+
+        inline void removeUpdateCallback(int _id) {
+          updatedCallbacks_.erase(_id);
         }
 
         /**@brief Add new input with given type id. Returns nullptr if input
@@ -192,8 +205,17 @@ namespace omni {
 
         void getInputsRecurse(Interface const* _root, inputlist_type& _list, bool _excludeThis = true) const;
 
+        int genCallbackId() const {
+          for (int i = 0; i <= updatedCallbacks_.size(); ++i) {
+            if (!updatedCallbacks_.count(i)) {
+              return i;
+            }
+          }
+          return updatedCallbacks_.size();
+        }
+
         Interface const *parent_ = nullptr;
-        callback_type  updatedCallback_;
+        std::map<int,callback_type>  updatedCallbacks_;
     };
 
     /// Input Factory typedef

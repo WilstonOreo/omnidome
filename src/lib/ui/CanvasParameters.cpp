@@ -45,11 +45,30 @@ namespace omni
           return false;
         }
         transform_->updateDataModel();
+
+        dataModel()->setViewMode(util::intToEnum<Canvas::ViewMode>(boxViewMode_
+                                                                     ->
+                                                                     currentIndex()));
         return true;
     }
 
     void CanvasParameters::dataToFrontend() {
-        transform_ = addAffineTransformWidget("Transform", &dataModel()->transform());
+        if (!transform_) {
+          transform_.reset(addAffineTransformWidget("Transform", &dataModel()->transform()));
+        }
+
+        if (!boxViewMode_) {
+            boxViewMode_.reset(new QComboBox());
+            boxViewMode_->addItem("Inside");
+            boxViewMode_->addItem("Outside");
+            boxViewMode_->addItem("Both");
+            layout()->addWidget(boxViewMode_.get());
+            connect(boxViewMode_.get(),
+                static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                this, &CanvasParameters::updateDataModel);
+        }
+        boxViewMode_->setCurrentIndex(util::enumToInt(dataModel()->
+                                                               viewMode()));
     }
 
     void CanvasParameters::setDataModel(canvas::Interface* _canvas) {

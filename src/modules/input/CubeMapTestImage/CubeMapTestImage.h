@@ -54,7 +54,7 @@ namespace omni
       QString vertexShaderSource() const;
       void shaderUniformHandler();
 
-      bool flipText_ = false;
+      bool flipText_ = true;
       bool displayNumbers_ = true;
     };
   }

@@ -33,6 +33,7 @@ namespace omni {
 
     Interface::~Interface()
     {
+      updatedCallbacks_.clear();
       /// Removing input from global controller also deactivates it
       Controller::instance()->remove(this);
     }
@@ -49,10 +50,6 @@ namespace omni {
     }
 
     Interface * Interface::addInput(QString const& _id, Interface *_i) {
-      if (!canHaveChildren()) {
-        throw exception::CannotHaveChildren();
-      }
-
       if (container_type::count(_id) != 0) {
         return nullptr;
       }
@@ -63,36 +60,22 @@ namespace omni {
     }
 
     void Interface::removeInput(QString const& _id) {
-      if (!canHaveChildren()) {
-        throw exception::CannotHaveChildren();
-      }
       container_type::erase(_id);
     }
 
     Interface * Interface::getInput(QString const& _id) {
-      if (!canHaveChildren()) {
-        throw exception::CannotHaveChildren();
-      }
-
       if (container_type::count(_id) == 0) return nullptr;
 
       return container_type::at(_id).get();
     }
 
     Interface const * Interface::getInput(QString const& _id) const {
-      if (!canHaveChildren()) {
-        throw exception::CannotHaveChildren();
-      }
-
       if (container_type::count(_id) == 0) return nullptr;
 
       return container_type::at(_id).get();
     }
 
     Interface::container_type const& Interface::children() const {
-      if (!canHaveChildren()) {
-        throw exception::CannotHaveChildren();
-      }
       return *this;
     }
 
@@ -156,53 +139,31 @@ namespace omni {
 
         getInputsRecurse(_child,_list,_excludeThis);
       }
-
-
     }
 
     /// Serialize to stream
     void Interface::toPropertyMap(PropertyMap& _map) const {
       using namespace omni::util;
-/*
-      if (canHaveChildren()) {
-
-
-        // serialize map of inputs
-        serialize(_os, int(numberOfChildren()));
-
-        for (auto& _idInput : (*this))
-        {
-          auto& _id    = _idInput.first;
-          auto& _input = _idInput.second;
-          serialize(_os, _id);
-          serialize(_os, _input.get());
-        }
-      } else {
-        serialize(_os, int(0));
+      PropertyMap _children;
+      for (auto& _idChild : children()) {
+        _children.put(_idChild.first,_idChild.second);
       }
-      _map("children",children());
-*/
+      _map.put("children",_children);
     }
 
     /// Deserialize from stream
     void Interface::fromPropertyMap(PropertyMap const& _map) {
       using namespace omni::util;
       clear();
-/*
-      int _size = deserializeReturn<int>(_is, 0);
-
-      if (canHaveChildren()) {
-        // Deserialize map of inputs
-        for (int i = 0; i < _size; ++i)
-        {
-          auto _id = deserializeReturn<QString>(_is);
-          deserializePtr(_is, [&](Id const& _typeId) ->
+      PropertyMap _children = _map.getValue("children",PropertyMap());
+      auto _ids = _children.ids();
+      for (auto& _id : _ids) {
+        _children.getPtr(_id,[&](Id const& _typeId) ->
                          input::Interface *
           {
             return addInput(_id, _typeId);
           });
-        }
-      }*/
+      }
     }
   }
 }

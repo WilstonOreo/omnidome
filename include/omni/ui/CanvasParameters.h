@@ -20,6 +20,7 @@
 #ifndef OMNI_UI_CANVASPARAMETERS_H_
 #define OMNI_UI_CANVASPARAMETERS_H_
 
+#include <QComboBox>
 #include <omni/canvas/Interface.h>
 #include <omni/ui/ParameterWidget.h>
 #include <omni/ui/mixin/DataModel.h>
@@ -65,7 +66,8 @@ namespace omni {
 
       private:
         /// Transform widget
-        omni::ui::AffineTransform *transform_ = nullptr;
+        QUniquePtr<omni::ui::AffineTransform> transform_;
+        QUniquePtr<QComboBox> boxViewMode_;
     };
   }
 }

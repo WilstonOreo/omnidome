@@ -92,8 +92,8 @@ namespace omni
 
     void TestImage::toPropertyMap(PropertyMap& _map) const
     {
-      Framebuffer::toPropertyMap(_map);
       _map("rulerPos",rulerPos_);
+      Framebuffer::toPropertyMap(_map);
     }
 
     void TestImage::fromPropertyMap(PropertyMap const& _map)

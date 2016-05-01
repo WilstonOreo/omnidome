@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -131,7 +131,8 @@ namespace omni
     QCheckBox* ParameterWidget::addCheckBox(QString const& _text, bool _checked)
     {
       if (getWidget(_text)) {
-        return static_cast<QCheckBox*>(getWidget(_text));
+        auto* _checkbox = static_cast<QCheckBox*>(getWidget(_text));
+        return _checkbox;
       }
 
       auto* _checkbox = new QCheckBox(_text, this);

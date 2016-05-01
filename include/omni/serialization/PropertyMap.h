@@ -102,7 +102,7 @@ namespace omni {
 
         /// Put an object of type T with id into property map
         template<typename T, typename ... ARGS>
-        PropertyMap& put(Id const& _id, T const& _t, ARGS&& ... _args) {
+        PropertyMap& put(QString const& _id, T const& _t, ARGS&& ... _args) {
           if (properties_.count(_id) != 0) {
             throw exception::PropertyExisting(_id);
           }
@@ -116,7 +116,7 @@ namespace omni {
 
         /// Read an object of type T with id from property map
         template<typename T, typename ... ARGS>
-        PropertyMap const& get(Id const& _id, T& _t, ARGS&& ... _args) const {
+        PropertyMap const& get(QString const& _id, T& _t, ARGS&& ... _args) const {
           if (properties_.count(_id) == 0) {
             throw exception::PropertyNotExisting(_id);
           }
@@ -128,7 +128,7 @@ namespace omni {
 
         /// Read an object of type T with id from property map
         template<typename T, typename ... ARGS>
-        PropertyMap const& get(Id const& _id, T *_t, ARGS&& ... _args) const {
+        PropertyMap const& get(QString const& _id, T *_t, ARGS&& ... _args) const {
           if (properties_.count(_id) == 0) {
             throw exception::PropertyNotExisting(_id);
           }
@@ -140,7 +140,7 @@ namespace omni {
 
         /// Get value from id (with optional default value when id is not present)
         template<typename T>
-        T getValue(Id const& _id, T const& _default = T()) const {
+        T getValue(QString const& _id, T const& _default = T()) const {
           if (properties_.count(_id) == 0) {
             return _default;
           }
@@ -152,7 +152,7 @@ namespace omni {
 
         /// Read an object of type T with id from property map
         template<typename FACTORY_FUNCTOR, typename ... ARGS>
-        PropertyMap const& getPtr(Id const& _id,
+        PropertyMap const& getPtr(QString const& _id,
                                   FACTORY_FUNCTOR _f,
                                   ARGS&& ... _args) const {
           if (properties_.count(_id) == 0) {
@@ -166,7 +166,7 @@ namespace omni {
         /**@brief Get value from
         **/
         template<typename T, typename CLASS, typename MEM_FN>
-        PropertyMap const& get(Id const& _id,
+        PropertyMap const& get(QString const& _id,
                                CLASS& _class,
                                MEM_FN _memFn,
                                T const& _default = T()) const {
@@ -193,6 +193,15 @@ namespace omni {
           return get(_id, _t);
         }
 
+        /// Return list of ids
+        std::vector<QString> ids() const {
+          std::vector<QString> _ids;
+          for (auto& _idValue : properties_) {
+            _ids.push_back(_idValue.first);
+          }
+          return _ids;
+        }
+
         /// Write property map to stream
         void toStream(QDataStream&) const;
 
@@ -200,7 +209,7 @@ namespace omni {
         void fromStream(QDataStream&);
 
       private:
-        typedef std::map<Id, QByteArray>property_map;
+        typedef std::map<QString, QByteArray>property_map;
 
         /// Make MD5 checksum from byte array
         static QString makeChecksum(QByteArray const& _b);

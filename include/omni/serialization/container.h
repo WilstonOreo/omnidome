@@ -120,8 +120,8 @@ namespace omni {
         STREAM& operator()(STREAM& _stream, OBJ const& _obj) {
           serialize(_stream, uint32_t(_obj.size()));
 
-          for (size_t i = 0; i < _obj.size(); ++i) {
-            serialize(_stream, _obj[i]);
+          for (auto& _element : _obj) {
+            serialize(_stream, _element);
           }
           return _stream;
         }

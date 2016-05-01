@@ -43,10 +43,6 @@ namespace omni {
         connect(ui_->boxProjectedAreas,
                 static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                 this, &Scene::updateDataModel);
-        connect(ui_->boxFrustumViewMode,
-                static_cast<void (QComboBox::*)(int)>(&QComboBox::
-                                                      currentIndexChanged),
-                this, &Scene::updateDataModel);
 
         ui_->sliderInsideOutside->setRange(0.0,1.0);
         ui_->sliderInsideOutside->setGripSize(0.0);
@@ -74,6 +70,7 @@ namespace omni {
           ui_->btnFitToCanvas,
           ui_->lbSceneSize,
           ui_->lbUnit,
+          ui_->lbInsideOutside,
           ui_->chkRescaleValues,
           ui_->sliderInsideOutside
         };
@@ -168,8 +165,6 @@ namespace omni {
       ui_->chkGrid->setChecked(_scene.displayGrid());
       ui_->boxProjectors->setCurrentIndex(util::enumToInt(_scene.displayProjectors()));
       ui_->boxProjectedAreas->setCurrentIndex(util::enumToInt(_scene.displayProjectedAreas()));
-      ui_->boxFrustumViewMode->setCurrentIndex(util::enumToInt(_scene.
-                                                               projectorViewMode()));
 
       // Set current scene size to combobox
       {
@@ -218,10 +213,6 @@ namespace omni {
       _scene.setDisplayGrid(ui_->chkGrid->isChecked());
       _scene.setDisplayProjectors(util::intToEnum<visual::ProjectorSelectionMode>(ui_->boxProjectors->currentIndex()));
       _scene.setDisplayProjectedAreas(util::intToEnum<visual::ProjectorSelectionMode>(ui_->boxProjectedAreas->currentIndex()));
-      _scene.setProjectorViewMode(util::intToEnum<ProjectorViewMode>(ui_->
-                                                                     boxFrustumViewMode
-                                                                     ->
-                                                                     currentIndex()));
 
       return true;
     }

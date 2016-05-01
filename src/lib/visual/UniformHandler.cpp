@@ -39,6 +39,13 @@ namespace omni {
       }
     }
 
+    void UniformHandler::texRectUniform(const char* _name, GLuint _texId, QSize _size) {
+      texUniform(_name,_texId,GL_TEXTURE_RECTANGLE);
+      uniform(
+        QString(QString(_name) + "_size").toUtf8().data(),
+        QVector2D(_size.width(),_size.height()));
+    }
+
     void UniformHandler::texUniform(const char *_name,
                                     GLuint _texId,
                                     GLuint _target) {

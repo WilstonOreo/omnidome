@@ -22,7 +22,6 @@
 
 #include <map>
 #include <memory>
-#include <omni/visual/ProjectorViewMode.h>
 #include <omni/serialization/Interface.h>
 #include <omni/visual/Light.h>
 #include <omni/visual/CameraInterface.h>
@@ -118,9 +117,6 @@ namespace omni {
         MoveMode          moveMode() const;
         void setMoveMode(MoveMode);
 
-        ProjectorViewMode projectorViewMode() const;
-        void setProjectorViewMode(ProjectorViewMode);
-
         /// Inside / outside transparency for 3D canvas view
         float insideOutside() const;
 
@@ -176,7 +172,6 @@ namespace omni {
         EditMode   editMode_                 = EditMode::CAMERA;
         RotateMode rotateMode_               = RotateMode::YAW;
         MoveMode   moveMode_                 = MoveMode::MOVE_XY;
-        ProjectorViewMode projectorViewMode_ = ProjectorViewMode::INSIDE;
 
         QString cameraId_;
         std::vector<visual::Light> lights_;

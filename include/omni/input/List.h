@@ -113,11 +113,11 @@ namespace omni {
         /// Return pointer to controller (const version)
         Controller const*   controller() const;
 
-        /// Deserialize from stream
-        void          fromStream(QDataStream&);
+        /// Deserialize from property map
+        void          fromPropertyMap(PropertyMap const&);
 
-        /// Serialize to stream
-        void          toStream(QDataStream&) const;
+        /// Serialize to property map
+        void          toPropertyMap(PropertyMap&) const;
 
         /// Test for equality
         friend bool   operator==(List const&,

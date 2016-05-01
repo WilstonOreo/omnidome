@@ -19,6 +19,7 @@
 
 #include "SceneViewer.h"
 #include "ui_omni_ui_SceneViewer.h"
+#include <QMetaObject>
 
 namespace omni {
   namespace ui {
@@ -33,6 +34,13 @@ namespace omni {
     }
 
     SceneViewer::~SceneViewer() {}
+
+    void SceneViewer::triggerUpdate() {
+      view()->triggerUpdate();
+      if (inputControlWidget_) {
+        QMetaObject::invokeMethod(inputControlWidget_,"triggerUpdate");
+      }
+    }
 
     void SceneViewer::dataToFrontend() {
       ui_->view->setDataModel(dataModel());
@@ -64,7 +72,7 @@ namespace omni {
       inputControlWidget_ = _input->controlWidget();
       if (!inputControlWidget_) return;
 
-      ui_->inputWidget->layout()->addWidget(_input->controlWidget());
+      ui_->inputWidget->layout()->addWidget(inputControlWidget_);
 
       QList<int> _sizes;
       _sizes << width() / 2;

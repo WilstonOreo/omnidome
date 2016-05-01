@@ -19,6 +19,8 @@
 
 #include <omni/patch/List.h>
 
+#include <omni/serialization/container.h>
+
 namespace omni {
   namespace patch {
     Patch * List::addPatch(QString const& _id, Id const& _typeId) {
@@ -106,6 +108,36 @@ namespace omni {
         return;
       }
       selectedPatches_.insert(_currentId);
+    }
+
+    /// Deserialize from stream
+    void List::fromStream(QDataStream& _is) {
+      int _size = 0;
+      deserialize(_is, _size);
+
+      for (int i = 0; i < _size; ++i) {
+          auto _id = deserializeReturn<QString>(_is);
+          deserializePtr(_is, [&](Id const& _typeId) ->
+                         patch::Interface *
+          {
+            return addPatch(_id, _typeId);
+          });
+      }
+      deserialize(_is,selectedPatches_);
+    }
+
+    /// Serialize to stream
+    void List::toStream(QDataStream& _os) const {
+      serialize(_os, int(size()));
+
+      for (auto& _idPatch : (*this)) {
+          auto& _id    = _idPatch.first;
+          auto& _patch = _idPatch.second;
+          serialize(_os, _id);
+          serialize(_os, _patch.get());
+      }
+
+      serialize(_os,selectedPatches_);
     }
 
     QString List::generateId() const {

@@ -90,8 +90,7 @@ namespace omni {
         _vizSession->drawCanvasFor3DView();
 
         _vizSession->drawProjectors(_scene.displayProjectors());
-        _vizSession->drawCanvasWithFrustumIntersections(_scene.projectorViewMode(),
-                                                        _scene.
+        _vizSession->drawCanvasWithFrustumIntersections(_scene.
                                                         displayProjectedAreas());
         _vizSession->drawProjectorHalos(_scene.displayProjectors());
 

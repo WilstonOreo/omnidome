@@ -45,7 +45,7 @@ namespace omni {
       {
         glLoadIdentity();
         glMultMatrixf(_canvas->matrix().constData());
-        _canvas->draw();
+        _canvas->drawWithViewMode();
       }
       glPopMatrix();
     }
@@ -107,7 +107,13 @@ namespace omni {
 
           // Render canvas with lighting when there is no input
           glColor4f(1.0, 1.0, 1.0, 1.0);
-          drawCanvasWithMatrix();
+          glPushMatrix();
+          {
+            glLoadIdentity();
+            glMultMatrixf(_canvas->matrix().constData());
+            _canvas->draw();
+          }
+          glPopMatrix();
         }
       });
     }
@@ -144,20 +150,18 @@ namespace omni {
     }
 
     void Session::drawCanvasWithFrustumIntersections(
-      ProjectorViewMode _projectorViewMode,
       ProjectorSelectionMode _selectionMode) const
     {
       projectorDrawFunction(_selectionMode, [&](Projector const&, int i) {
         auto _tuning = session_.tunings()[i];
         drawFrustumIntersection(_tuning->projector(),
-                                _tuning->color(), _projectorViewMode);
+                                _tuning->color());
       });
     }
 
     void Session::drawFrustumIntersection(
       proj::Projector const& _proj,
-      QColor const& _color,
-      ProjectorViewMode      _projectorViewMode) const
+      QColor const& _color) const
     {
       auto _canvas = session_.canvas();
 
@@ -193,8 +197,7 @@ namespace omni {
       frustumShader_->setUniformValue("scale",
                                       GLfloat(_canvas->bounds().radius()));
       frustumShader_->setUniformValue("opacity", GLfloat(0.8));
-      frustumShader_->setUniformValue("view_mode",
-                                      int(_projectorViewMode));
+      frustumShader_->setUniformValue("view_mode",int(_canvas->viewMode()));
 
       glDisable(GL_DEPTH_TEST);
       drawCanvasWithMatrix();

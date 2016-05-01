@@ -51,10 +51,7 @@ namespace omni
 
     void Syphon::timerEvent(QTimerEvent *) {
       this->update();
-
-      if (this->updatedCallback()) {
-        this->updatedCallback()();
-      }
+      this->triggerUpdateCallbacks();
     }
 
     void Syphon::setDescription(SyphonServerDescription const& _description) {

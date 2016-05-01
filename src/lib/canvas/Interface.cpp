@@ -19,6 +19,8 @@
 
 #include <omni/canvas/Interface.h>
 
+#include <omni/visual/util.h>
+
 #include <omni/serialization/PropertyMap.h>
 
 namespace omni {
@@ -35,6 +37,26 @@ namespace omni {
         QVector3D Interface::center() const
         {
             return (bounds().max() + bounds().min()) * 0.5;
+        }
+        /// Draws with culled front or back faces, depending on view mode
+        void Interface::drawWithViewMode() const {
+          withCurrentContext([&](QOpenGLFunctions& _) {
+            switch (viewMode_) {
+              case ViewMode::INSIDE:
+              _.glEnable(GL_CULL_FACE);
+              _.glCullFace(GL_FRONT);
+              break;
+              case ViewMode::OUTSIDE:
+              _.glEnable(GL_CULL_FACE);
+              _.glCullFace(GL_BACK);
+              break;
+              case ViewMode::BOTH:
+              _.glDisable(GL_CULL_FACE);
+              break;
+            }
+            this->draw();
+            _.glDisable(GL_CULL_FACE);
+          });
         }
 
         /// Canvas radius (is half of size by default)

@@ -27,6 +27,7 @@
 
 #include <omni/Session.h>
 #include <omni/input/Interface.h>
+#include <omni/input/Controller.h>
 
 namespace omni
 {
@@ -112,7 +113,7 @@ namespace omni
       if (_input->canAdd())
       {
         addItem(_id,_input);
-        //emit inputIndexChanged();
+        _input->setUpdateCallback(std::bind(&Input::inputUpdatedEmitter,this));
         selectInputId(_id);
         showParameterWidget();
         emit inputIndexChanged();
@@ -126,8 +127,11 @@ namespace omni
         dataModel()->inputs().setCurrentId(_id);
         auto* _current = dataModel()->inputs().current();
         if (_current) {
+          for (auto& _input : dataModel()->inputs()) {
+            input::Controller::instance()->deactivate(_input.second.get());
+          }
+          input::Controller::instance()->activate(_current);
           _current->update();
-          _current->setUpdateCallBack(std::bind(&Input::inputUpdatedEmitter,this));
           emit inputChanged();
         }
     }

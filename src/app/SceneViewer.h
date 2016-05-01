@@ -48,6 +48,8 @@ namespace omni {
         SceneGLView const* view() const;
 
       public slots:
+        void triggerUpdate();
+         
         /// Show large widget from current input
         void showInputControlWidget();
 

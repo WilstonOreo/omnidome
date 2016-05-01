@@ -74,7 +74,6 @@ namespace omni {
         _format.setSamples(0);
         _format.setTextureTarget(GL_TEXTURE_RECTANGLE);
         _format.setAttachment(QOpenGLFramebufferObject::NoAttachment);
-        auto _size = size();
         framebuffer_.reset(new QOpenGLFramebufferObject(
               _size.width(),
               _size.height(),_format));
@@ -91,8 +90,8 @@ namespace omni {
     }
 
     void Framebuffer::toPropertyMap(PropertyMap& _map) const {
-      input::Interface::toPropertyMap(_map);
       _map("size",size());
+      input::Interface::toPropertyMap(_map);
     }
 
     void Framebuffer::fromPropertyMap(PropertyMap const& _map) {

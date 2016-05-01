@@ -65,6 +65,9 @@ namespace omni {
         /// Set view mode
         void setViewMode(ViewMode _viewMode);
 
+        /// Draws with culled front or back faces, depending on view mode
+        void drawWithViewMode() const;
+
         /// Draws auxiliary elements which are not used for mapping (e.g.
         // positioning grids)
         inline virtual void drawAux() const

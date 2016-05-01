@@ -58,17 +58,16 @@ namespace omni {
       return Interface::getInput(_id);
     }
 
-    void List::fromStream(QDataStream& _stream)
+    void List::fromPropertyMap(PropertyMap const& _map)
     {
-      QString _currentId;
-      deserialize(_stream, _currentId);
-      input::Interface::fromStream(_stream);
-      setCurrentId(_currentId);
+      input::Interface::fromPropertyMap(_map);
+      _map("currentId",currentId_);
+      setCurrentId(currentId_);
     }
 
-    void List::toStream(QDataStream& _stream) const {
-      serialize(_stream, currentId_);
-      input::Interface::toStream(_stream);
+    void List::toPropertyMap(PropertyMap& _map) const {  
+      _map("currentId",currentId_);
+      input::Interface::toPropertyMap(_map);
     }
 
     Input const * List::current() const

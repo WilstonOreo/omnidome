@@ -47,13 +47,11 @@ namespace omni {
         void drawCanvasFor3DView();
 
         /// Canvas with frustum intersection of all projectors
-        void drawCanvasWithFrustumIntersections(ProjectorViewMode,
-                                                ProjectorSelectionMode) const;
+        void drawCanvasWithFrustumIntersections(ProjectorSelectionMode) const;
 
         /// Draw frustum canvas intersection
         void drawFrustumIntersection(proj::Projector const &,
-                                     QColor const &,
-                                     ProjectorViewMode) const;
+                                     QColor const&) const;
 
         /// Update projectors and canvas
         void update();

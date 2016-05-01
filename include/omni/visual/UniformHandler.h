@@ -57,6 +57,8 @@ namespace omni {
         texUniform(_name, _tex.textureId(), _tex.target());
       }
 
+      void texRectUniform(const char* _name, GLuint _texId, QSize _size);  
+
       private:
         QOpenGLFunctions    & gl_;
         QOpenGLShaderProgram& shader_;

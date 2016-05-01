@@ -90,6 +90,12 @@ namespace omni {
         /// Return flag whether patch with id is selected
         bool                        patchIsSelected(QString const&) const;
 
+        /// Deserialize from stream
+        void fromStream(QDataStream&);
+
+        /// Serialize to stream
+        void toStream(QDataStream&) const;
+
     private:
         /// Generate a new id for input
         QString generateId() const;
@@ -101,5 +107,7 @@ namespace omni {
 
   typedef patch::List PatchList;
 }
+
+OMNI_DECL_STREAM_OPERATORS(omni::patch::List)
 
 #endif /* OMNI_PATCH_LIST_H_ */

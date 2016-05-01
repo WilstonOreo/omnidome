@@ -129,14 +129,6 @@ namespace omni {
       moveMode_ = _moveMode;
     }
 
-    ProjectorViewMode Scene::projectorViewMode() const {
-      return projectorViewMode_;
-    }
-
-    void Scene::setProjectorViewMode(ProjectorViewMode _projectorViewMode) {
-      projectorViewMode_ = _projectorViewMode;
-    }
-
     /// Setup light for use in OpenGL
     void Scene::updateLights() {
       GLuint _index = GL_LIGHT0;
@@ -200,7 +192,6 @@ namespace omni {
       _map.get("editMode",              editMode_);
       _map.get("rotateMode",            rotateMode_);
       _map.get("moveMode",              moveMode_);
-      _map.get("projectorViewMode",     projectorViewMode_);
       _map.get("insideOutside",     insideOutside_);
       _map.get("lights", lights_);
 
@@ -219,7 +210,6 @@ namespace omni {
         ("editMode", editMode_)
         ("rotateMode", rotateMode_)
         ("moveMode", moveMode_)
-        ("projectorViewMode", projectorViewMode_)
         ("insideOutside", insideOutside_)
         ("lights", lights_);
 
@@ -237,7 +227,6 @@ namespace omni {
         OMNI_TEST_MEMBER_EQUAL(editMode_) &&
         OMNI_TEST_MEMBER_EQUAL(rotateMode_) &&
         OMNI_TEST_MEMBER_EQUAL(moveMode_) &&
-        OMNI_TEST_MEMBER_EQUAL(projectorViewMode_) &&
         OMNI_TEST_MEMBER_EQUAL(lights_) &&
         OMNI_TEST_MEMBER_EQUAL(cameras_);
     }

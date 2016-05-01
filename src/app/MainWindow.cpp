@@ -387,8 +387,7 @@ void MainWindow::updateAllViews()
   switch (session_->mode()) {
   case Session::Mode::ARRANGE:
   case Session::Mode::LIVE:
-    sceneViewer_->view()->makeCurrent();
-    sceneViewer_->view()->triggerUpdate();
+    sceneViewer_->triggerUpdate();
     break;
   default:
   case Session::Mode::WARP:

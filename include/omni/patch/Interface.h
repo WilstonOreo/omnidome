@@ -54,11 +54,11 @@ namespace omni {
       virtual std::vector<PatchHandle*> getHandles(QPointF const&) = 0;
 
       /// Return pointer to widget
-	virtual inline QWidget* widget() { return nullptr; }
+	    virtual inline QWidget* widget() { return nullptr; }
 
       virtual input::Interface* input() const = 0;
 
-      virtual void assignInput(input::Interface const*) = 0;
+      virtual void assignInput(input::Interface*) = 0;
       virtual void removeInput() = 0;
 
       inline virtual bool canHaveInput() const { return false; }
