@@ -113,7 +113,6 @@ namespace omni
       if (_input->canAdd())
       {
         addItem(_id,_input);
-        _input->setUpdateCallback(std::bind(&Input::inputUpdatedEmitter,this));
         selectInputId(_id);
         showParameterWidget();
         emit inputIndexChanged();
@@ -224,7 +223,7 @@ namespace omni
       this->removeParameterWidget(widget());
     }
 
-    void Input::addItem(QString const& _id, input::Interface const* _input)
+    void Input::addItem(QString const& _id, input::Interface* _input)
     {
       if (!_input) return;
 
@@ -243,6 +242,8 @@ namespace omni
       ui_->inputList->resizeColumnToContents(0);
       ui_->inputList->resizeColumnToContents(1);
       ui_->inputList->resizeColumnToContents(2);
+
+      _input->setUpdateCallback(std::bind(&Input::inputUpdatedEmitter,this));
     }
 
     void Input::parameterWidgetSetupOptions(QWidget* _paramWidget) const {

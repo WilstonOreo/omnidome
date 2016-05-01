@@ -61,6 +61,8 @@ namespace omni {
     }
 
     void InputPreview::showEvent(QShowEvent*) {
+      if (!input_) return;
+
       input_->update();
       update();
       makeCurrent();

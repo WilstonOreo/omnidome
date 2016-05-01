@@ -90,7 +90,7 @@ namespace omni {
 
         /// Add an item to input list widget
         void    addItem(QString const& _id,
-                        input::Interface const *);
+                        input::Interface*);
 
         void    parameterWidgetSetupOptions(QWidget *_paramWidget) const;
 
