@@ -51,8 +51,6 @@ namespace omni
       /// Updates blend texture after it has changed by blend brush
       void updateBlendTexture();
 
-      void drawBlendMask() const;
-
       /// Update warp grid mesh
       void updateWarpGrid();
 

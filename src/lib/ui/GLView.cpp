@@ -36,7 +36,6 @@ namespace omni
     GLView::GLView(QWidget* _parent) :
       QOpenGLWidget(_parent)
     {
-      connect(this,SIGNAL(aboutToCompose()),this,SLOT(compose()));
     }
 
     GLView::~GLView()
@@ -55,10 +54,6 @@ namespace omni
       if (!updateTriggered_) {
           update();
       }
-    }
-
-    void GLView::compose() {
-      updateTriggered_ = false;
     }
 
     float GLView::updateFrequency() const {

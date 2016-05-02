@@ -312,57 +312,6 @@ namespace omni {
       });
     }
 
-    void Tuning::drawBlendMask() const {
-      withCurrentContext([&](QOpenGLFunctions& _) {
-        _.glEnable(GL_DEPTH_TEST);
-        _.glEnable(GL_BLEND);
-        _.glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-        useShader(*blendShader_, [&](UniformHandler& _h) {
-          auto& _mask = tuning().blendMask();
-          _h.uniform("top", _mask.topWidth());
-          _h.uniform("right", _mask.rightWidth());
-          _h.uniform("bottom", _mask.bottomWidth());
-          _h.uniform("left", _mask.leftWidth());
-          _h.uniform("edge_gamma",    _mask.gamma());
-          _h.uniform("mask",
-                     GLfloat(1.0));
-          warpGrid_->draw();
-        });
-
-        glColor4f(0.0, 0.0, 0.0, 1.0);
-        float _b = 4.0;
-
-
-        // Draw masks for borders
-        glBegin(GL_QUADS);
-        {
-          glVertex2f(-0.5,      -0.5 - _b);
-          glVertex2f(0.5 - _b,  -0.5);
-          glVertex2f(0.5 - _b,  0.5);
-          glVertex2f(-0.5,      0.5 + _b);
-          glVertex2f(-0.5 + _b, -0.5 - _b);
-          glVertex2f(0.5,       -0.5);
-          glVertex2f(0.5,       0.5);
-          glVertex2f(-0.5 + _b, 0.5 + _b);
-          glVertex2f(-0.5 + _b, 0.5 + _b);
-          glVertex2f(0.5 - _b,  0.5 + _b);
-          glVertex2f(0.5 - _b,  0.5);
-          glVertex2f(-0.5 + _b, 0.5);
-          glVertex2f(-0.5 + _b, -0.5);
-          glVertex2f(0.5 - _b,  -0.5);
-          glVertex2f(0.5 - _b,  -0.5 - _b);
-          glVertex2f(-0.5 + _b, -0.5 - _b);
-        }
-        glEnd();
-
-        useShader(*blendBrushShader_, [&](UniformHandler& _h) {
-          _h.texUniform("blend_tex", *blendTex_);
-          Rectangle::drawFlipped();
-        });
-      });
-    }
-
     void Tuning::updateWarpGrid() {
       if (!warpGrid_) {
         if (!warpGrid_.reset(new visual::WarpGrid(tuning_.warpGrid()))) return;

@@ -66,6 +66,8 @@ namespace omni {
         _sessionViz->update();
         _tuningViz->update();
         _tuningViz->updateWarpBuffer(_sessionViz);
+        _tuningViz->updateBlendTexture();
+        _.glFlush();
 
         /// Initialize shaders
         visual::initShader(_shader, "texture");
@@ -83,7 +85,10 @@ namespace omni {
         _initFramebuffer(_warpBuffer);
         _initFramebuffer(_blendBuffer);
         _initFramebuffer(_framebuffer);
+
+        _.glFlush();
       });
+
 
       /// 1st Step: Render projectors view to framebuffer texture
       draw_on_framebuffer(_framebuffer.get(), [&](QOpenGLFunctions& _) {
@@ -93,9 +98,12 @@ namespace omni {
         // Model view operation
         _.glClearColor(0.0,0.0,1.0,1.0);
         _.glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        _.glEnable(GL_BLEND);
+        _.glEnable(GL_DEPTH_TEST);
         _sessionViz->drawCanvas(_tuning.session().exportSettings().
                                 mappingOutputMode());
         _.glClearColor(0.0,0.0,0.0,0.0);
+        _.glFlush();
       });
 
 
@@ -106,8 +114,11 @@ namespace omni {
         QMatrix4x4 _m;
         _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
         glMultMatrixf(_m.constData()); }, [&](QOpenGLFunctions& _) {
+        _.glEnable(GL_BLEND);
+        _.glDisable(GL_DEPTH_TEST);
         // Model view operation
         _tuningViz->drawOutput();
+        _.glFlush();
       });
 
       // 4rd step: Render warp grid
@@ -118,11 +129,14 @@ namespace omni {
         _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
         glMultMatrixf(_m.constData());
       }, [&](QOpenGLFunctions& _) {
+        _.glEnable(GL_BLEND);
+        _.glDisable(GL_DEPTH_TEST);
         // Model view operation
         useShader(*_shader, [&](visual::UniformHandler& _h) {
           _h.texUniform("tex", _framebuffer->texture());
           _tuningViz->drawWarpPatch();
         });
+        _.glFlush();
       });
 
       // 5th step: Merge blend and warp buffer
@@ -133,12 +147,15 @@ namespace omni {
         glMultMatrixf(_m.constData());
 
       }, [&](QOpenGLFunctions& _) {
+        _.glEnable(GL_BLEND);
+        _.glDisable(GL_DEPTH_TEST);
         // Model view operation
         useShader(*_mergeShader, [&](visual::UniformHandler& _h) {
           _h.texUniform("warp", _warpBuffer->texture());
           _h.texUniform("blend", _blendBuffer->texture());
           visual::Rectangle::draw();
         });
+        _.glFlush();
       });
     }
 

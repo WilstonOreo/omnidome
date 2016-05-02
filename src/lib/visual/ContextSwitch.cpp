@@ -53,7 +53,6 @@ namespace omni {
       }
       QOpenGLFunctions glFuncs(_currentContext);
       f(glFuncs);
-      glFuncs.glFinish();
     }
   }
 }
