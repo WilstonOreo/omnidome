@@ -355,17 +355,17 @@
   </action>
   <action name="actionDisableAllTunings">
    <property name="text">
-    <string>Turn tunings off</string>
+    <string>Turn all projectors off</string>
    </property>
   </action>
   <action name="actionEnableAllTunings">
    <property name="text">
-    <string>Turn tunings on</string>
+    <string>Turn all projectors on</string>
    </property>
   </action>
   <action name="actionEnableSelectedTuningOnly">
    <property name="text">
-    <string>Show selected tuning only</string>
+    <string>Show selected projector only</string>
    </property>
   </action>
   <action name="actionAbout">
