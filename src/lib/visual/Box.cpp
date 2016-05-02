@@ -56,10 +56,10 @@ namespace omni {
           for (size_t y = 0; y < _resY; ++y) {
             // index
             if (((x + 1) < _resX) && ((y + 1) < _resY)) {
-              *(_indexIt++) = i * _numVertices + (x + 0) * _resY + (y + 0);
-              *(_indexIt++) = i * _numVertices + (x + 1) * _resY + (y + 0);
-              *(_indexIt++) = i * _numVertices +  (x + 1) * _resY + (y + 1);
               *(_indexIt++) = i * _numVertices  + (x + 0) * _resY + (y + 1);
+              *(_indexIt++) = i * _numVertices +  (x + 1) * _resY + (y + 1);
+              *(_indexIt++) = i * _numVertices + (x + 1) * _resY + (y + 0);
+              *(_indexIt++) = i * _numVertices + (x + 0) * _resY + (y + 0);
             }
 
             // texCoords
