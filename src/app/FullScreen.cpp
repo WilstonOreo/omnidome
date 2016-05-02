@@ -36,7 +36,7 @@ namespace omni {
 
     FullScreen::~FullScreen()
     {
-      detachAll();
+    //  detachAll();
     }
 
     void FullScreen::detachAll()

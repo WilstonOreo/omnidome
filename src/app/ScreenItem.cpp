@@ -158,7 +158,6 @@ namespace omni {
 
     ScreenItem::~ScreenItem()
     {
-      detachTunings();
     }
 
     void ScreenItem::detachTuningWidget(omni::ui::proj::Tuning* _tuningWidget) {
@@ -229,6 +228,10 @@ namespace omni {
                                                                          _desktopRect
                                                                          .topLeft()))
              .toRect();
+    }
+
+    FullScreen*  ScreenItem::fullscreen() {
+      return fullscreen_.get();
     }
 
     void ScreenItem::paint(QPainter& _p)

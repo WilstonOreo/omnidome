@@ -56,7 +56,8 @@ namespace omni {
             }
 
             TuningList::~TuningList()
-            {}
+            {
+            }
 
             Tuning * TuningList::widget(int _index) {
                 return (_index >= 0) && (_index < widgets_.size()) ?

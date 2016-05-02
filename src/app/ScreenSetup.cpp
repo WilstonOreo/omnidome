@@ -94,6 +94,10 @@ namespace omni
       }
     }
 
+    void ScreenSetup::closeFullscreenWindows() {
+      screenItems_.clear();
+    }
+
     void ScreenSetup::assignTuning(omni::proj::Tuning* _tuning) {
       if (!_tuning->screen() || screenItems_.count(_tuning->screen()) == 0) return; // No assignment for default screen
 

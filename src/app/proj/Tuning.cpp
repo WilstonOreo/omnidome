@@ -252,7 +252,6 @@ namespace omni {
 
       void Tuning::detachScreen()
       {
-        if (!tuning()) return;
         tuning()->setScreen(nullptr, 0);
         emit projectorSetupChanged();
         layout()->update();

@@ -130,6 +130,8 @@ namespace omni {
 
         QRect rect() const;
 
+        FullScreen*  fullscreen();
+
       private:
         int hoverIndex_ = -1;
         bool   drop_    = false;

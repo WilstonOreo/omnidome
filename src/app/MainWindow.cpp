@@ -433,8 +433,8 @@ void MainWindow::closeEvent(QCloseEvent *_event)
 
   // Delete screen setup manually, so all fullscreen widgets are free'd too
   if (screenSetup_) {
-    screenSetup_->setParent(nullptr);
-    screenSetup_.reset();
+    ui_->tuningList->clear();
+    screenSetup_->closeFullscreenWindows();
   }
 
   Application::settings().setValue("geometry", saveGeometry());
