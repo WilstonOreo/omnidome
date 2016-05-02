@@ -404,7 +404,6 @@ void MainWindow::updateAllViews()
   case Session::Mode::WARP:
   case Session::Mode::BLEND:
   case Session::Mode::COLORCORRECTION:
-    tuningView_->makeCurrent();
     tuningView_->triggerUpdate();
     break;
   }

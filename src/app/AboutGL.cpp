@@ -134,7 +134,8 @@ void AboutGL::paintGL()
 
   useShader(*shader_, [&](UniformHandler& _handler) {
     _handler.uniform("time", GLfloat(_time));
-    _handler.uniform("resolution", GLfloat(width()), GLfloat(height()));
+    _handler.uniform("resolution", GLfloat(width()*devicePixelRatio()),
+      GLfloat(height()*devicePixelRatio()));
     _handler.texUniform("tex", *tex_);
     _handler.uniform("tex_size", QVector2D(tex_->width(),tex_->height()));
 

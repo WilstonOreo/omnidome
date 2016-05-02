@@ -88,8 +88,6 @@ namespace omni {
     {
       if (!input()) return QRectF(0.0, 0.0, 1.0, 1.0);
 
-      OMNI_DEBUG << input();
-
       return visual::util::viewRect(input()->width(), input()->height(),
                                     width(), height(), border_);
     }

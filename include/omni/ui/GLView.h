@@ -85,6 +85,9 @@ namespace omni {
         /// Mouse position stored
         QPointF mousePosition_;
 
+      private slots:
+        void compose();
+
       private:
         /// Pure virtual function to initialize GL contents
         virtual bool initialize() = 0;

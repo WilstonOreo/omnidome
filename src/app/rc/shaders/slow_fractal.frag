@@ -36,7 +36,7 @@ void main()
   cos(0.5*rsum), 1.0 );
 
   float tex_aspect = tex_size.x / tex_size.y;
-  vec2 uv = (gl_FragCoord.xy / resolution) * vec2(aspect / tex_aspect, 1.0) * 0.5;
+  vec2 uv = (gl_FragCoord.xy / resolution) * vec2(aspect / tex_aspect, 1.0) ;
 
   uv += vec2( - aspect / tex_aspect * 0.5 + 0.5,0.0);
   uv = clamp(uv,0.0,1.0);
