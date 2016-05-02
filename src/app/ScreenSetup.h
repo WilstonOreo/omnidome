@@ -34,6 +34,10 @@ namespace omni {
   class Session;
 
   namespace ui {
+    namespace proj {
+      class TuningList;
+    }
+
     /**@brief A widget for seting up fullscreen windows
      * @details Holds fullscreen widgets
      **/
@@ -51,6 +55,10 @@ namespace omni {
         inline QRect desktopRect() const {
           return omni::proj::ScreenSetup::desktopRect();
         }
+
+        void setTuningList(proj::TuningList*);
+        proj::TuningList* tuningList();
+        proj::TuningList const* tuningList() const;
 
       public slots:
         /// Update screen dimensions
@@ -81,14 +89,16 @@ namespace omni {
           return false;
         }
 
+        void assignTuning(omni::proj::Tuning*);
+
         /**@brief Returns pointer to a SubScreenItem under given position
          *@detail Returns null otherwise
          **/
         SubScreenItem* getSubScreenItemAtPos(QPoint const&);
 
         std::map<QScreen const *, std::unique_ptr<ScreenItem> > screenItems_;
-        Session *session_ = nullptr;
         SubScreenItem* currentSubScreenItem_ = nullptr;
+        proj::TuningList* tuningList_ = nullptr;
     };
   }
 }

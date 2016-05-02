@@ -61,7 +61,7 @@ namespace omni {
     }
 
     void InputPreview::showEvent(QShowEvent*) {
-      if (!input_) return;
+      if (!input()) return;
 
       input_->update();
       update();
@@ -86,13 +86,11 @@ namespace omni {
 
     QRectF InputPreview::viewRect() const
     {
-      if (!input_) return QRectF();
+      if (!input()) return QRectF(0.0, 0.0, 1.0, 1.0);
 
-      auto *_input = input();
+      OMNI_DEBUG << input();
 
-      if (!_input) return QRectF(0.0, 0.0, 1.0, 1.0);
-
-      return visual::util::viewRect(_input->width(), _input->height(),
+      return visual::util::viewRect(input()->width(), input()->height(),
                                     width(), height(), border_);
     }
 
@@ -105,7 +103,7 @@ namespace omni {
 
     void InputPreview::paintGL()
     {
-      if (!input_ || !isVisible()) return;
+      if (!input() || !isVisible()) return;
 
       makeCurrent();
 

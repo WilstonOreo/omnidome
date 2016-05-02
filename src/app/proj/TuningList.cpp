@@ -27,6 +27,10 @@
 
 #include <QDebug>
 
+#ifndef OMNI_MAX_NUMBER_TUNINGS
+  #define OMNI_MAX_NUMBER_TUNINGS 6
+#endif
+
 namespace omni {
     namespace ui {
         namespace proj {
@@ -62,6 +66,13 @@ namespace omni {
             Tuning const * TuningList::widget(int _index) const {
                 return (_index >= 0) && (_index < widgets_.size()) ?
                        widgets_[_index].get() : nullptr;
+            }
+
+            Tuning* TuningList::widgetFromTuning(omni::proj::Tuning* _tuning) {
+              for (auto& _widget : widgets_) {
+                if (_widget->tuning() == _tuning) return _widget.get();
+              }
+              return nullptr;
             }
 
             void TuningList::dataToFrontend() {
@@ -120,12 +131,12 @@ namespace omni {
 
             void TuningList::addTuning(omni::proj::Tuning *_tuning)
             {
-                if (widgets_.size() >= maxNumberTunings())
+                if (widgets_.size() >= OMNI_MAX_NUMBER_TUNINGS)
                 {
                     QMessageBox::information(this, "Information",
                                              QString(
                                                  "You have reached the maximum of %1 projectors.").arg(
-                                                 maxNumberTunings()));
+                                                 OMNI_MAX_NUMBER_TUNINGS));
                     return;
                 }
 
@@ -169,21 +180,15 @@ namespace omni {
 
                 if (_colors.empty())
                 {
-                    _colors.reserve(maxNumberTunings());
+                    _colors.reserve(OMNI_MAX_NUMBER_TUNINGS);
 
                     int _hue     = 0;
                     int _hueDiff = 120;
 
-                    for (int i = 0; i < maxNumberTunings(); ++i)
+                    for (int i = 0; i < OMNI_MAX_NUMBER_TUNINGS; ++i)
                     {
-                        int _saturation = float(maxNumberTunings() / 2 - i / 2) /
-                                          maxNumberTunings() * 2.0 * 255.0; // int(i
-                                                                            // *
-                                                                            // 2.0
-                                                                            // /
-                                                                            // maxNumberTunings())
-                                                                            // *
-                                                                            // 255;
+                        int _saturation = float(OMNI_MAX_NUMBER_TUNINGS / 2 - i / 2) /
+                                          OMNI_MAX_NUMBER_TUNINGS * 2.0 * 255.0;
                         _colors.push_back(QColor::fromHsv(_hue, _saturation,
                                                           255));
 
@@ -199,11 +204,10 @@ namespace omni {
                 }
                 int _numTunings = dataModel()->tunings().size();
 
-                if (dataModel()->tunings().size() >
-                    maxNumberTunings()) return QColor("#000000");
+                if (dataModel()->tunings().size() > OMNI_MAX_NUMBER_TUNINGS) return QColor("#000000");
 
                 /// Find first color in spectrum that is not already used
-                for (int j = 0; j < maxNumberTunings(); ++j)
+                for (int j = 0; j < OMNI_MAX_NUMBER_TUNINGS; ++j)
                 {
                     auto _color       = _colors[j];
                     bool _colorsEqual = false;

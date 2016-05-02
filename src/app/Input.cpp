@@ -57,6 +57,7 @@ namespace omni
     {
     }
 
+
     void Input::setupInputMenu(QMenu* _menu) {
       std::map<QString,QMenu*> _categoryMenus;
       /// Find all categories
@@ -200,6 +201,8 @@ namespace omni
 
     void Input::prepareModel()
     {
+      this->removeParameterWidget(widget());
+
       model_.reset(new QStandardItemModel());
       model_->clear();
       model_->setColumnCount(3);
@@ -219,8 +222,6 @@ namespace omni
       ui_->inputList->resizeColumnToContents(0);
       ui_->inputList->resizeColumnToContents(1);
       ui_->inputList->resizeColumnToContents(2);
-
-      this->removeParameterWidget(widget());
     }
 
     void Input::addItem(QString const& _id, input::Interface* _input)

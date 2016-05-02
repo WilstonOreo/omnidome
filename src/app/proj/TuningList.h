@@ -44,9 +44,6 @@ namespace omni
         Q_OBJECT
         OMNI_UI_SHARED_DATAMODEL(Session)
       public:
-        // Maximum number of tunings one can add
-        inline static constexpr int maxNumberTunings() { return 16; }
-
         TuningList(QWidget* = nullptr);
         ~TuningList();
 
@@ -58,6 +55,8 @@ namespace omni
 
         /// Return tuning widget at index, nullptr if index is not valid (const)
         Tuning const* widget(int _index) const;
+
+        Tuning* widgetFromTuning(omni::proj::Tuning*);
 
       public slots:
         /// Change current mode for all tuning widgets
@@ -131,7 +130,6 @@ namespace omni
 
         /// Add widget from existing tuning
         void addTuning(omni::proj::Tuning* _tuning);
-
 
         /**@brief Removes all widgets in the scroll area
           *@detail Unlike clear() it does not remove tunings from session

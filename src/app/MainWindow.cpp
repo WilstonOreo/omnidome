@@ -88,7 +88,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
     ui_->pages->setLayout(_layout);
   }
 
-  ui_->statusbar->showMessage(QString("Omnidome v") +
+  ui_->statusbar->showMessage(QString("Omnidome VR") +
                               QString(OMNIDOME_VERSION_STRING));
 
   // Setup add projector template menu
@@ -125,6 +125,11 @@ MainWindow::MainWindow(QMainWindow *parent) :
             &proj::TuningList::dataModelChanged,
             toolBar_.get(),
             &ToolBar::updateFrontend);
+    connect(ui_->tuningList, SIGNAL(tuningRemoved()), screenSetup_.get(),
+            SLOT(updateScreens()));
+    connect(ui_->tuningList, SIGNAL(tuningRemoved()), this,
+            SLOT(updateAllViews()));
+    screenSetup_->setTuningList(ui_->tuningList);
 
     connect(ui_->actionEnableAllTunings, SIGNAL(triggered()),
             ui_->tuningList, SLOT(enableAllTunings()));
@@ -259,6 +264,7 @@ void MainWindow::setupSession(std::shared_ptr<Session>& _session)
   using util::enumToInt;
   locked_ = true;
   {
+    ui_->dockInputsWidget->clear();
     ui_->dockSceneWidget->setDataModel(_session);
     ui_->dockInputsWidget->setDataModel(_session);
     toolBar_->setDataModel(_session);
@@ -275,6 +281,8 @@ void MainWindow::setupSession(std::shared_ptr<Session>& _session)
     ui_->dockWarpWidget->setDataModel(_session);
     ui_->dockBlendWidget->setDataModel(_session);
     ui_->dockColorCorrectionWidget->setDataModel(_session);
+
+    screenSetup_->updateScreens();
   }
 
   locked_ = false;

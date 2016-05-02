@@ -18,6 +18,7 @@
  */
 
 #include "ScreenSetup.h"
+#include "proj/TuningList.h"
 
 #include <omni/Session.h>
 #include <omni/ui/TuningGLView.h>
@@ -60,6 +61,18 @@ namespace omni
       screenItems_.clear();
     }
 
+    void ScreenSetup::setTuningList(proj::TuningList* _list) {
+      tuningList_ = _list;
+    }
+
+    proj::TuningList* ScreenSetup::tuningList() {
+      return tuningList_;
+    }
+
+    proj::TuningList const* ScreenSetup::tuningList() const {
+      return tuningList_;
+    }
+
     void ScreenSetup::dataToFrontend() {
       updateScreens();
     }
@@ -71,9 +84,25 @@ namespace omni
       auto _screens = omni::proj::ScreenSetup::screens();
       for (auto& _screen : _screens)
       {
-        //if (_screen != QGuiApplication::primaryScreen()) continue;
         screenItems_[_screen].reset(new ScreenItem(*this,_screen));
       }
+
+      if (tuningList_) {
+        for (auto& _tuning : dataModel()->tunings()) {
+          assignTuning(_tuning.get());
+        }
+      }
+    }
+
+    void ScreenSetup::assignTuning(omni::proj::Tuning* _tuning) {
+      if (!_tuning->screen() || screenItems_.count(_tuning->screen()) == 0) return; // No assignment for default screen
+
+      auto* _subScreenItem = screenItems_.at(_tuning->screen())->item(_tuning->subScreenIndex());
+      if (!_subScreenItem) return;
+
+      auto* _tuningWidget = tuningList_->widgetFromTuning(_tuning);
+      if (!_tuningWidget) return;
+      _subScreenItem->attachTuningWidget(_tuningWidget);
     }
 
     void ScreenSetup::paintEvent(QPaintEvent*)
@@ -126,7 +155,6 @@ namespace omni
       {
         auto& _item = _screenItem.second;
         _item->setHoverIndex(_pos);
-        qDebug() << _item->hoverIndex() << " " << _item->hoveredItem();
         if (_item->hoveredItem())
         {
           return _item->hoveredItem();
@@ -137,7 +165,6 @@ namespace omni
 
     void ScreenSetup::dragEnterEvent(QDragEnterEvent* event)
     {
-      qDebug() << event->pos();
       currentSubScreenItem_ = getSubScreenItemAtPos(event->pos());
       for (auto& _item : screenItems_)
         _item.second->endDrop();

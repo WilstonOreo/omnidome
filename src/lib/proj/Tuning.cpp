@@ -249,10 +249,11 @@ namespace omni {
 
             PropertyMap _map;
             _is >> _map;
-            QRect _screenRect = _map.getValue<QRect>("screenRect");
+            QRect _screenRect = _map.getValue<QRect>("screenGeometry");
             if (!_screenRect.isNull()) {
               screen_ = ScreenSetup::screenFromRect(_screenRect);
             }
+            OMNI_DEBUG << _screenRect << screen_;
 
             _map.get("subScreenIndex", subScreenIndex_);
             _map.get("color",color_);
