@@ -44,8 +44,14 @@ namespace omni {
                 static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                 this, &Scene::updateDataModel);
 
+        connect(ui_->boxProjectedAreas,
+                static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                this, &Scene::updateDataModel);
+
         ui_->sliderInsideOutside->setRange(0.0,1.0);
         ui_->sliderInsideOutside->setGripSize(0.0);
+        ui_->sliderInsideOutside->setPageStep(0.1);
+        ui_->sliderInsideOutside->setSingleStep(0.01);
 
         connect(ui_->sliderInsideOutside, &RangedFloat::valueChanged,
                 this, &Scene::updateDataModel);
@@ -53,8 +59,18 @@ namespace omni {
         ui_->sliderFOV->setRange(10.0,100.0);
         ui_->sliderFOV->setLabel("FOV");
         ui_->sliderFOV->setGripSize(0.0);
+        ui_->sliderFOV->setPageStep(1.0);
+        ui_->sliderFOV->setSingleStep(0.1);
 
         connect(ui_->sliderFOV, &RangedFloat::valueChanged,
+                this, &Scene::updateDataModel);
+
+        ui_->sliderWireframe->setRange(0.0,1.0);
+        ui_->sliderWireframe->setGripSize(0.0);
+        ui_->sliderInsideOutside->setPageStep(0.1);
+        ui_->sliderInsideOutside->setSingleStep(0.01);
+
+        connect(ui_->sliderWireframe, &RangedFloat::valueChanged,
                 this, &Scene::updateDataModel);
 
         connect(ui_->boxSize, SIGNAL(currentIndexChanged(int)), this,
@@ -70,9 +86,7 @@ namespace omni {
           ui_->btnFitToCanvas,
           ui_->lbSceneSize,
           ui_->lbUnit,
-          ui_->lbInsideOutside,
-          ui_->chkRescaleValues,
-          ui_->sliderInsideOutside
+          ui_->chkRescaleValues
         };
       });
     }
@@ -160,6 +174,7 @@ namespace omni {
 
       ui_->sliderInsideOutside->setValue(_scene.insideOutside());
       ui_->sliderFOV->setValue(_scene.camera()->fov());
+      ui_->sliderWireframe->setValue(_scene.wireframe());
 
       ui_->chkInput->setChecked(_scene.displayInput());
       ui_->chkGrid->setChecked(_scene.displayGrid());
@@ -213,6 +228,7 @@ namespace omni {
       _scene.setDisplayGrid(ui_->chkGrid->isChecked());
       _scene.setDisplayProjectors(util::intToEnum<visual::ProjectorSelectionMode>(ui_->boxProjectors->currentIndex()));
       _scene.setDisplayProjectedAreas(util::intToEnum<visual::ProjectorSelectionMode>(ui_->boxProjectedAreas->currentIndex()));
+      _scene.setWireframe(ui_->sliderWireframe->value());
 
       return true;
     }

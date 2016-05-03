@@ -418,6 +418,7 @@ namespace omni {
         dataModel()->visualizer()->drawCanvas(mapping::OutputMode::MAPPED_INPUT,
                                               tuning()->outputDisabled() &&
                                               viewOnly());
+        dataModel()->visualizer()->drawCanvasWireframe();
         _.glDisable(GL_DEPTH_TEST);
       });
     }
@@ -566,7 +567,7 @@ namespace omni {
     {
       if (!tuning()) return;
       makeCurrent();
-      
+
 auto *_vizSession = dataModel()->visualizer();
       if (!_vizSession) return;
 

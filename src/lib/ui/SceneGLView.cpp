@@ -91,6 +91,7 @@ namespace omni {
         _vizSession->drawProjectorHalos(_scene.displayProjectors());
 
         /// Draw auxiliary elements of canvas, like bounding boxes etc
+
         dataModel()->canvas()->drawAux();
 
         _scene.drawGrid();

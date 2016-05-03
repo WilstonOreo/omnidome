@@ -355,6 +355,7 @@ namespace omni {
         {
           _.glEnable(GL_DEPTH_TEST);
           _vizSession->drawCanvas();
+          _vizSession->drawCanvasWireframe();
         });
     }
 

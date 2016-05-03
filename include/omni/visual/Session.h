@@ -43,6 +43,9 @@ namespace omni {
           mapping::OutputMode = mapping::OutputMode::MAPPED_INPUT,
           bool _grayscale = false) const;
 
+
+        void                 drawCanvasWireframe() const;
+
         /// Draw canvas for scene view
         void drawCanvasFor3DView();
 

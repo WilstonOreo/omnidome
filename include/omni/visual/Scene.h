@@ -126,6 +126,15 @@ namespace omni {
          */
         void setInsideOutside(float _insideOutside);
 
+        /// Opacity value for wireframe between 0.0 and 1.0
+        float wireframe() const;
+
+        /* @brief Set wireframe opacity for canvas view
+           @param _wireframe Value 0.0 means wireframes are not drawn.
+                  1.0 means wireframe is fully visible and thick.
+         */
+        void setWireframe(float _wireframe);
+
         /// Update light for use in OpenGL
         void        updateLights();
 
@@ -164,6 +173,7 @@ namespace omni {
       private:
         float      insideOutside_            = 0.5;
         float      size_                     = 10.0;
+        float      wireframe_                = 0.0;
         LengthUnit unit_;
         bool       displayInput_             = true;
         bool       displayGrid_              = true;

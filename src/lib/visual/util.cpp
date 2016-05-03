@@ -115,8 +115,6 @@ namespace omni {
           _gl.glStencilMask(0xff);
           _gl.glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
           _gl.glStencilFunc(GL_ALWAYS, 0, 0xff);
-          _gl.glEnable(GL_BLEND);
-          _gl.glBlendFunc(GL_ONE, GL_ZERO);
           _gl.glUseProgram(0);
           _gl.glEnable(GL_DEPTH_TEST);
           _gl.glDepthFunc(GL_LEQUAL);

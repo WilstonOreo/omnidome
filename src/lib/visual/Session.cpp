@@ -50,6 +50,31 @@ namespace omni {
       glPopMatrix();
     }
 
+    void Session::drawCanvasWireframe() const {
+      auto _canvas = session_.canvas();
+      float _wf = session_.scene().wireframe();
+      if (!_canvas || _wf <= 0.0) return;
+
+      glPushMatrix();
+      {
+        glEnable(GL_BLEND);
+        glEnable(GL_LINE_SMOOTH);
+        glPolygonMode(GL_FRONT,GL_LINE);
+        glPolygonMode(GL_BACK,GL_LINE);
+        glLineWidth(std::max(0.5,_wf*5.0));
+        glColor4f(1.0,1.0,1.0,_wf);
+
+        glLoadIdentity();
+        glMultMatrixf(_canvas->matrix().constData());
+        _canvas->drawWithViewMode();
+
+        glPolygonMode(GL_FRONT,GL_FILL);
+        glPolygonMode(GL_BACK,GL_FILL);
+        glLineWidth(1.0);
+      }
+      glPopMatrix();
+    }
+
     void Session::drawCanvasFor3DView() {
       auto _canvas = session_.canvas();
 
@@ -115,6 +140,7 @@ namespace omni {
           }
           glPopMatrix();
         }
+        drawCanvasWireframe();
       });
     }
 

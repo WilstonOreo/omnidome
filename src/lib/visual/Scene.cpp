@@ -145,6 +145,19 @@ namespace omni {
       insideOutside_ = qBound(0.0f,_insideOutside,1.0f);
     }
 
+    /// Opacity value for wireframe between 0.0 and 1.0
+    float Scene::wireframe() const {
+      return wireframe_;
+    }
+
+    /* @brief Set wireframe opacity for canvas view
+      @param _wireframe Value 0.0 means wireframes are not drawn.
+            1.0 means wireframe is fully visible and thick.
+      */
+    void Scene::setWireframe(float _wireframe) {
+      wireframe_ = qBound(0.0f,_wireframe,1.0f);
+    }
+
     /// Return reference to camera
     visual::CameraInterface * Scene::camera() {
       if (cameras_.count(cameraId_) == 0) return nullptr;
