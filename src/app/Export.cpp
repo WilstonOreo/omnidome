@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <omni/Session.h>
+#include <omni/render/Renderer.h>
 #include <omni/util.h>
 
 #include "ui_omni_ui_Export.h"
@@ -42,19 +43,43 @@ namespace omni {
     {
       if (!dataModel()) return;
 
-      QString _filename = QFileDialog::getSaveFileName(this,
+      using namespace render;
+
+      QString _filename;
+
+      switch(dataModel()->exportSettings().outputType()) {
+        case OutputType::OMNI_CALIBRATION:
+        {
+          Renderer _renderer(*dataModel());
+          _filename = QFileDialog::getSaveFileName(this,
+                                                       "Save Calibration...",
+                                                       ".",
+                                                       "Omni Calibration (*.omnic)");
+          if (_filename.isEmpty()) return;
+          _renderer.renderOmniCalibration(_filename);
+        }
+        break;
+
+        case OutputType::PLAIN_IMAGE:
+        {
+          _filename = QFileDialog::getSaveFileName(this,
                                                        "Save Calibration Image...",
                                                        ".",
                                                        "Calibration Images (*.png)");
+          if (_filename.isEmpty()) return;
+          dataModel()->renderToFile(_filename);
+        }
+        break;
+      }
 
-      if (_filename.isEmpty()) return;
-
-      dataModel()->renderToFile(_filename);
       ui_->editExportFilename->setText(_filename);
+
       QMessageBox::information(this, "Calibration data exported.",
                                QString(
                                  "Calibration data has been exported to '%1'").arg(
                                  _filename));
+
+
     }
 
     void Export::renderPreview() {
