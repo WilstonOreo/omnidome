@@ -49,5 +49,9 @@ namespace omni
     {
       _proj.setMatrix(EulerAngles::matrix());
     }
+
+    bool AngleSetup::flipped() const {
+      return std::abs(roll().degrees()) > 90.0;
+    }
   }
 }

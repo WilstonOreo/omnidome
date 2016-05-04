@@ -57,6 +57,22 @@ MainWindow::MainWindow(QMainWindow *parent) :
   ui_(new Ui::MainWindow)
 {
   ui_->setupUi(this);
+  setTabPosition(Qt::AllDockWidgetAreas,QTabWidget::North);
+
+  // Remove title bars from dock widgets
+  {
+    for (auto& _dockWidget : {
+      ui_->dockCanvas,
+      ui_->dockWarp,
+      ui_->dockScene,
+      ui_->dockMapping,
+      ui_->dockInputs,
+      ui_->dockBlend
+    }) {
+      _dockWidget->widget()->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    }
+  }
+
 
   // Setup toolbar
   {
@@ -107,6 +123,9 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
   /// Set dock widget tabs
   {
+
+//    ui_->dockCanvas->setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint |
+//        Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint);
     tabifyDockWidget(ui_->dockCanvas, ui_->dockScene);
     tabifyDockWidget(ui_->dockInputs, ui_->dockMapping);
     tabifyDockWidget(ui_->dockInputs, ui_->dockColorCorrection);
@@ -235,6 +254,10 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
   readSettings();
   setupSession(session_);
+
+  // Add one tuning by default
+  ui_->tuningList->addTuning();
+
   setMode();
   raise();
   show();

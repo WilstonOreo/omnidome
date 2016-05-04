@@ -44,8 +44,12 @@ namespace omni {
         void detach(int _subIndex);
         void detachAll();
 
+      public slots:
+        void deleteIfScreenRemoved(QScreen*);
+
       protected:
         void closeEvent(QCloseEvent *_event);
+        void resizeEvent(QResizeEvent *_event);
 
       private:
         void setGeometry(QWidget *,

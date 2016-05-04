@@ -107,6 +107,8 @@ namespace omni {
           return false;
         }
 
+        bool flipped() const;
+
         void drawOutput(
           float _blendMaskOpacity,
           float _inputOpacity = 1.0,

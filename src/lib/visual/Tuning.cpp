@@ -379,7 +379,7 @@ namespace omni {
       return _vec;
     }
 
-    void Tuning::drawCalibratedInput() {
+    void Tuning::drawCalibratedInput(bool _flipped) {
       if (!calibrationShader_) return;
 
       auto *_currentInput = tuning().session().inputs().current();
@@ -394,7 +394,12 @@ namespace omni {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         QMatrix4x4 _m;
-        _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
+        if (_flipped) {
+          _m.ortho(0.5, -0.5, 0.5, -0.5, -1.0, 1.0);
+        } else {
+          _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
+
+        }
         glMultMatrixf(_m.constData());
 
         glMatrixMode(GL_MODELVIEW);

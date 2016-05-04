@@ -44,6 +44,7 @@ namespace omni
       SetupFactory::reg<FreeSetup>();
       SetupFactory::reg<PeripheralSetup>();
     }
+
     // END Register Projector Setups
   }
 

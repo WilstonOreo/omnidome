@@ -63,6 +63,7 @@ namespace omni
 
     void ScreenSetup::setTuningList(proj::TuningList* _list) {
       tuningList_ = _list;
+      connect(tuningList_,SIGNAL(tuningAdded()),this,SLOT(assignNewTuningToNextFreeScreen()));
     }
 
     proj::TuningList* ScreenSetup::tuningList() {
@@ -82,8 +83,10 @@ namespace omni
       screenItems_.clear();
 
       auto _screens = omni::proj::ScreenSetup::screens();
+
       for (auto& _screen : _screens)
       {
+        OMNI_DEBUG << _screen << omni::proj::ScreenSetup::standardScreen();
         screenItems_[_screen].reset(new ScreenItem(*this,_screen));
       }
 
@@ -92,14 +95,46 @@ namespace omni
           assignTuning(_tuning.get());
         }
       }
+      update();
     }
 
     void ScreenSetup::closeFullscreenWindows() {
+      for (auto& _screenItem : screenItems_) {
+        _screenItem.second->fullscreen()->close();
+        _screenItem.second->fullscreen()->deleteLater();
+      }
       screenItems_.clear();
     }
 
+    void ScreenSetup::assignNewTuningToNextFreeScreen() {
+      auto* _tuning = dataModel()->tunings()[dataModel()->tunings().size()-1];
+      if (!_tuning) return;
+
+      /// Iterate through all screens and subscreens
+      for (auto& _screenItem : screenItems_) {
+          auto* _item = _screenItem.second.get();
+          auto* _screen = _screenItem.first;
+          int _numSubScreens = _item->numSubScreens();
+          for (int _subScreenIndex = 0; _subScreenIndex < _numSubScreens; ++_subScreenIndex) {
+            auto* _subScreenItem = _item->item(_subScreenIndex);
+            if (_subScreenItem->tuningWidget()) continue;
+
+            // If sub screen item has no tuning widget assigned its free.
+            // So we can assign the tuning here
+            _tuning->setScreen(_screen,_subScreenIndex);
+            assignTuning(_tuning);
+            this->update();
+            return; // Nothing more to do
+          }
+      }
+    }
+
     void ScreenSetup::assignTuning(omni::proj::Tuning* _tuning) {
-      if (!_tuning->screen() || screenItems_.count(_tuning->screen()) == 0) return; // No assignment for default screen
+      if (!_tuning->screen()) return; // No assignment for default screen
+      if (!screenItems_.count(_tuning->screen())) {
+        _tuning->assignVirtualScreen();
+        return;
+      }
 
       auto* _subScreenItem = screenItems_.at(_tuning->screen())->item(_tuning->subScreenIndex());
       if (!_subScreenItem) return;

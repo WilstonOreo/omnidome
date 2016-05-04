@@ -38,6 +38,8 @@ namespace omni {
 
         virtual void toPropertyMap(PropertyMap&) const;
         virtual void fromPropertyMap(PropertyMap const&);
+
+        bool flipped() const;
     };
   }
 }

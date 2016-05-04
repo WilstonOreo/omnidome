@@ -39,8 +39,8 @@ namespace omni {
                            _slider->hide();
                            _slider->setRange(2, 12);
                            _slider->setSingleStep(1);
-                           _slider->setPageStep(12);
-                           _slider->setDefaultValue(6);
+                           _slider->setPageStep(1);
+                           _slider->setDefaultValue(4);
                            _slider->setUseDefaultValue(true);
                            connect(_slider, &RangedInt::valueChanged,
                                    this, &Warp::updateDataModel);

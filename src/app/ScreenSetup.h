@@ -56,7 +56,6 @@ namespace omni {
           return omni::proj::ScreenSetup::desktopRect();
         }
 
-
         void setTuningList(proj::TuningList*);
         proj::TuningList* tuningList();
         proj::TuningList const* tuningList() const;
@@ -65,6 +64,8 @@ namespace omni {
         /// Update screen dimensions
         void updateScreens();
         void closeFullscreenWindows();
+
+        void assignNewTuningToNextFreeScreen();
 
       signals:
         void dataModelChanged();

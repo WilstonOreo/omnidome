@@ -85,7 +85,7 @@ namespace omni
 
       void generateCalibrationData();
 
-      void drawCalibratedInput();
+      void drawCalibratedInput(bool _flipped = false);
 
     private:
 

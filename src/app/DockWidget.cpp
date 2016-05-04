@@ -22,6 +22,7 @@
 namespace omni {
   namespace ui {
     DockWidget::DockWidget(QWidget *_parent) :
-      QScrollArea(_parent) {}
+      QScrollArea(_parent) {
+    }
   }
 }

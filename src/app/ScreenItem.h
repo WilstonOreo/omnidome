@@ -73,6 +73,7 @@ namespace omni {
                                         QColor _dropColor,
                                         QPainter&);
 
+
       private:
         ScreenItem *parent_   = nullptr;
         int index_                  = -1;
@@ -131,6 +132,10 @@ namespace omni {
         QRect rect() const;
 
         FullScreen*  fullscreen();
+
+        inline int numSubScreens() const {
+          return int(subScreens_.size());
+        }
 
       private:
         int hoverIndex_ = -1;

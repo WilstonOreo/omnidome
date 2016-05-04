@@ -381,6 +381,11 @@ namespace omni {
           _right *= _viewAspect / _projAspect;
         }
       }
+
+      if (flipped()) {
+        std::swap(_left,_right);
+        std::swap(_top,_bottom);
+      }
       return QRectF(QPointF(_left, _top), QPointF(_right, _bottom));
     }
 
@@ -388,6 +393,8 @@ namespace omni {
     {
       QRectF && _rect = viewRect();
       QPointF _p = QPointF(_pos.x() / width() - 0.5, _pos.y() / height() - 0.5);
+
+
       return QPointF(_p.x() * _rect.width(), -_p.y() * _rect.height());
     }
 
@@ -435,7 +442,8 @@ namespace omni {
         QMatrix4x4 _m;
         QRectF && _rect = viewRect();
         _m.ortho(_rect.left(), _rect.right(), _rect.top(), _rect.bottom(), -1.0,
-                 1.0);
+                  1.0);
+
         glMultMatrixf(_m.constData());
 
         glMatrixMode(GL_MODELVIEW);
@@ -487,6 +495,11 @@ namespace omni {
       }
     }
 
+    bool TuningGLView::flipped() const {
+      return tuning()->projector().setup()->flipped() &&
+        (!fullscreenMode_ || !dataModel()->hasOutput() || dataModel()->mode() == Session::Mode::SCREENSETUP);
+    }
+
     void TuningGLView::drawOutput(float _blendMaskOpacity,
                                   float _inputOpacity,
                                   QColor _color) {
@@ -519,7 +532,7 @@ namespace omni {
     }
 
     void TuningGLView::drawLiveView() {
-      tuning()->visualizer()->drawCalibratedInput();
+      tuning()->visualizer()->drawCalibratedInput(flipped());
     }
 
     void TuningGLView::drawScreenBorder()

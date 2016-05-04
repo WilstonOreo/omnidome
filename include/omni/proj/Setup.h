@@ -47,6 +47,8 @@ namespace omni {
 
         /// Scale projector setup by factor, e.g. to adapt defaults to scene size
         virtual void scale(qreal _factor) = 0;
+
+        virtual bool flipped() const = 0;
     };
 
     /// Typedef for our factory

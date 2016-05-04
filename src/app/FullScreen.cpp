@@ -17,6 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QGuiApplication>
 #include "FullScreen.h"
 #include "ScreenSetup.h"
 #include <omni/proj/ScreenSetup.h>
@@ -32,11 +33,21 @@ namespace omni {
       setWindowFlags(Qt::FramelessWindowHint);
       QWidget::setGeometry(_screen->geometry());
       this->hide();
+
+      connect(QGuiApplication::instance(),SIGNAL(screenRemoved(QScreen*)),
+          this,SLOT(deleteIfScreenRemoved(QScreen*)));
+    }
+
+    void FullScreen::deleteIfScreenRemoved(QScreen* _screen) {
+      if (_screen == screen_ || screen_ == omni::proj::ScreenSetup::standardScreen()) {
+        this->hide();
+        this->deleteLater();
+      }
     }
 
     FullScreen::~FullScreen()
     {
-    //  detachAll();
+      detachAll();
     }
 
     void FullScreen::detachAll()
@@ -115,6 +126,12 @@ namespace omni {
     void FullScreen::closeEvent(QCloseEvent *_event)
     {
       detachAll();
+    }
+
+    void FullScreen::resizeEvent(QResizeEvent *_event) {
+      if (this->geometry() != screen_->geometry()) {
+        deleteIfScreenRemoved(const_cast<QScreen*>(screen_));
+      }
     }
   }
 }
