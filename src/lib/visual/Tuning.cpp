@@ -353,6 +353,8 @@ namespace omni {
                             [&](QOpenGLFunctions& _) // Model View
                                                      // Operation
         {
+          _.glClear(
+          GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
           _.glEnable(GL_DEPTH_TEST);
           _vizSession->drawCanvas();
           _vizSession->drawCanvasWireframe();

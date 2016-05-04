@@ -97,7 +97,7 @@ namespace omni {
       }, [&](QOpenGLFunctions& _) {
         // Model view operation
         _.glClearColor(0.0,0.0,1.0,1.0);
-        _.glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        _.glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         _.glEnable(GL_BLEND);
         _.glEnable(GL_DEPTH_TEST);
         _sessionViz->drawCanvas(_tuning.session().exportSettings().
@@ -116,6 +116,8 @@ namespace omni {
         glMultMatrixf(_m.constData()); }, [&](QOpenGLFunctions& _) {
         _.glEnable(GL_BLEND);
         _.glDisable(GL_DEPTH_TEST);
+          _.glClear(
+          GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         // Model view operation
         _tuningViz->drawOutput();
         _.glFlush();
@@ -131,6 +133,8 @@ namespace omni {
       }, [&](QOpenGLFunctions& _) {
         _.glEnable(GL_BLEND);
         _.glDisable(GL_DEPTH_TEST);
+          _.glClear(
+          GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         // Model view operation
         useShader(*_shader, [&](visual::UniformHandler& _h) {
           _h.texUniform("tex", _framebuffer->texture());
@@ -149,6 +153,8 @@ namespace omni {
       }, [&](QOpenGLFunctions& _) {
         _.glEnable(GL_BLEND);
         _.glDisable(GL_DEPTH_TEST);
+          _.glClear(
+          GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         // Model view operation
         useShader(*_mergeShader, [&](visual::UniformHandler& _h) {
           _h.texUniform("warp", _warpBuffer->texture());
