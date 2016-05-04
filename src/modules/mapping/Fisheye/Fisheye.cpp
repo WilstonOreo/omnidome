@@ -56,6 +56,7 @@ namespace omni
 
     void Fisheye::fromPropertyMap(PropertyMap const& _map)
     {
+      mapping::Interface::fromPropertyMap(_map);
       _map.get("stretch",stretch_);
       setStretch(stretch_);
     }
@@ -63,6 +64,7 @@ namespace omni
     void Fisheye::toPropertyMap(PropertyMap& _map) const
     {
       _map("stretch",stretch_);
+      mapping::Interface::toPropertyMap(_map);
     }
 
     QWidget* Fisheye::widget() {

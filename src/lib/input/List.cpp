@@ -65,7 +65,7 @@ namespace omni {
       setCurrentId(currentId_);
     }
 
-    void List::toPropertyMap(PropertyMap& _map) const {  
+    void List::toPropertyMap(PropertyMap& _map) const {
       _map("currentId",currentId_);
       input::Interface::toPropertyMap(_map);
     }

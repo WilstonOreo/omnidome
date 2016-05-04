@@ -74,6 +74,7 @@ namespace omni
 
     void Equirectangular::fromPropertyMap(PropertyMap const& _map)
     {
+      mapping::Interface::fromPropertyMap(_map);
       _map.get("stripBottom",stripBottom_)
           .get("stripTop",stripTop_);
       validate();
@@ -83,6 +84,7 @@ namespace omni
     {
       _map("stripBottom",stripBottom_)
           ("stripTop",stripTop_);
+      mapping::Interface::toPropertyMap(_map);
     }
 
     bool operator==(Equirectangular const& _lhs, Equirectangular const& _rhs)

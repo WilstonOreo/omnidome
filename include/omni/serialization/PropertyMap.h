@@ -118,7 +118,9 @@ namespace omni {
         template<typename T, typename ... ARGS>
         PropertyMap const& get(QString const& _id, T& _t, ARGS&& ... _args) const {
           if (properties_.count(_id) == 0) {
-            throw exception::PropertyNotExisting(_id);
+            //throw exception::PropertyNotExisting(_id);
+            //return;
+            return *this;
           }
 
           QDataStream _s(properties_.at(_id));
@@ -130,7 +132,8 @@ namespace omni {
         template<typename T, typename ... ARGS>
         PropertyMap const& get(QString const& _id, T *_t, ARGS&& ... _args) const {
           if (properties_.count(_id) == 0) {
-            throw exception::PropertyNotExisting(_id);
+            //throw exception::PropertyNotExisting(_id);
+            return *this;
           }
 
           QDataStream _s(properties_.at(_id));
