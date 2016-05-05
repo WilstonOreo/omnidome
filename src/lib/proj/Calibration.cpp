@@ -51,8 +51,8 @@ namespace omni {
       buffer_.resize(_w, _h);
 
       visual::Session *_sessionViz =
-          const_cast<omni::Session&>(_tuning.session()).visualizer();
-      visual::Tuning *_tuningViz = const_cast<proj::Tuning&>(_tuning).visualizer();
+          const_cast<omni::Session&>(_tuning.session()).makeVisualizer();
+      visual::Tuning *_tuningViz = const_cast<proj::Tuning&>(_tuning).makeVisualizer();
 
       static ContextBoundPtr<Framebuffer32F> _warpBuffer;
       static ContextBoundPtr<Framebuffer32F> _blendBuffer;
