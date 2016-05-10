@@ -101,6 +101,7 @@ namespace omni {
 
             void TuningList::addTuning()
             {
+
                 QString _setupId = "PeripheralSetup";
 
                 if (!dataModel()->tunings().empty())
@@ -118,6 +119,15 @@ namespace omni {
             /// Add tuning with specific projector setup
             void TuningList::addTuning(QString const& _projSetupId)
             {
+                if (dataModel()->tunings().size() >= OMNI_MAX_NUMBER_TUNINGS)
+                {
+                    QMessageBox::information(this, "Information",
+                                             QString(
+                                                 "You have reached the maximum of %1 projectors.").arg(
+                                                 OMNI_MAX_NUMBER_TUNINGS));
+                    return;
+                }
+                
                 auto *_tuning = dataModel()->tunings().add(false);
 
                 if (!_tuning) return;
@@ -132,14 +142,6 @@ namespace omni {
 
             void TuningList::addTuning(omni::proj::Tuning *_tuning)
             {
-                if (widgets_.size() >= OMNI_MAX_NUMBER_TUNINGS)
-                {
-                    QMessageBox::information(this, "Information",
-                                             QString(
-                                                 "You have reached the maximum of %1 projectors.").arg(
-                                                 OMNI_MAX_NUMBER_TUNINGS));
-                    return;
-                }
 
                 int _index = 0;
 

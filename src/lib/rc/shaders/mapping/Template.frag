@@ -64,11 +64,6 @@ float mapping(in vec3 uvw, out vec2 texCoords);
 void main()
 {
   vec3 uvw = ((vec4(uvw_vertex_position - offset,1.0) * matrix).xyz);
-/*  if (intersection(uvw) < 0.0) {
-//      discard;
-  }*/
-
-//  uvw = normalize((vec4(uvw,0.0) * matrix).xyz);
 
   if (output_mode == 2) // Output UVW map only
   {

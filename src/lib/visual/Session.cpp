@@ -194,34 +194,16 @@ namespace omni {
       if (!frustumShader_ || !_canvas) return;
 
       frustumShader_->bind();
-      auto _invMatrix = _canvas->matrix().inverted();
-      auto _m         = _invMatrix * _proj.matrix();
-      auto _rot       = _invMatrix;
-      _rot.setColumn(3, QVector4D(0, 0, 0, 1));
-
-      frustumShader_->setUniformValue("color", _color.redF(),
-                                      _color.greenF(), _color.blueF());
-
       /// Construct frustum
-      proj::Frustum _frustum(_proj);
-      QVector3D     _eye    = _m.column(3).toVector3D();
-      QVector3D     _lookAt = _m * QVector3D(1.0, 0.0, 0.0) - _eye;
-
-      // QVector3D _up = _m * QVector3D(0.0, 0.0, 1.0) - _eye;
+      QVector3D     _eye    = _proj.pos();
 
       // Setup frustum uniforms for intersection test
+      frustumShader_->setUniformValue("color", _color.redF(),
+                                      _color.greenF(), _color.blueF());
       frustumShader_->setUniformValue("eye",          _eye);
-      frustumShader_->setUniformValue("look_at",      _lookAt);
-      frustumShader_->setUniformValue("top_left",     _frustum.topLeft(_m));
-      frustumShader_->setUniformValue("top_right",    _frustum.topRight(_m));
-      frustumShader_->setUniformValue("bottom_left",  _frustum.bottomLeft(_m));
-      frustumShader_->setUniformValue("bottom_right", _frustum.bottomRight(_m));
       frustumShader_->setUniformValue("frame_width",
-                                      GLfloat(0.005 * session_.scene().size()));
-      frustumShader_->setUniformValue("matrix",       _rot);
-      frustumShader_->setUniformValue("proj_matrix",  _proj.matrix());
-      frustumShader_->setUniformValue("scale",
-                                      GLfloat(_canvas->bounds().radius()));
+                                      GLfloat(0.05));
+      frustumShader_->setUniformValue("proj_matrix",   _proj.projectionMatrix());
       frustumShader_->setUniformValue("opacity", GLfloat(0.8));
       frustumShader_->setUniformValue("view_mode",int(_canvas->viewMode()));
 
@@ -284,7 +266,6 @@ namespace omni {
           _.glEnable(GL_DEPTH_TEST);
 
       });
-
     }
 
     void Session::drawProjectorHalos(ProjectorSelectionMode _selectionMode) const

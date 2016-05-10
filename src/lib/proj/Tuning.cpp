@@ -282,5 +282,14 @@ namespace omni {
         Session const& Tuning::session() const {
           return session_;
         }
+
+        int Tuning::id() const {
+          int i = 0;
+          for (auto& _tuning : session().tunings()) {
+            if (_tuning.get() == this) return i;
+            ++i;
+          }
+          return -1;
+        }
     }
 }

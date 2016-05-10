@@ -162,6 +162,9 @@ namespace omni {
         /// Return const reference to owning session
         Session const& session() const;
 
+        /// Return id of tuning
+        int id() const;
+
       private:
         bool   outputDisabled_ = false;
         bool   overlapOpacity_ = 0.0;

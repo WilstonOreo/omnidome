@@ -58,7 +58,7 @@ namespace omni
       void setBlendTextureUpdateRect(QRect const&);
 
       /// Draw Test card image for screen setup
-      void drawTestCard(int _id, bool _grayscale = false) const;
+      void drawTestCard(int _id, bool _grayscale = false);
 
       /**@brief Draws warp grid with lines and handles
          @param _rect Screen Rectangle of input
@@ -106,6 +106,8 @@ namespace omni
 
       /// Frame buffer which holds a texture with current view image
       ContextBoundPtr<QOpenGLFramebufferObject> warpGridBuffer_;
+
+      ContextBoundPtr<QOpenGLFramebufferObject> testCardFrameBuffer_;
 
       QRect blendTextureUpdateRect_;
 

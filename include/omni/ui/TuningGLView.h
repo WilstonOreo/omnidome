@@ -129,11 +129,8 @@ namespace omni {
         /// Draw screen border (only if widget is not in view only mode)
         void    drawScreenBorder();
 
-        /// Draw color corrected
+        /// Draw color corrected view (also used in export mode)
         void    drawColorCorrected();
-
-        /// Draw export view
-        void    drawExportView();
 
         /// Draw fast live view
         void    drawLiveView();

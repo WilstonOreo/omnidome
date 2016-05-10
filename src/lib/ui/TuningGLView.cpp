@@ -445,7 +445,6 @@ namespace omni {
                   1.0);
 
         glMultMatrixf(_m.constData());
-
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         f(_);
@@ -497,7 +496,7 @@ namespace omni {
 
     bool TuningGLView::flipped() const {
       return tuning()->projector().setup()->flipped() &&
-        (!fullscreenMode_ || !dataModel()->hasOutput() || dataModel()->mode() == Session::Mode::SCREENSETUP);
+        (!fullscreenMode_ || !dataModel()->hasOutput() || dataModel()->mode() == Session::Mode::SCREENSETUP);
     }
 
     void TuningGLView::drawOutput(float _blendMaskOpacity,
@@ -518,13 +517,6 @@ namespace omni {
     }
 
     void TuningGLView::drawColorCorrected()
-    {
-      drawOutput(
-        1.0 /* draw blend mask with alpha = 1.0 */,
-        1.0 /* draw input */);
-    }
-
-    void TuningGLView::drawExportView()
     {
       drawOutput(
         1.0 /* draw blend mask with alpha = 1.0 */,
@@ -563,8 +555,7 @@ namespace omni {
     void TuningGLView::showEvent(QShowEvent *event) {
 
       makeCurrent();
-      dataModel()->makeVisualizer();
-      dataModel()->visualizer()->update();
+      dataModel()->makeVisualizer()->update();
 
       if (dataModel()->canvas()) {
         dataModel()->canvas()->update();
@@ -578,18 +569,15 @@ namespace omni {
 
     void TuningGLView::paintGL()
     {
-      if (!tuning()) return;
+      if (!tuning() || !tuning()->visualizer()) return;
       makeCurrent();
 
-auto *_vizSession = dataModel()->visualizer();
+      auto *_vizSession = dataModel()->visualizer();
       if (!_vizSession) return;
-
 
       withCurrentContext([&](QOpenGLFunctions& _)
       {
-
-        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-                  GL_STENCIL_BUFFER_BIT);
+        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       	visual::viewport(this);
         _.glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -620,11 +608,8 @@ auto *_vizSession = dataModel()->visualizer();
         break;
 
       case Session::Mode::COLORCORRECTION:
-        drawColorCorrected();
-        break;
-
       case Session::Mode::EXPORT:
-        drawExportView();
+        drawColorCorrected();
         break;
 
       case Session::Mode::LIVE:

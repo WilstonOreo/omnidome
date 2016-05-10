@@ -48,33 +48,23 @@ namespace omni {
       return tuning_;
     }
 
-    void Tuning::drawTestCard(int _id, bool _grayscale) const
+    void Tuning::drawTestCard(int _id, bool _grayscale)
     {
-      if (!testCardShader_) return;
+      if (!testCardFrameBuffer_) return;
 
-      if (!QOpenGLContext::currentContext()) return;
-
-      auto _color    = tuning_.color();
-      GLfloat _red   = _color.redF();
-      GLfloat _green = _color.greenF();
-      GLfloat _blue  = _color.blueF();
-      testCardShader_->bind();
-      testCardShader_->setUniformValue("resolution",
-                                       GLfloat(tuning_.width()),
-                                       GLfloat(tuning_.height()));
-      testCardShader_->setUniformValue("test_color",   _red,
-                                       _green,
-                                       _blue);
-      testCardShader_->setUniformValue("projector_id", _id);
-      testCardShader_->setUniformValue("gray_output",  _grayscale);
-      Rectangle::draw();
-      testCardShader_->release();
+      withCurrentContext([&](QOpenGLFunctions& _) {
+        _.glEnable(GL_TEXTURE_2D);
+        glColor4f(1.0,1.0,1.0,1.0);
+        _.glBindTexture(GL_TEXTURE_2D,testCardFrameBuffer_->texture());
+        Rectangle::draw();
+        _.glBindTexture(GL_TEXTURE_2D,0);
+        _.glDisable(GL_TEXTURE_2D);
+      });
     }
 
     void Tuning::drawWarpGrid() const
     {
       if (!warpGrid_) return;
-
       warpGrid_->drawLines();
       warpGrid_->drawHandles(tuning_.color(), tuningRect());
     }
@@ -94,10 +84,45 @@ namespace omni {
         initShader(blendBrushShader_, "blendbrush");
         initShader(blendBrushCursorShader_, "blendBrushCursor");
         initShader(calibrationShader_, "calibration");
+
+        if (!testCardFrameBuffer_ ||
+          testCardFrameBuffer_->width() != tuning_.width() ||
+          testCardFrameBuffer_->height() != tuning_.height()) {
+          QOpenGLFramebufferObjectFormat _format;
+          _format.setMipmap(true);
+          _format.setSamples(0);
+          _format.setAttachment(QOpenGLFramebufferObject::NoAttachment);
+          testCardFrameBuffer_.reset(new QOpenGLFramebufferObject(
+            tuning_.width(),
+            tuning_.height(),
+            _format));
+        }
       });
 
       updateWarpGrid();
       updateBlendTexture();
+
+      draw_on_framebuffer(testCardFrameBuffer_.get(),[&](QOpenGLFunctions& _) {
+        QMatrix4x4 _m;
+        _m.ortho(-0.5,0.5,0.5,-0.5,-1.0,1.0);
+        glMultMatrixf(_m.constData());
+      }, [&](QOpenGLFunctions& _) {
+        auto _color    = tuning_.color();
+        GLfloat _red   = _color.redF();
+        GLfloat _green = _color.greenF();
+        GLfloat _blue  = _color.blueF();
+        testCardShader_->bind();
+        testCardShader_->setUniformValue("resolution",
+                                       GLfloat(tuning_.width()),
+                                       GLfloat(tuning_.height()));
+        testCardShader_->setUniformValue("test_color",   _red,
+                                       _green,
+                                       _blue);
+        testCardShader_->setUniformValue("projector_id", tuning_.id());
+        testCardShader_->setUniformValue("gray_output",  false);
+        Rectangle::draw();
+        testCardShader_->release();
+      });
     }
 
     void Tuning::setBlendTextureUpdateRect(QRect const& _rect)
