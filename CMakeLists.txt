@@ -154,14 +154,13 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
     # ${Qt5Core_INCLUDE_DIRS} is a list; I'm expecting the first entry to always be QtCore.framework.
     ADD_CUSTOM_TARGET(
-        mac_app
-        python util/mac_app.py ${CMAKE_INSTALL_PREFIX} ${PROJECT_SOURCE_DIR} ${CMAKE_BUILD_TYPE} ${Qt5Core_INCLUDE_DIRS} 
-        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/omnidome.app
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMENT "making the macosx bundle."
+        deploy_osx
+        ${QT_PATH}/${QT_VERSION}/clang_64/bin/macdeployqt ${OMNIDOME_APP_OUTPUT_DIR} -dmg
+        DEPENDS omnidome
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Make DMG file for MacOS X."
         VERBATIM
     )
-
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -171,13 +170,13 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   INSTALL(TARGETS omnidome DESTINATION share/omnidome)
   INSTALL(TARGETS omni DESTINATION share/omnidome/libs)
 
-  INSTALL(FILES cmake-files/omnidome.sh 
+  INSTALL(FILES cmake-files/omnidome.sh
 	RENAME omnidome
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                     GROUP_EXECUTE GROUP_READ
 		    WORLD_EXECUTE WORLD_READ
 	DESTINATION bin)
-  
+
   INSTALL(FILES cmake-files/omnidome.desktop
 	DESTINATION share/applications )
   INSTALL(FILES cmake-files/icon.png
