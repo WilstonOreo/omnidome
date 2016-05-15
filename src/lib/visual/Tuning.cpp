@@ -53,6 +53,7 @@ namespace omni {
 
       withCurrentContext([&](QOpenGLFunctions& _) {
         _.glEnable(GL_TEXTURE_2D);
+	_.glDisable(GL_LIGHTING);
         glColor4f(1.0,1.0,1.0,1.0);
         _.glBindTexture(GL_TEXTURE_2D,testCardFrameBuffer_->texture());
         Rectangle::draw();
@@ -106,6 +107,8 @@ namespace omni {
         _m.ortho(-0.5,0.5,0.5,-0.5,-1.0,1.0);
         glMultMatrixf(_m.constData());
       }, [&](QOpenGLFunctions& _) {
+	glColor4f(1.0,1.0,1.0,1.0);
+	_.glDisable(GL_LIGHTING);
         auto _color    = tuning_.color();
         GLfloat _red   = _color.redF();
         GLfloat _green = _color.greenF();
@@ -117,7 +120,7 @@ namespace omni {
         testCardShader_->setUniformValue("test_color",   _red,
                                        _green,
                                        _blue);
-        testCardShader_->setUniformValue("projector_id", tuning_.id());
+        testCardShader_->setUniformValue("projector_id", GLint(tuning_.id() + 1));
         testCardShader_->setUniformValue("gray_output",  false);
         Rectangle::draw();
         testCardShader_->release();
