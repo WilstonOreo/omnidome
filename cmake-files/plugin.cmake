@@ -100,9 +100,9 @@ function(build_plugin PLUGIN_PREFIX PLUGIN_DIR)
         include(${PLUGIN_DIR}/postbuild.cmake)
     endif()
 
-    # Make install target for linux in /usr/share/omnidome/plugins
+    # Make install target for linux in /usr/share/Omnidome/plugins
     IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  	INSTALL(TARGETS ${build_target} DESTINATION share/omnidome/plugins)
+  	INSTALL(TARGETS ${build_target} DESTINATION share/${CMAKE_PROJECT_NAME}/plugins)
     ENDIF()
 endfunction()
 

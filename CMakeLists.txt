@@ -152,38 +152,29 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
                    "${CMAKE_SOURCE_DIR}/cmake-files/omnidome_icon.icns"
                  "${OMNIDOME_APP_OUTPUT_DIR}/Contents/Resources" )
 
-
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   ADD_EXECUTABLE(omnidome ${omni_src} )
   TARGET_LINK_LIBRARIES(omnidome omni ${omni_extra_libs} ${Qt5_LIBRARIES} )
 
-  INSTALL(TARGETS omnidome DESTINATION share/omnidome/bin )
-  INSTALL(TARGETS omni DESTINATION share/omnidome/lib )
+  INCLUDE(InstallRequiredSystemLibraries)
+  SET(OMNI_INSTALL_DIR share/${CMAKE_PROJECT_NAME} ) 
+  INSTALL(TARGETS omnidome DESTINATION ${OMNI_INSTALL_DIR}/bin )
+  INSTALL(TARGETS omni DESTINATION ${OMNI_INSTALL_DIR}/lib )
 
-  INSTALL(FILES cmake-files/omnidome.sh 
+  INSTALL(FILES cmake-files/omnidome.sh
 	RENAME omnidome
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                     GROUP_EXECUTE GROUP_READ
 		    WORLD_EXECUTE WORLD_READ
 	DESTINATION bin)
-  
+
   INSTALL(FILES cmake-files/omnidome.desktop
 	DESTINATION share/applications )
   INSTALL(FILES cmake-files/icon.png
-	DESTINATION share/omnidome/ )
-
-  INCLUDE(InstallRequiredSystemLibraries)
-    FOREACH(LIB Qt5Core Qt5Gui Qt5Widgets Qt5OpenGL)
-        INSTALL(FILES
-            "${QT_LIBRARY_DIR}/lib${LIB}.so.${QT_VERSION}.0"
-            RENAME "lib${LIB}.so.5"
-            DESTINATION share/omnidome/lib
-        )
-    ENDFOREACH(LIB)
-
+	DESTINATION ${OMNI_INSTALL_DIR} )
 
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
+deploy_qt()
 setup_cpack()

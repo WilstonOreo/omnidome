@@ -60,7 +60,45 @@ MACRO(find_qt5_component COMPONENT_NAME)
 ENDMACRO(find_qt5_component COMPONENT_NAME)
 
 MACRO (deploy_qt) 
- 
+   IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    FOREACH(LIB icui18n icuuc icudata )
+        INSTALL(FILES
+            "${QT_LIBRARY_DIR}/lib${LIB}.so.56.1"
+            RENAME "lib${LIB}.so.56"
+            DESTINATION share/${CMAKE_PROJECT_NAME}/lib
+        )
+    ENDFOREACH(LIB)
+	
+    # X Server support
+    INSTALL(FILES ${QT_LIBRARY_DIR}/../plugins/platforms/libqxcb.so
+	DESTINATION share/${CMAKE_PROJECT_NAME}/plugins/platforms )
+    INSTALL(FILES ${QT_LIBRARY_DIR}/../plugins/xcbglintegrations/libqxcb-egl-integration.so
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ
+		    WORLD_EXECUTE WORLD_READ
+	DESTINATION share/${CMAKE_PROJECT_NAME}/plugins/xcbglintegrations )
+    
+    INSTALL(FILES ${QT_LIBRARY_DIR}/../plugins/xcbglintegrations/libqxcb-glx-integration.so
+	
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ
+		    WORLD_EXECUTE WORLD_READ
+	DESTINATION share/${CMAKE_PROJECT_NAME}/plugins/xcbglintegrations 
+	
+	)
+
+        INSTALL(FILES
+            "${QT_LIBRARY_DIR}/libQt5XcbQpa.so.${QT_VERSION}.0"
+            RENAME "libQt5XcbQpa.so.5"
+            DESTINATION share/${CMAKE_PROJECT_NAME}/lib
+        )
+
+        INSTALL(FILES
+            "${QT_LIBRARY_DIR}/libQt5DBus.so.${QT_VERSION}.0"
+            RENAME "libQt5DBus.so.5"
+            DESTINATION share/${CMAKE_PROJECT_NAME}/lib
+        )
+  ENDIF()
 ENDMACRO (deploy_qt) 
 
 MACRO (detect_qt)
