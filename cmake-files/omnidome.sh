@@ -4,6 +4,6 @@
 appname=`basename $0 | sed s,\.sh$,,`
 dirname=/usr/share/omnidome 
 
-LD_LIBRARY_PATH=${dirname}/libs
+LD_LIBRARY_PATH=${dirname}/lib
 export LD_LIBRARY_PATH
-$dirname/$appname "$@"
+$dirname/bin/$appname "$@"

@@ -152,15 +152,6 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
                    "${CMAKE_SOURCE_DIR}/cmake-files/omnidome_icon.icns"
                  "${OMNIDOME_APP_OUTPUT_DIR}/Contents/Resources" )
 
-    # ${Qt5Core_INCLUDE_DIRS} is a list; I'm expecting the first entry to always be QtCore.framework.
-    ADD_CUSTOM_TARGET(
-        mac_app
-        python util/mac_app.py ${CMAKE_INSTALL_PREFIX} ${PROJECT_SOURCE_DIR} ${CMAKE_BUILD_TYPE} ${Qt5Core_INCLUDE_DIRS} 
-        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/omnidome.app
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMENT "making the macosx bundle."
-        VERBATIM
-    )
 
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
@@ -168,8 +159,8 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   ADD_EXECUTABLE(omnidome ${omni_src} )
   TARGET_LINK_LIBRARIES(omnidome omni ${omni_extra_libs} ${Qt5_LIBRARIES} )
 
-  INSTALL(TARGETS omnidome DESTINATION share/omnidome)
-  INSTALL(TARGETS omni DESTINATION share/omnidome/libs)
+  INSTALL(TARGETS omnidome DESTINATION share/omnidome/bin )
+  INSTALL(TARGETS omni DESTINATION share/omnidome/lib )
 
   INSTALL(FILES cmake-files/omnidome.sh 
 	RENAME omnidome
@@ -188,20 +179,10 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         INSTALL(FILES
             "${QT_LIBRARY_DIR}/lib${LIB}.so.${QT_VERSION}.0"
             RENAME "lib${LIB}.so.5"
-            DESTINATION share/omnidome/libs
+            DESTINATION share/omnidome/lib
         )
     ENDFOREACH(LIB)
 
-    FOREACH(LIB icui18n icuuc icudata )
-        INSTALL(FILES
-            "${QT_LIBRARY_DIR}/lib${LIB}.so.56.1"
-            RENAME "lib${LIB}.so.56"
-            DESTINATION share/omnidome/libs
-        )
-    ENDFOREACH(LIB)
-
-    INSTALL(FILES ${QT_LIBRARY_DIR}/../plugins/platforms/libqxcb.so
-	DESTINATION share/omnidome/plugins/platforms )
 
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 

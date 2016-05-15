@@ -42,13 +42,26 @@ MACRO(find_qt5_component COMPONENT_NAME)
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     include_directories(${QT_INCLUDE_DIR}/Qt${COMPONENT_NAME})
+
+
+    # Set module as install target
+    INSTALL(FILES
+        "${QT_LIBRARY_DIR}/libQt5${COMPONENT_NAME}.so.${QT_VERSION}.0"
+        RENAME "libQt5${COMPONENT_NAME}.so.5"
+        DESTINATION share/${CMAKE_PROJECT_NAME}/lib
+    )
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   if (${COMPONENT_NAME} MATCHES "Widgets")
     set(Qt5${COMPONENT_NAME}_UIC_EXECUTABLE ${QT5_LOCATION}/bin/uic)
   endif (${COMPONENT_NAME} MATCHES "Widgets")
 
+
 ENDMACRO(find_qt5_component COMPONENT_NAME)
+
+MACRO (deploy_qt) 
+ 
+ENDMACRO (deploy_qt) 
 
 MACRO (detect_qt)
     UNSET(QT5_LOCATION)
