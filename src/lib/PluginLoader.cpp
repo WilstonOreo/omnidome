@@ -108,6 +108,9 @@ namespace omni {
             }
         }
         #endif
+	#if defined(Q_OS_LINUX)
+        _pluginDirs.push_back(QDir("/usr/share/omnidome/plugins"));
+	#endif 
         return _pluginDirs;
     }
 }

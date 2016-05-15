@@ -1,3 +1,4 @@
+#version 120
 
 uniform vec2 ruler_pos;
 uniform bool flip_text;
@@ -153,7 +154,6 @@ void main(void)
     float t = floor(uv.x);
     vec2 st = fract(uv * (flip_text ? vec2(-1.0,1.0) : vec2(1.0)));
 
-
     if (t == 0.0) {
     	color += cubeSide(vec3(1.0,0.0,0.0),uv);
       print_pos.x = 0.0;
@@ -178,13 +178,11 @@ void main(void)
     	color += cubeSide(vec3(0.0,0.0,1.0),uv);
       print_pos.x = 0.0;
         color += vec3(text_top(st));
-
     } else
     if (t == 5.0) {
     	color += cubeSide(vec3(1.0,1.0,0.0),uv);
       print_pos.x = 0.0;
         color += vec3(text_bottom(st));
     }
-
     gl_FragColor = vec4(color,1.0);
 }

@@ -206,7 +206,7 @@ namespace omni {
         void getInputsRecurse(Interface const* _root, inputlist_type& _list, bool _excludeThis = true) const;
 
         int genCallbackId() const {
-          for (int i = 0; i <= updatedCallbacks_.size(); ++i) {
+          for (size_t i = 0; i <= updatedCallbacks_.size(); ++i) {
             if (!updatedCallbacks_.count(i)) {
               return i;
             }
