@@ -202,7 +202,7 @@ namespace omni {
                                       _color.greenF(), _color.blueF());
       frustumShader_->setUniformValue("eye",          _eye);
       frustumShader_->setUniformValue("frame_width",
-                                      GLfloat(0.05));
+                                      GLfloat(0.02));
       frustumShader_->setUniformValue("proj_matrix",   _proj.projectionMatrix());
       frustumShader_->setUniformValue("opacity", GLfloat(0.8));
       frustumShader_->setUniformValue("view_mode",int(_canvas->viewMode()));

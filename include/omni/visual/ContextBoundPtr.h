@@ -23,7 +23,7 @@
 #include <memory>
 #include <QOpenGLContext>
 #include <QOpenGLFramebufferObject>
-#include <omni/visual/ContextManager.h>
+#include <omni/visual/ContextSwitch.h>
 
 namespace omni {
   namespace visual {
@@ -80,7 +80,7 @@ namespace omni {
       template<typename PTR>
       ContextBoundPtr(PTR *_p,
                       QOpenGLContext *_context =
-                      ContextManager::primaryContext()) {
+                      QOpenGLContext::globalShareContext()) {
         reset(_p, _context);
       }
 
@@ -106,7 +106,7 @@ namespace omni {
       /// Reset and and assign neew pointer
       template<typename PTR>
       T* reset(PTR *_p,
-               QOpenGLContext *_context = ContextManager::primaryContext()) {
+               QOpenGLContext *_context = QOpenGLContext::globalShareContext()) {
         /// Reset and make new internal object
         reset();
         /// No initialization without context!

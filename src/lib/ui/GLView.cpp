@@ -22,7 +22,6 @@
 #include <omni/Session.h>
 #include <omni/util.h>
 #include <omni/visual/util.h>
-#include <omni/visual/ContextManager.h>
 
 #include <QMouseEvent>
 #include <chrono>
@@ -96,9 +95,6 @@ namespace omni
     void GLView::initializeGL()
     {
       initializeOpenGLFunctions();
-
-      ContextManager::instance()->add(context());
-      //qDebug() << "Number of contexts: " << visual::ContextManager::instance()->contextCount();
 
       makeCurrent();
       visual::resetOpenGLState();

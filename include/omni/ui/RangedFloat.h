@@ -159,7 +159,7 @@ namespace omni {
         bool    drawTicks_       = false;
         bool    useDefaultValue_ = false;
         QString suffix_;
-        int     gripSize_  = 10;
+        int     gripSize_  = 0;
         int     precision_ = 2;
     };
   }

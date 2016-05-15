@@ -39,7 +39,7 @@ namespace omni {
     }
 
     void FullScreen::deleteIfScreenRemoved(QScreen* _screen) {
-      if (_screen == screen_ || screen_ == omni::proj::ScreenSetup::standardScreen()) {
+      if (_screen == screen_ || screen_ == omni::proj::ScreenSetup::standardScreen()) {
         this->hide();
         this->deleteLater();
       }

@@ -84,7 +84,7 @@ namespace omni
           latestImage_ = [client newFrameImageForContext:CGLGetCurrentContext()];
 
 		      NSSize _texSize = [(SyphonImage*)latestImage_ textureSize];
-          if (_texSize.width == 0 || _texSize.height == 0) {
+          if (_texSize.width * _texSize.height == 0) {
             [pool drain];
             texId_ = 0;
             size_ = QSize(0,0);

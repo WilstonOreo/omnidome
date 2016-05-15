@@ -24,7 +24,6 @@
 #include <QOpenGLTexture>
 #include <QOpenGLDebugLogger>
 #include <string>
-#include <omni/visual/ContextManager.h>
 #include <chrono>
 
 namespace omni {

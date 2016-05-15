@@ -18,7 +18,7 @@
  */
 
 #include <omni/visual/ContextSwitch.h>
-#include <omni/visual/ContextManager.h>
+#include <QOpenGLFunctions>
 
 namespace omni {
   namespace visual {
@@ -38,8 +38,8 @@ namespace omni {
     }
 
     void primaryContextSwitch(ContextFunctor f) {
-      if (!ContextManager::primaryContext()) return;
-      contextSwitch(ContextManager::primaryContext(), f);
+      if (!QOpenGLContext::globalShareContext()) return;
+      contextSwitch(QOpenGLContext::globalShareContext(), f);
     }
 
     void withCurrentContext(ContextFunctor f)
@@ -48,7 +48,6 @@ namespace omni {
       if (!_currentContext) return;
 
       if (!_currentContext->isValid()) {
-        qDebug() << "Context is not valid!";
         return;
       }
       QOpenGLFunctions glFuncs(_currentContext);
