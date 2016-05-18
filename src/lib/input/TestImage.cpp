@@ -81,6 +81,7 @@ namespace omni
       },
       [&](QOpenGLFunctions& _) // Model View Operation
       {
+        _.glDisable(GL_BLEND);
         shader_->bind();
         {
           shaderUniformHandler();
