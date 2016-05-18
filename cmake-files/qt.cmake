@@ -123,17 +123,16 @@ MACRO (detect_qt)
 
     # Scan through list of candidate paths
     foreach(_PATH ${QT_PATHS})
-        if (NOT EXISTS ${_PATH})
-            continue()
-        endif()
-
-        # Scan though list of available version
+        if (EXISTS ${_PATH})
+	# Scan though list of available version
         foreach(_VERSION ${QT_VERSIONS})
             if(NOT QT_FOUND)
                 MESSAGE(STATUS "Searching for Qt ${_VERSION} in ${_PATH}")
                 setup_qt(${_VERSION} ${_PATH})
             endif()
         endforeach()
+        endif()
+
     endforeach()
 ENDMACRO()
 
