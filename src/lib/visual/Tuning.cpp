@@ -412,14 +412,13 @@ namespace omni {
       if (!calibrationShader_) return;
 
       auto *_currentInput = tuning().session().inputs().current();
-
       if (!_currentInput) return;
 
-      withCurrentContext([&](QOpenGLFunctions& _) {
-        if (!calibrationFramebuffer_) {
-          generateCalibrationData();
-        }
+      if (!calibrationFramebuffer_) {
+        generateCalibrationData();
+      }
 
+      withCurrentContext([&](QOpenGLFunctions& _) {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         QMatrix4x4 _m;

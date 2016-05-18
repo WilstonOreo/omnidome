@@ -13,14 +13,8 @@ import(
   gl
   cpack
   plugin
+  version
 )
-
-set( CMAKE_MACOSX_RPATH 1)
-set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
-
-set( MAJOR_VERSION 1 )
-set( MINOR_VERSION 0 )
-set( PATCH_VERSION 0 )
 
 ################################
 if(DEFINED QT_PATH)
@@ -35,10 +29,8 @@ if(NOT QT_FOUND)
     return()
 endif()
 
-add_definitions(-DOMNIDOME_VERSION_STRING="1.0.0.0")
 
 ########### BUILD_TARGETS ############
-
 
 common_cxx_flags()
 
@@ -97,7 +89,6 @@ QT5_ADD_RESOURCES(omni_resources_rcc ${omni_resources})
 QT5_GENERATE_UI(omni_forms_headers ${omni_forms})
 SET(omni_src ${omni_app_cpp_files} ${omni_headers_moc} ${omni_forms_headers} ${omni_resources_rcc})
 
-
 # END Setup omnidome executable
 ################################
 
@@ -121,10 +112,10 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
   SET(MACOSX_BUNDLE_INFO_STRING "Omnidome")
   SET(MACOSX_BUNDLE_GUI_IDENTIFIER "com.cr8tr.omnidome")
-  SET(MACOSX_BUNDLE_LONG_VERSION_STRING "Version 1.0.0")
+  SET(MACOSX_BUNDLE_LONG_VERSION_STRING "Version ${VERSION_STRING}")
   SET(MACOSX_BUNDLE_BUNDLE_NAME "Omnidome")
   SET(MACOSX_BUNDLE_BUNDLE_PACKAGE_TYPE "APPL")
-  SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0.0")
+  SET(MACOSX_BUNDLE_SHORT_VERSION_STRING ${VERSION_STRING})
   SET(MACOSX_BUNDLE_ICON_FILE "omnidome_icon")
 
   SET(MACOSX_BUNDLE_COPYRIGHT "(C) 2016, Michael Winkelmann, cr8tr.org, omnido.me")
@@ -159,7 +150,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   TARGET_LINK_LIBRARIES(omnidome omni ${omni_extra_libs} ${Qt5_LIBRARIES} )
 
   INCLUDE(InstallRequiredSystemLibraries)
-  SET(OMNI_INSTALL_DIR share/${CMAKE_PROJECT_NAME} ) 
+  SET(OMNI_INSTALL_DIR share/${CMAKE_PROJECT_NAME} )
   INSTALL(TARGETS omnidome DESTINATION ${OMNI_INSTALL_DIR}/bin )
   INSTALL(TARGETS omni DESTINATION ${OMNI_INSTALL_DIR}/lib )
 

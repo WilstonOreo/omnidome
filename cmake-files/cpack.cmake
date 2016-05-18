@@ -1,17 +1,11 @@
 ### CPack Convenience Macro
 
 MACRO(setup_cpack)
-
-
   SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OMNIDOME is a arbitrary surface projection mapping tool built by CR8TR. It allows you to map any physical room and project virtual content back on to it.")
 
-  #if ((${MAJOR_VERSION} EQUAL 0 AND (${MINOR_VERSION} EQUAL 0) AND (${PATCH_VERSION} EQUAL 0))
-  #  MESSAGE(WARNING "Version number is not valid (you are not on a version branch). CPack will not be executed.")
-  #  return()
-  #endif (${MAJOR_VERSION} EQUAL 0 AND (${MINOR_VERSION} EQUAL 0) AND (${PATCH_VERSION} EQUAL 0))
   set(CPACK_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
   set(CPACK_PACKAGE_VENDOR "CR8TR GmbH")
-  set(CPACK_PACKAGE_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
+  set(CPACK_PACKAGE_VERSION ${VERSION_STRING})
   set(CPACK_PACKAGE_VERSION_MAJOR "${MAJOR_VERSION}")
   set(CPACK_PACKAGE_VERSION_MINOR "${MINOR_VERSION}")
   set(CPACK_PACKAGE_VERSION_PATCH "${PATCH_VERSION}")
@@ -22,8 +16,8 @@ MACRO(setup_cpack)
   ELSE()
     SET(CPACK_GENERATOR "DEB")
   ENDIF()
-  
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_VENDOR} <m@cr8tr.org>") #required 
+
+  SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_VENDOR} <m@cr8tr.org>") #required
 
   SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
   SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
