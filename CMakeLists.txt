@@ -16,6 +16,11 @@ import(
   version
 )
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set( CMAKE_MACOSX_RPATH 1)
+  set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
+ENDIF()
+
 ################################
 if(DEFINED QT_PATH)
     MESSAGE(STATUS "Qt Path: ${QT_PATH}")
