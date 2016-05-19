@@ -26,31 +26,22 @@ When running cmake with arguments:
 cmake . -DQT_PATH=/your/path/to/qt
 
 CMake is looking for Qt in this directory.
-
+DO NOT use the ~ symbol when referring to your home folder, you will need to fully write down the folder name,
+like /home/cr8tr instead.
 
 1.2 Building on Ubuntu 14.04
 ============================
 
-On linux, we recommend to use the clang compiler (version 3.5) for compiling.
-On ubuntu, you can install clang by typing 
+$ sudo apt-get install cmake git g++-4.9
 
-$ sudo apt-get install clang-3.5 
-
-in commandline. 
+in commandline.
 You will also need cmake, which you can install with
 
 $ sudo apt-get install cmake
 
-Go in to omnidome folder, and run 
+Go in to omnidome folder, and run
 
-./bootstrap.sh
-
-After bootstrapping was successful, run 
-
-$ cmake -DCMAKE_BUILD_TYPE=Release .  && make
-
-You might to specify the Qt Path manually by passing the additional argument 
--DQT_PATH=/your/path/to/qt to the cmake command
+./cmake-files/deploy_ubuntu.sh
 
 You can start omnidome with
 ./bin/Release/omnidome
@@ -64,9 +55,15 @@ You also need homebrew (http://brew.sh) to install cmake, with
 
 brew install cmake
 
-From the terminal, go in to omnidome folder, and run 
+From the terminal, go in to omnidome folder, and run
 
-$ cmake -DCMAKE_BUILD_TYPE=Release . && make
+$ cmake . -DQT_PATH=/your/path/to/qt
+
+You might to specify the Qt Path manually by passing the additional argument
+-DQT_PATH=/your/path/to/qt to the cmake command.
+
+DO NOT use the ~ symbol when referring to your home folder, you will need to fully write down the folder name,
+like /Users/cr8tr instead.
 
 If this error occurs while running CMake:
 CMake Error at /Users/wilstonoreo/Projects/Qt/5.5/clang_64/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:9 (message):
@@ -74,9 +71,9 @@ CMake Error at /Users/wilstonoreo/Projects/Qt/5.5/clang_64/lib/cmake/Qt5Gui/Qt5G
 
 Please install XCode Developer Tools with "xcode-select --install".
 
+Start compiling and make the dmg file with:
 
-You might to specify the Qt Path manually by passing the additional argument 
--DQT_PATH=/your/path/to/qt to the cmake command
+$ ./cmake-files/deploy_osx.sh
 
 You can start omnidome with
 ./bin/Release/omnidome.app/Contents/MacOS/omnidome
@@ -87,6 +84,4 @@ The app bundle "omnidome.app" is in ./bin/Release
 2 Release Notes
 ===============
 
-This is a preliminary release.
 Omnidome was only successfully compiled on MacOSX and Ubuntu 14.04.
-
