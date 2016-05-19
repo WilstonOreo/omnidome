@@ -150,6 +150,15 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
                    "${CMAKE_SOURCE_DIR}/cmake-files/omnidome_icon.icns"
                  "${OMNIDOME_APP_OUTPUT_DIR}/Contents/Resources" )
 
+    ADD_CUSTOM_TARGET(
+            deploy_osx
+            ${QT_PATH}/${QT_VERSION}/clang_64/bin/macdeployqt ${OMNIDOME_APP_OUTPUT_DIR} -dmg
+              DEPENDS omnidome
+              WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+              COMMENT "Make DMG file for MacOS X."
+              VERBATIM
+    )
+
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
