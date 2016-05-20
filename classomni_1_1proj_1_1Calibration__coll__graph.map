@@ -1,0 +1,5 @@
+<map id="omni::proj::Calibration" name="omni::proj::Calibration">
+<area shape="rect" id="node2" href="$classomni_1_1proj_1_1ColorCorrection.html" title="Color correction for RGB color space. " alt="" coords="13,155,192,181"/>
+<area shape="rect" id="node3" href="$classomni_1_1proj_1_1ChannelCorrection.html" title="Brightness, contrast and gamma correction for a single color channel. " alt="" coords="5,13,200,40"/>
+<area shape="rect" id="node4" href="$structomni_1_1Buffer.html" title="omni::Buffer\&lt; RGBAFloat \&gt;" alt="" coords="216,155,400,181"/>
+</map>

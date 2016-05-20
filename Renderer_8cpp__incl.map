@@ -1,0 +1,25 @@
+<map id="src/lib/render/Renderer.cpp" name="src/lib/render/Renderer.cpp">
+<area shape="rect" id="node2" href="$Renderer_8h.html" title="omni/render/Renderer.h" alt="" coords="154,163,312,189"/>
+<area shape="rect" id="node8" href="$util_8h.html" title="omni/util.h" alt="" coords="263,411,344,437"/>
+<area shape="rect" id="node24" href="$visual_2util_8h.html" title="omni/visual/util.h" alt="" coords="927,163,1047,189"/>
+<area shape="rect" id="node36" href="$visual_2Session_8h.html" title="omni/visual/Session.h" alt="" coords="1954,80,2104,107"/>
+<area shape="rect" id="node42" href="$include_2omni_2proj_2ScreenSetup_8h.html" title="omni/proj/ScreenSetup.h" alt="" coords="2172,253,2336,280"/>
+<area shape="rect" id="node47" href="$include_2omni_2visual_2Tuning_8h.html" title="omni/visual/Tuning.h" alt="" coords="1481,80,1623,107"/>
+<area shape="rect" id="node6" href="$RenderBuffer_8h.html" title="omni/RenderBuffer.h" alt="" coords="217,253,359,280"/>
+<area shape="rect" id="node18" href="$include_2omni_2proj_2ColorCorrection_8h.html" title="omni/proj/ColorCorrection.h" alt="" coords="771,411,952,437"/>
+<area shape="rect" id="node7" href="$Buffer_8h.html" title="omni/Buffer.h" alt="" coords="259,336,359,363"/>
+<area shape="rect" id="node14" href="$exception_8h.html" title="omni/exception.h" alt="" coords="363,485,484,512"/>
+<area shape="rect" id="node16" href="$Id_8h.html" title="omni/Id.h" alt="" coords="1033,560,1108,587"/>
+<area shape="rect" id="node19" href="$ChannelCorrection_8h.html" title="omni/proj/ChannelCorrection.h" alt="" coords="927,485,1125,512"/>
+<area shape="rect" id="node20" href="$Channel_8h.html" title="omni/proj/Channel.h" alt="" coords="764,485,903,512"/>
+<area shape="rect" id="node31" href="$ContextBoundPtr_8h.html" title="omni/visual/ContextBound\lPtr.h" alt="" coords="1094,246,1268,287"/>
+<area shape="rect" id="node34" href="$ContextSwitch_8h.html" title="omni/visual/ContextSwitch.h" alt="" coords="959,336,1148,363"/>
+<area shape="rect" id="node38" href="$Session_8h.html" title="omni/Session.h" alt="" coords="2053,163,2164,189"/>
+<area shape="rect" id="node43" href="$ProjectorViewMode_8h.html" title="omni/visual/ProjectorView\lMode.h" alt="" coords="2253,155,2427,197"/>
+<area shape="rect" id="node44" href="$visual_2Projector_8h.html" title="omni/visual/Projector.h" alt="" coords="1589,163,1743,189"/>
+<area shape="rect" id="node46" href="$visual_2WarpGrid_8h.html" title="omni/visual/WarpGrid.h" alt="" coords="1870,163,2028,189"/>
+<area shape="rect" id="node39" href="$include_2omni_2proj_2TuningList_8h.html" title="omni/proj/TuningList.h" alt="" coords="1997,253,2147,280"/>
+<area shape="rect" id="node41" href="$include_2omni_2proj_2Tuning_8h.html" title="omni/proj/Tuning.h" alt="" coords="1487,336,1616,363"/>
+<area shape="rect" id="node49" href="$Texture32F_8h.html" title="omni/visual/Texture32F.h" alt="" coords="406,163,575,189"/>
+<area shape="rect" id="node50" href="$Calibration_8h.html" title="omni/proj/Calibration.h" alt="" coords="600,163,752,189"/>
+</map>

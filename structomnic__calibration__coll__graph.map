@@ -1,0 +1,6 @@
+<map id="omnic_calibration" name="omnic_calibration">
+<area shape="rect" id="node2" href="$structomnic__calibrated__projector.html" title="A calibration for a single projector. " alt="" coords="159,141,336,168"/>
+<area shape="rect" id="node3" href="$structomnic__channelcorrection.html" title="Correction for a single color channel. " alt="" coords="5,21,171,48"/>
+<area shape="rect" id="node4" href="$structomnic__rect.html" title="Rectangle struct. " alt="" coords="205,21,291,48"/>
+<area shape="rect" id="node5" href="$structomnic__colorcorrection.html" title="Color correction for red, green and blue channel. " alt="" coords="316,21,464,48"/>
+</map>

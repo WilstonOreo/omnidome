@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/shaders/mapping">
-    <file>Fisheye.frag</file>
-  </qresource>
-</RCC>

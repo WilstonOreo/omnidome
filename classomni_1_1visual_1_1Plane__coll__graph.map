@@ -1,0 +1,7 @@
+<map id="omni::visual::Plane" name="omni::visual::Plane">
+<area shape="rect" id="node2" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="5,435,155,461"/>
+<area shape="rect" id="node3" href="$structomni_1_1visual_1_1ContextBoundPtr.html" title="omni::visual::ContextBound\lPtr\&lt; omni::visual::VertexVBO \&gt;" alt="" coords="179,427,385,469"/>
+<area shape="rect" id="node4" href="$structomni_1_1visual_1_1detail_1_1ContextBoundPtrInternal.html" title="omni::visual::detail\l::ContextBoundPtrInternal\l\&lt; omni::visual::VertexVBO \&gt;" alt="" coords="187,307,377,363"/>
+<area shape="rect" id="node5" href="$classomni_1_1visual_1_1VertexVBO.html" title="Utility class for storing and drawing VBO data. " alt="" coords="199,216,365,243"/>
+<area shape="rect" id="node7" href="$structomni_1_1visual_1_1VBO.html" title="A small Vertex Buffer Object class. " alt="" coords="219,5,347,32"/>
+</map>

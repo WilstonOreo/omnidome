@@ -1,0 +1,7 @@
+<map id="omni::canvas::Envelope" name="omni::canvas::Envelope">
+<area shape="rect" id="node2" href="$classomni_1_1canvas_1_1Interface.html" title="Abstract interface for a canvas &#160;A canvas represents the surface on which the projection is performed..." alt="" coords="936,107,1003,133"/>
+<area shape="rect" id="node3" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="671,5,820,32"/>
+<area shape="rect" id="node5" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="670,107,821,133"/>
+<area shape="rect" id="node6" href="$classomni_1_1visual_1_1Scene.html" title="A class that holds settings and elements for session 3d visualization &#160;Belongs to a session..." alt="" coords="677,157,814,184"/>
+<area shape="rect" id="node9" href="$classomni_1_1LengthUnit.html" title="An encapsulation for length units. " alt="" coords="385,187,506,213"/>
+</map>

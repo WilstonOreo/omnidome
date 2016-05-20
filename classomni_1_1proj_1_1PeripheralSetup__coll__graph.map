@@ -1,0 +1,5 @@
+<map id="omni::proj::PeripheralSetup" name="omni::proj::PeripheralSetup">
+<area shape="rect" id="node2" href="$classomni_1_1proj_1_1AngleSetup.html" title="Basic projector setup with three euler angles and no positioning offsets. " alt="" coords="187,160,340,187"/>
+<area shape="rect" id="node3" href="$classomni_1_1proj_1_1Setup.html" title="Interface for a projector setup. " alt="" coords="106,83,227,109"/>
+<area shape="rect" id="node5" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="180,5,328,32"/>
+</map>

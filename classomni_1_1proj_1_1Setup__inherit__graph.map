@@ -1,0 +1,6 @@
+<map id="omni::proj::Setup" name="omni::proj::Setup">
+<area shape="rect" id="node4" href="$classomni_1_1proj_1_1AngleSetup.html" title="Basic projector setup with three euler angles and no positioning offsets. " alt="" coords="95,155,248,181"/>
+<area shape="rect" id="node3" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="185,5,333,32"/>
+<area shape="rect" id="node5" href="$classomni_1_1proj_1_1FreeSetup.html" title="Free projector setup with euler angles and positioning. " alt="" coords="5,229,152,256"/>
+<area shape="rect" id="node6" href="$classomni_1_1proj_1_1PeripheralSetup.html" title="Setup in which projector rotates with yaw angle around center point. " alt="" coords="176,229,355,256"/>
+</map>

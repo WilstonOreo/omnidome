@@ -1,0 +1,6 @@
+<map id="omni::ui::Widget" name="omni::ui::Widget">
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1AbstractInputWidget.html" title="Input widget with an editor widget. " alt="" coords="67,155,261,181"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1proj_1_1TitleBar.html" title="TitleBar for projector tuning widget &#160;Has four buttons: " alt="" coords="286,155,436,181"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1RangedFloat.html" title="A slider with float value within a minimum and maximum. " alt="" coords="5,229,155,256"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1RangedInt.html" title="Integer slider. " alt="" coords="180,229,315,256"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$structomni_1_1serialization_1_1traits_1_1Write_3_01T_01_5_00_01BASE__OF__SERIALIZATION__INTERFACE_01_4.html" title="omni::serialization\l::traits::Write\&lt; T *,\l BASE_OF_SERIALIZATION\l_INTERFACE \&gt;" alt="" coords="5,13,200,83"/>
+<area shape="rect" id="node2" href="$structomni_1_1serialization_1_1traits_1_1Write_3_01std_1_1unique__ptr_3_01T_00_01DELETER_01_4_00d0192be88684a5be46dce7773be2a6f7.html" title="omni::serialization\l::traits::Write\&lt; std\l::unique_ptr\&lt; T, DELETER\l \&gt;, BASE_OF_SERIALIZATION\l_INTERFACE \&gt;" alt="" coords="248,5,459,91"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="omni::ui::Scene" name="omni::ui::Scene">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1DockWidget.html" title="DockWidget is scroll area with an embedded widget. " alt="" coords="5,104,152,131"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="177,97,341,138"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="160,6,339,47"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="363,13,520,40"/>
+</map>

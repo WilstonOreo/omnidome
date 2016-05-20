@@ -1,0 +1,34 @@
+<map id="include/omni/ui/Widget.h" name="include/omni/ui/Widget.h">
+<area shape="rect" id="node2" href="$Widget_8cpp.html" title="src/lib/ui/Widget.cpp" alt="" coords="256,88,396,115"/>
+<area shape="rect" id="node3" href="$TitleBar_8h.html" title="src/app/proj/TitleBar.h" alt="" coords="422,88,572,115"/>
+<area shape="rect" id="node6" href="$AbstractInputWidget_8h.html" title="include/omni/ui/Abstract\lInputWidget.h" alt="" coords="727,81,889,122"/>
+<area shape="rect" id="node4" href="$TitleBar_8cpp.html" title="src/app/proj/TitleBar.cpp" alt="" coords="230,179,393,205"/>
+<area shape="rect" id="node5" href="$app_2proj_2Tuning_8cpp.html" title="src/app/proj/Tuning.cpp" alt="" coords="418,179,576,205"/>
+<area shape="rect" id="node7" href="$AbstractInputWidget_8cpp.html" title="src/lib/ui/AbstractInput\lWidget.cpp" alt="" coords="1046,171,1199,213"/>
+<area shape="rect" id="node8" href="$RangedFloat_8h.html" title="include/omni/ui/RangedFloat.h" alt="" coords="823,179,1021,205"/>
+<area shape="rect" id="node32" href="$RangedInt_8h.html" title="include/omni/ui/RangedInt.h" alt="" coords="601,179,785,205"/>
+<area shape="rect" id="node9" href="$RangedFloat_8cpp.html" title="src/lib/ui/RangedFloat.cpp" alt="" coords="842,261,1016,288"/>
+<area shape="rect" id="node10" href="$Blend_8h.html" title="src/app/Blend.h" alt="" coords="1282,261,1395,288"/>
+<area shape="rect" id="node12" href="$ui_2AffineTransform_8h.html" title="include/omni/ui/AffineTransform.h" alt="" coords="1041,261,1257,288"/>
+<area shape="rect" id="node14" href="$ParameterWidget_8h.html" title="include/omni/ui/Parameter\lWidget.h" alt="" coords="717,337,891,378"/>
+<area shape="rect" id="node11" href="$Blend_8cpp.html" title="src/app/Blend.cpp" alt="" coords="1275,344,1401,371"/>
+<area shape="rect" id="node13" href="$ui_2AffineTransform_8cpp.html" title="src/lib/ui/AffineTransform.cpp" alt="" coords="1053,344,1245,371"/>
+<area shape="rect" id="node15" href="$ParameterWidget_8cpp.html" title="src/lib/ui/ParameterWidget.cpp" alt="" coords="261,435,461,461"/>
+<area shape="rect" id="node16" href="$src_2app_2proj_2Tuning_8h.html" title="src/app/proj/Tuning.h" alt="" coords="487,435,631,461"/>
+<area shape="rect" id="node22" href="$CanvasParameters_8h.html" title="include/omni/ui/CanvasParameters.h" alt="" coords="979,435,1215,461"/>
+<area shape="rect" id="node26" href="$MappingParameters_8h.html" title="include/omni/ui/MappingParameters.h" alt="" coords="684,435,924,461"/>
+<area shape="rect" id="node30" href="$ChannelCorrectionParameters_8h.html" title="include/omni/ui/proj\l/ChannelCorrectionParameters.h" alt="" coords="1307,427,1519,469"/>
+<area shape="rect" id="node17" href="$src_2app_2ScreenSetup_8h.html" title="src/app/ScreenSetup.h" alt="" coords="367,525,520,552"/>
+<area shape="rect" id="node19" href="$MainWindow_8cpp.html" title="src/app/MainWindow.cpp" alt="" coords="563,608,732,635"/>
+<area shape="rect" id="node21" href="$app_2ScreenSetup_8cpp.html" title="src/app/ScreenSetup.cpp" alt="" coords="5,608,173,635"/>
+<area shape="rect" id="node18" href="$FullScreen_8cpp.html" title="src/app/FullScreen.cpp" alt="" coords="198,608,353,635"/>
+<area shape="rect" id="node20" href="$ScreenItem_8cpp.html" title="src/app/ScreenItem.cpp" alt="" coords="378,608,539,635"/>
+<area shape="rect" id="node23" href="$CanvasParameters_8cpp.html" title="src/lib/ui/CanvasParameters.cpp" alt="" coords="991,525,1203,552"/>
+<area shape="rect" id="node24" href="$Canvas_8h.html" title="src/app/Canvas.h" alt="" coords="1228,525,1353,552"/>
+<area shape="rect" id="node25" href="$Canvas_8cpp.html" title="src/app/Canvas.cpp" alt="" coords="1221,608,1360,635"/>
+<area shape="rect" id="node27" href="$MappingParameters_8cpp.html" title="src/lib/ui/MappingParameters.cpp" alt="" coords="751,525,967,552"/>
+<area shape="rect" id="node28" href="$Mapping_8h.html" title="src/app/Mapping.h" alt="" coords="597,525,725,552"/>
+<area shape="rect" id="node29" href="$Mapping_8cpp.html" title="src/app/Mapping.cpp" alt="" coords="757,608,899,635"/>
+<area shape="rect" id="node31" href="$ChannelCorrectionParameters_8cpp.html" title="src/lib/ui/proj/ChannelCorrection\lParameters.cpp" alt="" coords="1377,518,1585,559"/>
+<area shape="rect" id="node33" href="$RangedInt_8cpp.html" title="src/lib/ui/RangedInt.cpp" alt="" coords="607,261,765,288"/>
+</map>

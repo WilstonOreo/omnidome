@@ -1,0 +1,5 @@
+<map id="omni::visual::Tracker" name="omni::visual::Tracker">
+<area shape="rect" id="node2" href="$classomni_1_1visual_1_1CameraInterface.html" title="A generic camera interface. " alt="" coords="5,80,203,107"/>
+<area shape="rect" id="node4" href="$structomni_1_1visual_1_1Light.html" title="A light with position and phong shader attributes. " alt="" coords="227,80,355,107"/>
+<area shape="rect" id="node3" href="$classomni_1_1visual_1_1PerspectiveCamera.html" title="A perspective camera. " alt="" coords="19,155,188,197"/>
+</map>

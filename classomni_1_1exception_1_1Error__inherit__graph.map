@@ -1,0 +1,5 @@
+<map id="omni::exception::Error" name="omni::exception::Error">
+<area shape="rect" id="node4" href="$classomni_1_1exception_1_1Serialization.html" title="An exception that occurs during Serialization. " alt="" coords="5,237,197,264"/>
+<area shape="rect" id="node5" href="$classomni_1_1input_1_1exception_1_1CannotHaveChildren.html" title="Exception is thrown when accessing input of a children &#160;Is only thrown when input cannot accept child..." alt="" coords="222,230,372,271"/>
+<area shape="rect" id="node2" href="$classomni_1_1Exception.html" title="Base class for all exception. Throws a message with QString type. " alt="" coords="141,80,256,107"/>
+</map>

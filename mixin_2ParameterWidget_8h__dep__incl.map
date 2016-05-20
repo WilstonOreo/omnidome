@@ -1,0 +1,9 @@
+<map id="include/omni/ui/mixin/ParameterWidget.h" name="include/omni/ui/mixin/ParameterWidget.h">
+<area shape="rect" id="node2" href="$Canvas_8h.html" title="src/app/Canvas.h" alt="" coords="32,96,157,123"/>
+<area shape="rect" id="node4" href="$Input_8h.html" title="src/app/Input.h" alt="" coords="188,96,297,123"/>
+<area shape="rect" id="node7" href="$Mapping_8h.html" title="src/app/Mapping.h" alt="" coords="335,96,464,123"/>
+<area shape="rect" id="node3" href="$Canvas_8cpp.html" title="src/app/Canvas.cpp" alt="" coords="5,171,144,197"/>
+<area shape="rect" id="node5" href="$Input_8cpp.html" title="src/app/Input.cpp" alt="" coords="168,171,291,197"/>
+<area shape="rect" id="node6" href="$MainWindow_8cpp.html" title="src/app/MainWindow.cpp" alt="" coords="315,171,484,197"/>
+<area shape="rect" id="node8" href="$Mapping_8cpp.html" title="src/app/Mapping.cpp" alt="" coords="509,171,651,197"/>
+</map>

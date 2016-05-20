@@ -1,0 +1,4 @@
+<map id="omni::ui::BrushPreview" name="omni::ui::BrushPreview">
+<area shape="rect" id="node3" href="$classomni_1_1BlendBrush.html" title="BlendBrush for drawing on the blendmask &#160;Holds an internal pixel buffer. " alt="" coords="104,203,229,229"/>
+<area shape="rect" id="node4" href="$structomni_1_1Buffer.html" title="omni::Buffer\&lt; float \&gt;" alt="" coords="95,112,237,139"/>
+</map>

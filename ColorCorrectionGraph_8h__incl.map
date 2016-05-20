@@ -1,0 +1,7 @@
+<map id="include/omni/ui/proj/ColorCorrectionGraph.h" name="include/omni/ui/proj/ColorCorrectionGraph.h">
+<area shape="rect" id="node5" href="$include_2omni_2proj_2ColorCorrection_8h.html" title="omni/proj/ColorCorrection.h" alt="" coords="269,96,451,123"/>
+<area shape="rect" id="node9" href="$DataModel_8h.html" title="omni/ui/mixin/DataModel.h" alt="" coords="487,96,664,123"/>
+<area shape="rect" id="node6" href="$ChannelCorrection_8h.html" title="omni/proj/ChannelCorrection.h" alt="" coords="91,171,289,197"/>
+<area shape="rect" id="node8" href="$Channel_8h.html" title="omni/proj/Channel.h" alt="" coords="315,171,453,197"/>
+<area shape="rect" id="node13" href="$Locked_8h.html" title="Locked.h" alt="" coords="731,171,804,197"/>
+</map>

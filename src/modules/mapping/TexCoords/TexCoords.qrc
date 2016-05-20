@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/shaders/mapping">
-    <file>TexCoords.frag</file>
-  </qresource>
-</RCC>

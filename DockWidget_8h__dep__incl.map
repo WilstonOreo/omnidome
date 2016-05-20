@@ -1,0 +1,18 @@
+<map id="src/app/DockWidget.h" name="src/app/DockWidget.h">
+<area shape="rect" id="node2" href="$Blend_8h.html" title="src/app/Blend.h" alt="" coords="18,80,131,107"/>
+<area shape="rect" id="node4" href="$Canvas_8h.html" title="src/app/Canvas.h" alt="" coords="167,80,292,107"/>
+<area shape="rect" id="node6" href="$src_2app_2ColorCorrection_8h.html" title="src/app/ColorCorrection.h" alt="" coords="320,80,491,107"/>
+<area shape="rect" id="node8" href="$DockWidget_8cpp.html" title="src/app/DockWidget.cpp" alt="" coords="515,80,681,107"/>
+<area shape="rect" id="node9" href="$Input_8h.html" title="src/app/Input.h" alt="" coords="707,80,816,107"/>
+<area shape="rect" id="node12" href="$Mapping_8h.html" title="src/app/Mapping.h" alt="" coords="841,80,969,107"/>
+<area shape="rect" id="node14" href="$src_2app_2Scene_8h.html" title="src/app/Scene.h" alt="" coords="1009,80,1125,107"/>
+<area shape="rect" id="node16" href="$Warp_8h.html" title="src/app/Warp.h" alt="" coords="1182,80,1292,107"/>
+<area shape="rect" id="node3" href="$Blend_8cpp.html" title="src/app/Blend.cpp" alt="" coords="5,155,131,181"/>
+<area shape="rect" id="node5" href="$Canvas_8cpp.html" title="src/app/Canvas.cpp" alt="" coords="156,155,295,181"/>
+<area shape="rect" id="node7" href="$app_2ColorCorrection_8cpp.html" title="src/app/ColorCorrection.cpp" alt="" coords="319,155,504,181"/>
+<area shape="rect" id="node10" href="$Input_8cpp.html" title="src/app/Input.cpp" alt="" coords="529,155,652,181"/>
+<area shape="rect" id="node11" href="$MainWindow_8cpp.html" title="src/app/MainWindow.cpp" alt="" coords="677,155,845,181"/>
+<area shape="rect" id="node13" href="$Mapping_8cpp.html" title="src/app/Mapping.cpp" alt="" coords="870,155,1012,181"/>
+<area shape="rect" id="node15" href="$app_2Scene_8cpp.html" title="src/app/Scene.cpp" alt="" coords="1036,155,1165,181"/>
+<area shape="rect" id="node17" href="$Warp_8cpp.html" title="src/app/Warp.cpp" alt="" coords="1191,155,1316,181"/>
+</map>

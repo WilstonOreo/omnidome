@@ -1,0 +1,28 @@
+<map id="src/app/omnidome.cpp" name="src/app/omnidome.cpp">
+<area shape="rect" id="node2" href="$MainWindow_8h.html" title="MainWindow.h" alt="" coords="1325,80,1432,107"/>
+<area shape="rect" id="node45" href="$Application_8h.html" title="Application.h" alt="" coords="2169,80,2265,107"/>
+<area shape="rect" id="node9" href="$util_8h.html" title="omni/util.h" alt="" coords="245,709,327,736"/>
+<area shape="rect" id="node18" href="$Session_8h.html" title="omni/Session.h" alt="" coords="977,155,1088,181"/>
+<area shape="rect" id="node43" href="$DataModel_8h.html" title="omni/ui/mixin/DataModel.h" alt="" coords="2162,536,2339,563"/>
+<area shape="rect" id="node15" href="$exception_8h.html" title="omni/exception.h" alt="" coords="423,784,544,811"/>
+<area shape="rect" id="node17" href="$Id_8h.html" title="omni/Id.h" alt="" coords="550,859,625,885"/>
+<area shape="rect" id="node19" href="$include_2omni_2proj_2TuningList_8h.html" title="omni/proj/TuningList.h" alt="" coords="475,229,625,256"/>
+<area shape="rect" id="node32" href="$input_2List_8h.html" title="omni/input/List.h" alt="" coords="1193,229,1311,256"/>
+<area shape="rect" id="node36" href="$canvas_2Interface_8h.html" title="omni/canvas/Interface.h" alt="" coords="1565,379,1728,405"/>
+<area shape="rect" id="node38" href="$include_2omni_2proj_2ScreenSetup_8h.html" title="omni/proj/ScreenSetup.h" alt="" coords="713,229,877,256"/>
+<area shape="rect" id="node40" href="$ExportSettings_8h.html" title="omni/render/ExportSettings.h" alt="" coords="871,304,1061,331"/>
+<area shape="rect" id="node41" href="$BlendSettings_8h.html" title="omni/BlendSettings.h" alt="" coords="353,379,500,405"/>
+<area shape="rect" id="node42" href="$include_2omni_2visual_2Scene_8h.html" title="omni/visual/Scene.h" alt="" coords="849,453,988,480"/>
+<area shape="rect" id="node21" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="629,619,752,661"/>
+<area shape="rect" id="node22" href="$include_2omni_2proj_2Tuning_8h.html" title="omni/proj/Tuning.h" alt="" coords="486,304,615,331"/>
+<area shape="rect" id="node23" href="$CalibrationMode_8h.html" title="omni/proj/CalibrationMode.h" alt="" coords="727,379,911,405"/>
+<area shape="rect" id="node24" href="$mapping_2Interface_8h.html" title="omni/mapping/Interface.h" alt="" coords="1135,453,1304,480"/>
+<area shape="rect" id="node26" href="$PluginInfo_8h.html" title="omni/PluginInfo.h" alt="" coords="1583,536,1705,563"/>
+<area shape="rect" id="node28" href="$geometry_2AffineTransform_8h.html" title="omni/geometry/AffineTransform.h" alt="" coords="1241,536,1457,563"/>
+<area shape="rect" id="node30" href="$PropertyMapSerializer_8h.html" title="omni/serialization\l/PropertyMapSerializer.h" alt="" coords="1052,529,1216,570"/>
+<area shape="rect" id="node31" href="$visual_2Interface_8h.html" title="omni/visual/Interface.h" alt="" coords="1729,536,1883,563"/>
+<area shape="rect" id="node34" href="$input_2Interface_8h.html" title="omni/input/Interface.h" alt="" coords="1293,379,1440,405"/>
+<area shape="rect" id="node35" href="$Controller_8h.html" title="omni/input/Controller.h" alt="" coords="1290,304,1443,331"/>
+<area shape="rect" id="node37" href="$geometry_2Box_8h.html" title="omni/geometry/Box.h" alt="" coords="1839,453,1985,480"/>
+<area shape="rect" id="node44" href="$Locked_8h.html" title="Locked.h" alt="" coords="2265,627,2339,653"/>
+</map>

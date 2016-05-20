@@ -1,0 +1,8 @@
+<map id="omni::ui::RangedInt" name="omni::ui::RangedInt">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1AbstractInputWidget.html" title="Input widget with an editor widget. " alt="" coords="333,71,528,97"/>
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1Widget.html" title="A single parameter widget with a label and color set. " alt="" coords="148,5,265,32"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1Editor.html" title="omni::ui::mixin::Editor\l\&lt; AbstractInputWidget,\l QWidget \&gt;" alt="" coords="128,56,285,112"/>
+<area shape="rect" id="node6" href="$structomni_1_1ui_1_1mixin_1_1RangedValue.html" title="omni::ui::mixin::RangedValue\l\&lt; RangedInt, int \&gt;" alt="" coords="334,135,527,177"/>
+<area shape="rect" id="node7" href="$structomni_1_1ui_1_1mixin_1_1Range.html" title="omni::ui::mixin::Range\l\&lt; int \&gt;" alt="" coords="130,135,283,177"/>
+<area shape="rect" id="node8" href="$structomni_1_1ui_1_1mixin_1_1Step.html" title="omni::ui::mixin::Step\l\&lt; int \&gt;" alt="" coords="135,201,278,242"/>
+</map>

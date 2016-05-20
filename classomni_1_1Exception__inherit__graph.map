@@ -1,0 +1,7 @@
+<map id="omni::Exception" name="omni::Exception">
+<area shape="rect" id="node3" href="$classomni_1_1exception_1_1Error.html" title="omni::exception::Error" alt="" coords="123,155,273,181"/>
+<area shape="rect" id="node6" href="$classomni_1_1exception_1_1Fatal.html" title="omni::exception::Fatal" alt="" coords="298,155,448,181"/>
+<area shape="rect" id="node7" href="$classomni_1_1exception_1_1Warning.html" title="omni::exception::Warning" alt="" coords="473,155,644,181"/>
+<area shape="rect" id="node4" href="$classomni_1_1exception_1_1Serialization.html" title="An exception that occurs during Serialization. " alt="" coords="5,237,197,264"/>
+<area shape="rect" id="node5" href="$classomni_1_1input_1_1exception_1_1CannotHaveChildren.html" title="Exception is thrown when accessing input of a children &#160;Is only thrown when input cannot accept child..." alt="" coords="222,230,372,271"/>
+</map>

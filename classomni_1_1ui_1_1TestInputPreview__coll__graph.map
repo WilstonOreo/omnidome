@@ -1,0 +1,7 @@
+<map id="omni::ui::TestInputPreview" name="omni::ui::TestInputPreview">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1InputPreview.html" title="GLView for visualizing an input. " alt="" coords="835,101,987,128"/>
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1GLView.html" title="GLView for visualizing tunings or session &#160;Holds shared_ptr to session as data model. " alt="" coords="565,43,688,69"/>
+<area shape="rect" id="node7" href="$classomni_1_1input_1_1Interface.html" title="Generic input interface. " alt="" coords="554,199,699,225"/>
+<area shape="rect" id="node8" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="177,133,327,160"/>
+<area shape="rect" id="node10" title="STL class. " alt="" coords="153,235,351,277"/>
+</map>

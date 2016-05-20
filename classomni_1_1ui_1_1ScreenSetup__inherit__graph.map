@@ -1,0 +1,6 @@
+<map id="omni::ui::ScreenSetup" name="omni::ui::ScreenSetup">
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="244,57,409,98"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="5,27,184,69"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="16,93,173,120"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1mixin_1_1TransformedRect.html" title="omni::ui::mixin::Transformed\lRect\&lt; ScreenSetup \&gt;" alt="" coords="233,122,421,163"/>
+</map>

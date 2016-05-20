@@ -1,0 +1,35 @@
+<map id="src/app/proj/Tuning.h" name="src/app/proj/Tuning.h">
+<area shape="rect" id="node2" href="$include_2omni_2proj_2Tuning_8h.html" title="omni/proj/Tuning.h" alt="" coords="974,171,1103,197"/>
+<area shape="rect" id="node37" href="$ParameterWidget_8h.html" title="omni/ui/ParameterWidget.h" alt="" coords="1781,403,1960,429"/>
+<area shape="rect" id="node46" href="$DataModel_8h.html" title="omni/ui/mixin/DataModel.h" alt="" coords="2055,576,2232,603"/>
+<area shape="rect" id="node47" href="$TuningFromIndex_8h.html" title="omni/ui/mixin/TuningFrom\lIndex.h" alt="" coords="2379,81,2551,122"/>
+<area shape="rect" id="node49" href="$TuningLayout_8h.html" title="proj/TuningLayout.h" alt="" coords="1396,88,1531,115"/>
+<area shape="rect" id="node5" href="$Id_8h.html" title="omni/Id.h" alt="" coords="1249,651,1324,677"/>
+<area shape="rect" id="node11" href="$WarpGrid_8h.html" title="omni/WarpGrid.h" alt="" coords="1645,320,1765,347"/>
+<area shape="rect" id="node18" href="$BlendMask_8h.html" title="omni/BlendMask.h" alt="" coords="1345,245,1475,272"/>
+<area shape="rect" id="node22" href="$CalibrationMode_8h.html" title="omni/proj/CalibrationMode.h" alt="" coords="689,245,873,272"/>
+<area shape="rect" id="node23" href="$mapping_2Interface_8h.html" title="omni/mapping/Interface.h" alt="" coords="567,320,736,347"/>
+<area shape="rect" id="node28" href="$include_2omni_2proj_2ColorCorrection_8h.html" title="omni/proj/ColorCorrection.h" alt="" coords="261,245,443,272"/>
+<area shape="rect" id="node31" href="$proj_2Projector_8h.html" title="omni/proj/Projector.h" alt="" coords="967,245,1109,272"/>
+<area shape="rect" id="node35" href="$Setup_8h.html" title="Setup.h" alt="" coords="1255,320,1321,347"/>
+<area shape="rect" id="node36" href="$patch_2List_8h.html" title="omni/patch/List.h" alt="" coords="456,576,579,603"/>
+<area shape="rect" id="node9" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="1055,725,1197,752"/>
+<area shape="rect" id="node10" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="1221,725,1351,752"/>
+<area shape="rect" id="node14" href="$WarpPoint_8h.html" title="omni/WarpPoint.h" alt="" coords="1453,403,1579,429"/>
+<area shape="rect" id="node15" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="997,486,1120,527"/>
+<area shape="rect" id="node16" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="1190,576,1345,603"/>
+<area shape="rect" id="node17" href="$util_8h.html" title="omni/util.h" alt="" coords="936,576,1017,603"/>
+<area shape="rect" id="node21" href="$BlendBrush_8h.html" title="omni/BlendBrush.h" alt="" coords="1489,320,1620,347"/>
+<area shape="rect" id="node25" href="$PluginInfo_8h.html" title="omni/PluginInfo.h" alt="" coords="1043,576,1165,603"/>
+<area shape="rect" id="node27" href="$PropertyMapSerializer_8h.html" title="omni/serialization\l/PropertyMapSerializer.h" alt="" coords="976,395,1140,437"/>
+<area shape="rect" id="node29" href="$ChannelCorrection_8h.html" title="omni/proj/ChannelCorrection.h" alt="" coords="130,320,328,347"/>
+<area shape="rect" id="node30" href="$Channel_8h.html" title="omni/proj/Channel.h" alt="" coords="353,320,492,347"/>
+<area shape="rect" id="node34" href="$Angle_8h.html" title="omni/geometry/Angle.h" alt="" coords="961,320,1116,347"/>
+<area shape="rect" id="node40" href="$Scale_8h.html" title="omni/ui/mixin/Scale.h" alt="" coords="1496,576,1643,603"/>
+<area shape="rect" id="node41" href="$RangedFloat_8h.html" title="omni/ui/RangedFloat.h" alt="" coords="1667,576,1820,603"/>
+<area shape="rect" id="node42" href="$RangedInt_8h.html" title="omni/ui/RangedInt.h" alt="" coords="1597,493,1736,520"/>
+<area shape="rect" id="node43" href="$Rotation_8h.html" title="omni/ui/Rotation.h" alt="" coords="2176,493,2304,520"/>
+<area shape="rect" id="node45" href="$ui_2AffineTransform_8h.html" title="omni/ui/AffineTransform.h" alt="" coords="1761,493,1932,520"/>
+<area shape="rect" id="node44" href="$Locked_8h.html" title="omni/ui/mixin/Locked.h" alt="" coords="2167,651,2323,677"/>
+<area shape="rect" id="node48" href="$Session_8h.html" title="omni/Session.h" alt="" coords="2379,171,2489,197"/>
+</map>

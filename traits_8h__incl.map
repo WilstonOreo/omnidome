@@ -1,0 +1,9 @@
+<map id="include/omni/serialization/traits.h" name="include/omni/serialization/traits.h">
+<area shape="rect" id="node5" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="152,97,275,138"/>
+<area shape="rect" id="node6" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="135,187,291,213"/>
+<area shape="rect" id="node15" href="$util_8h.html" title="omni/util.h" alt="" coords="316,187,397,213"/>
+<area shape="rect" id="node7" href="$Id_8h.html" title="omni/Id.h" alt="" coords="313,336,388,363"/>
+<area shape="rect" id="node10" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="239,411,381,437"/>
+<area shape="rect" id="node12" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="405,411,535,437"/>
+<area shape="rect" id="node18" href="$exception_8h.html" title="omni/exception.h" alt="" coords="353,261,473,288"/>
+</map>

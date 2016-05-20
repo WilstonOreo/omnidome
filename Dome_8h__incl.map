@@ -1,0 +1,28 @@
+<map id="include/omni/canvas/Dome.h" name="include/omni/canvas/Dome.h">
+<area shape="rect" id="node2" href="$Vertex_8h.html" title="omni/geometry/Vertex.h" alt="" coords="502,245,662,272"/>
+<area shape="rect" id="node5" href="$Sphere_8h.html" title="omni/visual/Sphere.h" alt="" coords="706,96,850,123"/>
+<area shape="rect" id="node31" href="$Envelope_8h.html" title="omni/canvas/Envelope.h" alt="" coords="1076,96,1240,123"/>
+<area shape="rect" id="node6" href="$visual_2Interface_8h.html" title="omni/visual/Interface.h" alt="" coords="792,328,945,355"/>
+<area shape="rect" id="node8" href="$VertexVBO_8h.html" title="omni/visual/VertexVBO.h" alt="" coords="620,171,789,197"/>
+<area shape="rect" id="node10" href="$VBO_8h.html" title="omni/visual/VBO.h" alt="" coords="346,245,476,272"/>
+<area shape="rect" id="node27" href="$ContextBoundPtr_8h.html" title="omni/visual/ContextBound\lPtr.h" alt="" coords="574,411,748,453"/>
+<area shape="rect" id="node12" href="$visual_2util_8h.html" title="omni/visual/util.h" alt="" coords="352,328,472,355"/>
+<area shape="rect" id="node17" href="$util_8h.html" title="omni/util.h" alt="" coords="1508,773,1589,800"/>
+<area shape="rect" id="node29" href="$ContextSwitch_8h.html" title="omni/visual/ContextSwitch.h" alt="" coords="433,509,622,536"/>
+<area shape="rect" id="node22" href="$exception_8h.html" title="omni/exception.h" alt="" coords="1687,848,1808,875"/>
+<area shape="rect" id="node23" href="$Id_8h.html" title="omni/Id.h" alt="" coords="1974,923,2049,949"/>
+<area shape="rect" id="node26" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="1940,997,2082,1024"/>
+<area shape="rect" id="node32" href="$canvas_2Interface_8h.html" title="omni/canvas/Interface.h" alt="" coords="1205,171,1368,197"/>
+<area shape="rect" id="node34" href="$PluginInfo_8h.html" title="omni/PluginInfo.h" alt="" coords="2124,328,2246,355"/>
+<area shape="rect" id="node37" href="$geometry_2Box_8h.html" title="omni/geometry/Box.h" alt="" coords="1021,245,1168,272"/>
+<area shape="rect" id="node38" href="$geometry_2AffineTransform_8h.html" title="omni/geometry/AffineTransform.h" alt="" coords="1033,328,1249,355"/>
+<area shape="rect" id="node44" href="$PropertyMapSerializer_8h.html" title="omni/serialization\l/PropertyMapSerializer.h" alt="" coords="1605,321,1769,362"/>
+<area shape="rect" id="node50" href="$mapping_2Interface_8h.html" title="omni/mapping/Interface.h" alt="" coords="1324,245,1493,272"/>
+<area shape="rect" id="node39" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="1724,683,1846,725"/>
+<area shape="rect" id="node41" href="$EulerAngles_8h.html" title="EulerAngles.h" alt="" coords="1044,419,1146,445"/>
+<area shape="rect" id="node40" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="1716,773,1872,800"/>
+<area shape="rect" id="node42" href="$Angle_8h.html" title="omni/geometry/Angle.h" alt="" coords="960,509,1116,536"/>
+<area shape="rect" id="node45" href="$PropertyMap_8h.html" title="omni/serialization\l/PropertyMap.h" alt="" coords="1678,411,1801,453"/>
+<area shape="rect" id="node48" href="$traits_8h.html" title="omni/serialization\l/traits.h" alt="" coords="1485,593,1608,634"/>
+<area shape="rect" id="node49" href="$pointer_8h.html" title="omni/serialization\l/pointer.h" alt="" coords="1580,502,1702,543"/>
+</map>

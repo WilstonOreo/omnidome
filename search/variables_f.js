@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['r',['r',['../structomni_1_1RGBAFloat.html#a2b177d6889094e644fbabc61e6e2b45c',1,'omni::RGBAFloat']]],
+  ['radius_5f',['radius_',['../structomni_1_1geometry_1_1PolarVec.html#a453c92762f88c7609c7b96a6883d0104',1,'omni::geometry::PolarVec::radius_()'],['../classomni_1_1visual_1_1Sphere.html#a233f7ced122c07ab64ca89f1f757b049',1,'omni::visual::Sphere::radius_()']]],
+  ['recentfiles_5f',['recentFiles_',['../classomni_1_1ui_1_1RecentSessions.html#aefa129b27361ee744405f9ecd335efb3',1,'omni::ui::RecentSessions']]],
+  ['recentsessions_5f',['recentSessions_',['../classomni_1_1ui_1_1MainWindow.html#ab40d9822703c53b07f36044f6aeb2494',1,'omni::ui::MainWindow']]],
+  ['rect_5f',['rect_',['../classomni_1_1BlendMask.html#ad9e763f3187211e7fad36e9bbb4d5ddf',1,'omni::BlendMask']]],
+  ['red',['red',['../structomnic__colorcorrection.html#a97cae4ec1239dd514a597452a2209925',1,'omnic_colorcorrection']]],
+  ['red_5f',['red_',['../classomni_1_1proj_1_1ColorCorrection.html#a2d758d959af147f91f336337048e16cb',1,'omni::proj::ColorCorrection']]],
+  ['registry_5ftype',['registry_type',['../structboostx_1_1registrar.html#a8e515bddd29a4da0a339ec989e48cb78',1,'boostx::registrar']]],
+  ['rescalevalues_5f',['rescaleValues_',['../classomni_1_1ui_1_1mixin_1_1Scale.html#a7d302251839eb22a3830fadc89b755a0',1,'omni::ui::mixin::Scale']]],
+  ['reset_5f',['reset_',['../classomni_1_1ui_1_1proj_1_1ChannelCorrectionParameters.html#a05b56820c14a7bfbc23cade769a3d01b',1,'omni::ui::proj::ChannelCorrectionParameters']]],
+  ['resolution_5f',['resolution_',['../classomni_1_1visual_1_1Grid.html#a61da587931b4462c9447d11dbaa43b99',1,'omni::visual::Grid']]],
+  ['revision_5f',['revision_',['../classomni_1_1PluginInfo.html#ae93cbfc8e28ea9f2d350fab3df943d46',1,'omni::PluginInfo']]],
+  ['role_5f',['role_',['../structomni_1_1ui_1_1proj_1_1TuningLayout_1_1ItemWrapper.html#a5553be20c07462c32d61bfcee2e9b95b',1,'omni::ui::proj::TuningLayout::ItemWrapper']]],
+  ['roll_5f',['roll_',['../structomni_1_1geometry_1_1EulerAngles.html#ac0cc0a0bff7ca5cb1d177157e61eacc3',1,'omni::geometry::EulerAngles']]],
+  ['rotatemode_5f',['rotateMode_',['../classomni_1_1visual_1_1Scene.html#a5c451385b7b83c9e0765f732cbd60bb6',1,'omni::visual::Scene']]],
+  ['rotation_5f',['rotation_',['../classomni_1_1geometry_1_1AffineTransform.html#a0a5a43a4c4a5595d63a676c61ca5741b',1,'omni::geometry::AffineTransform']]],
+  ['rotationenabled_5f',['rotationEnabled_',['../classomni_1_1geometry_1_1AffineTransform.html#a98ba9353b224fc226c6bb2e259be16d6',1,'omni::geometry::AffineTransform']]],
+  ['rulerpos_5f',['rulerPos_',['../classomni_1_1input_1_1TestImage.html#a444c0ef39910edcabfd33325eccc3f39',1,'omni::input::TestImage']]]
+];

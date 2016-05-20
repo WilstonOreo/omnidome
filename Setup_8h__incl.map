@@ -1,0 +1,13 @@
+<map id="include/omni/proj/Setup.h" name="include/omni/proj/Setup.h">
+<area shape="rect" id="node3" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="35,533,191,560"/>
+<area shape="rect" id="node14" href="$PropertyMapSerializer_8h.html" title="omni/serialization\l/PropertyMapSerializer.h" alt="" coords="151,81,315,122"/>
+<area shape="rect" id="node4" href="$Id_8h.html" title="omni/Id.h" alt="" coords="219,683,295,709"/>
+<area shape="rect" id="node8" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="5,757,147,784"/>
+<area shape="rect" id="node10" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="171,757,300,784"/>
+<area shape="rect" id="node15" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="267,443,389,485"/>
+<area shape="rect" id="node22" href="$PropertyMap_8h.html" title="omni/serialization\l/PropertyMap.h" alt="" coords="637,171,760,213"/>
+<area shape="rect" id="node16" href="$util_8h.html" title="omni/util.h" alt="" coords="565,533,647,560"/>
+<area shape="rect" id="node20" href="$exception_8h.html" title="omni/exception.h" alt="" coords="371,608,492,635"/>
+<area shape="rect" id="node25" href="$traits_8h.html" title="omni/serialization\l/traits.h" alt="" coords="841,353,964,394"/>
+<area shape="rect" id="node26" href="$pointer_8h.html" title="omni/serialization\l/pointer.h" alt="" coords="736,262,859,303"/>
+</map>

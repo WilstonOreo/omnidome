@@ -1,0 +1,17 @@
+<map id="omni::ui::SubScreenItem" name="omni::ui::SubScreenItem">
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1ScreenSetup.html" title="A widget for seting up fullscreen windows. " alt="" coords="3059,320,3210,347"/>
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1ScreenItem.html" title="A screen rectangle item representing a QScreen with drawing functionality. " alt="" coords="2121,196,2263,223"/>
+<area shape="rect" id="node18" href="$classomni_1_1ui_1_1ParameterWidget.html" title="A widget which holds sub&#45;widgets for manipulating parameters. " alt="" coords="950,129,1127,156"/>
+<area shape="rect" id="node7" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="956,434,1121,475"/>
+<area shape="rect" id="node11" href="$classomni_1_1ui_1_1proj_1_1TuningList.html" title="omni::ui::proj::TuningList" alt="" coords="1248,500,1413,527"/>
+<area shape="rect" id="node17" href="$classomni_1_1ui_1_1proj_1_1Tuning.html" title="Widget for manipulating projector parameters &#160;Also holds a preview OpenGL widget. ..." alt="" coords="1259,255,1403,281"/>
+<area shape="rect" id="node8" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="624,434,803,475"/>
+<area shape="rect" id="node9" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="635,500,792,527"/>
+<area shape="rect" id="node10" href="$classomni_1_1ui_1_1mixin_1_1TransformedRect.html" title="omni::ui::mixin::Transformed\lRect\&lt; ScreenSetup \&gt;" alt="" coords="2737,371,2925,413"/>
+<area shape="rect" id="node25" href="$classomni_1_1ui_1_1mixin_1_1TuningFromIndex.html" title="omni::ui::mixin::TuningFrom\lIndex\&lt; Tuning \&gt;" alt="" coords="1549,195,1733,237"/>
+<area shape="rect" id="node19" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; omni::ui::RangedFloat \&gt;" alt="" coords="626,57,801,98"/>
+<area shape="rect" id="node21" href="$structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html" title="Slider Info struct saves min, max and step values. " alt="" coords="6,57,226,98"/>
+<area shape="rect" id="node26" href="$classomni_1_1ui_1_1proj_1_1TuningLayout.html" title="Tuning Layout &#160;Similar to VBoxLayout, except that widgets with a PREVIEW Role have a size with aspect..." alt="" coords="947,313,1130,340"/>
+<area shape="rect" id="node29" href="$structomni_1_1ui_1_1proj_1_1TuningLayout_1_1ItemWrapper.html" title="omni::ui::proj::TuningLayout\l::ItemWrapper" alt="" coords="334,259,517,301"/>
+<area shape="rect" id="node33" title="STL class. " alt="" coords="655,383,771,409"/>
+</map>

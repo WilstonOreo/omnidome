@@ -1,0 +1,5 @@
+<map id="omni::serialization::traits::Write&lt; std::vector&lt; T, ALLOCATOR &gt;, false &gt;" name="omni::serialization::traits::Write&lt; std::vector&lt; T, ALLOCATOR &gt;, false &gt;">
+<area shape="rect" id="node2" href="$structomni_1_1serialization_1_1traits_1_1Write_3_01std_1_1deque_3_01T_00_01ALLOCATOR_01_4_00_01false_01_4.html" title="Serialize elements in deque. " alt="" coords="244,5,417,75"/>
+<area shape="rect" id="node3" href="$structomni_1_1serialization_1_1traits_1_1Write_3_01std_1_1list_3_01T_00_01ALLOCATOR_01_4_00_01false_01_4.html" title="Serialize elements in list. " alt="" coords="253,99,408,170"/>
+<area shape="rect" id="node4" href="$structomni_1_1serialization_1_1traits_1_1Write_3_01std_1_1set_3_01T_00_01SORT_00_01ALLOCATOR_01_4_00_01false_01_4.html" title="Serialize elements in set. " alt="" coords="230,194,431,265"/>
+</map>

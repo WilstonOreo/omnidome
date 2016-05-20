@@ -1,0 +1,11 @@
+<map id="include/omni/ui/Rotation.h" name="include/omni/ui/Rotation.h">
+<area shape="rect" id="node2" href="$EulerAngles_8h.html" title="omni/geometry/EulerAngles.h" alt="" coords="99,80,292,107"/>
+<area shape="rect" id="node6" href="$Locked_8h.html" title="omni/ui/mixin/Locked.h" alt="" coords="318,80,473,107"/>
+<area shape="rect" id="node7" href="$Dial_8h.html" title="Dial.h" alt="" coords="500,80,555,107"/>
+<area shape="rect" id="node4" href="$Angle_8h.html" title="omni/geometry/Angle.h" alt="" coords="118,155,273,181"/>
+<area shape="rect" id="node11" href="$ColorSet_8h.html" title="omni/ui/ColorSet.h" alt="" coords="584,155,713,181"/>
+<area shape="rect" id="node13" href="$RangedValue_8h.html" title="omni/ui/mixin/RangedValue.h" alt="" coords="739,155,931,181"/>
+<area shape="rect" id="node19" href="$Editor_8h.html" title="omni/ui/mixin/Editor.h" alt="" coords="955,155,1103,181"/>
+<area shape="rect" id="node14" href="$Range_8h.html" title="Range.h" alt="" coords="799,229,869,256"/>
+<area shape="rect" id="node16" href="$Step_8h.html" title="Step.h" alt="" coords="845,304,904,331"/>
+</map>

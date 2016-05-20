@@ -1,0 +1,9 @@
+<map id="omni::ui::DockWidget" name="omni::ui::DockWidget">
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1Blend.html" title="Dockwidget for editing the blend mask. " alt="" coords="373,5,483,32"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1Canvas.html" title="Dockwidget for editing canvas type and parameters. " alt="" coords="367,56,489,83"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1ColorCorrection.html" title="Dockwidget for editing color correction of a projector. " alt="" coords="345,107,511,133"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1Input.html" title="Input List widget. " alt="" coords="375,157,481,184"/>
+<area shape="rect" id="node7" href="$classomni_1_1ui_1_1Mapping.html" title="Widget for selecting a mapping mode and the parameters. " alt="" coords="365,208,491,235"/>
+<area shape="rect" id="node8" href="$classomni_1_1ui_1_1Scene.html" title="Dock widget that contains view settings for the scene. " alt="" coords="371,259,485,285"/>
+<area shape="rect" id="node9" href="$classomni_1_1ui_1_1Warp.html" title="Dock widget for editing warp grid parameters. " alt="" coords="375,309,481,336"/>
+</map>

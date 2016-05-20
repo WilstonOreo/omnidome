@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$classomni_1_1Exception.html" title="Base class for all exception. Throws a message with QString type. " alt="" coords="145,85,261,112"/>
+<area shape="rect" id="node3" href="$classomni_1_1exception_1_1Error.html" title="omni::exception::Error" alt="" coords="319,35,470,61"/>
+<area shape="rect" id="node6" href="$classomni_1_1exception_1_1Fatal.html" title="omni::exception::Fatal" alt="" coords="319,85,470,112"/>
+<area shape="rect" id="node7" href="$classomni_1_1exception_1_1Warning.html" title="omni::exception::Warning" alt="" coords="309,136,480,163"/>
+<area shape="rect" id="node4" href="$classomni_1_1exception_1_1Serialization.html" title="An exception that occurs during Serialization. " alt="" coords="529,5,722,32"/>
+<area shape="rect" id="node5" href="$classomni_1_1input_1_1exception_1_1CannotHaveChildren.html" title="Exception is thrown when accessing input of a children &#160;Is only thrown when input cannot accept child..." alt="" coords="550,57,701,98"/>
+</map>

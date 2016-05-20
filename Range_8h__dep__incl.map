@@ -1,0 +1,36 @@
+<map id="include/omni/ui/mixin/Range.h" name="include/omni/ui/mixin/Range.h">
+<area shape="rect" id="node2" href="$RangedValue_8h.html" title="include/omni/ui/mixin\l/RangedValue.h" alt="" coords="720,97,864,138"/>
+<area shape="rect" id="node3" href="$TitleBar_8h.html" title="src/app/proj/TitleBar.h" alt="" coords="197,187,347,213"/>
+<area shape="rect" id="node6" href="$Dial_8h.html" title="include/omni/ui/Dial.h" alt="" coords="536,187,683,213"/>
+<area shape="rect" id="node28" href="$RangedFloat_8h.html" title="include/omni/ui/RangedFloat.h" alt="" coords="877,187,1075,213"/>
+<area shape="rect" id="node34" href="$RangedInt_8h.html" title="include/omni/ui/RangedInt.h" alt="" coords="1272,187,1456,213"/>
+<area shape="rect" id="node4" href="$TitleBar_8cpp.html" title="src/app/proj/TitleBar.cpp" alt="" coords="5,261,168,288"/>
+<area shape="rect" id="node5" href="$app_2proj_2Tuning_8cpp.html" title="src/app/proj/Tuning.cpp" alt="" coords="193,261,351,288"/>
+<area shape="rect" id="node7" href="$Dial_8cpp.html" title="src/lib/ui/Dial.cpp" alt="" coords="376,261,499,288"/>
+<area shape="rect" id="node8" href="$Rotation_8h.html" title="include/omni/ui/Rotation.h" alt="" coords="523,261,696,288"/>
+<area shape="rect" id="node9" href="$Rotation_8cpp.html" title="src/lib/ui/Rotation.cpp" alt="" coords="516,344,664,371"/>
+<area shape="rect" id="node10" href="$ParameterWidget_8h.html" title="include/omni/ui/Parameter\lWidget.h" alt="" coords="908,337,1081,378"/>
+<area shape="rect" id="node11" href="$ParameterWidget_8cpp.html" title="src/lib/ui/ParameterWidget.cpp" alt="" coords="450,435,651,461"/>
+<area shape="rect" id="node12" href="$src_2app_2proj_2Tuning_8h.html" title="src/app/proj/Tuning.h" alt="" coords="676,435,820,461"/>
+<area shape="rect" id="node18" href="$CanvasParameters_8h.html" title="include/omni/ui/CanvasParameters.h" alt="" coords="1169,435,1404,461"/>
+<area shape="rect" id="node22" href="$MappingParameters_8h.html" title="include/omni/ui/MappingParameters.h" alt="" coords="875,435,1115,461"/>
+<area shape="rect" id="node26" href="$ChannelCorrectionParameters_8h.html" title="include/omni/ui/proj\l/ChannelCorrectionParameters.h" alt="" coords="1497,427,1708,469"/>
+<area shape="rect" id="node13" href="$src_2app_2ScreenSetup_8h.html" title="src/app/ScreenSetup.h" alt="" coords="556,525,709,552"/>
+<area shape="rect" id="node15" href="$MainWindow_8cpp.html" title="src/app/MainWindow.cpp" alt="" coords="753,608,921,635"/>
+<area shape="rect" id="node17" href="$app_2ScreenSetup_8cpp.html" title="src/app/ScreenSetup.cpp" alt="" coords="194,608,363,635"/>
+<area shape="rect" id="node14" href="$FullScreen_8cpp.html" title="src/app/FullScreen.cpp" alt="" coords="387,608,543,635"/>
+<area shape="rect" id="node16" href="$ScreenItem_8cpp.html" title="src/app/ScreenItem.cpp" alt="" coords="567,608,728,635"/>
+<area shape="rect" id="node19" href="$CanvasParameters_8cpp.html" title="src/lib/ui/CanvasParameters.cpp" alt="" coords="1181,525,1392,552"/>
+<area shape="rect" id="node20" href="$Canvas_8h.html" title="src/app/Canvas.h" alt="" coords="1417,525,1543,552"/>
+<area shape="rect" id="node21" href="$Canvas_8cpp.html" title="src/app/Canvas.cpp" alt="" coords="1411,608,1549,635"/>
+<area shape="rect" id="node23" href="$MappingParameters_8cpp.html" title="src/lib/ui/MappingParameters.cpp" alt="" coords="940,525,1156,552"/>
+<area shape="rect" id="node24" href="$Mapping_8h.html" title="src/app/Mapping.h" alt="" coords="786,525,915,552"/>
+<area shape="rect" id="node25" href="$Mapping_8cpp.html" title="src/app/Mapping.cpp" alt="" coords="946,608,1088,635"/>
+<area shape="rect" id="node27" href="$ChannelCorrectionParameters_8cpp.html" title="src/lib/ui/proj/ChannelCorrection\lParameters.cpp" alt="" coords="1567,518,1775,559"/>
+<area shape="rect" id="node29" href="$RangedFloat_8cpp.html" title="src/lib/ui/RangedFloat.cpp" alt="" coords="1014,261,1188,288"/>
+<area shape="rect" id="node30" href="$Blend_8h.html" title="src/app/Blend.h" alt="" coords="1213,261,1325,288"/>
+<area shape="rect" id="node32" href="$ui_2AffineTransform_8h.html" title="include/omni/ui/AffineTransform.h" alt="" coords="721,261,937,288"/>
+<area shape="rect" id="node31" href="$Blend_8cpp.html" title="src/app/Blend.cpp" alt="" coords="1206,344,1332,371"/>
+<area shape="rect" id="node33" href="$ui_2AffineTransform_8cpp.html" title="src/lib/ui/AffineTransform.cpp" alt="" coords="690,344,883,371"/>
+<area shape="rect" id="node35" href="$RangedInt_8cpp.html" title="src/lib/ui/RangedInt.cpp" alt="" coords="1401,261,1560,288"/>
+</map>

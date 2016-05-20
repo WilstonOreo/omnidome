@@ -1,0 +1,26 @@
+<map id="src/lib/visual/Scene.cpp" name="src/lib/visual/Scene.cpp">
+<area shape="rect" id="node2" href="$include_2omni_2visual_2Scene_8h.html" title="omni/visual/Scene.h" alt="" coords="938,80,1077,107"/>
+<area shape="rect" id="node17" href="$util_8h.html" title="omni/util.h" alt="" coords="1536,592,1617,619"/>
+<area shape="rect" id="node43" href="$PerspectiveCamera_8h.html" title="omni/visual/PerspectiveCamera.h" alt="" coords="616,155,835,181"/>
+<area shape="rect" id="node44" href="$PropertyMap_8h.html" title="omni/serialization\l/PropertyMap.h" alt="" coords="1772,230,1895,271"/>
+<area shape="rect" id="node48" href="$container_8h.html" title="omni/serialization\l/container.h" alt="" coords="1279,230,1401,271"/>
+<area shape="rect" id="node5" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="1372,502,1495,543"/>
+<area shape="rect" id="node22" href="$Light_8h.html" title="omni/visual/Light.h" alt="" coords="843,237,972,264"/>
+<area shape="rect" id="node30" href="$CameraInterface_8h.html" title="omni/visual/CameraInterface.h" alt="" coords="619,237,817,264"/>
+<area shape="rect" id="node31" href="$LengthUnit_8h.html" title="omni/LengthUnit.h" alt="" coords="997,237,1125,264"/>
+<area shape="rect" id="node32" href="$Grid_8h.html" title="omni/visual/Grid.h" alt="" coords="387,155,513,181"/>
+<area shape="rect" id="node6" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="1355,592,1511,619"/>
+<area shape="rect" id="node7" href="$Id_8h.html" title="omni/Id.h" alt="" coords="2161,741,2236,768"/>
+<area shape="rect" id="node11" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="2289,816,2431,843"/>
+<area shape="rect" id="node13" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="2135,816,2264,843"/>
+<area shape="rect" id="node20" href="$exception_8h.html" title="omni/exception.h" alt="" coords="1722,667,1843,693"/>
+<area shape="rect" id="node26" href="$Tracker_8h.html" title="Tracker.h" alt="" coords="779,328,855,355"/>
+<area shape="rect" id="node27" href="$PolarVec_8h.html" title="omni/geometry/PolarVec.h" alt="" coords="772,419,948,445"/>
+<area shape="rect" id="node35" href="$visual_2Interface_8h.html" title="omni/visual/Interface.h" alt="" coords="389,328,543,355"/>
+<area shape="rect" id="node36" href="$Plane_8h.html" title="omni/visual/Plane.h" alt="" coords="163,237,297,264"/>
+<area shape="rect" id="node39" href="$ContextBoundPtr_8h.html" title="omni/visual/ContextBound\lPtr.h" alt="" coords="193,411,367,453"/>
+<area shape="rect" id="node37" href="$VertexVBO_8h.html" title="omni/visual/VertexVBO.h" alt="" coords="195,328,364,355"/>
+<area shape="rect" id="node42" href="$ContextSwitch_8h.html" title="omni/visual/ContextSwitch.h" alt="" coords="131,509,320,536"/>
+<area shape="rect" id="node46" href="$traits_8h.html" title="omni/serialization\l/traits.h" alt="" coords="1871,411,1993,453"/>
+<area shape="rect" id="node47" href="$pointer_8h.html" title="omni/serialization\l/pointer.h" alt="" coords="1921,321,2044,362"/>
+</map>

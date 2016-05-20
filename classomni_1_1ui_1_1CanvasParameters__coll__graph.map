@@ -1,0 +1,8 @@
+<map id="omni::ui::CanvasParameters" name="omni::ui::CanvasParameters">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1ParameterWidget.html" title="A widget which holds sub&#45;widgets for manipulating parameters. " alt="" coords="934,129,1111,156"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; omni::ui::RangedFloat \&gt;" alt="" coords="607,57,782,98"/>
+<area shape="rect" id="node6" href="$structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html" title="Slider Info struct saves min, max and step values. " alt="" coords="6,57,226,98"/>
+<area shape="rect" id="node10" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="933,253,1113,294"/>
+<area shape="rect" id="node11" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="605,253,784,294"/>
+<area shape="rect" id="node12" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="616,319,773,345"/>
+</map>

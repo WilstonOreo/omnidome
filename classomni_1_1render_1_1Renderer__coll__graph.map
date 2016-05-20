@@ -1,0 +1,16 @@
+<map id="omni::render::Renderer" name="omni::render::Renderer">
+<area shape="rect" id="node2" href="$classomni_1_1Session.html" title="A session consists of a canvas, a mapping, a list of tunings and one or several inputs. " alt="" coords="1686,272,1791,299"/>
+<area shape="rect" id="node18" href="$classomni_1_1visual_1_1Session.html" title="Base class for drawing a session. " alt="" coords="1943,357,2089,384"/>
+<area shape="rect" id="node29" href="$classomni_1_1proj_1_1TuningList.html" title="Tuning List contains a list of tunings &#160;Tuning List is serializable via QDataStream. " alt="" coords="1943,157,2089,184"/>
+<area shape="rect" id="node3" href="$classomni_1_1visual_1_1Scene.html" title="A class that holds settings and elements for session 3d visualization &#160;Belongs to a session..." alt="" coords="710,116,847,143"/>
+<area shape="rect" id="node11" href="$classomni_1_1mapping_1_1Interface.html" title="Mapping interface with one or several inputs and shader &#160;Holds inputs and shader. ..." alt="" coords="1097,385,1263,412"/>
+<area shape="rect" id="node22" href="$classomni_1_1canvas_1_1Interface.html" title="Abstract interface for a canvas &#160;A canvas represents the surface on which the projection is performed..." alt="" coords="1101,240,1259,267"/>
+<area shape="rect" id="node6" href="$classomni_1_1LengthUnit.html" title="An encapsulation for length units. " alt="" coords="385,5,506,32"/>
+<area shape="rect" id="node12" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="704,429,853,456"/>
+<area shape="rect" id="node24" href="$classomni_1_1input_1_1Interface.html" title="Generic input interface. " alt="" coords="1107,575,1253,601"/>
+<area shape="rect" id="node14" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="703,236,854,263"/>
+<area shape="rect" id="node23" href="$classomni_1_1input_1_1List.html" title="Input List contains a list of inputs, accessible over an QString id &#160;Input List is the root input of ..." alt="" coords="1379,416,1493,443"/>
+<area shape="rect" id="node25" title="STL class. " alt="" coords="679,667,878,709"/>
+<area shape="rect" id="node30" title="STL class. " alt="" coords="912,29,1072,70"/>
+<area shape="rect" id="node31" href="$classomni_1_1BlendSettings.html" title="Common blend mask settings for the all tunings in a session. " alt="" coords="1367,467,1505,493"/>
+</map>

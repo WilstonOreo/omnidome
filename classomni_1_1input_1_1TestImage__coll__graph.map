@@ -1,0 +1,6 @@
+<map id="omni::input::TestImage" name="omni::input::TestImage">
+<area shape="rect" id="node2" href="$classomni_1_1input_1_1Framebuffer.html" title="Input object that is renderer to a framebuffer. " alt="" coords="942,115,1106,141"/>
+<area shape="rect" id="node3" href="$classomni_1_1input_1_1Interface.html" title="Generic input interface. " alt="" coords="577,73,722,100"/>
+<area shape="rect" id="node4" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="177,5,327,32"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="153,107,351,149"/>
+</map>

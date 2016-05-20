@@ -1,0 +1,5 @@
+<map id="omni::ui::Export" name="omni::ui::Export">
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="108,97,272,138"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="5,6,184,47"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="208,13,365,40"/>
+</map>

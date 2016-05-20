@@ -1,0 +1,12 @@
+<map id="src/app/proj/TitleBar.h" name="src/app/proj/TitleBar.h">
+<area shape="rect" id="node4" href="$Widget_8h.html" title="omni/ui/Widget.h" alt="" coords="212,80,332,107"/>
+<area shape="rect" id="node9" href="$RangedValue_8h.html" title="omni/ui/mixin/RangedValue.h" alt="" coords="356,80,548,107"/>
+<area shape="rect" id="node15" href="$util_8h.html" title="omni/util.h" alt="" coords="879,80,960,107"/>
+<area shape="rect" id="node8" href="$ColorSet_8h.html" title="omni/ui/ColorSet.h" alt="" coords="95,155,224,181"/>
+<area shape="rect" id="node10" href="$Range_8h.html" title="Range.h" alt="" coords="407,155,477,181"/>
+<area shape="rect" id="node12" href="$Step_8h.html" title="Step.h" alt="" coords="298,229,357,256"/>
+<area shape="rect" id="node21" href="$exception_8h.html" title="omni/exception.h" alt="" coords="675,155,796,181"/>
+<area shape="rect" id="node23" href="$Id_8h.html" title="omni/Id.h" alt="" coords="683,229,759,256"/>
+<area shape="rect" id="node26" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="381,304,523,331"/>
+<area shape="rect" id="node28" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="547,304,676,331"/>
+</map>

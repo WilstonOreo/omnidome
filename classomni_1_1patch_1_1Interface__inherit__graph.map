@@ -1,0 +1,5 @@
+<map id="omni::patch::Interface" name="omni::patch::Interface">
+<area shape="rect" id="node2" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="5,13,155,40"/>
+<area shape="rect" id="node3" href="$classomni_1_1serialization_1_1Interface.html" title="Abstract interface for serialization &#160;Holds two member functions for serialization and deserializatio..." alt="" coords="179,6,305,47"/>
+<area shape="rect" id="node4" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="331,13,479,40"/>
+</map>

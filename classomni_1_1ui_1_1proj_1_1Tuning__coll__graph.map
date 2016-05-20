@@ -1,0 +1,12 @@
+<map id="omni::ui::proj::Tuning" name="omni::ui::proj::Tuning">
+<area shape="rect" id="node13" href="$classomni_1_1ui_1_1mixin_1_1TuningFromIndex.html" title="omni::ui::mixin::TuningFrom\lIndex\&lt; Tuning \&gt;" alt="" coords="1491,391,1675,433"/>
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1ParameterWidget.html" title="A widget which holds sub&#45;widgets for manipulating parameters. " alt="" coords="950,129,1127,156"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; omni::ui::RangedFloat \&gt;" alt="" coords="626,57,801,98"/>
+<area shape="rect" id="node6" href="$structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html" title="Slider Info struct saves min, max and step values. " alt="" coords="6,57,226,98"/>
+<area shape="rect" id="node10" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="956,303,1121,345"/>
+<area shape="rect" id="node11" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="624,253,803,294"/>
+<area shape="rect" id="node12" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="635,319,792,345"/>
+<area shape="rect" id="node14" href="$classomni_1_1ui_1_1proj_1_1TuningLayout.html" title="Tuning Layout &#160;Similar to VBoxLayout, except that widgets with a PREVIEW Role have a size with aspect..." alt="" coords="947,369,1130,396"/>
+<area shape="rect" id="node17" href="$structomni_1_1ui_1_1proj_1_1TuningLayout_1_1ItemWrapper.html" title="omni::ui::proj::TuningLayout\l::ItemWrapper" alt="" coords="334,427,517,469"/>
+<area shape="rect" id="node21" title="STL class. " alt="" coords="655,559,771,585"/>
+</map>

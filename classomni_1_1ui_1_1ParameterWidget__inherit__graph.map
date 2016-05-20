@@ -1,0 +1,7 @@
+<map id="omni::ui::ParameterWidget" name="omni::ui::ParameterWidget">
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1CanvasParameters.html" title="Parameter widget for getting and setting canvas parameters. " alt="" coords="469,5,657,32"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1MappingParameters.html" title="Parameter widget for getting and setting mapping parameters. " alt="" coords="467,56,659,83"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1proj_1_1ChannelCorrectionParameters.html" title="Parameter widget for channel correction. " alt="" coords="456,107,669,149"/>
+<area shape="rect" id="node7" href="$classomni_1_1ui_1_1proj_1_1Tuning.html" title="Widget for manipulating projector parameters &#160;Also holds a preview OpenGL widget. ..." alt="" coords="491,173,635,200"/>
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; omni::ui::RangedFloat \&gt;" alt="" coords="6,107,181,149"/>
+</map>

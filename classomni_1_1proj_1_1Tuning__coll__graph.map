@@ -1,0 +1,33 @@
+<map id="omni::proj::Tuning" name="omni::proj::Tuning">
+<area shape="rect" id="node31" href="$classomni_1_1visual_1_1Tuning.html" title="Tuning visualizer. " alt="" coords="2413,291,2552,317"/>
+<area shape="rect" id="node42" href="$classomni_1_1BlendMask.html" title="A blend mask consists of an edge mask and stroke mask with a brush &#160;Edge mask and stroke mask are sto..." alt="" coords="2421,517,2544,544"/>
+<area shape="rect" id="node2" href="$classomni_1_1proj_1_1ColorCorrection.html" title="Color correction for RGB color space. " alt="" coords="1595,385,1773,412"/>
+<area shape="rect" id="node35" href="$classomni_1_1proj_1_1Calibration.html" title="Calibration generated from a tuning &#160;Calibration has output mode with either UVW or TEXCOORDS..." alt="" coords="2021,385,2171,412"/>
+<area shape="rect" id="node3" href="$classomni_1_1proj_1_1ChannelCorrection.html" title="Brightness, contrast and gamma correction for a single color channel. " alt="" coords="1192,385,1387,412"/>
+<area shape="rect" id="node4" href="$classomni_1_1Session.html" title="A session consists of a canvas, a mapping, a list of tunings and one or several inputs. " alt="" coords="1631,964,1737,991"/>
+<area shape="rect" id="node17" href="$classomni_1_1visual_1_1Session.html" title="Base class for drawing a session. " alt="" coords="2023,1003,2169,1029"/>
+<area shape="rect" id="node23" href="$classomni_1_1proj_1_1TuningList.html" title="Tuning List contains a list of tunings &#160;Tuning List is serializable via QDataStream. " alt="" coords="2023,945,2169,972"/>
+<area shape="rect" id="node5" href="$classomni_1_1visual_1_1Scene.html" title="A class that holds settings and elements for session 3d visualization &#160;Belongs to a session..." alt="" coords="677,1096,814,1123"/>
+<area shape="rect" id="node13" href="$classomni_1_1mapping_1_1Interface.html" title="Mapping interface with one or several inputs and shader &#160;Holds inputs and shader. ..." alt="" coords="918,1033,1085,1060"/>
+<area shape="rect" id="node20" href="$classomni_1_1canvas_1_1Interface.html" title="Abstract interface for a canvas &#160;A canvas represents the surface on which the projection is performed..." alt="" coords="922,953,1081,980"/>
+<area shape="rect" id="node8" href="$classomni_1_1LengthUnit.html" title="An encapsulation for length units. " alt="" coords="385,1125,506,1152"/>
+<area shape="rect" id="node14" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="671,863,820,889"/>
+<area shape="rect" id="node22" href="$classomni_1_1input_1_1Interface.html" title="Generic input interface. " alt="" coords="929,855,1074,881"/>
+<area shape="rect" id="node40" href="$classomni_1_1proj_1_1Setup.html" title="Interface for a projector setup. " alt="" coords="941,653,1062,680"/>
+<area shape="rect" id="node21" href="$classomni_1_1input_1_1List.html" title="Input List contains a list of inputs, accessible over an QString id &#160;Input List is the root input of ..." alt="" coords="1232,855,1347,881"/>
+<area shape="rect" id="node24" title="STL class. " alt="" coords="1411,803,1571,845"/>
+<area shape="rect" id="node48" title="STL class. " alt="" coords="1198,687,1381,729"/>
+<area shape="rect" id="node26" href="$classomni_1_1BlendSettings.html" title="Common blend mask settings for the all tunings in a session. " alt="" coords="1220,1191,1359,1217"/>
+<area shape="rect" id="node27" href="$classomni_1_1WarpGrid.html" title="A warp grid is a 2D bezier grid with MxN points &#160;Default size 6x6 points. Selected points are also st..." alt="" coords="1627,551,1741,577"/>
+<area shape="rect" id="node29" href="$classomni_1_1WarpPoint.html" title="A Warp defines a bezier point with one position and two handles / * Also stores flag if it is selecte..." alt="" coords="942,512,1061,539"/>
+<area shape="rect" id="node32" href="$structomni_1_1visual_1_1ContextBoundPtr.html" title="omni::visual::ContextBound\lPtr\&lt; omni::visual::Framebuffer32F \&gt;" alt="" coords="1979,10,2213,51"/>
+<area shape="rect" id="node33" href="$structomni_1_1visual_1_1ContextBoundPtr.html" title="omni::visual::ContextBound\lPtr\&lt; QOpenGLTexture \&gt;" alt="" coords="2005,75,2187,117"/>
+<area shape="rect" id="node34" href="$structomni_1_1visual_1_1ContextBoundPtr.html" title="omni::visual::ContextBound\lPtr\&lt; QOpenGLShaderProgram \&gt;" alt="" coords="1991,175,2201,217"/>
+<area shape="rect" id="node36" href="$structomni_1_1visual_1_1ContextBoundPtr.html" title="omni::visual::ContextBound\lPtr\&lt; QOpenGLFramebufferObject \&gt;" alt="" coords="1981,241,2211,282"/>
+<area shape="rect" id="node37" href="$structomni_1_1visual_1_1ContextBoundPtr.html" title="omni::visual::ContextBound\lPtr\&lt; visual::omni::visual\l::WarpGrid \&gt;" alt="" coords="2005,305,2187,361"/>
+<area shape="rect" id="node38" href="$classomni_1_1proj_1_1Projector.html" title="A projector with a transformation matrix and setup. " alt="" coords="1615,607,1753,633"/>
+<area shape="rect" id="node43" href="$classomni_1_1BlendBrush.html" title="BlendBrush for drawing on the blendmask &#160;Holds an internal pixel buffer. " alt="" coords="2033,505,2159,532"/>
+<area shape="rect" id="node44" href="$structomni_1_1Buffer.html" title="omni::Buffer\&lt; float \&gt;" alt="" coords="1613,489,1755,516"/>
+<area shape="rect" id="node46" href="$structomni_1_1Buffer.html" title="omni::Buffer\&lt; uint8_t \&gt;" alt="" coords="1798,431,1954,457"/>
+<area shape="rect" id="node47" href="$classomni_1_1patch_1_1List.html" title="omni::patch::List" alt="" coords="1625,695,1743,721"/>
+</map>

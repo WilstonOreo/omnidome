@@ -1,0 +1,4 @@
+<map id="omni::ui::ParameterWidget" name="omni::ui::ParameterWidget">
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; omni::ui::RangedFloat \&gt;" alt="" coords="606,57,781,98"/>
+<area shape="rect" id="node5" href="$structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html" title="Slider Info struct saves min, max and step values. " alt="" coords="6,57,226,98"/>
+</map>

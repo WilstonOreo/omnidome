@@ -1,0 +1,29 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$classomni_1_1proj_1_1AngleSetup.html" title="Basic projector setup with three euler angles and no positioning offsets. " alt="" coords="437,31,592,57"/>
+<area shape="rect" id="node3" href="$classomni_1_1proj_1_1FreeSetup.html" title="Free projector setup with euler angles and positioning. " alt="" coords="661,5,808,32"/>
+<area shape="rect" id="node4" href="$classomni_1_1proj_1_1PeripheralSetup.html" title="Setup in which projector rotates with yaw angle around center point. " alt="" coords="645,56,824,83"/>
+<area shape="rect" id="node6" href="$classomni_1_1canvas_1_1Interface.html" title="Abstract interface for a canvas &#160;A canvas represents the surface on which the projection is performed..." alt="" coords="215,119,374,145"/>
+<area shape="rect" id="node9" href="$classomni_1_1input_1_1Interface.html" title="Generic input interface. " alt="" coords="222,169,367,196"/>
+<area shape="rect" id="node13" href="$classomni_1_1mapping_1_1Interface.html" title="Mapping interface with one or several inputs and shader &#160;Holds inputs and shader. ..." alt="" coords="211,220,378,247"/>
+<area shape="rect" id="node14" href="$classomni_1_1proj_1_1Setup.html" title="Interface for a projector setup. " alt="" coords="234,68,355,95"/>
+<area shape="rect" id="node7" href="$classomni_1_1canvas_1_1Envelope.html" title="An enveloped canvas can enclose the viewer and can be projected from. " alt="" coords="433,119,596,145"/>
+<area shape="rect" id="node8" href="$classomni_1_1canvas_1_1Dome.html" title="A basic dome canvas width a radius/diameter and offset. " alt="" coords="663,119,806,145"/>
+<area shape="rect" id="node10" href="$classomni_1_1input_1_1Framebuffer.html" title="Input object that is renderer to a framebuffer. " alt="" coords="433,169,597,196"/>
+<area shape="rect" id="node12" href="$classomni_1_1input_1_1List.html" title="Input List contains a list of inputs, accessible over an QString id &#160;Input List is the root input of ..." alt="" coords="457,220,572,247"/>
+<area shape="rect" id="node11" href="$classomni_1_1input_1_1TestImage.html" title="Abstract class for test images that are generated with a shader. " alt="" coords="657,169,813,196"/>
+<area shape="rect" id="node15" href="$classomni_1_1serialization_1_1Interface.html" title="Abstract interface for serialization &#160;Holds two member functions for serialization and deserializatio..." alt="" coords="18,727,145,769"/>
+<area shape="rect" id="node16" href="$classomni_1_1patch_1_1Interface.html" title="omni::patch::Interface" alt="" coords="220,372,369,399"/>
+<area shape="rect" id="node17" href="$classomni_1_1serialization_1_1PropertyMap.html" title="Property map to store properties in a QBuffer with an id. " alt="" coords="231,727,358,769"/>
+<area shape="rect" id="node18" href="$classomni_1_1serialization_1_1PropertyMapSerializer.html" title="Interface for serializing data into a property map. " alt="" coords="215,793,374,834"/>
+<area shape="rect" id="node19" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="7,169,156,196"/>
+<area shape="rect" id="node20" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="6,448,157,475"/>
+<area shape="rect" id="node21" href="$classomni_1_1visual_1_1BoundingBox.html" title="Visualizer for draing a bounding box from bounds. " alt="" coords="206,321,383,348"/>
+<area shape="rect" id="node22" href="$classomni_1_1visual_1_1Box.html" title="Box with subdivisions for drawing. " alt="" coords="233,423,356,449"/>
+<area shape="rect" id="node23" href="$classomni_1_1visual_1_1Grid.html" title="A cartesian grid with lining adapted to distance. " alt="" coords="233,473,357,500"/>
+<area shape="rect" id="node24" href="$classomni_1_1visual_1_1Plane.html" title="A plane with n x m grid points &#160;Vertex data is not stored on host, it is copied to GPU directly..." alt="" coords="228,524,361,551"/>
+<area shape="rect" id="node25" href="$classomni_1_1visual_1_1Projector.html" title="Visualizer for drawing a projector with halo. " alt="" coords="219,575,371,601"/>
+<area shape="rect" id="node26" href="$classomni_1_1visual_1_1Sphere.html" title="Draw Handler for visualizing a centered sphere. " alt="" coords="224,625,365,652"/>
+<area shape="rect" id="node27" href="$classomni_1_1visual_1_1WarpGrid.html" title="Draw Handler for WarpGrid. " alt="" coords="217,676,372,703"/>
+<area shape="rect" id="node28" title="STL class. " alt="" coords="20,245,143,272"/>
+<area shape="rect" id="node29" href="$classomni_1_1patch_1_1List.html" title="omni::patch::List" alt="" coords="235,271,354,297"/>
+</map>

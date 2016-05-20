@@ -1,0 +1,5 @@
+<map id="omni::ui::proj::ColorCorrectionGraph" name="omni::ui::proj::ColorCorrectionGraph">
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="103,97,305,138"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="19,6,197,47"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="221,13,379,40"/>
+</map>

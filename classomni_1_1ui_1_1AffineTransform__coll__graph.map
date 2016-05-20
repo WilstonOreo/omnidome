@@ -1,0 +1,7 @@
+<map id="omni::ui::AffineTransform" name="omni::ui::AffineTransform">
+<area shape="rect" id="node3" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="615,63,795,105"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="333,5,512,46"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="344,71,501,97"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; RangedFloat \&gt;" alt="" coords="631,129,779,170"/>
+<area shape="rect" id="node8" href="$structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html" title="Slider Info struct saves min, max and step values. " alt="" coords="6,129,226,170"/>
+</map>

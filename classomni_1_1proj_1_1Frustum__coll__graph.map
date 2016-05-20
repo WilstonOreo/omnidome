@@ -1,0 +1,5 @@
+<map id="omni::proj::Frustum" name="omni::proj::Frustum">
+<area shape="rect" id="node2" href="$classomni_1_1proj_1_1Projector.html" title="A projector with a transformation matrix and setup. " alt="" coords="185,280,324,307"/>
+<area shape="rect" id="node4" href="$classomni_1_1proj_1_1Setup.html" title="Interface for a projector setup. " alt="" coords="106,83,227,109"/>
+<area shape="rect" id="node6" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="180,5,328,32"/>
+</map>

@@ -1,0 +1,29 @@
+<map id="include/omni/ui/proj/ChannelCorrectionParameters.h" name="include/omni/ui/proj/ChannelCorrectionParameters.h">
+<area shape="rect" id="node2" href="$include_2omni_2proj_2ColorCorrection_8h.html" title="omni/proj/ColorCorrection.h" alt="" coords="231,96,412,123"/>
+<area shape="rect" id="node3" href="$ChannelCorrection_8h.html" title="omni/proj/ChannelCorrection.h" alt="" coords="5,171,203,197"/>
+<area shape="rect" id="node7" href="$ParameterWidget_8h.html" title="omni/ui/ParameterWidget.h" alt="" coords="1058,96,1237,123"/>
+<area shape="rect" id="node49" href="$DataModel_8h.html" title="omni/ui/mixin/DataModel.h" alt="" coords="1726,245,1903,272"/>
+<area shape="rect" id="node5" href="$Channel_8h.html" title="omni/proj/Channel.h" alt="" coords="315,171,453,197"/>
+<area shape="rect" id="node11" href="$Scale_8h.html" title="omni/ui/mixin/Scale.h" alt="" coords="1555,245,1701,272"/>
+<area shape="rect" id="node13" href="$RangedFloat_8h.html" title="omni/ui/RangedFloat.h" alt="" coords="723,245,876,272"/>
+<area shape="rect" id="node26" href="$RangedInt_8h.html" title="omni/ui/RangedInt.h" alt="" coords="363,245,501,272"/>
+<area shape="rect" id="node28" href="$Rotation_8h.html" title="omni/ui/Rotation.h" alt="" coords="985,245,1113,272"/>
+<area shape="rect" id="node35" href="$ui_2AffineTransform_8h.html" title="omni/ui/AffineTransform.h" alt="" coords="1142,171,1313,197"/>
+<area shape="rect" id="node43" href="$util_8h.html" title="omni/util.h" alt="" coords="1815,411,1896,437"/>
+<area shape="rect" id="node15" href="$RangedValue_8h.html" title="mixin/RangedValue.h" alt="" coords="839,411,985,437"/>
+<area shape="rect" id="node19" href="$AbstractInputWidget_8h.html" title="AbstractInputWidget.h" alt="" coords="352,328,504,355"/>
+<area shape="rect" id="node16" href="$Range_8h.html" title="Range.h" alt="" coords="1061,485,1131,512"/>
+<area shape="rect" id="node18" href="$Step_8h.html" title="Step.h" alt="" coords="1026,560,1085,587"/>
+<area shape="rect" id="node21" href="$Editor_8h.html" title="omni/ui/mixin/Editor.h" alt="" coords="219,411,367,437"/>
+<area shape="rect" id="node22" href="$Widget_8h.html" title="Widget.h" alt="" coords="391,411,464,437"/>
+<area shape="rect" id="node25" href="$ColorSet_8h.html" title="omni/ui/ColorSet.h" alt="" coords="328,485,457,512"/>
+<area shape="rect" id="node29" href="$EulerAngles_8h.html" title="omni/geometry/EulerAngles.h" alt="" coords="953,328,1145,355"/>
+<area shape="rect" id="node33" href="$Locked_8h.html" title="omni/ui/mixin/Locked.h" alt="" coords="1333,328,1488,355"/>
+<area shape="rect" id="node34" href="$Dial_8h.html" title="Dial.h" alt="" coords="720,328,775,355"/>
+<area shape="rect" id="node31" href="$Angle_8h.html" title="omni/geometry/Angle.h" alt="" coords="1063,411,1219,437"/>
+<area shape="rect" id="node37" href="$geometry_2AffineTransform_8h.html" title="omni/geometry/AffineTransform.h" alt="" coords="1137,245,1353,272"/>
+<area shape="rect" id="node39" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="1615,321,1737,362"/>
+<area shape="rect" id="node40" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="1615,411,1771,437"/>
+<area shape="rect" id="node41" href="$Id_8h.html" title="omni/Id.h" alt="" coords="1699,560,1775,587"/>
+<area shape="rect" id="node47" href="$exception_8h.html" title="omni/exception.h" alt="" coords="1687,485,1808,512"/>
+</map>

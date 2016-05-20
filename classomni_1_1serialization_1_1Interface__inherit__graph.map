@@ -1,0 +1,5 @@
+<map id="omni::serialization::Interface" name="omni::serialization::Interface">
+<area shape="rect" id="node2" href="$classomni_1_1patch_1_1Interface.html" title="omni::patch::Interface" alt="" coords="187,5,336,32"/>
+<area shape="rect" id="node3" href="$classomni_1_1serialization_1_1PropertyMap.html" title="Property map to store properties in a QBuffer with an id. " alt="" coords="198,57,325,98"/>
+<area shape="rect" id="node4" href="$classomni_1_1serialization_1_1PropertyMapSerializer.html" title="Interface for serializing data into a property map. " alt="" coords="182,122,341,163"/>
+</map>

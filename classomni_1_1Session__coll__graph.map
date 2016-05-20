@@ -1,0 +1,15 @@
+<map id="omni::Session" name="omni::Session">
+<area shape="rect" id="node17" href="$classomni_1_1visual_1_1Session.html" title="Base class for drawing a session. " alt="" coords="1939,575,2085,601"/>
+<area shape="rect" id="node28" href="$classomni_1_1proj_1_1TuningList.html" title="Tuning List contains a list of tunings &#160;Tuning List is serializable via QDataStream. " alt="" coords="1939,420,2085,447"/>
+<area shape="rect" id="node2" href="$classomni_1_1visual_1_1Scene.html" title="A class that holds settings and elements for session 3d visualization &#160;Belongs to a session..." alt="" coords="710,103,847,129"/>
+<area shape="rect" id="node10" href="$classomni_1_1mapping_1_1Interface.html" title="Mapping interface with one or several inputs and shader &#160;Holds inputs and shader. ..." alt="" coords="1097,400,1263,427"/>
+<area shape="rect" id="node21" href="$classomni_1_1canvas_1_1Interface.html" title="Abstract interface for a canvas &#160;A canvas represents the surface on which the projection is performed..." alt="" coords="1101,255,1259,281"/>
+<area shape="rect" id="node5" href="$classomni_1_1LengthUnit.html" title="An encapsulation for length units. " alt="" coords="385,71,506,97"/>
+<area shape="rect" id="node11" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="704,416,853,443"/>
+<area shape="rect" id="node23" href="$classomni_1_1input_1_1Interface.html" title="Generic input interface. " alt="" coords="1107,489,1253,516"/>
+<area shape="rect" id="node13" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="703,335,854,361"/>
+<area shape="rect" id="node22" href="$classomni_1_1input_1_1List.html" title="Input List contains a list of inputs, accessible over an QString id &#160;Input List is the root input of ..." alt="" coords="1379,475,1493,501"/>
+<area shape="rect" id="node24" title="STL class. " alt="" coords="679,654,878,695"/>
+<area shape="rect" id="node29" title="STL class. " alt="" coords="912,699,1072,741"/>
+<area shape="rect" id="node30" href="$classomni_1_1BlendSettings.html" title="Common blend mask settings for the all tunings in a session. " alt="" coords="1367,17,1505,44"/>
+</map>

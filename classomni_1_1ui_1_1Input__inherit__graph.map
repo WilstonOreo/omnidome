@@ -1,0 +1,7 @@
+<map id="omni::ui::Input" name="omni::ui::Input">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1DockWidget.html" title="DockWidget is scroll area with an embedded widget. " alt="" coords="246,5,394,32"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="237,57,403,98"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="5,57,184,98"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="16,123,173,149"/>
+<area shape="rect" id="node7" href="$classomni_1_1ui_1_1mixin_1_1ParameterWidget.html" title="omni::ui::mixin::Parameter\lWidget\&lt;\&gt;" alt="" coords="233,122,407,163"/>
+</map>

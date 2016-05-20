@@ -1,0 +1,21 @@
+<map id="include/omni/ui/Rotation.h" name="include/omni/ui/Rotation.h">
+<area shape="rect" id="node2" href="$Rotation_8cpp.html" title="src/lib/ui/Rotation.cpp" alt="" coords="544,88,692,115"/>
+<area shape="rect" id="node3" href="$ParameterWidget_8h.html" title="include/omni/ui/Parameter\lWidget.h" alt="" coords="717,81,891,122"/>
+<area shape="rect" id="node4" href="$ParameterWidget_8cpp.html" title="src/lib/ui/ParameterWidget.cpp" alt="" coords="261,179,461,205"/>
+<area shape="rect" id="node5" href="$src_2app_2proj_2Tuning_8h.html" title="src/app/proj/Tuning.h" alt="" coords="487,179,631,205"/>
+<area shape="rect" id="node11" href="$CanvasParameters_8h.html" title="include/omni/ui/CanvasParameters.h" alt="" coords="979,179,1215,205"/>
+<area shape="rect" id="node15" href="$MappingParameters_8h.html" title="include/omni/ui/MappingParameters.h" alt="" coords="684,179,924,205"/>
+<area shape="rect" id="node19" href="$ChannelCorrectionParameters_8h.html" title="include/omni/ui/proj\l/ChannelCorrectionParameters.h" alt="" coords="1307,171,1519,213"/>
+<area shape="rect" id="node6" href="$src_2app_2ScreenSetup_8h.html" title="src/app/ScreenSetup.h" alt="" coords="367,269,520,296"/>
+<area shape="rect" id="node8" href="$MainWindow_8cpp.html" title="src/app/MainWindow.cpp" alt="" coords="563,352,732,379"/>
+<area shape="rect" id="node10" href="$app_2ScreenSetup_8cpp.html" title="src/app/ScreenSetup.cpp" alt="" coords="5,352,173,379"/>
+<area shape="rect" id="node7" href="$FullScreen_8cpp.html" title="src/app/FullScreen.cpp" alt="" coords="198,352,353,379"/>
+<area shape="rect" id="node9" href="$ScreenItem_8cpp.html" title="src/app/ScreenItem.cpp" alt="" coords="378,352,539,379"/>
+<area shape="rect" id="node12" href="$CanvasParameters_8cpp.html" title="src/lib/ui/CanvasParameters.cpp" alt="" coords="991,269,1203,296"/>
+<area shape="rect" id="node13" href="$Canvas_8h.html" title="src/app/Canvas.h" alt="" coords="1228,269,1353,296"/>
+<area shape="rect" id="node14" href="$Canvas_8cpp.html" title="src/app/Canvas.cpp" alt="" coords="1221,352,1360,379"/>
+<area shape="rect" id="node16" href="$MappingParameters_8cpp.html" title="src/lib/ui/MappingParameters.cpp" alt="" coords="751,269,967,296"/>
+<area shape="rect" id="node17" href="$Mapping_8h.html" title="src/app/Mapping.h" alt="" coords="597,269,725,296"/>
+<area shape="rect" id="node18" href="$Mapping_8cpp.html" title="src/app/Mapping.cpp" alt="" coords="757,352,899,379"/>
+<area shape="rect" id="node20" href="$ChannelCorrectionParameters_8cpp.html" title="src/lib/ui/proj/ChannelCorrection\lParameters.cpp" alt="" coords="1377,262,1585,303"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="omni::ui::AbstractInputWidget" name="omni::ui::AbstractInputWidget">
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1RangedFloat.html" title="A slider with float value within a minimum and maximum. " alt="" coords="5,259,155,285"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1RangedInt.html" title="Integer slider. " alt="" coords="180,259,315,285"/>
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1Widget.html" title="A single parameter widget with a label and color set. " alt="" coords="25,95,141,121"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1Editor.html" title="omni::ui::mixin::Editor\l\&lt; AbstractInputWidget,\l QWidget \&gt;" alt="" coords="167,80,324,136"/>
+</map>

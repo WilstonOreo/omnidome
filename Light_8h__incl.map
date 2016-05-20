@@ -1,0 +1,12 @@
+<map id="include/omni/visual/Light.h" name="include/omni/visual/Light.h">
+<area shape="rect" id="node5" href="$Tracker_8h.html" title="Tracker.h" alt="" coords="329,96,405,123"/>
+<area shape="rect" id="node6" href="$PolarVec_8h.html" title="omni/geometry/PolarVec.h" alt="" coords="280,171,456,197"/>
+<area shape="rect" id="node9" href="$Angle_8h.html" title="omni/geometry/Angle.h" alt="" coords="363,253,519,280"/>
+<area shape="rect" id="node11" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="544,246,667,287"/>
+<area shape="rect" id="node12" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="514,336,669,363"/>
+<area shape="rect" id="node23" href="$util_8h.html" title="omni/util.h" alt="" coords="732,336,813,363"/>
+<area shape="rect" id="node13" href="$Id_8h.html" title="omni/Id.h" alt="" coords="870,485,945,512"/>
+<area shape="rect" id="node17" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="987,560,1129,587"/>
+<area shape="rect" id="node19" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="641,560,771,587"/>
+<area shape="rect" id="node27" href="$exception_8h.html" title="omni/exception.h" alt="" coords="950,411,1071,437"/>
+</map>

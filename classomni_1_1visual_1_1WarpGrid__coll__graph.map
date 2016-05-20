@@ -1,0 +1,7 @@
+<map id="omni::visual::WarpGrid" name="omni::visual::WarpGrid">
+<area shape="rect" id="node2" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="574,5,725,32"/>
+<area shape="rect" id="node5" href="$classomni_1_1WarpGrid.html" title="A warp grid is a 2D bezier grid with MxN points &#160;Default size 6x6 points. Selected points are also st..." alt="" coords="593,107,706,133"/>
+<area shape="rect" id="node7" href="$classomni_1_1WarpPoint.html" title="A Warp defines a bezier point with one position and two handles / * Also stores flag if it is selecte..." alt="" coords="26,111,145,137"/>
+<area shape="rect" id="node11" href="$classomni_1_1visual_1_1Circle.html" title="Visualizer for drawing a circle with VBO. " alt="" coords="286,252,421,279"/>
+<area shape="rect" id="node13" href="$structomni_1_1visual_1_1VBO.html" title="A small Vertex Buffer Object class. " alt="" coords="21,325,149,352"/>
+</map>

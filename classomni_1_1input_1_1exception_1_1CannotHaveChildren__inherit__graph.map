@@ -1,0 +1,4 @@
+<map id="omni::input::exception::CannotHaveChildren" name="omni::input::exception::CannotHaveChildren">
+<area shape="rect" id="node2" href="$classomni_1_1exception_1_1Error.html" title="omni::exception::Error" alt="" coords="5,155,155,181"/>
+<area shape="rect" id="node3" href="$classomni_1_1Exception.html" title="Base class for all exception. Throws a message with QString type. " alt="" coords="22,80,137,107"/>
+</map>

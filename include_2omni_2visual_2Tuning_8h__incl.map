@@ -1,0 +1,32 @@
+<map id="include/omni/visual/Tuning.h" name="include/omni/visual/Tuning.h">
+<area shape="rect" id="node6" href="$include_2omni_2proj_2Tuning_8h.html" title="omni/proj/Tuning.h" alt="" coords="1529,96,1657,123"/>
+<area shape="rect" id="node39" href="$visual_2WarpGrid_8h.html" title="omni/visual/WarpGrid.h" alt="" coords="401,179,559,205"/>
+<area shape="rect" id="node43" href="$Texture32F_8h.html" title="omni/visual/Texture32F.h" alt="" coords="2261,96,2429,123"/>
+<area shape="rect" id="node45" href="$Calibration_8h.html" title="omni/proj/Calibration.h" alt="" coords="2455,96,2607,123"/>
+<area shape="rect" id="node9" href="$Id_8h.html" title="omni/Id.h" alt="" coords="1049,592,1124,619"/>
+<area shape="rect" id="node15" href="$WarpGrid_8h.html" title="omni/WarpGrid.h" alt="" coords="420,261,540,288"/>
+<area shape="rect" id="node21" href="$BlendMask_8h.html" title="omni/BlendMask.h" alt="" coords="760,179,889,205"/>
+<area shape="rect" id="node24" href="$CalibrationMode_8h.html" title="omni/proj/CalibrationMode.h" alt="" coords="1749,179,1933,205"/>
+<area shape="rect" id="node25" href="$mapping_2Interface_8h.html" title="omni/mapping/Interface.h" alt="" coords="1601,261,1769,288"/>
+<area shape="rect" id="node30" href="$include_2omni_2proj_2ColorCorrection_8h.html" title="omni/proj/ColorCorrection.h" alt="" coords="2069,179,2251,205"/>
+<area shape="rect" id="node33" href="$proj_2Projector_8h.html" title="omni/proj/Projector.h" alt="" coords="1327,179,1469,205"/>
+<area shape="rect" id="node37" href="$Setup_8h.html" title="Setup.h" alt="" coords="1459,261,1525,288"/>
+<area shape="rect" id="node38" href="$patch_2List_8h.html" title="omni/patch/List.h" alt="" coords="1795,261,1917,288"/>
+<area shape="rect" id="node13" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="1162,667,1304,693"/>
+<area shape="rect" id="node14" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="880,667,1009,693"/>
+<area shape="rect" id="node18" href="$WarpPoint_8h.html" title="omni/WarpPoint.h" alt="" coords="697,344,823,371"/>
+<area shape="rect" id="node19" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="1383,427,1505,469"/>
+<area shape="rect" id="node20" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="1167,517,1323,544"/>
+<area shape="rect" id="node23" href="$BlendBrush_8h.html" title="omni/BlendBrush.h" alt="" coords="758,261,889,288"/>
+<area shape="rect" id="node27" href="$PropertyMapSerializer_8h.html" title="omni/serialization\l/PropertyMapSerializer.h" alt="" coords="1461,337,1625,378"/>
+<area shape="rect" id="node28" href="$visual_2Interface_8h.html" title="omni/visual/Interface.h" alt="" coords="1283,344,1436,371"/>
+<area shape="rect" id="node31" href="$ChannelCorrection_8h.html" title="omni/proj/ChannelCorrection.h" alt="" coords="2294,261,2492,288"/>
+<area shape="rect" id="node32" href="$Channel_8h.html" title="omni/proj/Channel.h" alt="" coords="2131,261,2269,288"/>
+<area shape="rect" id="node36" href="$Angle_8h.html" title="omni/geometry/Angle.h" alt="" coords="1067,261,1223,288"/>
+<area shape="rect" id="node40" href="$Vertex2D_8h.html" title="omni/geometry/Vertex2D.h" alt="" coords="217,261,396,288"/>
+<area shape="rect" id="node41" href="$Circle_8h.html" title="omni/visual/Circle.h" alt="" coords="55,261,192,288"/>
+<area shape="rect" id="node42" href="$VBO_8h.html" title="omni/visual/VBO.h" alt="" coords="5,344,135,371"/>
+<area shape="rect" id="node44" href="$RenderBuffer_8h.html" title="omni/RenderBuffer.h" alt="" coords="2275,179,2417,205"/>
+<area shape="rect" id="node49" href="$ContextBoundPtr_8h.html" title="omni/visual/ContextBound\lPtr.h" alt="" coords="2442,171,2616,213"/>
+<area shape="rect" id="node50" href="$Framebuffer32F_8h.html" title="omni/visual/Framebuffer32F.h" alt="" coords="2900,179,3095,205"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$structomni_1_1ui_1_1mixin_1_1Range.html" title="Mixin for a ranged value with min and maximum. " alt="" coords="6,5,159,46"/>
+<area shape="rect" id="node2" href="$structomni_1_1ui_1_1mixin_1_1RangedValue.html" title="Template class for a value within a certain min/max range. " alt="" coords="209,38,402,79"/>
+<area shape="rect" id="node3" href="$structomni_1_1ui_1_1mixin_1_1Step.html" title="Mixin Stepping value class template &#160;Singla and page step. " alt="" coords="11,70,154,111"/>
+</map>

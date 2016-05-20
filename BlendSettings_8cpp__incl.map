@@ -1,0 +1,13 @@
+<map id="src/lib/BlendSettings.cpp" name="src/lib/BlendSettings.cpp">
+<area shape="rect" id="node2" href="$BlendSettings_8h.html" title="omni/BlendSettings.h" alt="" coords="93,269,240,296"/>
+<area shape="rect" id="node15" href="$util_8h.html" title="omni/util.h" alt="" coords="212,443,293,469"/>
+<area shape="rect" id="node21" href="$PropertyMap_8h.html" title="omni/serialization\l/PropertyMap.h" alt="" coords="643,81,765,122"/>
+<area shape="rect" id="node3" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="369,353,492,394"/>
+<area shape="rect" id="node4" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="421,443,576,469"/>
+<area shape="rect" id="node5" href="$Id_8h.html" title="omni/Id.h" alt="" coords="714,592,789,619"/>
+<area shape="rect" id="node9" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="566,667,708,693"/>
+<area shape="rect" id="node11" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="796,667,925,693"/>
+<area shape="rect" id="node19" href="$exception_8h.html" title="omni/exception.h" alt="" coords="145,517,265,544"/>
+<area shape="rect" id="node24" href="$traits_8h.html" title="omni/serialization\l/traits.h" alt="" coords="553,262,676,303"/>
+<area shape="rect" id="node25" href="$pointer_8h.html" title="omni/serialization\l/pointer.h" alt="" coords="741,171,864,213"/>
+</map>

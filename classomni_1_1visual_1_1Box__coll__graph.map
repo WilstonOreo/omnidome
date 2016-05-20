@@ -1,0 +1,5 @@
+<map id="omni::visual::Box" name="omni::visual::Box">
+<area shape="rect" id="node2" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="5,216,155,243"/>
+<area shape="rect" id="node3" href="$classomni_1_1visual_1_1VertexVBO.html" title="Utility class for storing and drawing VBO data. " alt="" coords="179,216,345,243"/>
+<area shape="rect" id="node5" href="$structomni_1_1visual_1_1VBO.html" title="A small Vertex Buffer Object class. " alt="" coords="199,5,327,32"/>
+</map>

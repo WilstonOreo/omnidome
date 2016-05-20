@@ -1,0 +1,11 @@
+<map id="omni::ui::MappingParameters" name="omni::ui::MappingParameters">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1ParameterWidget.html" title="A widget which holds sub&#45;widgets for manipulating parameters. " alt="" coords="953,143,1130,169"/>
+<area shape="rect" id="node13" href="$classomni_1_1ui_1_1AffineTransform.html" title="A widget for editing an affine transformation. " alt="" coords="957,301,1126,328"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; omni::ui::RangedFloat \&gt;" alt="" coords="626,70,801,111"/>
+<area shape="rect" id="node15" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; RangedFloat \&gt;" alt="" coords="639,253,787,294"/>
+<area shape="rect" id="node6" href="$structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html" title="Slider Info struct saves min, max and step values. " alt="" coords="6,245,226,286"/>
+<area shape="rect" id="node10" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="623,449,803,490"/>
+<area shape="rect" id="node11" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="333,419,512,461"/>
+<area shape="rect" id="node14" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="623,318,803,359"/>
+<area shape="rect" id="node12" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="344,335,501,361"/>
+</map>

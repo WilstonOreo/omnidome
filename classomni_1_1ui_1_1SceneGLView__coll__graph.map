@@ -1,0 +1,6 @@
+<map id="omni::ui::SceneGLView" name="omni::ui::SceneGLView">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1GLView.html" title="GLView for visualizing tunings or session &#160;Holds shared_ptr to session as data model. " alt="" coords="253,56,376,83"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="232,107,397,149"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="5,107,184,149"/>
+<area shape="rect" id="node7" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="16,173,173,200"/>
+</map>

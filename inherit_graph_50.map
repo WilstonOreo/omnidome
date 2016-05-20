@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$structomni_1_1serialization_1_1traits_1_1Read.html" title="omni::serialization\l::traits::Read\&lt; std\l::vector\&lt; T, ALLOCATOR \&gt; \&gt;" alt="" coords="6,60,205,116"/>
+<area shape="rect" id="node2" href="$structomni_1_1serialization_1_1traits_1_1Read_3_01std_1_1deque_3_01T_00_01ALLOCATOR_01_4_00_01false_01_4.html" title="Deserialize elements in deque. " alt="" coords="253,5,427,75"/>
+<area shape="rect" id="node3" href="$structomni_1_1serialization_1_1traits_1_1Read_3_01std_1_1list_3_01T_00_01ALLOCATOR_01_4_00_01false_01_4.html" title="Handle classes that are derived from serialization::Interface. " alt="" coords="263,99,417,170"/>
+</map>

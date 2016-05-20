@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['majorversion_5f',['majorVersion_',['../classomni_1_1PluginInfo.html#a396375d88817ebdd439b09b5dbfb7490',1,'omni::PluginInfo']]],
+  ['mapping_5f',['mapping_',['../classomni_1_1Session.html#ad3827ecfa827d00fd705149b355bccf0',1,'omni::Session']]],
+  ['mappingmemory_5f',['mappingMemory_',['../classomni_1_1ui_1_1Mapping.html#afb15a38362a091d2202ab4a2bb697f46',1,'omni::ui::Mapping']]],
+  ['matrix_5f',['matrix_',['../classomni_1_1proj_1_1Projector.html#a7587a7827bef904b5bd2b1853e37759c',1,'omni::proj::Projector']]],
+  ['max_5f',['max_',['../classomni_1_1geometry_1_1Box.html#a0a5bd0afc1c16b288793d7c3f4a92c3b',1,'omni::geometry::Box::max_()'],['../structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html#aa786507ab919f8539d4c6f2cc1edfebe',1,'omni::ui::mixin::Scale::SliderInfo::max_()']]],
+  ['maximizebutton_5f',['maximizeButton_',['../classomni_1_1ui_1_1proj_1_1TitleBar.html#afceae7b7b770b04d29845a3fd01b2c73',1,'omni::ui::proj::TitleBar']]],
+  ['maximum_5f',['maximum_',['../structomni_1_1ui_1_1mixin_1_1Range.html#a5e02137d35a48b8d1c30b319c0eac05e',1,'omni::ui::mixin::Range']]],
+  ['memory_5f',['memory_',['../classomni_1_1TypeIdMemory.html#a6fd8e43d4e9f7b03049240d2d363e261',1,'omni::TypeIdMemory']]],
+  ['menu_5f',['menu_',['../classomni_1_1ui_1_1proj_1_1TitleBar.html#aee08dd858dd23a8f1f7d86f9fca7e1ce',1,'omni::ui::proj::TitleBar::menu_()'],['../classomni_1_1ui_1_1RecentSessions.html#a4ad275a9e596eea81db11fb32685e330',1,'omni::ui::RecentSessions::menu_()']]],
+  ['menubutton_5f',['menuButton_',['../classomni_1_1ui_1_1proj_1_1TitleBar.html#a529f36170276c1da755de0982e0b72a0',1,'omni::ui::proj::TitleBar']]],
+  ['min_5f',['min_',['../classomni_1_1geometry_1_1Box.html#adef10a36aa5534d716eb9db5e9c9e177',1,'omni::geometry::Box::min_()'],['../structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html#afc904941ec3669a72d7544af02708c7a',1,'omni::ui::mixin::Scale::SliderInfo::min_()']]],
+  ['minimum_5f',['minimum_',['../structomni_1_1ui_1_1mixin_1_1Range.html#ad579cbae7a5d6b1ffb90a015ea24e347',1,'omni::ui::mixin::Range']]],
+  ['minorversion_5f',['minorVersion_',['../classomni_1_1PluginInfo.html#aa8e4d7c1bf9e6ea5bec76a1eb64c459f',1,'omni::PluginInfo']]],
+  ['mode_5f',['mode_',['../classomni_1_1proj_1_1Calibration.html#a9bfaace143cceabaae757ddfc65352bc',1,'omni::proj::Calibration::mode_()'],['../classomni_1_1Session.html#a1a629a2b29ef9af1ddcb258ee15da3e2',1,'omni::Session::mode_()']]],
+  ['model_5f',['model_',['../classomni_1_1ui_1_1Input.html#a794db6cb5c2b4a2b10b4f8c42acdffe6',1,'omni::ui::Input::model_()'],['../classomni_1_1ui_1_1PluginList.html#a143f9a7a7893c0eade09dce933f9750d',1,'omni::ui::PluginList::model_()'],['../classomni_1_1ui_1_1ExceptionList.html#a10acfa823e1d0b2c1e13ab45bdc47f7d',1,'omni::ui::ExceptionList::model_()']]],
+  ['modified_5f',['modified_',['../classomni_1_1ui_1_1MainWindow.html#a7d46a11771fb848c488ea96b9aff75e8',1,'omni::ui::MainWindow']]],
+  ['mousedown_5f',['mouseDown_',['../classomni_1_1ui_1_1TuningGLView.html#a97057ef79e1999ed6bde16b688a5c265',1,'omni::ui::TuningGLView']]],
+  ['mouseposition_5f',['mousePosition_',['../classomni_1_1ui_1_1GLView.html#a38e90d2ae8cc5e9b49e6bd49d6cb1483',1,'omni::ui::GLView']]],
+  ['movemode_5f',['moveMode_',['../classomni_1_1visual_1_1Scene.html#a74e6bd8072b213e4f256d158c83f1a00',1,'omni::visual::Scene']]],
+  ['moving_5f',['moving_',['../classomni_1_1ui_1_1RangedFloat.html#af353e60bc555dc26b68a6dcf6a4a5206',1,'omni::ui::RangedFloat::moving_()'],['../classomni_1_1ui_1_1RangedInt.html#ab6c02a5b1ea9892119bcd033474bd5df',1,'omni::ui::RangedInt::moving_()']]],
+  ['multiplier',['multiplier',['../structChannelCorrection.html#a546f39811e97cd85c841d8387971231d',1,'ChannelCorrection::multiplier()'],['../structomnic__channelcorrection.html#a4cf2bcb301dd77225f667cbf86f41330',1,'omnic_channelcorrection::multiplier()']]],
+  ['multiplier_5f',['multiplier_',['../classomni_1_1proj_1_1ChannelCorrection.html#a1aa6b6c2783432f444a5bd2decdb617c',1,'omni::proj::ChannelCorrection::multiplier_()'],['../classomni_1_1ui_1_1proj_1_1ChannelCorrectionParameters.html#acd9cc5c636116c3e63ebb1c9ecc61543',1,'omni::ui::proj::ChannelCorrectionParameters::multiplier_()']]]
+];

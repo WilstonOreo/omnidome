@@ -1,0 +1,7 @@
+<map id="omni::input::Interface" name="omni::input::Interface">
+<area shape="rect" id="node5" href="$classomni_1_1input_1_1Framebuffer.html" title="Input object that is renderer to a framebuffer. " alt="" coords="449,31,613,57"/>
+<area shape="rect" id="node7" href="$classomni_1_1input_1_1List.html" title="Input List contains a list of inputs, accessible over an QString id &#160;Input List is the root input of ..." alt="" coords="473,81,588,108"/>
+<area shape="rect" id="node2" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="31,5,180,32"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="6,107,205,149"/>
+<area shape="rect" id="node6" href="$classomni_1_1input_1_1TestImage.html" title="Abstract class for test images that are generated with a shader. " alt="" coords="662,31,818,57"/>
+</map>

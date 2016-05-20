@@ -1,0 +1,16 @@
+<map id="omni::ui::proj::ChannelCorrectionParameters" name="omni::ui::proj::ChannelCorrectionParameters">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1ParameterWidget.html" title="A widget which holds sub&#45;widgets for manipulating parameters. " alt="" coords="949,327,1126,353"/>
+<area shape="rect" id="node15" href="$classomni_1_1ui_1_1Widget.html" title="A single parameter widget with a label and color set. " alt="" coords="360,85,477,112"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; omni::ui::RangedFloat \&gt;" alt="" coords="618,319,793,361"/>
+<area shape="rect" id="node6" href="$structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html" title="Slider Info struct saves min, max and step values. " alt="" coords="6,326,226,367"/>
+<area shape="rect" id="node10" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="947,414,1127,455"/>
+<area shape="rect" id="node11" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="616,450,795,491"/>
+<area shape="rect" id="node12" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="627,516,784,543"/>
+<area shape="rect" id="node13" href="$classomni_1_1ui_1_1RangedFloat.html" title="A slider with float value within a minimum and maximum. " alt="" coords="962,144,1113,171"/>
+<area shape="rect" id="node14" href="$classomni_1_1ui_1_1AbstractInputWidget.html" title="Input widget with an editor widget. " alt="" coords="608,85,803,112"/>
+<area shape="rect" id="node16" href="$structomni_1_1ui_1_1ColorSet.html" title="Simplies color access from a palette for a widget. " alt="" coords="53,85,179,112"/>
+<area shape="rect" id="node17" href="$classomni_1_1ui_1_1mixin_1_1Editor.html" title="omni::ui::mixin::Editor\l\&lt; AbstractInputWidget,\l QWidget \&gt;" alt="" coords="340,5,497,61"/>
+<area shape="rect" id="node18" href="$structomni_1_1ui_1_1mixin_1_1RangedValue.html" title="omni::ui::mixin::RangedValue\l\&lt; RangedFloat, double \&gt;" alt="" coords="609,137,802,178"/>
+<area shape="rect" id="node19" href="$structomni_1_1ui_1_1mixin_1_1Range.html" title="omni::ui::mixin::Range\l\&lt; double \&gt;" alt="" coords="342,137,495,178"/>
+<area shape="rect" id="node20" href="$structomni_1_1ui_1_1mixin_1_1Step.html" title="omni::ui::mixin::Step\l\&lt; double \&gt;" alt="" coords="347,202,490,243"/>
+</map>

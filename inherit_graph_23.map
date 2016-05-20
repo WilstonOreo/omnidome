@@ -1,0 +1,6 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$classomni_1_1media_1_1exception_1_1NotExisting.html" title="Exception which is thrown when a media does not exist in location. " alt="" coords="131,5,288,46"/>
+<area shape="rect" id="node3" href="$classomni_1_1serialization_1_1exception_1_1ChecksumError.html" title="Checksum exception which is raids when checksums mismatch. " alt="" coords="117,70,302,111"/>
+<area shape="rect" id="node4" href="$classomni_1_1serialization_1_1exception_1_1PropertyExisting.html" title="omni::serialization\l::exception::PropertyExisting" alt="" coords="114,135,305,177"/>
+<area shape="rect" id="node5" href="$classomni_1_1serialization_1_1exception_1_1PropertyNotExisting.html" title="omni::serialization\l::exception::PropertyNotExisting" alt="" coords="104,201,315,242"/>
+</map>

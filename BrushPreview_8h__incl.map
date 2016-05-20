@@ -1,0 +1,14 @@
+<map id="src/app/BrushPreview.h" name="src/app/BrushPreview.h">
+<area shape="rect" id="node4" href="$BlendBrush_8h.html" title="omni/BlendBrush.h" alt="" coords="277,80,408,107"/>
+<area shape="rect" id="node6" href="$Buffer_8h.html" title="omni/Buffer.h" alt="" coords="293,155,392,181"/>
+<area shape="rect" id="node11" href="$util_8h.html" title="omni/util.h" alt="" coords="335,485,416,512"/>
+<area shape="rect" id="node26" href="$PixelConverter_8h.html" title="omni/PixelConverter.h" alt="" coords="187,237,337,264"/>
+<area shape="rect" id="node28" href="$container_8h.html" title="omni/serialization\l/container.h" alt="" coords="363,230,485,271"/>
+<area shape="rect" id="node16" href="$exception_8h.html" title="omni/exception.h" alt="" coords="383,560,504,587"/>
+<area shape="rect" id="node18" href="$Id_8h.html" title="omni/Id.h" alt="" coords="715,635,791,661"/>
+<area shape="rect" id="node21" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="682,709,824,736"/>
+<area shape="rect" id="node23" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="528,709,657,736"/>
+<area shape="rect" id="node34" href="$traits_8h.html" title="traits.h" alt="" coords="573,320,635,347"/>
+<area shape="rect" id="node35" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="367,395,489,437"/>
+<area shape="rect" id="node36" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="565,485,720,512"/>
+</map>

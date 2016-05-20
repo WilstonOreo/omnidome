@@ -1,0 +1,8 @@
+<map id="omni::visual::Projector" name="omni::visual::Projector">
+<area shape="rect" id="node2" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="726,5,877,32"/>
+<area shape="rect" id="node3" href="$structomni_1_1visual_1_1ContextBoundPtr.html" title="omni::visual::ContextBound\lPtr\&lt; QOpenGLShaderProgram \&gt;" alt="" coords="696,57,907,98"/>
+<area shape="rect" id="node4" href="$structomni_1_1visual_1_1detail_1_1ContextBoundPtrInternal.html" title="omni::visual::detail\l::ContextBoundPtrInternal\l\&lt; QOpenGLShaderProgram \&gt;" alt="" coords="400,43,595,99"/>
+<area shape="rect" id="node5" href="$classomni_1_1proj_1_1Projector.html" title="A projector with a transformation matrix and setup. " alt="" coords="732,129,871,156"/>
+<area shape="rect" id="node7" href="$classomni_1_1proj_1_1Setup.html" title="Interface for a projector setup. " alt="" coords="209,129,330,156"/>
+<area shape="rect" id="node9" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="7,155,156,181"/>
+</map>

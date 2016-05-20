@@ -1,0 +1,9 @@
+<map id="include/omni/proj/AngleSetup.h" name="include/omni/proj/AngleSetup.h">
+<area shape="rect" id="node2" href="$AngleSetup_8cpp.html" title="src/lib/proj/AngleSetup.cpp" alt="" coords="5,88,184,115"/>
+<area shape="rect" id="node3" href="$FreeSetup_8h.html" title="include/omni/proj/FreeSetup.h" alt="" coords="208,88,403,115"/>
+<area shape="rect" id="node7" href="$PeripheralSetup_8h.html" title="include/omni/proj/Peripheral\lSetup.h" alt="" coords="427,81,609,122"/>
+<area shape="rect" id="node4" href="$FreeSetup_8cpp.html" title="src/lib/proj/FreeSetup.cpp" alt="" coords="65,171,236,197"/>
+<area shape="rect" id="node5" href="$Session_8cpp.html" title="src/lib/Session.cpp" alt="" coords="260,171,393,197"/>
+<area shape="rect" id="node6" href="$app_2proj_2Tuning_8cpp.html" title="src/app/proj/Tuning.cpp" alt="" coords="418,171,576,197"/>
+<area shape="rect" id="node8" href="$PeripheralSetup_8cpp.html" title="src/lib/proj/PeripheralSetup.cpp" alt="" coords="601,171,804,197"/>
+</map>

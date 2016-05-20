@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/shaders">
-    <file>CubeMapTestImage.frag</file>
-  </qresource>
-</RCC>

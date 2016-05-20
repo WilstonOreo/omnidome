@@ -1,0 +1,4 @@
+<map id="omni::geometry::AffineTransform" name="omni::geometry::AffineTransform">
+<area shape="rect" id="node2" href="$structomni_1_1geometry_1_1EulerAngles.html" title="Mixin class for a zyx Euler Angle Rotation system. " alt="" coords="17,125,207,152"/>
+<area shape="rect" id="node3" href="$structomni_1_1geometry_1_1Angle.html" title="Struct for representing an angle (stored in degrees internally) " alt="" coords="35,5,188,32"/>
+</map>

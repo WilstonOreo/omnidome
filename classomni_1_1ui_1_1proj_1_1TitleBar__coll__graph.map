@@ -1,0 +1,15 @@
+<map id="omni::ui::proj::TitleBar" name="omni::ui::proj::TitleBar">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1Widget.html" title="A single parameter widget with a label and color set. " alt="" coords="980,11,1097,38"/>
+<area shape="rect" id="node7" href="$classomni_1_1ui_1_1ParameterWidget.html" title="A widget which holds sub&#45;widgets for manipulating parameters. " alt="" coords="950,259,1127,286"/>
+<area shape="rect" id="node4" href="$structomni_1_1ui_1_1ColorSet.html" title="Simplies color access from a palette for a widget. " alt="" coords="650,11,777,38"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1proj_1_1Tuning.html" title="Widget for manipulating projector parameters &#160;Also holds a preview OpenGL widget. ..." alt="" coords="1269,227,1413,254"/>
+<area shape="rect" id="node17" href="$classomni_1_1ui_1_1mixin_1_1TuningFromIndex.html" title="omni::ui::mixin::TuningFrom\lIndex\&lt; Tuning \&gt;" alt="" coords="1584,241,1768,282"/>
+<area shape="rect" id="node8" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; omni::ui::RangedFloat \&gt;" alt="" coords="626,309,801,350"/>
+<area shape="rect" id="node10" href="$structomni_1_1ui_1_1mixin_1_1Scale_1_1SliderInfo.html" title="Slider Info struct saves min, max and step values. " alt="" coords="6,309,226,350"/>
+<area shape="rect" id="node14" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="956,374,1121,416"/>
+<area shape="rect" id="node15" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="624,374,803,416"/>
+<area shape="rect" id="node16" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="635,440,792,467"/>
+<area shape="rect" id="node18" href="$classomni_1_1ui_1_1proj_1_1TuningLayout.html" title="Tuning Layout &#160;Similar to VBoxLayout, except that widgets with a PREVIEW Role have a size with aspect..." alt="" coords="947,491,1130,518"/>
+<area shape="rect" id="node21" href="$structomni_1_1ui_1_1proj_1_1TuningLayout_1_1ItemWrapper.html" title="omni::ui::proj::TuningLayout\l::ItemWrapper" alt="" coords="334,549,517,590"/>
+<area shape="rect" id="node25" title="STL class. " alt="" coords="655,127,771,154"/>
+</map>

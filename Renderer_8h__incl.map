@@ -1,0 +1,17 @@
+<map id="include/omni/render/Renderer.h" name="include/omni/render/Renderer.h">
+<area shape="rect" id="node5" href="$RenderBuffer_8h.html" title="omni/RenderBuffer.h" alt="" coords="306,96,448,123"/>
+<area shape="rect" id="node36" href="$include_2omni_2proj_2ColorCorrection_8h.html" title="omni/proj/ColorCorrection.h" alt="" coords="736,96,917,123"/>
+<area shape="rect" id="node6" href="$Buffer_8h.html" title="omni/Buffer.h" alt="" coords="327,171,427,197"/>
+<area shape="rect" id="node10" href="$util_8h.html" title="omni/util.h" alt="" coords="548,501,629,528"/>
+<area shape="rect" id="node26" href="$PixelConverter_8h.html" title="omni/PixelConverter.h" alt="" coords="638,253,788,280"/>
+<area shape="rect" id="node28" href="$container_8h.html" title="omni/serialization\l/container.h" alt="" coords="432,246,555,287"/>
+<area shape="rect" id="node16" href="$exception_8h.html" title="omni/exception.h" alt="" coords="779,576,900,603"/>
+<area shape="rect" id="node18" href="$Id_8h.html" title="omni/Id.h" alt="" coords="287,651,363,677"/>
+<area shape="rect" id="node21" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="69,725,211,752"/>
+<area shape="rect" id="node23" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="363,725,492,752"/>
+<area shape="rect" id="node33" href="$traits_8h.html" title="traits.h" alt="" coords="538,336,600,363"/>
+<area shape="rect" id="node34" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="479,411,601,453"/>
+<area shape="rect" id="node35" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="247,501,403,528"/>
+<area shape="rect" id="node37" href="$ChannelCorrection_8h.html" title="omni/proj/ChannelCorrection.h" alt="" coords="863,171,1061,197"/>
+<area shape="rect" id="node39" href="$Channel_8h.html" title="omni/proj/Channel.h" alt="" coords="1087,171,1225,197"/>
+</map>

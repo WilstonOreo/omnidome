@@ -1,0 +1,15 @@
+<map id="omni::proj::TuningList" name="omni::proj::TuningList">
+<area shape="rect" id="node4" href="$classomni_1_1Session.html" title="A session consists of a canvas, a mapping, a list of tunings and one or several inputs. " alt="" coords="1643,328,1749,355"/>
+<area shape="rect" id="node2" title="STL class. " alt="" coords="699,5,859,46"/>
+<area shape="rect" id="node27" title="STL class. " alt="" coords="679,70,878,111"/>
+<area shape="rect" id="node20" href="$classomni_1_1visual_1_1Session.html" title="Base class for drawing a session. " alt="" coords="1896,379,2043,405"/>
+<area shape="rect" id="node5" href="$classomni_1_1visual_1_1Scene.html" title="A class that holds settings and elements for session 3d visualization &#160;Belongs to a session..." alt="" coords="710,621,847,648"/>
+<area shape="rect" id="node13" href="$classomni_1_1mapping_1_1Interface.html" title="Mapping interface with one or several inputs and shader &#160;Holds inputs and shader. ..." alt="" coords="1054,328,1221,355"/>
+<area shape="rect" id="node24" href="$classomni_1_1canvas_1_1Interface.html" title="Abstract interface for a canvas &#160;A canvas represents the surface on which the projection is performed..." alt="" coords="1058,524,1217,551"/>
+<area shape="rect" id="node8" href="$classomni_1_1LengthUnit.html" title="An encapsulation for length units. " alt="" coords="385,593,506,620"/>
+<area shape="rect" id="node14" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="704,332,853,359"/>
+<area shape="rect" id="node26" href="$classomni_1_1input_1_1Interface.html" title="Generic input interface. " alt="" coords="1065,184,1210,211"/>
+<area shape="rect" id="node16" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="703,417,854,444"/>
+<area shape="rect" id="node25" href="$classomni_1_1input_1_1List.html" title="Input List contains a list of inputs, accessible over an QString id &#160;Input List is the root input of ..." alt="" coords="1336,219,1451,245"/>
+<area shape="rect" id="node30" href="$classomni_1_1BlendSettings.html" title="Common blend mask settings for the all tunings in a session. " alt="" coords="1324,716,1463,743"/>
+</map>

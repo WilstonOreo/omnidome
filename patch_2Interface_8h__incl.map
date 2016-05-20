@@ -1,0 +1,21 @@
+<map id="include/omni/patch/Interface.h" name="include/omni/patch/Interface.h">
+<area shape="rect" id="node3" href="$visual_2Interface_8h.html" title="omni/visual/Interface.h" alt="" coords="5,253,159,280"/>
+<area shape="rect" id="node5" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="956,609,1079,650"/>
+<area shape="rect" id="node23" href="$input_2Interface_8h.html" title="omni/input/Interface.h" alt="" coords="851,96,999,123"/>
+<area shape="rect" id="node41" href="$PatchHandle_8h.html" title="omni/patch/PatchHandle.h" alt="" coords="1876,96,2052,123"/>
+<area shape="rect" id="node6" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="1089,699,1244,725"/>
+<area shape="rect" id="node17" href="$util_8h.html" title="omni/util.h" alt="" coords="981,699,1063,725"/>
+<area shape="rect" id="node7" href="$Id_8h.html" title="omni/Id.h" alt="" coords="1321,848,1396,875"/>
+<area shape="rect" id="node11" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="983,923,1125,949"/>
+<area shape="rect" id="node13" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="1201,923,1331,949"/>
+<area shape="rect" id="node21" href="$exception_8h.html" title="omni/exception.h" alt="" coords="687,773,808,800"/>
+<area shape="rect" id="node26" href="$PluginInfo_8h.html" title="omni/PluginInfo.h" alt="" coords="373,253,496,280"/>
+<area shape="rect" id="node29" href="$PropertyMapSerializer_8h.html" title="omni/serialization\l/PropertyMapSerializer.h" alt="" coords="960,246,1124,287"/>
+<area shape="rect" id="node34" href="$mapping_2Interface_8h.html" title="omni/mapping/Interface.h" alt="" coords="570,171,739,197"/>
+<area shape="rect" id="node30" href="$PropertyMap_8h.html" title="omni/serialization\l/PropertyMap.h" alt="" coords="1145,337,1268,378"/>
+<area shape="rect" id="node32" href="$traits_8h.html" title="omni/serialization\l/traits.h" alt="" coords="1224,518,1347,559"/>
+<area shape="rect" id="node33" href="$pointer_8h.html" title="omni/serialization\l/pointer.h" alt="" coords="1523,427,1645,469"/>
+<area shape="rect" id="node35" href="$geometry_2AffineTransform_8h.html" title="omni/geometry/AffineTransform.h" alt="" coords="551,253,767,280"/>
+<area shape="rect" id="node38" href="$EulerAngles_8h.html" title="EulerAngles.h" alt="" coords="518,344,620,371"/>
+<area shape="rect" id="node39" href="$Angle_8h.html" title="omni/geometry/Angle.h" alt="" coords="434,435,589,461"/>
+</map>

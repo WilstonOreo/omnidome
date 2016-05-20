@@ -1,0 +1,26 @@
+<map id="src/app/proj/Tuning.cpp" name="src/app/proj/Tuning.cpp">
+<area shape="rect" id="node11" href="$TuningGLView_8h.html" title="omni/ui/TuningGLView.h" alt="" coords="1033,80,1196,107"/>
+<area shape="rect" id="node38" href="$FreeSetup_8h.html" title="omni/proj/FreeSetup.h" alt="" coords="2030,80,2180,107"/>
+<area shape="rect" id="node41" href="$PeripheralSetup_8h.html" title="omni/proj/PeripheralSetup.h" alt="" coords="2205,80,2387,107"/>
+<area shape="rect" id="node42" href="$TitleBar_8h.html" title="proj/TitleBar.h" alt="" coords="2702,80,2804,107"/>
+<area shape="rect" id="node49" href="$TuningLayout_8h.html" title="proj/TuningLayout.h" alt="" coords="1221,80,1356,107"/>
+<area shape="rect" id="node13" href="$GLView_8h.html" title="omni/ui/GLView.h" alt="" coords="879,253,1004,280"/>
+<area shape="rect" id="node19" href="$DataModel_8h.html" title="omni/ui/mixin/DataModel.h" alt="" coords="1029,253,1205,280"/>
+<area shape="rect" id="node23" href="$visual_2Session_8h.html" title="omni/visual/Session.h" alt="" coords="1394,163,1544,189"/>
+<area shape="rect" id="node30" href="$include_2omni_2visual_2Tuning_8h.html" title="omni/visual/Tuning.h" alt="" coords="537,163,679,189"/>
+<area shape="rect" id="node37" href="$TuningFromIndex_8h.html" title="omni/ui/mixin/TuningFrom\lIndex.h" alt="" coords="1153,155,1324,197"/>
+<area shape="rect" id="node22" href="$Locked_8h.html" title="Locked.h" alt="" coords="1080,336,1153,363"/>
+<area shape="rect" id="node25" href="$Session_8h.html" title="omni/Session.h" alt="" coords="1413,253,1524,280"/>
+<area shape="rect" id="node26" href="$ProjectorViewMode_8h.html" title="omni/visual/ProjectorView\lMode.h" alt="" coords="1613,246,1787,287"/>
+<area shape="rect" id="node27" href="$visual_2Projector_8h.html" title="omni/visual/Projector.h" alt="" coords="1811,253,1964,280"/>
+<area shape="rect" id="node29" href="$visual_2WarpGrid_8h.html" title="omni/visual/WarpGrid.h" alt="" coords="1230,253,1388,280"/>
+<area shape="rect" id="node33" href="$include_2omni_2proj_2Tuning_8h.html" title="omni/proj/Tuning.h" alt="" coords="1989,253,2117,280"/>
+<area shape="rect" id="node35" href="$Texture32F_8h.html" title="omni/visual/Texture32F.h" alt="" coords="153,253,321,280"/>
+<area shape="rect" id="node36" href="$Calibration_8h.html" title="omni/proj/Calibration.h" alt="" coords="347,253,499,280"/>
+<area shape="rect" id="node34" href="$Setup_8h.html" title="Setup.h" alt="" coords="2312,336,2379,363"/>
+<area shape="rect" id="node39" href="$AngleSetup_8h.html" title="AngleSetup.h" alt="" coords="2233,163,2332,189"/>
+<area shape="rect" id="node40" href="$EulerAngles_8h.html" title="EulerAngles.h" alt="" coords="2205,253,2307,280"/>
+<area shape="rect" id="node45" href="$Widget_8h.html" title="omni/ui/Widget.h" alt="" coords="2783,163,2903,189"/>
+<area shape="rect" id="node47" href="$RangedValue_8h.html" title="omni/ui/mixin/RangedValue.h" alt="" coords="2567,163,2759,189"/>
+<area shape="rect" id="node48" href="$util_8h.html" title="omni/util.h" alt="" coords="2460,163,2541,189"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="include/omni/ui/mixin/TuningFromIndex.h" name="include/omni/ui/mixin/TuningFromIndex.h">
+<area shape="rect" id="node2" href="$src_2app_2proj_2Tuning_8h.html" title="src/app/proj/Tuning.h" alt="" coords="356,96,500,123"/>
+<area shape="rect" id="node8" href="$TuningGLView_8h.html" title="include/omni/ui/TuningGLView.h" alt="" coords="543,171,752,197"/>
+<area shape="rect" id="node3" href="$src_2app_2ScreenSetup_8h.html" title="src/app/ScreenSetup.h" alt="" coords="313,171,467,197"/>
+<area shape="rect" id="node5" href="$MainWindow_8cpp.html" title="src/app/MainWindow.cpp" alt="" coords="563,245,732,272"/>
+<area shape="rect" id="node7" href="$app_2ScreenSetup_8cpp.html" title="src/app/ScreenSetup.cpp" alt="" coords="185,245,353,272"/>
+<area shape="rect" id="node4" href="$FullScreen_8cpp.html" title="src/app/FullScreen.cpp" alt="" coords="5,245,160,272"/>
+<area shape="rect" id="node6" href="$ScreenItem_8cpp.html" title="src/app/ScreenItem.cpp" alt="" coords="378,245,539,272"/>
+<area shape="rect" id="node9" href="$TuningGLView_8cpp.html" title="src/lib/ui/TuningGLView.cpp" alt="" coords="757,245,941,272"/>
+<area shape="rect" id="node10" href="$app_2proj_2Tuning_8cpp.html" title="src/app/proj/Tuning.cpp" alt="" coords="966,245,1124,272"/>
+</map>

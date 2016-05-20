@@ -1,0 +1,5 @@
+<map id="omni::ui::AbstractInputWidget" name="omni::ui::AbstractInputWidget">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1Widget.html" title="A single parameter widget with a label and color set. " alt="" coords="44,111,160,137"/>
+<area shape="rect" id="node4" href="$structomni_1_1ui_1_1ColorSet.html" title="Simplies color access from a palette for a widget. " alt="" coords="102,5,228,32"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1Editor.html" title="omni::ui::mixin::Editor\l\&lt; AbstractInputWidget,\l QWidget \&gt;" alt="" coords="185,96,343,152"/>
+</map>

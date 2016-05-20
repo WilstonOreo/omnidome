@@ -1,0 +1,35 @@
+<map id="src/app/Blend.h" name="src/app/Blend.h">
+<area shape="rect" id="node4" href="$DataModel_8h.html" title="omni/ui/mixin/DataModel.h" alt="" coords="5,229,181,256"/>
+<area shape="rect" id="node8" href="$include_2omni_2proj_2Tuning_8h.html" title="omni/proj/Tuning.h" alt="" coords="1365,80,1493,107"/>
+<area shape="rect" id="node41" href="$RangedFloat_8h.html" title="omni/ui/RangedFloat.h" alt="" coords="2469,80,2621,107"/>
+<area shape="rect" id="node49" href="$DockWidget_8h.html" title="DockWidget.h" alt="" coords="2809,80,2913,107"/>
+<area shape="rect" id="node7" href="$Locked_8h.html" title="Locked.h" alt="" coords="131,312,204,339"/>
+<area shape="rect" id="node10" href="$Id_8h.html" title="omni/Id.h" alt="" coords="1669,560,1744,587"/>
+<area shape="rect" id="node15" href="$WarpGrid_8h.html" title="omni/WarpGrid.h" alt="" coords="1911,229,2031,256"/>
+<area shape="rect" id="node21" href="$BlendMask_8h.html" title="omni/BlendMask.h" alt="" coords="1968,155,2097,181"/>
+<area shape="rect" id="node24" href="$CalibrationMode_8h.html" title="omni/proj/CalibrationMode.h" alt="" coords="1273,155,1457,181"/>
+<area shape="rect" id="node25" href="$mapping_2Interface_8h.html" title="omni/mapping/Interface.h" alt="" coords="1213,229,1381,256"/>
+<area shape="rect" id="node32" href="$include_2omni_2proj_2ColorCorrection_8h.html" title="omni/proj/ColorCorrection.h" alt="" coords="463,155,644,181"/>
+<area shape="rect" id="node35" href="$proj_2Projector_8h.html" title="omni/proj/Projector.h" alt="" coords="1027,155,1169,181"/>
+<area shape="rect" id="node38" href="$Setup_8h.html" title="Setup.h" alt="" coords="1407,229,1473,256"/>
+<area shape="rect" id="node39" href="$patch_2List_8h.html" title="omni/patch/List.h" alt="" coords="1532,155,1655,181"/>
+<area shape="rect" id="node13" href="$type__info_8hpp.html" title="boostx/type_info.hpp" alt="" coords="1635,635,1777,661"/>
+<area shape="rect" id="node14" href="$factory_8hpp.html" title="boostx/factory.hpp" alt="" coords="1801,635,1931,661"/>
+<area shape="rect" id="node18" href="$WarpPoint_8h.html" title="omni/WarpPoint.h" alt="" coords="1915,312,2041,339"/>
+<area shape="rect" id="node19" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="1432,395,1555,437"/>
+<area shape="rect" id="node20" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="1415,485,1571,512"/>
+<area shape="rect" id="node23" href="$BlendBrush_8h.html" title="omni/BlendBrush.h" alt="" coords="2198,229,2329,256"/>
+<area shape="rect" id="node27" href="$PluginInfo_8h.html" title="omni/PluginInfo.h" alt="" coords="803,312,925,339"/>
+<area shape="rect" id="node28" href="$geometry_2AffineTransform_8h.html" title="omni/geometry/AffineTransform.h" alt="" coords="1000,312,1216,339"/>
+<area shape="rect" id="node30" href="$PropertyMapSerializer_8h.html" title="omni/serialization\l/PropertyMapSerializer.h" alt="" coords="1291,305,1455,346"/>
+<area shape="rect" id="node31" href="$visual_2Interface_8h.html" title="omni/visual/Interface.h" alt="" coords="1603,312,1756,339"/>
+<area shape="rect" id="node33" href="$ChannelCorrection_8h.html" title="omni/proj/ChannelCorrection.h" alt="" coords="257,229,455,256"/>
+<area shape="rect" id="node34" href="$Channel_8h.html" title="omni/proj/Channel.h" alt="" coords="480,229,619,256"/>
+<area shape="rect" id="node37" href="$Angle_8h.html" title="omni/geometry/Angle.h" alt="" coords="879,229,1035,256"/>
+<area shape="rect" id="node40" href="$patch_2Interface_8h.html" title="omni/patch/Interface.h" alt="" coords="1619,229,1771,256"/>
+<area shape="rect" id="node43" href="$RangedValue_8h.html" title="mixin/RangedValue.h" alt="" coords="2552,155,2699,181"/>
+<area shape="rect" id="node45" href="$AbstractInputWidget_8h.html" title="AbstractInputWidget.h" alt="" coords="2723,155,2875,181"/>
+<area shape="rect" id="node44" href="$Range_8h.html" title="Range.h" alt="" coords="2554,229,2624,256"/>
+<area shape="rect" id="node47" href="$Editor_8h.html" title="omni/ui/mixin/Editor.h" alt="" coords="2649,229,2796,256"/>
+<area shape="rect" id="node48" href="$Widget_8h.html" title="Widget.h" alt="" coords="2872,229,2945,256"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="omni::canvas::Dome" name="omni::canvas::Dome">
+<area shape="rect" id="node2" href="$classomni_1_1canvas_1_1Envelope.html" title="An enveloped canvas can enclose the viewer and can be projected from. " alt="" coords="1211,280,1373,307"/>
+<area shape="rect" id="node3" href="$classomni_1_1canvas_1_1Interface.html" title="Abstract interface for a canvas &#160;A canvas represents the surface on which the projection is performed..." alt="" coords="987,227,1053,253"/>
+<area shape="rect" id="node4" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="671,225,820,252"/>
+<area shape="rect" id="node6" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="670,327,821,353"/>
+<area shape="rect" id="node15" href="$classomni_1_1visual_1_1Sphere.html" title="Draw Handler for visualizing a centered sphere. " alt="" coords="1221,385,1363,412"/>
+<area shape="rect" id="node7" href="$classomni_1_1visual_1_1Scene.html" title="A class that holds settings and elements for session 3d visualization &#160;Belongs to a session..." alt="" coords="677,124,814,151"/>
+<area shape="rect" id="node10" href="$classomni_1_1LengthUnit.html" title="An encapsulation for length units. " alt="" coords="385,216,506,243"/>
+<area shape="rect" id="node17" href="$classomni_1_1visual_1_1VertexVBO.html" title="Utility class for storing and drawing VBO data. " alt="" coords="937,385,1103,412"/>
+<area shape="rect" id="node19" href="$structomni_1_1visual_1_1VBO.html" title="A small Vertex Buffer Object class. " alt="" coords="381,385,509,412"/>
+</map>

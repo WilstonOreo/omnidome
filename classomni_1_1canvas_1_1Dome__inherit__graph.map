@@ -1,0 +1,6 @@
+<map id="omni::canvas::Dome" name="omni::canvas::Dome">
+<area shape="rect" id="node2" href="$classomni_1_1canvas_1_1Envelope.html" title="An enveloped canvas can enclose the viewer and can be projected from. " alt="" coords="173,155,336,181"/>
+<area shape="rect" id="node3" href="$classomni_1_1canvas_1_1Interface.html" title="Abstract interface for a canvas &#160;A canvas represents the surface on which the projection is performed..." alt="" coords="221,80,288,107"/>
+<area shape="rect" id="node4" href="$classomni_1_1TypeIdInterface.html" title="Abstract Interface with a single virtual member function which returns. " alt="" coords="5,5,153,32"/>
+<area shape="rect" id="node6" href="$classomni_1_1visual_1_1Interface.html" title="Basic visual interface. " alt="" coords="354,5,504,32"/>
+</map>

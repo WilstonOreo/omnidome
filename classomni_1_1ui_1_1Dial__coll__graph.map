@@ -1,0 +1,7 @@
+<map id="omni::ui::Dial" name="omni::ui::Dial">
+<area shape="rect" id="node3" href="$structomni_1_1ui_1_1mixin_1_1RangedValue.html" title="omni::ui::mixin::RangedValue\l\&lt; Dial, double \&gt;" alt="" coords="211,57,405,98"/>
+<area shape="rect" id="node4" href="$structomni_1_1ui_1_1mixin_1_1Range.html" title="omni::ui::mixin::Range\l\&lt; double \&gt;" alt="" coords="6,23,159,65"/>
+<area shape="rect" id="node5" href="$structomni_1_1ui_1_1mixin_1_1Step.html" title="omni::ui::mixin::Step\l\&lt; double \&gt;" alt="" coords="11,89,154,130"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1mixin_1_1Editor.html" title="omni::ui::mixin::Editor\l\&lt; Dial, QDoubleSpinBox \&gt;" alt="" coords="219,122,397,163"/>
+<area shape="rect" id="node7" href="$structomni_1_1ui_1_1ColorSet.html" title="Simplies color access from a palette for a widget. " alt="" coords="245,188,371,215"/>
+</map>

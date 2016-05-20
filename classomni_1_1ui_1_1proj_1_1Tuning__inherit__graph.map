@@ -1,0 +1,8 @@
+<map id="omni::ui::proj::Tuning" name="omni::ui::proj::Tuning">
+<area shape="rect" id="node2" href="$classomni_1_1ui_1_1ParameterWidget.html" title="A widget which holds sub&#45;widgets for manipulating parameters. " alt="" coords="235,64,413,91"/>
+<area shape="rect" id="node4" href="$classomni_1_1ui_1_1mixin_1_1Scale.html" title="omni::ui::mixin::Scale\l\&lt; omni::ui::RangedFloat \&gt;" alt="" coords="7,57,182,98"/>
+<area shape="rect" id="node5" href="$classomni_1_1ui_1_1mixin_1_1DataModel.html" title="Holds a specific data model with frontend update mechanism. " alt="" coords="241,122,407,163"/>
+<area shape="rect" id="node6" href="$classomni_1_1ui_1_1mixin_1_1DataModelInterface.html" title="Data model interface. " alt="" coords="5,122,184,163"/>
+<area shape="rect" id="node7" href="$classomni_1_1ui_1_1mixin_1_1Locked.html" title="Mixin with a function to lock the widget temporarily. " alt="" coords="16,188,173,215"/>
+<area shape="rect" id="node8" href="$classomni_1_1ui_1_1mixin_1_1TuningFromIndex.html" title="omni::ui::mixin::TuningFrom\lIndex\&lt; Tuning \&gt;" alt="" coords="232,187,416,229"/>
+</map>

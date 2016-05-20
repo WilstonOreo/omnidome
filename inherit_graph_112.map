@@ -1,0 +1,6 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$structomni_1_1visual_1_1Tracker.html" title="omni::visual::Tracker" alt="" coords="5,37,149,64"/>
+<area shape="rect" id="node2" href="$classomni_1_1visual_1_1CameraInterface.html" title="A generic camera interface. " alt="" coords="197,12,395,39"/>
+<area shape="rect" id="node4" href="$structomni_1_1visual_1_1Light.html" title="A light with position and phong shader attributes. " alt="" coords="232,63,360,89"/>
+<area shape="rect" id="node3" href="$classomni_1_1visual_1_1PerspectiveCamera.html" title="A perspective camera. " alt="" coords="443,5,613,46"/>
+</map>

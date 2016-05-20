@@ -1,0 +1,33 @@
+<map id="src/lib/proj/Tuning.cpp" name="src/lib/proj/Tuning.cpp">
+<area shape="rect" id="node2" href="$include_2omni_2proj_2Tuning_8h.html" title="omni/proj/Tuning.h" alt="" coords="2026,229,2155,256"/>
+<area shape="rect" id="node16" href="$util_8h.html" title="omni/util.h" alt="" coords="353,907,435,933"/>
+<area shape="rect" id="node24" href="$PropertyMap_8h.html" title="omni/serialization\l/PropertyMap.h" alt="" coords="421,561,544,602"/>
+<area shape="rect" id="node32" href="$Setup_8h.html" title="Setup.h" alt="" coords="1536,395,1603,421"/>
+<area shape="rect" id="node35" href="$Session_8h.html" title="omni/Session.h" alt="" coords="1245,80,1356,107"/>
+<area shape="rect" id="node39" href="$include_2omni_2proj_2ScreenSetup_8h.html" title="omni/proj/ScreenSetup.h" alt="" coords="1896,312,2060,339"/>
+<area shape="rect" id="node43" href="$Calibration_8h.html" title="omni/proj/Calibration.h" alt="" coords="2852,229,3004,256"/>
+<area shape="rect" id="node50" href="$include_2omni_2visual_2Tuning_8h.html" title="omni/visual/Tuning.h" alt="" coords="2218,155,2360,181"/>
+<area shape="rect" id="node5" href="$Id_8h.html" title="omni/Id.h" alt="" coords="689,1056,764,1083"/>
+<area shape="rect" id="node9" href="$WarpGrid_8h.html" title="omni/WarpGrid.h" alt="" coords="2431,568,2551,595"/>
+<area shape="rect" id="node10" href="$BlendMask_8h.html" title="omni/BlendMask.h" alt="" coords="2187,312,2316,339"/>
+<area shape="rect" id="node13" href="$CalibrationMode_8h.html" title="omni/proj/CalibrationMode.h" alt="" coords="1029,312,1213,339"/>
+<area shape="rect" id="node21" href="$mapping_2Interface_8h.html" title="omni/mapping/Interface.h" alt="" coords="1262,395,1431,421"/>
+<area shape="rect" id="node29" href="$include_2omni_2proj_2ColorCorrection_8h.html" title="omni/proj/ColorCorrection.h" alt="" coords="2544,312,2725,339"/>
+<area shape="rect" id="node30" href="$proj_2Projector_8h.html" title="omni/proj/Projector.h" alt="" coords="1729,312,1871,339"/>
+<area shape="rect" id="node33" href="$patch_2List_8h.html" title="omni/patch/List.h" alt="" coords="1643,741,1765,768"/>
+<area shape="rect" id="node14" href="$serialization_2Interface_8h.html" title="omni/serialization\l/Interface.h" alt="" coords="775,817,897,858"/>
+<area shape="rect" id="node15" href="$TypeIdInterface_8h.html" title="omni/TypeIdInterface.h" alt="" coords="765,907,920,933"/>
+<area shape="rect" id="node20" href="$exception_8h.html" title="omni/exception.h" alt="" coords="97,981,217,1008"/>
+<area shape="rect" id="node23" href="$PropertyMapSerializer_8h.html" title="omni/serialization\l/PropertyMapSerializer.h" alt="" coords="1141,470,1305,511"/>
+<area shape="rect" id="node27" href="$traits_8h.html" title="traits.h" alt="" coords="249,741,311,768"/>
+<area shape="rect" id="node28" href="$pointer_8h.html" title="omni/serialization\l/pointer.h" alt="" coords="579,651,701,693"/>
+<area shape="rect" id="node36" href="$include_2omni_2proj_2TuningList_8h.html" title="omni/proj/TuningList.h" alt="" coords="1283,155,1433,181"/>
+<area shape="rect" id="node37" href="$input_2List_8h.html" title="omni/input/List.h" alt="" coords="1131,741,1249,768"/>
+<area shape="rect" id="node38" href="$canvas_2Interface_8h.html" title="omni/canvas/Interface.h" alt="" coords="1237,312,1400,339"/>
+<area shape="rect" id="node40" href="$ExportSettings_8h.html" title="omni/render/ExportSettings.h" alt="" coords="951,229,1141,256"/>
+<area shape="rect" id="node41" href="$BlendSettings_8h.html" title="omni/BlendSettings.h" alt="" coords="592,477,739,504"/>
+<area shape="rect" id="node42" href="$include_2omni_2visual_2Scene_8h.html" title="omni/visual/Scene.h" alt="" coords="1427,741,1567,768"/>
+<area shape="rect" id="node47" href="$RenderBuffer_8h.html" title="omni/RenderBuffer.h" alt="" coords="2949,312,3091,339"/>
+<area shape="rect" id="node48" href="$ContextBoundPtr_8h.html" title="omni/visual/ContextBound\lPtr.h" alt="" coords="2750,305,2924,346"/>
+<area shape="rect" id="node49" href="$Framebuffer32F_8h.html" title="omni/visual/Framebuffer32F.h" alt="" coords="3116,312,3311,339"/>
+</map>
