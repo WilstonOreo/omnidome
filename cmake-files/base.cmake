@@ -1,5 +1,66 @@
-# Get CMake Macro path from current file (nice hack)
+IF("${CMAKE_BUILD_TYPE}" STREQUAL "")
+SET(CMAKE_BUILD_TYPE "Debug")
+ENDIF("${CMAKE_BUILD_TYPE}" STREQUAL "")
+MESSAGE(STATUS "Build mode is ${CMAKE_BUILD_TYPE}")
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
+  
+  IF("${CLANG_VERSION}" STREQUAL "")
+    SET(CLANG_VERSION "3.6")
+  ENDIF()
+  
+  if (${CMAKE_BUILD_TYPE} MATCHES "Debug")   
+    SET (CMAKE_C_COMPILER "/usr/bin/clang-${CLANG_VERSION}")
+    SET (CMAKE_C_FLAGS"-Wall -std=c99")
+    SET (CMAKE_C_FLAGS_DEBUG  "-g")
+    SET (CMAKE_C_FLAGS_MINSIZEREL "-Os -DNDEBUG")
+    SET (CMAKE_C_FLAGS_RELEASE"-O4 -DNDEBUG")
+    SET (CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g")
+
+    SET (CMAKE_CXX_COMPILER "/usr/bin/clang++-${CLANG_VERSION}")
+    SET (CMAKE_CXX_FLAGS"-Wall")
+    SET (CMAKE_CXX_FLAGS_DEBUG  "-g")
+    SET (CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
+    SET (CMAKE_CXX_FLAGS_RELEASE"-O4 -DNDEBUG")
+    SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+
+    SET (CMAKE_AR  "/usr/bin/llvm-ar")
+    SET (CMAKE_LINKER  "/usr/bin/llvm-ld")
+    SET (CMAKE_NM  "/usr/bin/llvm-nm")
+    SET (CMAKE_OBJDUMP "/usr/bin/llvm-objdump")
+    SET (CMAKE_RANLIB  "/usr/bin/llvm-ranlib")
+  endif()
+  
+  if (${CMAKE_BUILD_TYPE} MATCHES "Release")   
+    SET (CMAKE_C_COMPILER "/usr/bin/cc")
+    SET (CMAKE_C_FLAGS"-Wall -std=cc99")
+    SET (CMAKE_C_FLAGS_DEBUG  "-g")
+    SET (CMAKE_C_FLAGS_MINSIZEREL "-Os -DNDEBUG")
+    SET (CMAKE_C_FLAGS_RELEASE"-O4 -DNDEBUG")
+    SET (CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g")
+
+    SET (CMAKE_CXX_COMPILER "/usr/bin/c++")
+    SET (CMAKE_CXX_FLAGS"-Wall")
+    SET (CMAKE_CXX_FLAGS_DEBUG  "-g")
+    SET (CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
+    SET (CMAKE_CXX_FLAGS_RELEASE"-O4 -DNDEBUG")
+    SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+
+    SET (CMAKE_AR  "/usr/bin/llvm-ar")
+    SET (CMAKE_LINKER  "/usr/bin/llvm-ld")
+    SET (CMAKE_NM  "/usr/bin/llvm-nm")
+    SET (CMAKE_OBJDUMP "/usr/bin/llvm-objdump")
+    SET (CMAKE_RANLIB  "/usr/bin/llvm-ranlib")
+  endif()
+endif()
+
+
+MESSAGE(STATUS "C++ compiler is ${CMAKE_CXX_COMPILER}")
+MESSAGE(STATUS "C compiler is ${CMAKE_C_COMPILER}")
+
+
+# Get CMake Macro path from current file (nice hack)
 if ("${CMAKE_MACROS_DIR}" STREQUAL "")
 
   get_filename_component(CMAKE_MACROS_DIR ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
@@ -30,7 +91,9 @@ if ("${CMAKE_MACROS_DIR}" STREQUAL "")
           SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
       ENDIF("${isSystemDir}" STREQUAL "-1")
 
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+ENDIF()
+
 
   # Import macro for convenient loading of macros
   # Usage: import(macro1 macro2)
@@ -48,8 +111,6 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
       endif()
     endforeach(module_name)
   ENDFUNCTION(import)
-
-endif()
 
 include_directories(BEFORE
   ${PROJECT_SOURCE_DIR}/include
