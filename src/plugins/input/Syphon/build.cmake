@@ -8,8 +8,6 @@ ENDIF()
 
 FIND_PATH(COCOA_INCLUDE_DIR Cocoa/Cocoa.h)
 
-MESSAGE(${plugin_input_Syphon_PATH})
-
 find_library(
   SYPHON Syphon PATHS ${plugin_input_Syphon_PATH}
   NO_DEFAULT_PATH
