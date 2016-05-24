@@ -117,6 +117,12 @@ namespace omni
 
     void GLView::paintGL()
     {
+      double _seconds = util::benchmark([&]() {
+        paint(); 
+        updateTriggered_ = true;
+      });
+
+      currentFps_ = 1.0 / _seconds;
     }
 
     void GLView::mousePressEvent(QMouseEvent* event)

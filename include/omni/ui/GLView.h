@@ -56,15 +56,14 @@ namespace omni {
         /// Return update frequency
         void    setUpdateFrequency(float _updateFrequency);
 
+        float   currentFps() const;
+
+        void    drawFps(float _fps) const;
+
       public slots:
         void    triggerUpdate();
-        inline void paintGLDone() {
-          updateTriggered_ = true;
-      //    doneCurrent();
-        }
 
       protected:
-        bool   updateTriggered_ = false;
         /// Initialize OpenGL contents
         void         initializeGL();
 
@@ -72,20 +71,21 @@ namespace omni {
         virtual void resizeGL(int _w,
                               int _h);
 
-        /// Paint GL routine
-        virtual void paintGL();
+        /// Paint routine
+        virtual void paint() = 0;
 
         /// Mouse press event sets mouse position
         virtual void mousePressEvent(QMouseEvent *);
 
         void timerEvent(QTimerEvent*);
 
-        void         paintGLReady();
-
         /// Mouse position stored
         QPointF mousePosition_;
 
       private:
+        void paintGL();
+
+        bool   updateTriggered_ = false;
         /// Pure virtual function to initialize GL contents
         virtual bool initialize() = 0;
 
@@ -93,6 +93,8 @@ namespace omni {
         bool initialized_ = false;
 
         float  updateFreq_     = 0.0;
+        float  currentFps_ = 0.0;
+        
         int timerId_ = 0;
     };
   }

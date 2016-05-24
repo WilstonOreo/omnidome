@@ -21,6 +21,7 @@
 #define OMNI_UTIL_H_
 
 #include <type_traits>
+#include <chrono>
 #include <memory>
 #include <QDebug>
 #include <QByteArray>
@@ -71,6 +72,16 @@ namespace omni {
              // Compare pointer adresses
              (_a == _b);
     }
+
+	  /// Helper function for convenient benchmark of a function
+	  template<typename F>
+	  double benchmark(F f) {
+	    auto start = std::chrono::high_resolution_clock::now();
+		  f();
+	    auto end = std::chrono::high_resolution_clock::now();
+		  std::chrono::duration<double> diff = end-start;
+		  return diff.count();
+	  }
 
     /// Test if two vectors which hold unique_ptr's of SerializationInterfaces
     // are equal

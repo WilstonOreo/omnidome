@@ -159,7 +159,8 @@ namespace omni
 
   bool Session::hasOutput() const
   {
-    return inputs().current() && canvas() && mapping() && (tunings().size() > 0);
+    return inputs().current() && canvas() && mapping() && (tunings().size() > 0) &&
+        (mode() != Mode::SCREENSETUP);
   }
 
   /// Export calibration data of session to a file

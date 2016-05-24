@@ -65,23 +65,7 @@ bool AboutGL::initialize()
     shader_->link();
 
     QImage _image(QString(":/omnicredits.png"));//, QImage::Format_ARGB32);
-
-/*
-    _image.fill(Qt::transparent);
-    QPainter _p(&_image);
-    {
-      _p.setBrush(QBrush("#000000"));
-      _p.setPen(QPen("#FFFFFF"));
-      QFont _font;
-      _font.setPixelSize(44);
-      _p.setFont(_font);
-      _p.drawText(8, 60, "Omnidome is a product by CR8TR.");
-      _p.drawText(8, 124, "Code written by Michael Winkelmann.");
-      _p.drawText(8, 188, "GUI design by Brook Cronin + Michael Winkelmann.");
-      _p.drawText(8, 252, QString("Version ") + OMNIDOME_VERSION_STRING);
-      _p.drawText(8, 316, "Copyright (C) 2016");
-    }
-    _p.end();*/
+    
     tex_.reset(new QOpenGLTexture(_image.rgbSwapped().mirrored()));
 
     _.glFinish();
@@ -102,7 +86,7 @@ void AboutGL::mousePressEvent(QMouseEvent *)
   QDesktopServices::openUrl(QUrl("http://omnido.me", QUrl::TolerantMode));
 }
 
-void AboutGL::paintGL()
+void AboutGL::paint()
 {
   if (!shader_ || !tex_) {
     return;

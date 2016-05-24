@@ -99,7 +99,7 @@ namespace omni {
       return QPointF(_p.x() * _rect.width(), -_p.y() * _rect.height());
     }
 
-    void InputPreview::paintGL()
+    void InputPreview::paint()
     {
       if (!input() || !isVisible()) return;
 
@@ -137,8 +137,6 @@ namespace omni {
         _.glBindTexture(GL_TEXTURE_RECTANGLE, 0);
         shader_->release();
       });
-
-      paintGLDone();
     }
   }
 }

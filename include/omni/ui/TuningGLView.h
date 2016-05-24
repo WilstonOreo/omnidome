@@ -35,9 +35,8 @@ namespace omni {
       public GLView,
       public mixin::SharedDataModel<Session>,
       public mixin::TuningFromIndex<TuningGLView>{
-      Q_OBJECT
-      OMNI_UI_SHARED_DATAMODEL(Session)
-
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Session)
       public:
         TuningGLView(QWidget * = nullptr);
         ~TuningGLView();
@@ -93,7 +92,7 @@ namespace omni {
         void    dataModelChanged();
 
       protected:
-        void paintGL();
+        void paint();
         void mouseMoveEvent(QMouseEvent *event);
         void mousePressEvent(QMouseEvent *event);
         void mouseReleaseEvent(QMouseEvent *event);
@@ -114,8 +113,6 @@ namespace omni {
           float _inputOpacity = 1.0,
           QColor _color = Qt::white);
 
-        /// Draw Canvas from Projector's perspective
-        void    drawCanvas();
 
         /// Draw warp grid with handles while keeping aspect ratio
         void    drawWarpGrid();
@@ -125,9 +122,6 @@ namespace omni {
 
         /// Draw test card image
         void    drawTestCard();
-
-        /// Draw screen border (only if widget is not in view only mode)
-        void    drawScreenBorder();
 
         /// Draw color corrected view (also used in export mode)
         void    drawColorCorrected();

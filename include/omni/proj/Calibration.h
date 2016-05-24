@@ -28,6 +28,7 @@
 #include <omni/proj/CalibrationMode.h>
 #include <omni/visual/ContextBoundPtr.h>
 #include <omni/visual/Framebuffer32F.h>
+#include <omnic/CalibratedProjector.h>
 
 namespace omni {
   namespace proj {
@@ -36,10 +37,8 @@ namespace omni {
     /**@brief Calibration generated from a tuning
        @detail Calibration has output mode with either UVW or TEXCOORDS
      **/
-    class Calibration {
+    class Calibration : public omnic::CalibratedProjector {
       public:
-        friend class CalibrationRenderer;
-
         /// Create empty calibration from with optional output mode
         Calibration(CalibrationMode = CalibrationMode::TEXCOORDS);
 

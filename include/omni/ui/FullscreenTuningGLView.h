@@ -17,39 +17,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_UI_ABOUTGL_H_
-#define OMNI_UI_ABOUTGL_H_
+#ifndef OMNI_UI_FULLSCREENTUNINGGLVIEW_H_
+#define OMNI_UI_FULLSCREENTUNINGGLVIEW_H_
 
-#include <memory>
-#include <QOpenGLWidget>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLTexture>
-#include <omni/visual/ContextBoundPtr.h>
+#include <omni/proj/Tuning.h>
 #include <omni/ui/GLView.h>
 
 namespace omni {
   namespace ui {
-    class AboutGL : public GLView {
+
+    class FullscreenTuningGLView : public GLView {
       Q_OBJECT
+    public:
+      FullscreenTuningGLView(QScreen const* _screen, QWidget * = nullptr);
+      ~FullscreenTuningGLView();
 
-      public:
-        explicit AboutGL(QWidget *_parent = nullptr);
-        ~AboutGL();
+      void attachTuning(proj::Tuning const* _tuning);
+      void detachTuning(proj::Tuning const* _tuning);
 
-      protected:
-        void mousePressEvent(QMouseEvent *);
+    private:
+      void paint();
+      std::set<proj::Tuning const*> tunings_;
 
-        void resizeGL(int _w,
-                      int _h);
-        void paint();
-        double startTime_;
-
-      private:
-        bool initialize();
-        ContextBoundPtr<QOpenGLShaderProgram> shader_;
-        ContextBoundPtr<QOpenGLTexture> tex_;
+      QScreen const* screen_ = nullptr;
     };
   }
 }
 
-#endif /* OMNI_UI_ABOUTGL_H_ */
+#endif /* OMNI_UI_FULLSCREENTUNINGGLVIEW_H_ */

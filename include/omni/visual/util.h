@@ -96,21 +96,30 @@ namespace omni {
 
       /// Convenience function for handling glGetError()
       void checkOpenGLError();
+      
+      /// Draw into QOpenGLFramebufferObject with given projection and model
+      // view operations
+      template<typename FRAMEBUFFER, typename F>
+      void draw_on_framebuffer(FRAMEBUFFER* _framebuffer, F f)
+      {
+        withCurrentContext([&](QOpenGLFunctions& _) {
+          _framebuffer->bind();
+          _.glViewport(0, 0, _framebuffer->width(), _framebuffer->height());
+
+          glMatrixMode(GL_TEXTURE);
+          glLoadIdentity();
+
+          f(_);
+          _framebuffer->release();
+        });
+      }
 
       /// Draw into QOpenGLFramebufferObject with given projection and model
       // view operations
       template<typename FRAMEBUFFER, typename PROJECTION, typename MODELVIEW>
       void draw_on_framebuffer(FRAMEBUFFER* _f, PROJECTION _p, MODELVIEW _m)
       {
-        withCurrentContext([&](QOpenGLFunctions& _) {
-          _f->bind();
-          _.glViewport(0, 0, _f->width(), _f->height());
-//          _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-//                    GL_STENCIL_BUFFER_BIT);
-
-          glMatrixMode(GL_TEXTURE);
-          glLoadIdentity();
-
+        draw_on_framebuffer(_f,[&](QOpenGLFunctions& _) {
           // Projection matrix setup
           glMatrixMode(GL_PROJECTION);
           glLoadIdentity();
@@ -121,11 +130,10 @@ namespace omni {
           glLoadIdentity();
 
           _m(_); // ModelView operation
-
-          _f->release();
+          
         });
       }
-
+      
       /// Set viewport for widget
       template<typename WIDGET>
       void viewport(WIDGET *_widget)

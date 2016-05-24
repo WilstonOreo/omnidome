@@ -65,7 +65,7 @@ namespace omni {
         /// Update visualizers
         _sessionViz->update();
         _tuningViz->update();
-        _tuningViz->updateWarpBuffer(_sessionViz);
+        _tuningViz->updateWarpBuffer();
         _tuningViz->updateBlendTexture();
         _.glFlush();
 

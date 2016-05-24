@@ -124,6 +124,21 @@ namespace omni {
             }
             return Qt::transparent;
         }
+        
+        /// Calculate color look up tables for omnidome calibration format
+        omnic::ColorCorrectionLOT ColorCorrection::calculateLookUpTable(uint32_t _quantization) const {
+          omnic::ColorCorrectionLOT _lot;
+          std::vector<omnic::ColorCorrectionInfo> _data(_quantization);
+          for (size_t i = 0; i < _data.size(); ++i) {
+            float _red = red_.corrected(i / float(_quantization));
+            float _green = green_.corrected(i / float(_quantization));
+            float _blue = blue_.corrected(i / float(_quantization));
+            float _all = all_.corrected(i / float(_quantization));
+            _data[i] = omnic::ColorCorrectionInfo(_red,_green,_blue,_all);
+          }
+          _lot.setData(_data);
+          return _lot;
+        }
 
         bool operator==(ColorCorrection const& _lhs, ColorCorrection const& _rhs) {
             return

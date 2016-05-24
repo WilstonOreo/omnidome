@@ -59,7 +59,7 @@ namespace omni {
       dataModel()->scene().updateLights();
     }
 
-    void SceneGLView::paintGL()
+    void SceneGLView::paint()
     {
       if (!dataModel()) return;
 
@@ -96,7 +96,6 @@ namespace omni {
 
         _scene.drawGrid();
       });
-      paintGLDone();
     }
 
     void SceneGLView::wheelEvent(QWheelEvent *event)

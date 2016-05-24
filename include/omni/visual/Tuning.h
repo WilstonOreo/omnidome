@@ -58,7 +58,7 @@ namespace omni
       void setBlendTextureUpdateRect(QRect const&);
 
       /// Draw Test card image for screen setup
-      void drawTestCard(int _id, bool _grayscale = false);
+      void drawTestCard();
 
       /**@brief Draws warp grid with lines and handles
          @param _rect Screen Rectangle of input
@@ -75,17 +75,34 @@ namespace omni
           float _blendMaskOpacity = 1.0,
           bool _grayscale = true) const;
 
+      void draw(QRectF const& _rect) const;
+
       /// Draw cursor for blend brush
       void drawCursor(QPointF const& _pos);
 
       bool initialized() const;
 
       /// Update warp buffer which contains image of projector perspective
-      void updateWarpBuffer(visual::Session const* _vizSession);
+      void updateWarpBuffer();
+
+
+      void drawFullScreenOutput() const;
 
       void generateCalibrationData();
 
       void drawCalibratedInput(bool _flipped = false);
+ 
+
+        /// Draw screen border (only if widget is not in view only mode)
+      void drawScreenBorder() const;
+
+      bool drawFlipped() const;
+    
+      template<typename F>
+      void drawOnSurface(QRectF const& _rect, F f) const;
+      
+      /// Draw Canvas from Projector's perspective
+      void drawCanvas() const;
 
     private:
 

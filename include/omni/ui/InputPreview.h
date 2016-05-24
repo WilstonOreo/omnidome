@@ -59,7 +59,6 @@ namespace omni
       void setBorder(float);
 
     protected:
-      void paintGL();
       void showEvent(QShowEvent*);
     signals:
       void inputChanged();
@@ -67,6 +66,8 @@ namespace omni
     private:
       /// Return view rect
       QRectF viewRect() const;
+      
+      virtual void paint();
 
       bool initialize();
 

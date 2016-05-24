@@ -22,6 +22,9 @@ cm8kr_import(
   qt
 )
 
+include(../omnicalib/build.cmake)
+
+
 cm8kr_set_version(1 0 1)
 
 # Setup libomni build target

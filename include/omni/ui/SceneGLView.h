@@ -46,7 +46,7 @@ namespace omni {
         void dataModelChanged();
 
       protected:
-        virtual void paintGL();
+        void paint();
 
         /// Change zoom on mouse wheel event
         virtual void wheelEvent(QWheelEvent *event);

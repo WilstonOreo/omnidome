@@ -180,49 +180,17 @@ namespace omni {
       std::ofstream _file(_filename.toStdString(),std::ofstream::out);
 
       // Write header
-      std::string _header("OMNIC_v1.0.0.0");
+      std::string _header("OMNIC_generated_by_omnidome_v" + std::string(OMNIDOME_VERSION_STRING));
       _header.resize(80);
       _file.write(_header.c_str(),80);
-
-      _file << uint32_t(_settings.outputMode());
       _file << uint32_t(_tunings.size());
-
-      auto _writeRect = [&](QRect const& _r) {
-        _file << int32_t(_r.left()); // offset_x
-        _file << int32_t(_r.top()); // offset_y
-        _file << uint32_t(_r.width()); // width
-        _file << uint32_t(_r.height()); // height
-      };
-
-      auto _writeChannelCorrection = [&](proj::ChannelCorrection const& _c) {
-        _file << float(_c.gamma());
-        _file << float(_c.brightness());
-        _file << float(_c.contrast());
-        _file << float(_c.multiplier());
-      };
 
       for (auto* _tuning : _tunings) {
           proj::Calibration _calib(*_tuning,_settings.outputMode());
-
-          _file << uint32_t(_calib.virtualScreen());
-          _writeRect(_calib.screenGeometry());
-          _writeRect(_calib.contentGeometry());
-
-          _writeChannelCorrection(_calib.colorCorrection().red());
-          _writeChannelCorrection(_calib.colorCorrection().green());
-          _writeChannelCorrection(_calib.colorCorrection().blue());
-          _writeChannelCorrection(_calib.colorCorrection().all());
-
-          /// Write render buffer
-          uint32_t _w = _calib.renderSize().width();
-          uint32_t _h = _calib.renderSize().height();
-          _file << _w;
-          _file << _h;
-          _file.write((const char*)_calib.buffer().ptr(),sizeof(RGBAFloat)*_w*_h);
-
-          /// Brightness correction, not used currently
-          _file << uint32_t(0) << uint32_t(0);
+          //auto _calibData = _calib.calibrationData();
+          //_calibData.save(_file);
       }
     }
   }
 }
+

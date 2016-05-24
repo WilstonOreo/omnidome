@@ -47,7 +47,7 @@ namespace omni {
       return tuning_;
     }
 
-    void Tuning::drawTestCard(int _id, bool _grayscale)
+    void Tuning::drawTestCard()
     {
       if (!testCardFrameBuffer_) return;
 
@@ -66,7 +66,72 @@ namespace omni {
     {
       if (!warpGrid_) return;
       warpGrid_->drawLines();
-      warpGrid_->drawHandles(tuning_.color(), tuningRect());
+      warpGrid_->drawHandles(tuning_.color(), tuningRect()); 
+    }
+  
+    void Tuning::draw(QRectF const& _rect) const {
+      withCurrentContext([&](QOpenGLFunctions& _)
+      {/*
+        if (!tuning_.session().hasOutput())
+        {
+          drawTestCard();
+          return;
+        }
+
+        switch (tuning_.session().mode())
+        {
+          case omni::Session::Mode::SCREENSETUP:
+            drawTestCard();
+          break;
+
+          case omni::Session::Mode::ARRANGE:
+            drawCanvas();
+          break;
+
+          case omni::Session::Mode::WARP:
+            drawWarpGrid(_rect);
+          break;
+
+          case omni::Session::Mode::BLEND:
+            drawBlendMask(_rect);
+          break;
+
+          case omni::Session::Mode::COLORCORRECTION:
+          case omni::Session::Mode::EXPORT:
+            drawColorCorrected(_rect);
+          break;
+
+          case omni::Session::Mode::LIVE:
+           drawLiveView();
+          break;
+          default: break;
+        }*/
+      });
+    }
+
+    
+    
+    template<typename F>
+    void Tuning::drawOnSurface(QRectF const& _rect, F f) const
+    {
+      withCurrentContext([&](QOpenGLFunctions& _)
+      {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        QMatrix4x4 _m;
+        _m.ortho(_rect.left(), _rect.right(), _rect.top(), _rect.bottom(), -1.0,
+                  1.0);
+        glMultMatrixf(_m.constData());
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        f(_);
+      });
+    }
+    
+    bool Tuning::drawFlipped() const { 
+      return tuning_.projector().setup()->flipped() &&
+        (!tuning_.session().hasOutput() || 
+         tuning_.session().mode() == omni::Session::Mode::SCREENSETUP);
     }
 
     void Tuning::drawWarpPatch() const
@@ -348,7 +413,7 @@ namespace omni {
     }
 
     /// Update warp buffer which contains image of projector perspective
-    void Tuning::updateWarpBuffer(visual::Session const *_vizSession)
+    void Tuning::updateWarpBuffer()
     {
         primaryContextSwitch([&](QOpenGLFunctions& _) {
         // If tuning size has changed, reset warpGrid framebuffer
@@ -372,20 +437,45 @@ namespace omni {
 
         // Draw projector's perspective on framebuffer texture
         draw_on_framebuffer(warpGridBuffer_.get(),
-                            [&](QOpenGLFunctions& _) // Projection
-                                                     // Operation
-        {
-          glMultMatrixf(tuning().projector().projectionMatrix().constData());
-        },
-                            [&](QOpenGLFunctions& _) // Model View
-                                                     // Operation
-        {
-          _.glClear(
-          GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-          _.glEnable(GL_DEPTH_TEST);
-          _vizSession->drawCanvas();
-          _vizSession->drawCanvasWireframe();
+                            [&](QOpenGLFunctions& _) {
+          
+          _.glClearColor(0.0, 0.0, 0.0, 1.0);
+          _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+          drawCanvas();
         });
+    }
+
+    void Tuning::drawFullScreenOutput() const {
+    
+    }
+
+    void Tuning::drawCanvas() const
+    {
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      glMultMatrixf(tuning_.projector().projectionMatrix().constData());
+      glMatrixMode(GL_MODELVIEW);
+
+      glLoadIdentity();
+      withCurrentContext([this](QOpenGLFunctions& _)
+      {
+        _.glDisable(GL_LIGHTING);
+        _.glDisable(GL_CULL_FACE);
+        _.glEnable(GL_DEPTH_TEST);
+        tuning_.session().visualizer()->drawCanvas(mapping::OutputMode::MAPPED_INPUT);
+        tuning_.session().visualizer()->drawCanvasWireframe();
+        _.glDisable(GL_DEPTH_TEST);
+      });
+    }
+    
+    void Tuning::drawScreenBorder() const {
+      glPolygonMode(GL_FRONT, GL_LINE);
+      glPolygonMode(GL_BACK, GL_LINE);
+      auto _color = tuning_.color();
+      glColor4f(_color.redF(), _color.greenF(), _color.blueF(), 1.0);
+      visual::Rectangle::draw();
+      glPolygonMode(GL_FRONT, GL_FILL);
+      glPolygonMode(GL_BACK, GL_FILL);    
     }
 
     void Tuning::generateCalibrationData() {

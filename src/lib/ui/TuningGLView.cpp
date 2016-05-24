@@ -408,28 +408,6 @@ namespace omni {
         float(_s.y() + 0.5) * tuning()->height());
     }
 
-    void TuningGLView::drawCanvas()
-    {
-      glMatrixMode(GL_PROJECTION);
-      glLoadIdentity();
-      glMultMatrixf(tuning()->projector().projectionMatrix().constData());
-      glMatrixMode(GL_MODELVIEW);
-
-      glLoadIdentity();
-
-      withCurrentContext([this](QOpenGLFunctions& _)
-      {
-        _.glDisable(GL_LIGHTING);
-        _.glDisable(GL_CULL_FACE);
-        _.glEnable(GL_DEPTH_TEST);
-        dataModel()->visualizer()->drawCanvas(mapping::OutputMode::MAPPED_INPUT,
-                                              tuning()->outputDisabled() &&
-                                              viewOnly());
-        dataModel()->visualizer()->drawCanvasWireframe();
-        _.glDisable(GL_DEPTH_TEST);
-      });
-    }
-
     template<typename F>
     void TuningGLView::drawOnSurface(F f)
     {
@@ -502,7 +480,7 @@ namespace omni {
     void TuningGLView::drawOutput(float _blendMaskOpacity,
                                   float _inputOpacity,
                                   QColor _color) {
-      tuning()->visualizer()->updateWarpBuffer(dataModel()->visualizer());
+      tuning()->visualizer()->updateWarpBuffer();
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
@@ -511,7 +489,7 @@ namespace omni {
           tuning()->outputDisabled() && viewOnly());
 
         if (!fullscreenMode()) {
-          drawScreenBorder();
+          tuning()->visualizer()->drawScreenBorder();
         }
       });
     }
@@ -527,28 +505,11 @@ namespace omni {
       tuning()->visualizer()->drawCalibratedInput(flipped());
     }
 
-    void TuningGLView::drawScreenBorder()
-    {
-      // Draw screen border rectangle on top
-      if (!viewOnly())
-      {
-        glPolygonMode(GL_FRONT, GL_LINE);
-        glPolygonMode(GL_BACK, GL_LINE);
-        auto _color = tuning()->color();
-        glColor4f(_color.redF(), _color.greenF(), _color.blueF(), 1.0);
-        visual::Rectangle::draw();
-        glPolygonMode(GL_FRONT, GL_FILL);
-        glPolygonMode(GL_BACK, GL_FILL);
-      }
-    }
-
     void TuningGLView::drawTestCard()
     {
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        tuning()->visualizer()->drawTestCard(index() + 1,
-                                             tuning()->outputDisabled() &&
-                                             viewOnly());
+        tuning()->visualizer()->drawTestCard();
       });
     }
 
@@ -567,7 +528,7 @@ namespace omni {
       triggerUpdate();
     }
 
-    void TuningGLView::paintGL()
+    void TuningGLView::paint()
     {
       if (!tuning() || !tuning()->visualizer()) return;
       makeCurrent();
@@ -577,26 +538,22 @@ namespace omni {
 
       withCurrentContext([&](QOpenGLFunctions& _)
       {
-        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
       	visual::viewport(this);
         _.glClearColor(0.0, 0.0, 0.0, 1.0);
-      if (!dataModel()->hasOutput())
-      {
-        drawTestCard();
-        return;
-      }
+        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      if (tuning()->outputDisabled() && this->fullscreenMode()) return;
+        if (tuning()->outputDisabled() && this->fullscreenMode()) return;
+        
+        if (!dataModel()->hasOutput())
+        {
+          drawTestCard();
+          return;
+        }
 
       switch (dataModel()->mode())
       {
-      case Session::Mode::SCREENSETUP:
-        drawTestCard();
-        break;
-
       case Session::Mode::ARRANGE:
-        drawCanvas();
+        tuning()->visualizer()->drawCanvas();
         break;
 
       case Session::Mode::WARP:
@@ -620,7 +577,6 @@ namespace omni {
       }
       });
 
-      paintGLDone();
     }
 
     void TuningGLView::dataToFrontend()

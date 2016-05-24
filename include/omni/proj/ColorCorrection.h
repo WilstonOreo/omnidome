@@ -21,6 +21,7 @@
 
 #include <omni/proj/ChannelCorrection.h>
 #include <omni/proj/Channel.h>
+#include <omnic/ColorCorrectionLOT.h>
 #include <QColor>
 
 namespace omni {
@@ -76,7 +77,11 @@ namespace omni {
         /// Return color correction for given channel (const version)
         ChannelCorrection const *correction(Channel) const;
 
+        /// Return QColor for channel
         static QColor channelColor(Channel);
+
+        /// Calculate color look up tables for omnidome calibration format
+        omnic::ColorCorrectionLOT calculateLookUpTable(uint32_t _quantization = 1024) const;
 
         // Test if two color corrections are equal
         friend bool operator==(ColorCorrection const&,
