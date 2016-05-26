@@ -501,9 +501,6 @@ namespace omni {
         1.0 /* draw input */);
     }
 
-    void TuningGLView::drawLiveView() {
-      tuning()->visualizer()->drawCalibratedInput(flipped());
-    }
 
     void TuningGLView::drawTestCard()
     {
@@ -570,7 +567,7 @@ namespace omni {
         break;
 
       case Session::Mode::LIVE:
-        drawLiveView();
+        tuning()->visualizer()->drawCalibratedInput(flipped());
         break;
 
       default: break;

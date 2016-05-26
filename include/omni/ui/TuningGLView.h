@@ -126,9 +126,6 @@ namespace omni {
         /// Draw color corrected view (also used in export mode)
         void    drawColorCorrected();
 
-        /// Draw fast live view
-        void    drawLiveView();
-
         /// Update warp buffer which contains image of projector perspective
         void    updateWarpBuffer();
 

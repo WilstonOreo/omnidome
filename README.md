@@ -10,10 +10,10 @@ Fulldome Projection Calibration Software Framework
 1.1 Prerequisites
 =================
 
-Omnidome uses the Qt Framework and C++11 standard library and language standard.
+Omnidome uses the Qt Framework (minimum Version 5.6) and C++11 standard library and language standard.
 Its has currently been successfully build on MacOSX (Mavericks and Yosemite) and Ubuntu 14.04.
 
-For both MacOSX and Ubuntu, install Qt 5.4 via online installer from the website http://www.qt.io.
+For both MacOSX and Ubuntu, install Qt 5.6 via online installer from the website http://www.qt.io.
 Qt should be installed in the folder which lies on the same level as omnidome, e.g.:
 
 /your-project-folder
@@ -35,9 +35,6 @@ like /home/cr8tr instead.
 $ sudo apt-get install cmake git g++-4.9
 
 in commandline.
-You will also need cmake, which you can install with
-
-$ sudo apt-get install cmake
 
 Go in to omnidome folder, and run
 
