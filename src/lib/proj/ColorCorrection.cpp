@@ -124,7 +124,7 @@ namespace omni {
             }
             return Qt::transparent;
         }
-        
+
         /// Calculate color look up tables for omnidome calibration format
         omnic::ColorCorrectionLOT ColorCorrection::calculateLookUpTable(uint32_t _quantization) const {
           omnic::ColorCorrectionLOT _lot;

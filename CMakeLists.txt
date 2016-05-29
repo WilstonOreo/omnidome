@@ -13,6 +13,8 @@ SET(CM8KR_URL "omnido.me / cr8tr.org")
 
 include(../cm8kr/base.cmake)
 
+cm8kr_add_submodule(omnicalib)
+
 # Import cm8kr modules
 cm8kr_import(
   doxygen
@@ -21,9 +23,6 @@ cm8kr_import(
   plugin
   qt
 )
-
-include(../omnicalib/build.cmake)
-
 
 cm8kr_set_version(1 0 1)
 
