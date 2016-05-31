@@ -136,8 +136,7 @@ void main()
     vec2 uvw_upper = vec2(uv.x*s.x,(uv.y*s.y + s.y)/2.0);
     vec2 uvw_lower = vec2(uv.x*s.x,(uv.y*s.y)/2.0);
 
-    vec2 texCoords = texture2DRect(texcoord_map,uvw_upper).st*2.0 -
-        1.0 + texture2DRect(texcoord_map,uvw_lower).st*2.0/255.0 - 1.0 / 255.0;
+    vec2 texCoords = texture2DRect(texcoord_map,uvw_upper).st + texture2DRect(texcoord_map,uvw_lower).st*1.0/255.0 - 1.0 / 255.0;
 
     if (map_mirror_horizontal)
     {

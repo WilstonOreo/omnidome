@@ -67,7 +67,7 @@ namespace omni {
 
         auto   _screenRect = session_.screenSetup().screenGeometry(_screen);
         QImage _image(_screenRect.width(),
-                      _screenRect.height() * 3, QImage::Format_RGB32); // Overall
+                      _screenRect.height() * 2, QImage::Format_RGB32); // Overall
                                                                        // screen
                                                                        // image
         QPainter _p(&_image);
@@ -193,4 +193,3 @@ namespace omni {
     }
   }
 }
-
