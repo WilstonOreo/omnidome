@@ -25,9 +25,9 @@
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLTexture>
 
+#include <omnic/gl/Framebuffer.h>
 #include <omni/proj/Tuning.h>
 #include <omni/visual/WarpGrid.h>
-#include <omni/visual/Texture32F.h>
 #include <omni/proj/Calibration.h>
 
 namespace omni
@@ -117,7 +117,7 @@ namespace omni
 
       ContextBoundPtr<visual::WarpGrid> warpGrid_;
       ContextBoundPtr<QOpenGLTexture> blendTex_;
-      ContextBoundPtr<Framebuffer32F> calibrationFramebuffer_;
+      ContextBoundPtr<omnic::gl::FramebufferRGBA16> calibrationFramebuffer_;
 
       proj::Calibration calibration_;
 

@@ -175,13 +175,12 @@ namespace omni {
         /// Render calibration
         void Tuning::renderCalibration(Calibration& _calib)
         const {
-          _calib.render(*this,session_.exportSettings().outputMode());
+          _calib.render(*this);
         }
 
         /// Render and return calibration
-        Calibration Tuning::renderCalibration(
-          CalibrationMode _outputMode) const {
-            return Calibration(*this,_outputMode);
+        Calibration Tuning::renderCalibration() const {
+            return Calibration(*this);
         }
 
         int Tuning::width() const

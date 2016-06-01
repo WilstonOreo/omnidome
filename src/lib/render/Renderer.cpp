@@ -28,6 +28,7 @@
 #include <omni/visual/Session.h>
 #include <omni/visual/Tuning.h>
 #include <omni/proj/ScreenSetup.h>
+#include <omni/proj/Calibrator.h>
 
 namespace omni {
   namespace render {
@@ -75,8 +76,7 @@ namespace omni {
         for (auto& _tuning : _tunings)
         {
           auto _rect = _tuning->contentGeometry();
-          proj::Calibration _calib(*_tuning,
-                                   session_.exportSettings().outputMode());
+          proj::Calibration _calib(*_tuning);
           auto && _tuningImage = _calib.toImage();
           _p.drawImage(_rect.x(), 0, _tuningImage);
         }
@@ -136,7 +136,6 @@ namespace omni {
         {
           auto *_screen      = _screenImage.first;
           auto& _image       = _screenImage.second;
-          auto  _desktopRect = proj::ScreenSetup::desktopRect();
           auto && _screenRect = session_.screenSetup().screenGeometry(_screen);
           QString _screenDesc(QString("_%1_%2_%3x%4.png").
                               arg(_screenRect.left()).
@@ -154,8 +153,8 @@ namespace omni {
 
         for (auto& _tuning : _tunings)
         {
-          proj::Calibration _calib(*_tuning,
-                                   session_.exportSettings().outputMode());
+          proj::Calibration _calib(*_tuning);
+
           auto && _image = _calib.toImage();
           _image.save(_rawName + QString("_%1.png").arg(_tuningIndex + 1));
         }
@@ -165,31 +164,14 @@ namespace omni {
     }
 
     void Renderer::renderOmniCalibration(QString const& _filename) {
-      auto& _settings = session_.exportSettings();
-
       std::vector<proj::Tuning const *> _tunings;
 
-      // Get all tunings
-      for (auto& _tuning : session_.tunings())
-      {
-        if (!_tuning->hasScreen() &&
-            _settings.excludeUnassignedProjectors()) continue;
-        _tunings.push_back(_tuning.get());
-      }
+      omnic::Calibration _calibration;
+      proj::Calibrator _calibrator(session_);
+      _calibrator.calibrate(_calibration);
 
       std::ofstream _file(_filename.toStdString(),std::ofstream::out);
-
-      // Write header
-      std::string _header("OMNIC_generated_by_omnidome_v" + std::string(OMNIDOME_VERSION_STRING));
-      _header.resize(80);
-      _file.write(_header.c_str(),80);
-      _file << uint32_t(_tunings.size());
-
-      for (auto* _tuning : _tunings) {
-          proj::Calibration _calib(*_tuning,_settings.outputMode());
-          //auto _calibData = _calib.calibrationData();
-          //_calibData.save(_file);
-      }
+      _calibration.save(_file);
     }
   }
 }

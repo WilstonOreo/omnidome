@@ -116,7 +116,7 @@ namespace omni {
 
             auto& _exportSettings = dataModel()->exportSettings();
 
-            proj::Calibration _calib(_exportSettings.outputMode());
+            proj::Calibration _calib;
             _calib.setRenderSize(_tuningImageRect.size());
             _calib.render(*_tuning);
 

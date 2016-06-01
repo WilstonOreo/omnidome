@@ -122,8 +122,7 @@ namespace omni {
         QRect                  contentGeometry() const;
 
         /// Render and return calibration
-        Calibration renderCalibration(CalibrationMode =
-                                        CalibrationMode::TEXCOORDS) const;
+        Calibration renderCalibration() const;
 
         /// Returns width of screen
         int         width() const;

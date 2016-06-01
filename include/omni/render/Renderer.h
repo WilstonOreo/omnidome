@@ -23,7 +23,6 @@
 #include <map>
 #include <QScreen>
 #include <QImage>
-#include <omni/RenderBuffer.h>
 #include <omni/proj/ColorCorrection.h>
 
 namespace omni {

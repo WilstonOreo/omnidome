@@ -13,6 +13,8 @@ SET(CM8KR_URL "omnido.me / cr8tr.org")
 
 include(../cm8kr/base.cmake)
 
+# Use Qt GL binding for OmniCalibration SDK
+add_definitions(-DOMNIC_USE_QT_GL)
 cm8kr_add_submodule(omnicalib)
 
 # Import cm8kr modules

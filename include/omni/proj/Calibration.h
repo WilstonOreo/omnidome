@@ -23,12 +23,10 @@
 #include <QImage>
 #include <QRect>
 #include <QSize>
-#include <omni/RenderBuffer.h>
-#include <omni/proj/ColorCorrection.h>
-#include <omni/proj/CalibrationMode.h>
-#include <omni/visual/ContextBoundPtr.h>
-#include <omni/visual/Framebuffer32F.h>
 #include <omnic/CalibratedProjector.h>
+#include <omnic/gl/Framebuffer.h>
+#include <omni/proj/ColorCorrection.h>
+#include <omni/visual/ContextBoundPtr.h>
 
 namespace omni {
   namespace proj {
@@ -37,23 +35,21 @@ namespace omni {
     /**@brief Calibration generated from a tuning
        @detail Calibration has output mode with either UVW or TEXCOORDS
      **/
-    class Calibration : public omnic::CalibratedProjector {
+    class Calibration {
       public:
+        typedef omnic::PixelData pixeldata_type;
+
         /// Create empty calibration from with optional output mode
-        Calibration(CalibrationMode = CalibrationMode::TEXCOORDS);
+        Calibration();
 
         /// Create and render calibration from tuning
-        Calibration(Tuning const&,
-                    CalibrationMode = CalibrationMode::TEXCOORDS);
+        Calibration(Tuning const&);
 
         /// Render calibration from tuning
         void render(Tuning const&);
 
-        /// Render calibration from tuning and set calibration mode
-        void render(Tuning const &, CalibrationMode);
-
         /// Render to framebuffer object
-        void render(Tuning const&, ContextBoundPtr<visual::Framebuffer32F>&);
+        void render(Tuning const&, ContextBoundPtr<omnic::gl::FramebufferRGBA16>&);
 
         /// Render to image
         QImage                 toImage() const;
@@ -61,11 +57,8 @@ namespace omni {
         /// Render to preview image
         QImage                 toPreviewImage() const;
 
-        /// Return output type
-        CalibrationMode        mode() const;
-
-        /// Return buffer
-        RenderBuffer const   & buffer() const;
+        /// Return pixeldata
+        pixeldata_type const   & pixelData() const;
 
         /// Return screen geometry rectangle
         QRect const          & screenGeometry() const;
@@ -85,9 +78,11 @@ namespace omni {
         /// Return true if screen is virtual
         bool                   virtualScreen() const;
 
+        omnic::CalibratedProjector calibratedProjector() const;
+
       private:
         template<typename OPERATION>
-        static void bufferToImage(RenderBuffer const& _buffer,
+        static void bufferToImage(pixeldata_type const& _buffer,
                                   QImage& _image,
                                   OPERATION _f);
 
@@ -98,7 +93,7 @@ namespace omni {
         void getLower8bit(QImage& _image) const;
 
         /// Encode alpha mask into selected channel
-        void getAlphaMask(QImage & _image,
+        void encodeAlphaMask(QImage & _image,
                           Channel = Channel::ALL) const;
 
         /// Encode color correction into selected image channel
@@ -107,9 +102,8 @@ namespace omni {
         bool  virtualScreen_ = true;
         QRect screenGeometry_;
         QRect contentGeometry_;
-        CalibrationMode mode_;
         ColorCorrection colorCorrection_;
-        RenderBuffer buffer_;
+        pixeldata_type data_;
     };
   }
 }
