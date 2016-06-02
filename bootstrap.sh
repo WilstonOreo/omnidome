@@ -14,7 +14,3 @@ if [ ! -d "omnicalib" ]; then
 fi
 cd -
 
-echo $1
-
-cmake . -DCMAKE_BUILD_TYPE=$1
-make

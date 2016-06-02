@@ -36,6 +36,9 @@ $ sudo apt-get install cmake git g++-4.9
 
 in commandline.
 
+Then, run the bootstrap script:
+$ ./bootstrap.sh
+
 From the terminal, go in to omnidome folder, and run
 
 $ cmake . -DQT_PATH=/your/path/to/qt
@@ -58,6 +61,9 @@ For a MacOSX build, you will need the XCode developer tools.
 You also need homebrew (http://brew.sh) to install cmake, with
 
 brew install cmake
+
+First, run the bootstrap script:
+$ ./bootstrap.sh
 
 From the terminal, go in to omnidome folder, and run
 
