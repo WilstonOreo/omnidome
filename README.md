@@ -36,9 +36,16 @@ $ sudo apt-get install cmake git g++-4.9
 
 in commandline.
 
+From the terminal, go in to omnidome folder, and run
+
+$ cmake . -DQT_PATH=/your/path/to/qt
+
+You might to specify the Qt Path manually by passing the additional argument
+-DQT_PATH=/your/path/to/qt to the cmake command.
+
 Go in to omnidome folder, and run
 
-./cmake-files/deploy_ubuntu.sh
+./deploy_ubuntu.sh
 
 You can start omnidome with
 ./bin/Release/omnidome
@@ -70,7 +77,7 @@ Please install XCode Developer Tools with "xcode-select --install".
 
 Start compiling and make the dmg file with:
 
-$ ./cmake-files/deploy_osx.sh
+$ ./deploy_osx.sh
 
 You can start omnidome with
 ./bin/Release/omnidome.app/Contents/MacOS/omnidome

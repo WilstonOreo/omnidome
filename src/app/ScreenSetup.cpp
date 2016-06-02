@@ -86,7 +86,6 @@ namespace omni
 
       for (auto& _screen : _screens)
       {
-        OMNI_DEBUG << _screen << omni::proj::ScreenSetup::standardScreen();
         screenItems_[_screen].reset(new ScreenItem(*this,_screen));
       }
 
