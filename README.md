@@ -14,11 +14,7 @@ Omnidome uses the Qt Framework (minimum Version 5.6) and C++11 standard library 
 Its has currently been successfully build on MacOSX (Mavericks and Yosemite) and Ubuntu 14.04.
 
 For both MacOSX and Ubuntu, install Qt 5.6 via online installer from the website http://www.qt.io.
-Qt should be installed in the folder which lies on the same level as omnidome, e.g.:
-
-/your-project-folder
- -/Qt
- -/omnidome
+Qt is supposed to be installed in the home folder.
 
 With cmake it is also possible to specify a manual path for Qt via commandline.
 When running cmake with arguments:
@@ -26,6 +22,7 @@ When running cmake with arguments:
 cmake . -DQT_PATH=/your/path/to/qt
 
 CMake is looking for Qt in this directory.
+By default, the Qt path is in the home folder.
 DO NOT use the ~ symbol when referring to your home folder, you will need to fully write down the folder name,
 like /home/cr8tr instead.
 
