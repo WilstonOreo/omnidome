@@ -93,7 +93,7 @@ namespace omni {
         /// Assign slider values to current transform
         bool  frontendToData();
 
-        float scaleRange_ = 5.0;
+        float scaleRange_ = 1.0;
         std::unique_ptr<Ui::AffineTransform> ui_;
     };
   }

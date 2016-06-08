@@ -157,6 +157,8 @@ namespace omni {
         _map.get("uniformScaleEnabled",uniformScaleEnabled_);
         _map.get("translationEnabled",translationEnabled_);
         _map.get("translation",translation_);
+
+        OMNI_DEBUG << translation_;
     }
 
     bool operator==(AffineTransform const& _lhs, AffineTransform const& _rhs) {

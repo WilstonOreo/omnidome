@@ -57,9 +57,9 @@ namespace omni {
       qDebug() << "Location::setPath " << _path;
       QFileInfo _fileInfo(_path);
       fileSize_ = _fileInfo.size();
-      if (!exists() && !path_.isEmpty()) {
+    /*  if (!exists() && !path_.isEmpty()) {
         throw exception::NotExisting(*this);
-      }
+      }*/
     }
   }
 }

@@ -21,6 +21,7 @@
 
 #include <omni/visual/util.h>
 
+#include <omni/visual/Scene.h>
 #include <omni/serialization/PropertyMap.h>
 
 namespace omni {
@@ -107,6 +108,14 @@ namespace omni {
         /// Read mapping from stream
         void Interface::fromPropertyMap(PropertyMap const& _map) {
             _map.get("transform",transform_);
+
+            /// Fix for translation
+            if (scene()) {
+              OMNI_DEBUG << scene()->size();
+              transform_.setTranslation(transform_.translation() / scene()->size());
+            }
+
+            OMNI_DEBUG << transform_.translation();
         }
     }
 }
