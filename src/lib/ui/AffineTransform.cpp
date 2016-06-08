@@ -130,9 +130,12 @@ namespace omni {
               ui_->scaleZ->setValue(dataModel()->scale().z());
             }
 
+            OMNI_DEBUG << dataModel()->translation();
             ui_->offsetX->setValue(dataModel()->translation().x());
             ui_->offsetY->setValue(dataModel()->translation().y());
             ui_->offsetZ->setValue(dataModel()->translation().z());
+
+            OMNI_DEBUG << ui_->offsetZ->value();
         }
 
         bool AffineTransform::frontendToData() {

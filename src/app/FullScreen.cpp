@@ -29,11 +29,10 @@ namespace omni {
       dragWidget_(new ScreenSetupDragWidget(this))
     {
       setStyleSheet("* { background:black; }");
-      setWindowFlags(Qt::CustomizeWindowHint);
-      setWindowFlags(Qt::FramelessWindowHint);
+      setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 
 #ifdef Q_OS_LINUX
-      setWindowFlags(Qt::WindowStaysOnTopHint);
+      setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 #endif
 
       QWidget::setGeometry(_screen->geometry());
