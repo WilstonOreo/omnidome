@@ -477,9 +477,6 @@ namespace omni {
       if (!tuning() || !tuning()->visualizer()) return;
       makeCurrent();
 
-      auto *_vizSession = dataModel()->visualizer();
-      if (!_vizSession) return;
-
       withCurrentContext([&](QOpenGLFunctions& _)
       {
       	visual::viewport(this);

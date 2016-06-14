@@ -494,8 +494,8 @@ namespace omni {
         break;
 
       case Session::Mode::WARP:
-        drawOutput(
-          1.0, _color, _blendMaskOpacity,false);
+        drawOutput(1.0, // Draw input
+          _color, _blendMaskOpacity,false);
         drawWarpGrid();
         break;
       case Session::Mode::BLEND:

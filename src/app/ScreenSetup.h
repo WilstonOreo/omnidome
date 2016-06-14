@@ -27,7 +27,6 @@
 #include <omni/ui/mixin/TransformedRect.h>
 #include <omni/ui/mixin/DataModel.h>
 #include "proj/Tuning.h"
-#include "ScreenSetupDragWidget.h"
 #include "ScreenItem.h"
 
 namespace omni {
