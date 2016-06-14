@@ -398,14 +398,7 @@ namespace omni {
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        _.glDisable(GL_LIGHTING);
-        _.glBindTexture(GL_TEXTURE_2D, 0);
-        _.glDisable(GL_COLOR_MATERIAL);
-        _.glEnable(GL_BLEND);
-        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         tuning()->visualizer()->drawWarpGrid();
-        _.glEnable(GL_LIGHTING);
-        _.glEnable(GL_COLOR_MATERIAL);
       });
     }
 

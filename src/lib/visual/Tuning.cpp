@@ -66,6 +66,13 @@ namespace omni {
     void Tuning::drawWarpGrid() const
     {
       if (!warpGrid_) return;
+        
+      glDisable(GL_LIGHTING);
+      glBindTexture(GL_TEXTURE_2D, 0);
+      glDisable(GL_COLOR_MATERIAL);
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      
       warpGrid_->drawLines();
       warpGrid_->drawHandles(tuning_.color(), tuningRect()); 
     }
@@ -453,9 +460,8 @@ namespace omni {
     
       auto & _blendSettings = tuning_.session().blendSettings();
       auto   _colorMode     = _blendSettings.colorMode();
-      float  _inputOpacity  = _blendSettings.inputOpacity();
+      float  _inputOpacity  = _blendSettings.inputOpacity(); 
       float _blendMaskOpacity = _blendSettings.showInWarpMode() ? 1.0 : 0.0; 
-      /*  zero blend mask opacity */
 
       QColor _color         = tuning_.color();
       if (_colorMode == BlendSettings::ColorMode::WHITE) {
@@ -490,14 +496,7 @@ namespace omni {
       case Session::Mode::WARP:
         drawOutput(
           1.0, _color, _blendMaskOpacity,false);
-        glDisable(GL_LIGHTING);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glDisable(GL_COLOR_MATERIAL);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         drawWarpGrid();
-        glEnable(GL_LIGHTING);
-        glEnable(GL_COLOR_MATERIAL);
         break;
       case Session::Mode::BLEND:
       {
