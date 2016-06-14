@@ -22,7 +22,7 @@
 #include <QColor>
 #include <QScreen>
 #include <omni/util.h>
-#include "FullScreen.h"
+#include <omni/ui/FullscreenTuningGLView.h>
 
 namespace omni {
 
@@ -73,7 +73,6 @@ namespace omni {
                                         QColor _dropColor,
                                         QPainter&);
 
-
       private:
         ScreenItem *parent_   = nullptr;
         int index_                  = -1;
@@ -88,7 +87,6 @@ namespace omni {
         ScreenItem(ScreenSetup &,
              QScreen const *_screen);
         ~ScreenItem();
-
 
         /// Detach tuning widget
         void           detachTuningWidget(omni::ui::proj::Tuning*);
@@ -131,7 +129,7 @@ namespace omni {
 
         QRect rect() const;
 
-        FullScreen*  fullscreen();
+        FullscreenTuningGLView*  fullscreen();
 
         inline int numSubScreens() const {
           return int(subScreens_.size());
@@ -143,7 +141,7 @@ namespace omni {
         QColor dropColor_;
         ScreenSetup  & screenSetup_;
         QScreen const *screen_ = nullptr;
-        QUniquePtr<FullScreen>  fullscreen_;
+        QUniquePtr<FullscreenTuningGLView>  fullscreen_;
         std::vector<SubScreenItem> subScreens_;
     };
   }

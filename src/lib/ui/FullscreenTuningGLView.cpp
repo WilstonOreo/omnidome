@@ -18,13 +18,30 @@
  */
 
 #include <omni/ui/FullscreenTuningGLView.h>
+#include <omni/proj/ScreenSetup.h>
 #include <omni/visual/util.h>
+#include <omni/visual/Tuning.h>
+#include <omni/visual/Rectangle.h>
+
+#include <QGuiApplication>
 
 namespace omni {
   namespace ui {
     FullscreenTuningGLView::FullscreenTuningGLView (QScreen const* _screen, QWidget* _parent) : 
       GLView(_parent),
       screen_(_screen) {
+      setStyleSheet("* { background:black; }");
+      setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+
+#ifdef Q_OS_LINUX
+      setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+#endif
+
+      QWidget::setGeometry(_screen->geometry());
+      this->hide();
+
+      connect(QGuiApplication::instance(),SIGNAL(screenRemoved(QScreen*)),
+          this,SLOT(deleteIfScreenRemoved(QScreen*)));      
     }
 
     FullscreenTuningGLView::~FullscreenTuningGLView() {
@@ -34,24 +51,72 @@ namespace omni {
       if (_tuning->screen() != screen_) return;
 
       tunings_.insert(_tuning);
+
+      showFullScreen();
+      update();
     }
     
     void FullscreenTuningGLView::detachTuning(proj::Tuning const* _tuning) {
       tunings_.erase(_tuning);
+      if (tunings_.empty()) {
+        this->hide();
+      }
+
+      update();
+    }
+    
+    void FullscreenTuningGLView::showDragWidget(int _index, QColor _color) {
+      dragWidgetIndex_ = _index;
+      dragWidgetColor_ = _color;
+      showFullScreen();
+      update();
+    }
+
+    void FullscreenTuningGLView::hideDragWidget() {
+      dragWidgetIndex_ = -1;
+      update();
     }
  
     void FullscreenTuningGLView::paint() {
-      visual::withCurrentContext([&](QOpenGLFunctions& _) {
-        _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        for (auto& _tuning : tunings_) {
-          auto _rect = _tuning->contentGeometry();
-          int d = this->devicePixelRatio();
-          _.glViewport(
+      int d = this->devicePixelRatio();  
+
+      glViewport(0,0,width()*d,height()*d);
+      glClearColor(0.0,0.0,0.0,1.0);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+      if (showDragWidget()) {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        QMatrix4x4 _m;
+
+        _m.ortho(0.0, width(), height(), 0, -1.0,
+                  1.0);
+        glMultMatrixf(_m.constData());
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        
+        QRectF && _rect = proj::ScreenSetup::subScreenRectForScreen(dragWidgetIndex_,screen_);
+        
+        glColor4f(
+            dragWidgetColor_.red(),
+            dragWidgetColor_.green(),
+            dragWidgetColor_.blue(),1.0);
+        visual::Rectangle::draw(_rect);
+      }
+
+      for (auto& _tuning : tunings_) {
+        if (!_tuning->visualizer()) return;
+
+        auto _rect = _tuning->contentGeometry();
+        glViewport(
             _rect.left() * d, _rect.top() * d, 
             _rect.width() * d, _rect.height() * d);
-         // _tuning->visualizer()->drawFullScreenOutput();
-        }
-      });
+        _tuning->visualizer()->drawFullScreenOutput();
+      }
+    }
+    
+    bool FullscreenTuningGLView::initialize() {
+      return context() != nullptr;
     }
   }
 }

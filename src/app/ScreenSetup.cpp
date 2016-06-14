@@ -96,6 +96,12 @@ namespace omni
       }
       update();
     }
+    
+    void ScreenSetup::updateViews() {
+      for (auto& _screenItem : screenItems_) {
+        _screenItem.second->fullscreen()->update();
+      }
+    }
 
     void ScreenSetup::closeFullscreenWindows() {
       for (auto& _screenItem : screenItems_) {

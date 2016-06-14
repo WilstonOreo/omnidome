@@ -63,6 +63,10 @@ namespace omni {
       public slots:
         /// Update screen dimensions
         void updateScreens();
+
+        /// Update all fullscreen views
+        void updateViews();
+
         void closeFullscreenWindows();
 
         void assignNewTuningToNextFreeScreen();

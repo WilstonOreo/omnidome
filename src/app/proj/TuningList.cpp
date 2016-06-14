@@ -93,7 +93,6 @@ namespace omni {
                 if ((_index < 0) || (_index >= widgets_.size())) return _views;
 
                 auto *_widget = widgets_[_index].get();
-                _views.insert(_widget->fullscreenWidget());
                 _views.insert(_widget->previewWidget());
 
                 return _views;

@@ -37,6 +37,7 @@ namespace omni {
     ContextBoundPtr<QOpenGLShaderProgram> Tuning::calibrationShader_;
 
     Tuning::Tuning(omni::proj::Tuning& _tuning) :
+      cursorPosition_(0.0, 0.0),
       tuning_(_tuning)
     {}
 
@@ -47,7 +48,7 @@ namespace omni {
       return tuning_;
     }
 
-    void Tuning::drawTestCard()
+    void Tuning::drawTestCard() const
     {
       if (!testCardFrameBuffer_) return;
 
@@ -278,12 +279,14 @@ namespace omni {
       });
     }
 
-    void Tuning::drawCursor(QPointF const& _pos)
+    void Tuning::drawCursor() const
     {
       auto _rect = tuningRect();
 
       withCurrentContext([&](QOpenGLFunctions& _)
       {
+        auto& _pos = cursorPosition_;
+
         _.glEnable(GL_BLEND);
 
         useShader(*blendBrushCursorShader_, [&](UniformHandler& _h) {
@@ -446,11 +449,85 @@ namespace omni {
     }
 
     void Tuning::drawFullScreenOutput() const {
+      if (tuning_.outputDisabled()) return;
     
+      auto & _blendSettings = tuning_.session().blendSettings();
+      auto   _colorMode     = _blendSettings.colorMode();
+      float  _inputOpacity  = _blendSettings.inputOpacity();
+      float _blendMaskOpacity = _blendSettings.showInWarpMode() ? 1.0 : 0.0; 
+      /*  zero blend mask opacity */
+
+      QColor _color         = tuning_.color();
+      if (_colorMode == BlendSettings::ColorMode::WHITE) {
+        _color = Qt::white;
+      }
+        
+      glEnable(GL_DEPTH_TEST);
+ 
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      QMatrix4x4 _m;
+      _m.ortho(-0.5, 0.5, 0.5, -0.5, -1.0,1.0);
+      
+      glMultMatrixf(_m.constData());
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
+      
+      if (!tuning_.session().hasOutput())
+      {
+          drawTestCard();
+          return;
+      }
+
+      using omni::Session;
+
+      switch (tuning_.session().mode())
+      {
+      case Session::Mode::ARRANGE:
+        drawCanvas();
+        break;
+
+      case Session::Mode::WARP:
+        drawOutput(
+          1.0, _color, _blendMaskOpacity,false);
+        glDisable(GL_LIGHTING);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_COLOR_MATERIAL);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        drawWarpGrid();
+        glEnable(GL_LIGHTING);
+        glEnable(GL_COLOR_MATERIAL);
+        break;
+      case Session::Mode::BLEND:
+      {
+        drawOutput(
+          _inputOpacity, _color, 1.0,false);
+        
+        glDisable(GL_DEPTH_TEST);
+        if (&tuning_ == tuning_.session().tunings().current()) {
+          drawCursor();
+        }
+        break;
+      }
+      case Session::Mode::COLORCORRECTION:
+      case Session::Mode::EXPORT:
+      {
+        drawOutput(
+          1.0, _color, 1.0,false);
+        break;
+      }
+      case Session::Mode::LIVE:
+        drawCalibratedInput(false);
+        break;
+      default: break;
+      }
     }
 
     void Tuning::drawCanvas() const
     {
+      if (!tuning_.session().visualizer()) return;
+
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
       glMultMatrixf(tuning_.projector().projectionMatrix().constData());
@@ -498,15 +575,11 @@ namespace omni {
       return _vec;
     }
 
-    void Tuning::drawCalibratedInput(bool _flipped) {
+    void Tuning::drawCalibratedInput(bool _flipped) const {
       if (!calibrationShader_) return;
 
       auto *_currentInput = tuning().session().inputs().current();
-      if (!_currentInput) return;
-
-      if (!calibrationFramebuffer_) {
-        generateCalibrationData();
-      }
+      if (!_currentInput || !calibrationFramebuffer_) return;
 
       withCurrentContext([&](QOpenGLFunctions& _) {
         glMatrixMode(GL_PROJECTION);
@@ -546,6 +619,15 @@ namespace omni {
           Rectangle::draw(-0.5, 0.5, 0.5, -0.5);
         });
       });
+    }
+    
+    QPointF Tuning::cursorPosition() const {
+      return cursorPosition_;
+    }
+
+    void Tuning::setCursorPosition(QPointF const& _pos) {
+    
+      cursorPosition_ = _pos;
     }
 
     QRectF Tuning::tuningRect() const
