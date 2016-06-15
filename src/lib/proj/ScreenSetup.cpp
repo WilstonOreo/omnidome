@@ -134,8 +134,6 @@ namespace omni {
     }
 
     int   ScreenSetup::subScreenCountForScreen(QScreen const * _screen) {
-      return 3;
-
       // Go through list of screen resolutions and see if the
       // current screen has subscreens
       for (auto& _screenSize : screenResolutions())
