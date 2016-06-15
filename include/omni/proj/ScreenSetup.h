@@ -23,6 +23,7 @@
 #include <set>
 #include <vector>
 #include <QScreen>
+#include <omni/proj/ScreenMultiplex.h>
 
 namespace omni {
   class Session;
@@ -33,55 +34,27 @@ namespace omni {
     /// Singleton class which manages the current screen setup
     class ScreenSetup {
       public:
-        ScreenSetup(Session const *_session);
+        ScreenSetup(Session const& _session);
 
         /**@brief Returns the screen geometry for a screen
            @detail If screen is null, the geometry for the virtual screen is returned
          **/
         QRect screenGeometry(QScreen const* = nullptr) const;
 
-        /// Returns screen size that supports triple heads
-        static std::vector<QSize>const& screenResolutions();
-
         /// Return standard screen, where omnidome has to be placed
         static QScreen const          * standardScreen();
 
         /// Return const pointer to session
-        Session const                 * session() const;
+        Session const                 & session() const;
 
-        /**@brief Returns the number of subscreens for a single screen
-           @detail If screen is nullptr, number of subscreen for virtual screen
-                   is returned.
-         **/
-        int   subScreenCount(QScreen const * = nullptr) const;
+        /// Return screen multiplex of given screen 
+        ScreenMultiplex screenMultiplex(QScreen const*) const;
 
-        /** @brief Static method for getting subscreen count for screen
-            @detail Screen must not be nullptr!
-         **/
-        static int   subScreenCountForScreen(QScreen const *);
+        /// Switches to the next possible tiling
+        void setScreenMultiplex(QScreen const*, ScreenMultiplex const&);
 
-        /**@brief Returns the number of subscreens for a single screen
-           @detail If screen is nullptr, number of subscreen for virtual screen
-                   is returned.
-         **/
-        int   subScreenWidth(QScreen const * = nullptr) const;
-
-        /** @brief Static method for getting subscreen width for screen
-            @detail Screen must not be nullptr!
-         **/
-        static int   subScreenWidthForScreen(QScreen const *);
-
-        /// Returns the rectangle of a subscreen with a certain index
-        QRect subScreenRect(int _index, QScreen const* = nullptr) const;
-
-        /** @brief Static method for getting subscreen count for screen
-            @detail Screen must not be nullptr!
-         **/
-        static QRect   subScreenRectForScreen(int _index, QScreen const *);
-
-        /// Return aspect ratio of subscreen
-        qreal subScreenAspectRatio(QScreen const* = nullptr) const;
-
+        /// Return screen aspect ratio
+        float subScreenAspectRatio(QScreen const*, int _index = 0) const;
 
         static QRect desktopRect(
           bool _excludeStandardScreen = true);
@@ -116,7 +89,8 @@ namespace omni {
         bool  operator==(const ScreenSetup&) const;
 
       private:
-        Session const *session_;
+        Session const& session_;
+        std::map<QScreen const*,ScreenMultiplex> multiplex_;
     };
   }
 

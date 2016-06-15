@@ -97,10 +97,15 @@ namespace omni {
 
         void assignTuning(omni::proj::Tuning*);
 
-        /**@brief Returns pointer to a SubScreenItem under given position
+        /**@brief Returns pointer to a SubScreenItem under given position.
          *@detail Returns null otherwise
          **/
         SubScreenItem* getSubScreenItemAtPos(QPoint const&);
+
+        /**@brief Returns pointer to a ScreenItem under given position.
+         *@detail Returns null otherwise
+         **/
+        ScreenItem* getScreenItemAtPos(QPoint const&);
 
         std::map<QScreen const *, std::unique_ptr<ScreenItem> > screenItems_;
         SubScreenItem* currentSubScreenItem_ = nullptr;

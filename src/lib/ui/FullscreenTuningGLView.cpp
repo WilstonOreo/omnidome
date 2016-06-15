@@ -95,8 +95,14 @@ namespace omni {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         
-        QRectF && _rect = proj::ScreenSetup::subScreenRectForScreen(dragWidgetIndex_,screen_);
-        
+        auto& _screenSetup = dataModel()->screenSetup();
+
+        QRectF && _rect = _screenSetup
+          .screenMultiplex(screen_)
+          .contentGeometry(_screenSetup.screenGeometry(screen_).size(),dragWidgetIndex_);
+  
+//        _rect.setBottom(_rect.height() - _rect.bottom());
+
         glColor4f(
             dragWidgetColor_.red(),
             dragWidgetColor_.green(),
@@ -109,7 +115,7 @@ namespace omni {
 
         auto _rect = _tuning->contentGeometry();
         glViewport(
-            _rect.left() * d, _rect.top() * d, 
+            _rect.left() * d, (height() - _rect.bottom()) * d, 
             _rect.width() * d, _rect.height() * d);
         _tuning->visualizer()->drawFullScreenOutput();
       }

@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -26,36 +26,35 @@
 
 namespace omni {
   namespace proj {
-    ScreenSetup::ScreenSetup(Session const *_session) :
+    ScreenSetup::ScreenSetup(Session const& _session) :
       session_(_session)
     {}
-
-    std::vector<QSize>const& ScreenSetup::screenResolutions()
-    {
-      static std::vector<QSize> _sizes;
-
-      if (_sizes.empty())
-        _sizes = {
-          QSize(640,     480),
-          QSize(800,     600),
-          QSize(1024,    768),
-          QSize(1280,    720),
-          QSize(1280,    800),
-          QSize(1920,   1080),
-          QSize(1920,   1200),
-          QSize(2560, 1440)
-        };
-
-      return _sizes;
-    }
 
     QScreen const * ScreenSetup::standardScreen()
     {
       return QGuiApplication::primaryScreen();
     }
 
-    Session const * ScreenSetup::session() const {
+    Session const& ScreenSetup::session() const {
       return session_;
+    }
+
+    ScreenMultiplex ScreenSetup::screenMultiplex(QScreen const* _screen) const { 
+      return multiplex_.count(_screen) > 0 ?
+        multiplex_.at(_screen) :
+        ScreenMultiplex();
+    }
+
+    void ScreenSetup::setScreenMultiplex(
+        QScreen const* _screen, 
+        ScreenMultiplex const& _multiplex) {
+      multiplex_[_screen] = _multiplex;
+    }
+
+    float ScreenSetup::subScreenAspectRatio(QScreen const* _screen, int _index) const {
+      auto&& _rect = screenMultiplex(_screen)
+        .contentGeometry(screenGeometry(_screen).size(),_index);
+      return float(_rect.width()) / float(_rect.height());
     }
 
     QRect ScreenSetup::virtualScreenRect() const {
@@ -63,7 +62,7 @@ namespace omni {
       int   _w = standardScreen()->geometry().width();
       int   _h = standardScreen()->geometry().height();
 
-      for (auto& _tuning : session()->tunings()) {
+      for (auto& _tuning : session().tunings()) {
         if (_tuning->hasScreen()) continue;
         _rect |= QRect(_rect.width(), 0,
                        _w, _h);
@@ -73,9 +72,7 @@ namespace omni {
 
     /// Returns true if no tuning is assigned to a screen
     bool ScreenSetup::noTuningsAssigned() const {
-      if (!session()) return true;
-
-      for (auto& _tuning : session()->tunings()) {
+      for (auto& _tuning : session().tunings()) {
         if (_tuning->hasScreen()) {
           return false;
         }
@@ -84,9 +81,7 @@ namespace omni {
     }
 
     bool ScreenSetup::noTuningsAssigned(QScreen const *_screen) const {
-      if (!session()) return true;
-
-      for (auto& _tuning : session()->tunings()) {
+      for (auto& _tuning : session().tunings()) {
         if (_tuning->screen() == _screen) {
           return false;
         }
@@ -97,13 +92,6 @@ namespace omni {
     /// Returns combined desktop and virtual desktop rect
     QRect ScreenSetup::combinedDesktopRect() const {
       /// If there are no tunings assigned, ignore desktopRect
-
-      /*QRect _desktopRect;
-         auto  _screens = ScreenSetup::screens();
-         for (auto& _screen : _screens) {
-          if (noTuningsAssigned(_screen)) continue;
-          _desktopRect |= _screen->geometry();
-         }*/
       return desktopRect() | virtualScreenRect();
     }
 
@@ -117,64 +105,6 @@ namespace omni {
       return _screen->geometry();
     }
 
-    int ScreenSetup::subScreenCount(QScreen const *_screen) const
-    {
-      // Return subscreen count for virtual screen,
-      // which is equal to the number of unassigned projectors
-      if (!_screen) {
-        int _numberOfUnassignedProjectors = 0;
-
-        for (auto& _tuning : session_->tunings()) {
-          if (!_tuning->screen()) ++_numberOfUnassignedProjectors;
-        }
-        return _numberOfUnassignedProjectors;
-      }
-
-      return subScreenCountForScreen(_screen);
-    }
-
-    int   ScreenSetup::subScreenCountForScreen(QScreen const * _screen) {
-      // Go through list of screen resolutions and see if the
-      // current screen has subscreens
-      for (auto& _screenSize : screenResolutions())
-      {
-        if (_screenSize.height() == _screen->geometry().height())
-        {
-          if ((_screen->geometry().width() % _screenSize.width()) == 0)
-          {
-            return _screen->geometry().width() / _screenSize.width();
-          }
-        }
-      }
-      return 1;
-    }
-
-    int ScreenSetup::subScreenWidth(QScreen const *_screen) const
-    {
-      return screenGeometry(_screen).width() / subScreenCount(_screen);
-    }
-
-    int ScreenSetup::subScreenWidthForScreen(QScreen const *_screen)
-    {
-      return _screen->geometry().width() / subScreenCountForScreen(_screen);
-    }
-
-    QRect ScreenSetup::subScreenRect(
-      int _subScreenIndex,
-      QScreen const *_screen) const
-    {
-      int _w = subScreenWidth(_screen);
-      return QRect(_w * _subScreenIndex, 0, _w, screenGeometry(_screen).height());
-    }
-
-    QRect ScreenSetup::subScreenRectForScreen(int _subScreenIndex, QScreen const* _screen) {
-      int _w = subScreenWidthForScreen(_screen);
-      return QRect(_w * _subScreenIndex, 0, _w, _screen->size().height());
-    }
-
-    qreal ScreenSetup::subScreenAspectRatio(QScreen const* _screen) const {
-      return float(subScreenWidth(_screen)) / float(screenGeometry(_screen).height());
-    }
 
     QRect ScreenSetup::desktopRect(bool _excludeStandardScreen)
     {
@@ -206,9 +136,9 @@ namespace omni {
     std::set<QScreen const*> ScreenSetup::usedScreens() const {
       std::set<QScreen const*> _screens;
 
-      bool _excludeVirtualScreen = session_->exportSettings().excludeUnassignedProjectors();
+      bool _excludeVirtualScreen = session_.exportSettings().excludeUnassignedProjectors();
 
-      for (auto& _tuning : session()->tunings()) {
+      for (auto& _tuning : session().tunings()) {
         if (!_tuning->hasScreen() && _excludeVirtualScreen) continue;
         _screens.insert(_tuning->screen());
         }
@@ -216,11 +146,9 @@ namespace omni {
     }
 
     QRect ScreenSetup::tuningRect() const {
-      if (!session()) return QRect();
-
       QRect _rect;
 
-      for (auto& _tuning : session()->tunings()) {
+      for (auto& _tuning : session().tunings()) {
         _rect |=  _tuning->contentGeometry().translated(_tuning->screenGeometry().topLeft()) & _tuning->screenGeometry();
       }
       return _rect;
@@ -230,7 +158,7 @@ namespace omni {
       bool _excludeNonAssigned) const {
       std::set<proj::Tuning const *> _tunings;
 
-      for (auto& _tuning : session()->tunings()) {
+      for (auto& _tuning : session().tunings()) {
         if (!_excludeNonAssigned || _tuning->hasScreen()) {
           _tunings.insert(_tuning.get());
         }

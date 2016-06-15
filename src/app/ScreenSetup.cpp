@@ -207,6 +207,16 @@ namespace omni
       return nullptr;
     }
 
+    ScreenItem* ScreenSetup::getScreenItemAtPos(QPoint const& _pos)
+    {
+      for (auto& _screenItem : screenItems_)
+      {
+        if (_screenItem.first->geometry().contains(_pos)) return _screenItem.second.get();
+      }
+      return nullptr;
+    }
+
+
     void ScreenSetup::dragEnterEvent(QDragEnterEvent* event)
     {
       currentSubScreenItem_ = getSubScreenItemAtPos(event->pos());

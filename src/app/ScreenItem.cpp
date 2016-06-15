@@ -45,20 +45,15 @@ namespace omni {
 
     QRect SubScreenItem::rect() const
     {
-      auto _r     = parent_->rect(); // Parent rect
-      int  _width = _r.width() / omni::proj::ScreenSetup::subScreenCountForScreen(
-        parent()->screen());
-
-      return QRect(_r.x() + index_ * _width, _r.y(), _width, _r.height());
+      auto _screen = parent()->screen();
+      auto _parentRect = parent()->rect();
+      auto _rect = parent()->screenMultiplex().contentGeometry(_parentRect.size(),index_);
+      _rect.translate(_parentRect.topLeft());
+      return _rect;
     }
 
-    QSize SubScreenItem::size() const
-    {
-      auto _screen = parent()->screen();
-
-      return QSize(
-        omni::proj::ScreenSetup::subScreenWidthForScreen(_screen),
-        _screen->size().height());
+    QSize SubScreenItem::size() const {
+      return rect().size();
     }
 
     void SubScreenItem::paint(bool _hover,
@@ -148,16 +143,30 @@ namespace omni {
       screen_(_screen),
       fullscreen_(new FullscreenTuningGLView(_screen))
     {
-      int _numScreens = omni::proj::ScreenSetup::subScreenCountForScreen(_screen);
+      setScreenMultiplex(screenSetup_.dataModel()->screenSetup().screenMultiplex(_screen));
+    }
 
+    ScreenItem::~ScreenItem()
+    {
+    }
+
+    ScreenMultiplex ScreenItem::screenMultiplex() const {
+      return screenSetup_.dataModel()->screenSetup().screenMultiplex(screen_);
+    }
+
+    void ScreenItem::setScreenMultiplex(ScreenMultiplex const& _multiplex) {
+      screenSetup_.dataModel()->screenSetup().setScreenMultiplex(screen_,_multiplex);      
+      int _numScreens = screenMultiplex().numberOfSubScreens();
       for (int i = 0; i < _numScreens; ++i)
       {
         subScreens_.emplace_back(this, i);
       }
     }
-
-    ScreenItem::~ScreenItem()
-    {
+    
+    void ScreenItem::setNextScreenMultiplex() {
+      auto _tiling = screenMultiplex().tiling();
+      setScreenMultiplex(ScreenMultiplex(ScreenMultiplex::Tiling(
+              (int(_tiling) + 1) % int(ScreenMultiplex::NUM_TILINGS))));
     }
 
     void ScreenItem::detachTuningWidget(omni::ui::proj::Tuning* _tuningWidget) {
@@ -285,5 +294,4 @@ namespace omni {
     SubScreenItem const * ScreenItem::hoveredItem() const {
       return item(hoverIndex());
     }
-  }
-}
+  }}

@@ -28,7 +28,6 @@
 #include <omni/proj/Calibration.h>
 
 #include <omni/visual/Tuning.h>
-
 #include <QColor>
 
 
@@ -49,8 +48,12 @@ namespace omni {
         {
           screen_ = _screen;
           subScreenIndex_ = _subScreenIndex;
-          projector_.setAspectRatio(session_.screenSetup().subScreenAspectRatio(screen()));
-          blendMask_.setBrush(100.0,blendMask_.brush().feather(),blendMask_.brush().opacity(),blendMask_.brush().invert());
+          projector_.setAspectRatio(session_.screenSetup().subScreenAspectRatio(_screen,_subScreenIndex));
+          
+          auto& _brush = blendMask_.brush();
+          blendMask_.setBrush(100.0,
+              _brush.feather(),_brush.opacity(),
+              _brush.invert());
         }
 
         QScreen const* Tuning::screen() const
@@ -165,11 +168,10 @@ namespace omni {
 
         /// Content rectangle (position) inside the screen
         QRect Tuning::contentGeometry() const {
-          QRect _screenRect(screenGeometry());
-          int _w = session_.screenSetup().subScreenWidth(screen());
-
-          QRect _contentRect(_w * subScreenIndex(),0,_w,_screenRect.height());
-          return _contentRect;
+          auto& _screenSetup = session_.screenSetup();
+          return _screenSetup
+            .screenMultiplex(screen())
+            .contentGeometry(_screenSetup.screenGeometry(screen()).size(),subScreenIndex());
         }
 
         /// Render calibration

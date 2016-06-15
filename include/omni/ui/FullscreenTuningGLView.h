@@ -20,13 +20,18 @@
 #ifndef OMNI_UI_FULLSCREENTUNINGGLVIEW_H_
 #define OMNI_UI_FULLSCREENTUNINGGLVIEW_H_
 
+#include <omni/Session.h>
 #include <omni/proj/Tuning.h>
 #include <omni/ui/GLView.h>
+#include <omni/ui/mixin/DataModel.h>
 
 namespace omni {
   namespace ui {
 
-    class FullscreenTuningGLView : public GLView {
+    class FullscreenTuningGLView : 
+      public GLView,
+      public mixin::UnsharedDataModel<Session>
+    {
       Q_OBJECT
     public:
       FullscreenTuningGLView(QScreen const* _screen, QWidget * = nullptr);
@@ -37,8 +42,19 @@ namespace omni {
 
       void showDragWidget(int _index, QColor _color);
       void hideDragWidget();
+    
+    signals:
+      void dataModelChanged();
 
     private:
+      inline virtual void dataToFrontend() { 
+        update();
+      }
+      
+      inline virtual bool frontendToData() {
+        return false;
+      }
+      
       void paint();
       bool initialize();
       std::set<proj::Tuning const*> tunings_;

@@ -33,6 +33,7 @@
 #include <omni/ui/TuningGLView.h>
 #include <omni/proj/FreeSetup.h>
 #include <omni/proj/PeripheralSetup.h>
+#include <omni/visual/Tuning.h>
 
 #include "proj/TitleBar.h"
 #include "proj/TuningLayout.h"

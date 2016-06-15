@@ -24,6 +24,8 @@
 #include <QMatrix4x4>
 #include <omni/visual/util.h>
 #include <omni/visual/Rectangle.h>
+#include <omni/visual/Session.h>
+#include <omni/visual/Tuning.h>
 
 namespace omni {
   namespace ui {

@@ -149,7 +149,6 @@ namespace omni {
       visualizer_type* visualizer();
       visualizer_type const* visualizer() const;
 
-
     private:
       /// List with all projector tunings
       proj::TuningList tunings_;

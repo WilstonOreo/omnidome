@@ -24,8 +24,6 @@
 
 #include <omni/ui/GLView.h>
 #include <omni/ui/mixin/DataModel.h>
-#include <omni/visual/Session.h>
-#include <omni/visual/Tuning.h>
 #include <omni/ui/mixin/TuningFromIndex.h>
 
 namespace omni {

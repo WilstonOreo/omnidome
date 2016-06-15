@@ -34,6 +34,8 @@ namespace omni {
     class ScreenItem;
     class ScreenSetup;
 
+    using omni::proj::ScreenMultiplex;
+
     /// Subscreen Item for which a tuning can be assigned
     class SubScreenItem {
       public:
@@ -93,6 +95,11 @@ namespace omni {
 
         /// Screen this screen item is assigned to
         QScreen const* screen() const;
+
+        ScreenMultiplex screenMultiplex() const;
+
+        void setScreenMultiplex(ScreenMultiplex const&);
+        void setNextScreenMultiplex();
 
         void           paint(QPainter&);
 
