@@ -43,6 +43,8 @@ namespace omni {
         using container_type::begin;
         using container_type::end;
 
+
+
         /**@brief Add tuning to list
          * @detail Returns pointer new tuning
          * @param _makeCurrent Flag whether to set current index when added
@@ -74,12 +76,16 @@ namespace omni {
 
         /// Deletes all tunings
         void           clear();
+        
+        /// Return all tunings that have no screen assigned
+        std::set<Tuning*> unassignedTunings() const;
 
         /// Returns tuning at a specific index
         Tuning       * operator[](int);
 
         /// Returns tuning at a specific index (const version)
         Tuning const * operator[](int) const;
+        
 
         /// Deserialize list from stream
         void           fromStream(QDataStream&);

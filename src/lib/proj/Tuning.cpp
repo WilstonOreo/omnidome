@@ -169,6 +169,15 @@ namespace omni {
         /// Content rectangle (position) inside the screen
         QRect Tuning::contentGeometry() const {
           auto& _screenSetup = session_.screenSetup();
+          
+          /// Handle virtual screen
+          if (!screen()) { 
+            auto _vRect = _screenSetup.virtualScreenRect();
+ 
+            int _w =  _vRect.width() / session_.tunings().unassignedTunings().size();
+            return QRect(_w * subScreenIndex(),0,_w,_vRect.height());
+          }
+
           return _screenSetup
             .screenMultiplex(screen())
             .contentGeometry(_screenSetup.screenGeometry(screen()).size(),subScreenIndex());

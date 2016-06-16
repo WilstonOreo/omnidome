@@ -94,6 +94,14 @@ namespace omni
       container_type::clear();
       currentIdx_ = -1;
     }
+      
+    std::set<Tuning*> TuningList::unassignedTunings() const {
+      std::set<Tuning*> _tunings;
+      for (auto& _tuning : *this) {
+        if (!_tuning->screen()) _tunings.insert(_tuning.get());
+      }
+      return _tunings;
+    }
 
     Tuning* TuningList::operator[](int _index)
     {

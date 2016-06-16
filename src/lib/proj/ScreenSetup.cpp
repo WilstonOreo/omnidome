@@ -48,11 +48,17 @@ namespace omni {
     void ScreenSetup::setScreenMultiplex(
         QScreen const* _screen, 
         ScreenMultiplex const& _multiplex) {
-      multiplex_[_screen] = _multiplex;
+      //multiplex_[_screen] = _multiplex;
     }
 
     float ScreenSetup::subScreenAspectRatio(QScreen const* _screen, int _index) const {
-      auto&& _rect = screenMultiplex(_screen)
+      if (!_screen) {
+        int   _w = standardScreen()->geometry().width();
+        int   _h = standardScreen()->geometry().height();
+        return float(_w) / float(_h); 
+      }
+      
+      QRect&& _rect = screenMultiplex(_screen)
         .contentGeometry(screenGeometry(_screen).size(),_index);
       return float(_rect.width()) / float(_rect.height());
     }

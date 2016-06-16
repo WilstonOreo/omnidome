@@ -21,6 +21,7 @@
 #define OMNI_PROJ_SCREENSETUP_H_
 
 #include <set>
+#include <unordered_map>
 #include <vector>
 #include <QScreen>
 #include <omni/proj/ScreenMultiplex.h>
@@ -90,7 +91,7 @@ namespace omni {
 
       private:
         Session const& session_;
-        std::map<QScreen const*,ScreenMultiplex> multiplex_;
+        std::unordered_map<QScreen const*,ScreenMultiplex> multiplex_;
     };
   }
 
