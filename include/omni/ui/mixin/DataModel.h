@@ -37,17 +37,17 @@ namespace omni {
         struct PointerType<T, true>{
           typedef T                 data_type;
           typedef std::shared_ptr<T>type;
-	  
-	  static void initialize(type& _t) {
-	  }
 
-          static T* raw_pointer(type _t) {
-            return _t.get();
-          }
+           static void initialize(type& _t) {
+           }
 
-          static T const* raw_pointer_const(type _t) {
-            return _t.get();
-          }
+           static T* raw_pointer(type _t) {
+              return _t.get();
+           }
+
+           static T const* raw_pointer_const(type _t) {
+                return _t.get();
+           }
         };
 
         /// Use raw pointer (T*) when shared is false
@@ -55,9 +55,9 @@ namespace omni {
         struct PointerType<T, false>{
           typedef T *type;
 
-	  static void initialize(type& _t) {
-		_t = nullptr;
-	  }
+          static void initialize(type& _t) {
+            _t = nullptr;
+          }
 
           static T* raw_pointer(type _t) {
             return _t;

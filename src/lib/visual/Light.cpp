@@ -132,8 +132,7 @@ namespace omni {
     Light::param_type Light::eye4() const
     {
       auto e = eye();
-
-      return param_type({ e.x(), e.y(), e.z(), GLfloat(1.0) });
+      return { e.x(), e.y(), e.z(), GLfloat(1.0) } ;
     }
 
     /// Deserialize from stream

@@ -109,7 +109,6 @@ namespace omni {
 
         void OutputPreview::drawTuning(QPainter          & _p,
                                        proj::Tuning const *_tuning) {
-            auto & _screenSetup = dataModel()->screenSetup();
 
             QRectF _imageRect(_tuning->contentGeometry().translated(-ScreenSetup::desktopRect().topLeft() + _tuning->screenGeometry().topLeft()));
             auto _tuningImageRect = this->transformedRect(_imageRect).toRect();

@@ -32,7 +32,7 @@ namespace omni {
           typedef SLIDER slider_type;
           typedef SCALAR scalar_type;
 
-	  Scale() : suffix_("m") {}
+          Scale() : suffix_("m") {}
 
           /// Set scale and apply to sliders
           virtual void setScale(float _scale) {

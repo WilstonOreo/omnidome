@@ -103,7 +103,7 @@ namespace omni {
         }
       }
 
-      /// Reset and and assign neew pointer
+      /// Reset and and assign new pointer
       template<typename PTR>
       T* reset(PTR *_p,
                QOpenGLContext *_context = QOpenGLContext::globalShareContext()) {

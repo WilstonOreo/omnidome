@@ -51,29 +51,14 @@ namespace omni {
           }
 
           /// Return pointer to tuning
-          omni::proj::Tuning* tuning() {
-            return widget_.dataModel() ?
-                   widget_.dataModel()->tunings()[index()] :
-                   nullptr;
-          }
-
-          /// Return pointer to tuning (const version)
-          omni::proj::Tuning const* tuning() const {
+          omni::proj::Tuning* tuning() const {
             return widget_.dataModel() ?
                    widget_.dataModel()->tunings()[index()] :
                    nullptr;
           }
 
           /// Return pointer to blend mask
-          omni::BlendMask* blendMask()
-          {
-            if (!tuning()) return nullptr;
-
-            return tuning() ? &tuning()->blendMask() : nullptr;
-          }
-
-          /// Return pointer to blend mask (const version)
-          omni::BlendMask const* blendMask() const
+          omni::BlendMask* blendMask() const
           {
             if (!tuning()) return nullptr;
 
@@ -81,15 +66,7 @@ namespace omni {
           }
 
           /// Return pointer to warp grid
-          omni::WarpGrid* warpGrid()
-          {
-            if (!tuning()) return nullptr;
-
-            return tuning() ? &tuning()->warpGrid() : nullptr;
-          }
-
-          /// Return pointer to warp grid (const version)
-          omni::WarpGrid const* warpGrid() const
+          omni::WarpGrid* warpGrid() const
           {
             if (!tuning()) return nullptr;
 
