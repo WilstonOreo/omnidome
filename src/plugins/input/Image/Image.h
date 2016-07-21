@@ -20,6 +20,7 @@
 #ifndef OMNI_INPUT_IMAGE_H_
 #define OMNI_INPUT_IMAGE_H_
 
+#include <omni/visual/ContextBoundPtr.h>
 #include <omni/input/Interface.h>
 #include <omni/media/Location.h>
 
@@ -70,7 +71,7 @@ namespace omni {
       private:
         QImage image_;
         media::Location imageLocation_;
-        std::unique_ptr<QOpenGLTexture> texture_;
+        ContextBoundPtr<QOpenGLTexture> texture_;
     };
   }
 }

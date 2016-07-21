@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="/shaders">
+    <file>SphericalTestImage.frag</file>
+    <file>CubeMapTestImage.frag</file>
+    <file>SphericalTestImage.vert</file>
+    <file>CubeMapTestImage.vert</file>
+  </qresource>
+  <qresource>
+    <file>OMNISTAR.png</file>
+  </qresource>
+</RCC>
