@@ -44,6 +44,7 @@ namespace omni {
         template<typename PTR>
         ContextBoundPtrInternal(PTR *_ptr, QOpenGLContext *_context) :
           ptr_(_ptr), context_(_context) {
+
           connection_ = QObject::connect(_context,
                                          &QOpenGLContext::aboutToBeDestroyed,
                                          [&]() {
@@ -56,7 +57,7 @@ namespace omni {
 
           /// Make sure object is destroyed in its context
           contextSwitch(context_,[&](QOpenGLFunctions& _) {
-              deleter_type()(ptr_);
+            deleter_type()(ptr_);
           });
         }
 
