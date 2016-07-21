@@ -29,8 +29,7 @@ namespace omni {
   namespace ui {
     TuningGLView::TuningGLView(QWidget *_parent) :
       GLView(_parent),
-      mixin::TuningFromIndex<TuningGLView>(*this),
-      cursorPosition_(0.0, 0.0)
+      mixin::TuningFromIndex<TuningGLView>(*this)
     {
       setViewOnly(false);
       setFocusPolicy(Qt::StrongFocus);
@@ -82,18 +81,9 @@ namespace omni {
       setMouseTracking(showCursor_ && !viewOnly_);
     }
 
-    void TuningGLView::setFullScreenMode(bool _fullscreenMode) {
-      fullscreenMode_ = _fullscreenMode;
-      triggerUpdate();
-    }
-
     bool TuningGLView::showCursor() const
     {
       return showCursor_;
-    }
-
-    bool TuningGLView::fullscreenMode() const {
-      return fullscreenMode_;
     }
 
     bool TuningGLView::isDrawingEnabled() const
@@ -111,26 +101,6 @@ namespace omni {
       return border_;
     }
 
-    void TuningGLView::setChildViews(std::set<TuningGLView *>const& _childViews)
-    {
-      childViews_ = _childViews;
-    }
-
-    std::set<TuningGLView *>TuningGLView::childViews() const
-    {
-      return childViews_;
-    }
-
-    void TuningGLView::updateWithChildViews()
-    {
-      triggerUpdate();
-
-      for (auto& _childView : childViews_)
-      {
-        _childView->triggerUpdate();
-      }
-    }
-
     void TuningGLView::setBorder(float _border)
     {
       border_ = _border;
@@ -140,6 +110,8 @@ namespace omni {
     void TuningGLView::mouseMoveEvent(QMouseEvent *event)
     {
       if (!dataModel() || !tuning() || (viewOnly() && !showCursor_)) return;
+      
+      auto *_vizTuning = tuning()->visualizer();
 
       auto && _rect = viewRect();
       float dx = float(event->x() - mousePosition().x()) / width() *
@@ -162,9 +134,7 @@ namespace omni {
           {
             _selected->pos() += QPointF(dx, -dy);
           }
-          auto *_vizTuning = tuning()->visualizer();
           _vizTuning->updateWarpGrid();
-          updateWithChildViews();
         }
         else if (_mode == Session::Mode::BLEND)
         {
@@ -178,31 +148,15 @@ namespace omni {
             lastStrokePos_ = _from;
           }
 
-          for (auto& _childView : childViews_)
-          {
-            _childView->cursorPosition_ = cursorPosition_;
-          }
-
-          auto *_vizTuning = tuning()->visualizer();
           _vizTuning->setBlendTextureUpdateRect(QRect(_from, _to));
           _vizTuning->updateBlendTexture();
-          updateWithChildViews();
         }
       }
 
       mousePosition_  = event->pos();
-      cursorPosition_ = screenPos(mousePosition_);
-
-      if (!mouseDown_ && showCursor())
-      {
-        for (auto& _childView : childViews_)
-        {
-          _childView->cursorPosition_ = cursorPosition_;
-
-          if (_childView->showCursor()) _childView->triggerUpdate();
-        }
-        triggerUpdate();
-      }
+      _vizTuning->setCursorPosition(screenPos(mousePosition_));
+      emit dataModelChanged();
+      triggerUpdate();
     }
 
     void TuningGLView::mousePressEvent(QMouseEvent *event)
@@ -255,12 +209,10 @@ namespace omni {
 
         leftOverDistance_ = 0.0;
       }
-
-      for (auto& _childView : childViews_)
-      {
-        _childView->cursorPosition_ = cursorPosition_;
-      }
-      updateWithChildViews();
+      
+      emit dataModelChanged();
+      
+      triggerUpdate();
     }
 
     void TuningGLView::mouseReleaseEvent(QMouseEvent *event)
@@ -269,6 +221,7 @@ namespace omni {
 
       mouseDown_ = false;
       auto _mode = dataModel()->mode();
+      auto *_vizTuning = tuning()->visualizer();
 
       if (_mode == Session::Mode::BLEND)
       {
@@ -288,9 +241,10 @@ namespace omni {
         }
       }
       this->mousePosition_  = event->pos();
-      this->cursorPosition_ = screenPos(this->mousePosition_);
+      _vizTuning->setCursorPosition(screenPos(this->mousePosition_));
+      emit dataModelChanged();
 
-      updateWithChildViews();
+      triggerUpdate();
     }
 
     void TuningGLView::wheelEvent(QWheelEvent *event)
@@ -303,7 +257,8 @@ namespace omni {
       {
         auto& _blendMask = tuning()->blendMask();
         _blendMask.changeBrushSize(event->delta() / 5.0);
-        updateWithChildViews();
+        triggerUpdate();
+        emit dataModelChanged();
       }
     }
 
@@ -323,7 +278,7 @@ namespace omni {
                                     _p->pos() += QPointF(_x, _y);
                                   }
                                   tuning()->visualizer()->updateWarpGrid();
-                                  updateWithChildViews();
+                                  triggerUpdate();
                                 };
 
         switch (event->key()) {
@@ -343,6 +298,8 @@ namespace omni {
           _moveWarpPoint(_distance, 0.0);
           break;
         }
+
+        emit dataModelChanged();
       }
     }
 
@@ -441,14 +398,7 @@ namespace omni {
 
       drawOnSurface([&](QOpenGLFunctions& _)
       {
-        _.glDisable(GL_LIGHTING);
-        _.glBindTexture(GL_TEXTURE_2D, 0);
-        _.glDisable(GL_COLOR_MATERIAL);
-        _.glEnable(GL_BLEND);
-        _.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         tuning()->visualizer()->drawWarpGrid();
-        _.glEnable(GL_LIGHTING);
-        _.glEnable(GL_COLOR_MATERIAL);
       });
     }
 
@@ -468,13 +418,13 @@ namespace omni {
 
       if ((showCursor_) &&
           (tuning() == dataModel()->tunings().current())) {
-        tuning()->visualizer()->drawCursor(cursorPosition_);
+        tuning()->visualizer()->drawCursor();
       }
     }
 
     bool TuningGLView::flipped() const {
       return tuning()->projector().setup()->flipped() &&
-        (!fullscreenMode_ || !dataModel()->hasOutput() || dataModel()->mode() == Session::Mode::SCREENSETUP);
+        (!dataModel()->hasOutput() || dataModel()->mode() == Session::Mode::SCREENSETUP);
     }
 
     void TuningGLView::drawOutput(float _blendMaskOpacity,
@@ -488,9 +438,7 @@ namespace omni {
           _inputOpacity, _color, _blendMaskOpacity,
           tuning()->outputDisabled() && viewOnly());
 
-        if (!fullscreenMode()) {
-          tuning()->visualizer()->drawScreenBorder();
-        }
+        tuning()->visualizer()->drawScreenBorder();
       });
     }
 
@@ -500,7 +448,6 @@ namespace omni {
         1.0 /* draw blend mask with alpha = 1.0 */,
         1.0 /* draw input */);
     }
-
 
     void TuningGLView::drawTestCard()
     {
@@ -530,17 +477,12 @@ namespace omni {
       if (!tuning() || !tuning()->visualizer()) return;
       makeCurrent();
 
-      auto *_vizSession = dataModel()->visualizer();
-      if (!_vizSession) return;
-
       withCurrentContext([&](QOpenGLFunctions& _)
       {
       	visual::viewport(this);
         _.glClearColor(0.0, 0.0, 0.0, 1.0);
         _.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        if (tuning()->outputDisabled() && this->fullscreenMode()) return;
-        
+ 
         if (!dataModel()->hasOutput())
         {
           drawTestCard();

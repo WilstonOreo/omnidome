@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -35,11 +35,22 @@ namespace omni {
       void attachTuning(proj::Tuning const* _tuning);
       void detachTuning(proj::Tuning const* _tuning);
 
+      void showDragWidget(int _index, QColor _color);
+      void hideDragWidget();
+
     private:
       void paint();
+      bool initialize();
       std::set<proj::Tuning const*> tunings_;
 
       QScreen const* screen_ = nullptr;
+  
+      inline bool showDragWidget() const {
+        return dragWidgetColor_ != -1;
+      }
+
+      int dragWidgetIndex_ = -1;
+      QColor dragWidgetColor_;
     };
   }
 }

@@ -27,7 +27,6 @@
 #include <omni/ui/mixin/TransformedRect.h>
 #include <omni/ui/mixin/DataModel.h>
 #include "proj/Tuning.h"
-#include "ScreenSetupDragWidget.h"
 #include "ScreenItem.h"
 
 namespace omni {
@@ -63,6 +62,10 @@ namespace omni {
       public slots:
         /// Update screen dimensions
         void updateScreens();
+
+        /// Update all fullscreen views
+        void updateViews();
+
         void closeFullscreenWindows();
 
         void assignNewTuningToNextFreeScreen();

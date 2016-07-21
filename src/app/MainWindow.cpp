@@ -96,6 +96,8 @@ MainWindow::MainWindow(QMainWindow *parent) :
     _layout->addWidget(tuningView_.get());
     tuningView_->setBorder(0.5);
     tuningView_->setKeepAspectRatio(true);
+    connect(tuningView_.get(),SIGNAL(dataModelChanged()), 
+        this,SLOT(updateAllViews()));
 
     export_.reset(new Export(this));
     _layout->addWidget(export_.get());
@@ -123,9 +125,6 @@ MainWindow::MainWindow(QMainWindow *parent) :
 
   /// Set dock widget tabs
   {
-
-//    ui_->dockCanvas->setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint |
-//        Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint);
     tabifyDockWidget(ui_->dockCanvas, ui_->dockScene);
     tabifyDockWidget(ui_->dockInputs, ui_->dockMapping);
     tabifyDockWidget(ui_->dockInputs, ui_->dockColorCorrection);
@@ -430,6 +429,8 @@ void MainWindow::updateAllViews()
     tuningView_->triggerUpdate();
     break;
   }
+ 
+  screenSetup_->updateViews();
   ui_->tuningList->updateViews();
 }
 
@@ -489,7 +490,6 @@ void MainWindow::setTuningIndex()
   int _index = session_->tunings().currentIndex();
 
   tuningView_->setTuningIndex(_index);
-  tuningView_->setChildViews(ui_->tuningList->getViews(_index));
 
   ui_->dockColorCorrectionWidget->updateFrontend();
   ui_->dockBlendWidget->updateFrontend();

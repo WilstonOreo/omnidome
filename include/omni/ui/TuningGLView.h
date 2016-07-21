@@ -53,13 +53,8 @@ namespace omni {
         /// Returns true if cursor is visible
         bool                    showCursor() const;
 
-        bool                    fullscreenMode() const;
-
         /// Return relative border value
         float                   border() const;
-
-        void                    setChildViews(std::set<TuningGLView *>const&);
-        std::set<TuningGLView *>childViews() const;
 
       public slots:
         /// Set tuning index from session
@@ -80,11 +75,6 @@ namespace omni {
 
         /// Set relative border distance
         void setBorder(float);
-
-        /// Set fullscreen mode
-        void setFullScreenMode(bool);
-
-        void updateWithChildViews();
 
       private slots:
 
@@ -158,9 +148,6 @@ namespace omni {
         /// Flag which tells if mouse button is down
         bool mouseDown_ = false;
 
-        /// Cursor position (is not mouse position when widget is view only)
-        QPointF cursorPosition_;
-
         /// Last stroke position
         QPointF lastStrokePos_;
 
@@ -172,11 +159,6 @@ namespace omni {
 
         /// Relative border
         float border_ = 0.0;
-
-        /// True if this widget is shown in fullscreen mode
-        bool fullscreenMode_ = false;
-
-        std::set<TuningGLView *> childViews_;
     };
   }
 }

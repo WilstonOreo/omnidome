@@ -124,7 +124,7 @@ namespace omni {
     void SubScreenItem::attachTuningWidget(omni::ui::proj::Tuning *_tuningWidget)
     {
       _tuningWidget->attachScreen(parent()->screen(), index_);
-      parent()->fullscreen_->attach(index_, _tuningWidget->fullscreenWidget());
+      parent()->fullscreen_->attachTuning(_tuningWidget->tuning());
       tuningWidget_ = _tuningWidget;
       parent()->screenSetup_.update();
     }
@@ -132,7 +132,7 @@ namespace omni {
     void SubScreenItem::detachTuningWidget() {
       if (!tuningWidget_) return;
 
-      parent()->fullscreen_->detach(index_);
+      parent()->fullscreen_->detachTuning(tuningWidget_->tuning());
       tuningWidget()->detachScreen();
       tuningWidget_ = nullptr;
       parent()->screenSetup_.update();
@@ -146,7 +146,7 @@ namespace omni {
       QScreen const *_screen) :
       screenSetup_(_screenSetup),
       screen_(_screen),
-      fullscreen_(new FullScreen(_screen))
+      fullscreen_(new FullscreenTuningGLView(_screen))
     {
       int _numScreens = omni::proj::ScreenSetup::subScreenCountForScreen(_screen);
 
@@ -230,7 +230,7 @@ namespace omni {
              .toRect();
     }
 
-    FullScreen*  ScreenItem::fullscreen() {
+    FullscreenTuningGLView*  ScreenItem::fullscreen() {
       return fullscreen_.get();
     }
 

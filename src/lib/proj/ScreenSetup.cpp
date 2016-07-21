@@ -147,7 +147,6 @@ namespace omni {
         }
       }
       return 1;
-
     }
 
     int ScreenSetup::subScreenWidth(QScreen const *_screen) const

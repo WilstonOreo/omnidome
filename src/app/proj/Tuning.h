@@ -74,12 +74,6 @@ namespace omni {
           /// Destructor
           ~Tuning();
 
-          /// Return pointer to fullscreen widget
-          TuningGLView      * fullscreenWidget();
-
-          /// Return pointer to fullscreen widget (const version)
-          TuningGLView const* fullscreenWidget() const;
-
           /// Return pointer to preview widget
           TuningGLView      * previewWidget();
 
@@ -204,9 +198,6 @@ namespace omni {
 
           /// GL preview widget
           QWidgetPtr<TuningGLView> glView_;
-
-          // Fullscreen GL widget
-          QWidgetPtr<TuningGLView> fullscreen_;
 
           /// Window State
           WindowState windowState_ = ADJUSTMENT_SLIDERS;

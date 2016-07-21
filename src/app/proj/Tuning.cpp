@@ -68,8 +68,6 @@ namespace omni {
       void Tuning::dataToFrontend() {
         glView_->setDataModel(dataModel());
         glView_->setTuningIndex(index());
-        fullscreen_->setDataModel(dataModel());
-        fullscreen_->setTuningIndex(index());
         titleBar_->setColor(tuning()->color());
 
         setScale(dataModel()->scene().size());
@@ -116,16 +114,6 @@ namespace omni {
 
       bool Tuning::frontendToData() {
         return false;
-      }
-
-      TuningGLView * Tuning::fullscreenWidget()
-      {
-        return fullscreen_.get();
-      }
-
-      TuningGLView const * Tuning::fullscreenWidget() const
-      {
-        return fullscreen_.get();
       }
 
       TuningGLView * Tuning::previewWidget()
@@ -261,10 +249,6 @@ namespace omni {
       {
         glView_->makeCurrent();
         glView_->triggerUpdate();
-        if (fullscreen_) {
-          fullscreen_->makeCurrent();
-          fullscreen_->triggerUpdate();
-        }
       }
 
       void Tuning::setup()
@@ -303,12 +287,10 @@ namespace omni {
         glView_->setViewOnly(true);
         glView_->setUpdateFrequency(10.0); // 10.0 fps
         glView_->installEventFilter(this);
-        layout_->addWidget(glView_.get(), TuningLayout::Role::PREVIEW);
 
-        fullscreen_.reset(new TuningGLView());
-        fullscreen_->setShowCursor(true);
-        fullscreen_->setFullScreenMode(true);
-        fullscreen_->hide();
+        connect(glView_.get(),SIGNAL(dataModelChanged()),this,SIGNAL(dataModelChanged()));
+
+        layout_->addWidget(glView_.get(), TuningLayout::Role::PREVIEW);
 
         /// FOV view slider
         /// @todo Connect this with threshold slider
@@ -583,8 +565,6 @@ namespace omni {
             break;
           }
         });
-
-        fullscreen_->update();
       }
 
       void Tuning::resizeEvent(QResizeEvent *event)
