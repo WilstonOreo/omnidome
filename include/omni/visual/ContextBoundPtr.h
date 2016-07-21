@@ -35,37 +35,35 @@ namespace omni {
       /// The internal structure responsible for deleting the object
       template<typename T, typename DELETER = std::default_delete<T>>
       struct ContextBoundPtrInternal {
+
+        using element_type = T;
+        using deleter_type = DELETER;
+
         friend omni::visual::ContextBoundPtr<T,DELETER>;
+
         template<typename PTR>
-        ContextBoundPtrInternal(PTR *_ptr, QOpenGLContext *_context) {
-           connection_ = QObject::connect(_context,
+        ContextBoundPtrInternal(PTR *_ptr, QOpenGLContext *_context) :
+          ptr_(_ptr), context_(_context) {
+          connection_ = QObject::connect(_context,
                                          &QOpenGLContext::aboutToBeDestroyed,
                                          [&]() {
             delete this;
           });
-          ptr_ = _ptr;
-          context_  = _context;
-          surface_  = _context->surface();
         }
 
         ~ContextBoundPtrInternal() {
           QObject::disconnect(connection_);
-          if (!QOpenGLContext::currentContext()) return;
 
           /// Make sure object is destroyed in its context
           contextSwitch(context_,[&](QOpenGLFunctions& _) {
-            if (ptr_) {
-              DELETER()(ptr_);
-              ptr_ = nullptr;
-            }
+              deleter_type()(ptr_);
           });
         }
 
-        private:
-          QMetaObject::Connection connection_;
-          T                  *ptr_ = nullptr;
-          QSurface       *surface_ = nullptr;
-          QOpenGLContext *context_ = nullptr;
+      private:
+        QMetaObject::Connection connection_;
+        element_type       *ptr_ = nullptr;
+        QOpenGLContext *context_ = nullptr;
       };
     }
 
@@ -75,6 +73,9 @@ namespace omni {
      **/
     template<typename T, typename DELETER = std::default_delete<T>>
     struct ContextBoundPtr {
+      using element_type = T;
+      using deleter_type = DELETER;
+
       ContextBoundPtr() {}
 
       template<typename PTR>
@@ -85,8 +86,6 @@ namespace omni {
       }
 
       ~ContextBoundPtr() {
-        // Internal is not deleted here because its done by the bound context
-        //reset();
       }
 
       /// Delete copy constructor
@@ -110,8 +109,7 @@ namespace omni {
         /// Reset and make new internal object
         reset();
         /// No initialization without context!
-        bool _valid = _context ? _context->surface() != nullptr : false;
-        if (!_valid) {
+        if (!_context || !_context->isValid()) {
           return nullptr;
         }
 
@@ -144,7 +142,7 @@ namespace omni {
       }
 
       private:
-        detail::ContextBoundPtrInternal<T> *internal_ = nullptr;
+        detail::ContextBoundPtrInternal<T,DELETER> *internal_ = nullptr;
     };
   }
 

@@ -24,7 +24,7 @@ namespace omni {
   namespace visual {
     void contextSwitch(QOpenGLContext *_context, ContextFunctor f) {
       auto *_current = QOpenGLContext::currentContext();
-      if (!_current) return;
+      if (!_current || !_current->isValid()) return;
 
       if (_context != _current) {
         _context->makeCurrent(_current->surface());
@@ -45,11 +45,8 @@ namespace omni {
     void withCurrentContext(ContextFunctor f)
     {
       auto _currentContext = QOpenGLContext::currentContext();
-      if (!_currentContext) return;
+      if (!_currentContext || !_currentContext->isValid()) return;
 
-      if (!_currentContext->isValid()) {
-        return;
-      }
       QOpenGLFunctions glFuncs(_currentContext);
       f(glFuncs);
     }

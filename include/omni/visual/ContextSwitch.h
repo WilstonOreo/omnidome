@@ -25,7 +25,7 @@
 
 namespace omni {
   namespace visual {
-    typedef std::function<void (QOpenGLFunctions&)>ContextFunctor;
+    using ContextFunctor = std::function<void (QOpenGLFunctions&)>;
 
     /// Do OpenGL operations with current context, if it exists
     void withCurrentContext(ContextFunctor);

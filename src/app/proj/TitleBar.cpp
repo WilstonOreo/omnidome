@@ -109,7 +109,7 @@ namespace omni {
         layout()->removeWidget(this->label_);
 
         ///////////////////// Setup buttons
-        auto setupToolButton = [this](QUniquePtr<QToolButton>& _btn)
+        auto setupToolButton = [this](QWidgetPtr<QToolButton>& _btn)
                                {
                                  _btn.reset(new QToolButton());
                                  _btn->setAutoRaise(true);

@@ -113,22 +113,22 @@ namespace omni {
         bool locked_;
 
         /// Screen Setup page
-        QUniquePtr<ScreenSetup> screenSetup_;
+        QWidgetPtr<ScreenSetup> screenSetup_;
 
         /// ProjectionSetup/Canvas arrangement and live view page
-        QUniquePtr<SceneViewer> sceneViewer_;
+        QWidgetPtr<SceneViewer> sceneViewer_;
 
         /// Page for warp grid, blend mask and color correction
-        QUniquePtr<TuningGLView> tuningView_;
+        QWidgetPtr<TuningGLView> tuningView_;
 
         /// Page for exporting projection
-        QUniquePtr<Export> export_;
+        QWidgetPtr<Export> export_;
 
         /// Store recent sessions
         QUniquePtr<RecentSessions> recentSessions_;
 
         /// MainWindow toolbar
-        QUniquePtr<ToolBar> toolBar_;
+        QWidgetPtr<ToolBar> toolBar_;
 
         /// UI containing designed widgets of this window
         std::unique_ptr<Ui::MainWindow> ui_;

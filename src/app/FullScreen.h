@@ -57,7 +57,7 @@ namespace omni {
 
         QScreen const *screen_;
         std::map<int, QWidget *> widgets_;
-        QUniquePtr<ScreenSetupDragWidget> dragWidget_;
+        QWidgetPtr<ScreenSetupDragWidget> dragWidget_;
     };
   }
 }

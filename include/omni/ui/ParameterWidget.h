@@ -156,7 +156,7 @@ namespace omni {
         void keyPressEvent(QKeyEvent *_event);
 
         /// Slider parameter widgets
-        std::vector<QUniquePtr<QWidget> > parameters_;
+        std::vector<QWidgetPtr<QWidget> > parameters_;
 
         /// Slider widgets, sorted by their label
         std::map<QString, QWidget *> parameterMap_;

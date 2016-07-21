@@ -30,19 +30,39 @@
 
 namespace omni {
   namespace util {
-    /// Pointer deleter functor
-    struct QtDeleter
+    /// QObject deleter functor
+    struct QObjectDeleter
     {
-      template<typename QOBJECT>
-      void operator()(QOBJECT *_obj)
+      template<typename T>
+      void operator()(T *p)
       {
-        if (!_obj->parent()) _obj->deleteLater();
+        static_assert(std::is_base_of<QObject,T>::value,
+          "T must be a subclass of QObject!");
+        if (!p->parent()) delete p;
       }
     };
 
+    /// QWidget deleter functor
+    struct QWidgetDeleter
+    {
+      template<typename T>
+      void operator()(T *p)
+      {
+        static_assert(std::is_base_of<QWidget,T>::value,
+          "T must be a subclass of QWidget!");
+        if (!p->parent()) p->deleteLater();
+      }
+    };
+
+
+
     /// QUniquePtr for QObjects
     template<typename T>
-    using QUniquePtr = std::unique_ptr<T, QtDeleter>;
+    using QUniquePtr = std::unique_ptr<T, QObjectDeleter>;
+
+    /// QUniquePtr for QWidgets
+    template<typename T>
+    using QWidgetPtr = std::unique_ptr<T, QWidgetDeleter>;
 
     /// Linear interpolation between two values
     template<typename T, typename A>
@@ -66,7 +86,6 @@ namespace omni {
     bool testPtrEqual(T const *_a, T const *_b)
     {
       return _a && _b ?
-
              // Call equal() member function from SerializationInterface
              _a->equal(_b) : // Otherwise
              // Compare pointer adresses
@@ -128,6 +147,7 @@ namespace omni {
 
   using util::mix;
   using util::QUniquePtr;
+  using util::QWidgetPtr;
 }
 
 #define OMNI_DEBUG \

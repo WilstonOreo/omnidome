@@ -66,8 +66,8 @@ namespace omni {
 
       private:
         /// Transform widget
-        QUniquePtr<omni::ui::AffineTransform> transform_;
-        QUniquePtr<QComboBox> boxViewMode_;
+        QWidgetPtr<omni::ui::AffineTransform> transform_;
+        QWidgetPtr<QComboBox> boxViewMode_;
     };
   }
 }

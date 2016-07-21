@@ -87,19 +87,19 @@ namespace omni {
           Tuning* tuningWidget();
 
           /// Button for resetting and projector setup selection
-          QUniquePtr<QToolButton> menuButton_;
+          QWidgetPtr<QToolButton> menuButton_;
 
           /// Button for toggling fullscreen display
-          QUniquePtr<QToolButton> displayButton_;
+          QWidgetPtr<QToolButton> displayButton_;
 
           /// Button for Minimizing/Maximizing widget
-          QUniquePtr<QToolButton> maximizeButton_;
+          QWidgetPtr<QToolButton> maximizeButton_;
 
           /// Button for closing widget
-          QUniquePtr<QToolButton> closeButton_;
+          QWidgetPtr<QToolButton> closeButton_;
 
           /// Context menu widget
-          QUniquePtr<QMenu> menu_;
+          QWidgetPtr<QMenu> menu_;
 
           /// Parent tuning widget
           Tuning *tuningWidget_ = nullptr;

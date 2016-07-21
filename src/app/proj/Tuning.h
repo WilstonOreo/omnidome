@@ -200,13 +200,13 @@ namespace omni {
           void setGroup(QString const& _groupName);
 
           /// Title bar widget
-          QUniquePtr<TitleBar> titleBar_;
+          QWidgetPtr<TitleBar> titleBar_;
 
           /// GL preview widget
-          QUniquePtr<TuningGLView> glView_;
+          QWidgetPtr<TuningGLView> glView_;
 
           // Fullscreen GL widget
-          QUniquePtr<TuningGLView> fullscreen_;
+          QWidgetPtr<TuningGLView> fullscreen_;
 
           /// Window State
           WindowState windowState_ = ADJUSTMENT_SLIDERS;

@@ -60,8 +60,8 @@ namespace omni {
                 void setup();
 
                 omni::input::Syphon* input_ = nullptr;
-                QUniquePtr<InputPreview> preview_;
-                QUniquePtr<QComboBox> boxServerList_;
+                QWidgetPtr<InputPreview> preview_;
+                QWidgetPtr<QComboBox> boxServerList_;
                 QUniquePtr<SyphonServerItemModel> model_;
                 std::unique_ptr<omni::input::SyphonServerManager> serverManager_;
             };
