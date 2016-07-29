@@ -39,9 +39,9 @@ namespace omni {
     /// Dockwidget for editing the blend mask
     class Blend :
       public DockWidget,
-      public mixin::SharedDataModel<Session>{
-      Q_OBJECT
-             OMNI_UI_SHARED_DATAMODEL(Session)
+      public mixin::SharedDataModel<Blend,Session>{
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Blend,Session)
 
       public:
         Blend(QWidget * = nullptr);

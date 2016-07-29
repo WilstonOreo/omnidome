@@ -20,6 +20,8 @@
 #include "SyphonWidget.h"
 
 #include <QComboBox>
+#include <QSignalBlocker>
+
 #include "SyphonServerDescription.h"
 #include "SyphonServerItemModel.h"
 #include "SyphonServerManager.h"
@@ -55,9 +57,8 @@ namespace omni {
         }
 
         if (_inputIndex != -1) {
-          this->locked([&]() {
-            boxServerList_->setCurrentIndex(_inputIndex);
-          });
+          QSignalBlocker blocker(this);
+          boxServerList_->setCurrentIndex(_inputIndex);
         } else {
           boxServerList_->setCurrentIndex(0);
         }
@@ -70,7 +71,7 @@ namespace omni {
       }
 
       void Syphon::setDescriptionToInput() {
-        if (isLocked()) return;
+        if (signalsBlocked()) return;
 
         input_->setDescription(model_->getDescription(boxServerList_->currentIndex()));
       }

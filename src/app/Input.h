@@ -39,10 +39,10 @@ namespace omni {
     /// Input List widget
     class Input :
       public DockWidget,
-      public mixin::SharedDataModel<Session>,
+      public mixin::SharedDataModel<Input,Session>,
       private mixin::ParameterWidget<> {
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(Input,Session)
 
       public:
         Input(QWidget * = nullptr);

@@ -31,10 +31,10 @@ namespace omni {
      **/
     class SceneGLView :
       public GLView,
-      public mixin::SharedDataModel<Session>
+      public mixin::SharedDataModel<SceneGLView,Session>
      {
       Q_OBJECT
-      OMNI_UI_SHARED_DATAMODEL(Session)
+      OMNI_UI_SHARED_DATAMODEL(SceneGLView,Session)
 
       public:
         SceneGLView(QWidget *_parent = nullptr);

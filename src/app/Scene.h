@@ -32,9 +32,9 @@ namespace omni {
     /// Dock widget that contains view settings for the scene
     class Scene :
       public DockWidget,
-      public mixin::SharedDataModel<Session>{
+      public mixin::SharedDataModel<Scene,Session>{
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(Scene,Session)
       public:
         Scene(QWidget *_parent = nullptr);
         ~Scene();

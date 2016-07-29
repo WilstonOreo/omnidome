@@ -28,7 +28,7 @@
 #include <QDrag>
 #include <QMimeData>
 #include <QPixmap>
-
+#include <QSignalBlocker>
 
 #include <omni/ui/TuningGLView.h>
 #include <omni/proj/FreeSetup.h>
@@ -62,8 +62,7 @@ namespace omni {
       }
 
       Tuning::~Tuning()
-      {
-      }
+      {}
 
       void Tuning::dataToFrontend() {
         glView_->setDataModel(dataModel());
@@ -80,12 +79,12 @@ namespace omni {
         setParamAsFloat("Keystone",
                         tuning()->projector().keystone());
 
-        auto const* _projSetup = tuning()->projector().setup();
+        auto const *_projSetup = tuning()->projector().setup();
 
         if (_projSetup->getTypeId() == "FreeSetup")
         {
           auto *_p =
-            static_cast<omni::proj::FreeSetup const*>(_projSetup);
+            static_cast<omni::proj::FreeSetup const *>(_projSetup);
           setParamAsFloat("Yaw",   _p->yaw().degrees());
           setParamAsFloat("Pitch", _p->pitch().degrees());
           setParamAsFloat("Roll",  _p->roll().degrees());
@@ -96,7 +95,7 @@ namespace omni {
         else if (_projSetup->getTypeId() == "PeripheralSetup")
         {
           auto *_p =
-            static_cast<omni::proj::PeripheralSetup const*>(
+            static_cast<omni::proj::PeripheralSetup const *>(
               _projSetup);
           setParamAsFloat("Yaw",          _p->yaw().degrees());
           setParamAsFloat("Pitch",
@@ -140,7 +139,7 @@ namespace omni {
       void Tuning::resetToFreeSetup() {
         if (!tuning()) return;
 
-        tuning()->projector().setup("FreeSetup",dataModel()->scene().size());
+        tuning()->projector().setup("FreeSetup", dataModel()->scene().size());
         sessionModeChange();
         emit projectorSetupChanged();
       }
@@ -149,16 +148,17 @@ namespace omni {
       void Tuning::resetToPeripheralSetup() {
         if (!tuning()) return;
 
-        tuning()->projector().setup("PeripheralSetup",dataModel()->scene().size());
+        tuning()->projector().setup("PeripheralSetup",
+                                    dataModel()->scene().size());
         sessionModeChange();
         emit projectorSetupChanged();
       }
 
       void Tuning::updateParameters()
       {
-        if (!tuning() || isLocked()) return;
+        if (!tuning() || signalsBlocked()) return;
 
-        auto* _projSetup = tuning()->projector().setup();
+        auto *_projSetup = tuning()->projector().setup();
 
         if (!_projSetup) return;
 
@@ -200,7 +200,7 @@ namespace omni {
 
       void Tuning::setFov()
       {
-        if (!tuning() || isLocked()) return;
+        if (!tuning() || signalsBlocked()) return;
 
         tuning()->projector().setFov(getParamAsFloat("FOV"));
         setParamAsFloat("Throw Ratio",
@@ -213,7 +213,7 @@ namespace omni {
       /// Set Throw Ratio to projector from slider
       void Tuning::setThrowRatio()
       {
-        if (!tuning() || isLocked()) return;
+        if (!tuning() || signalsBlocked()) return;
 
         tuning()->projector().setThrowRatio(getParamAsFloat("Throw Ratio"));
         setParamAsFloat("FOV", tuning()->projector().fov().degrees());
@@ -223,7 +223,7 @@ namespace omni {
       }
 
       void Tuning::setKeyStone() {
-        if (!tuning() || isLocked()) return;
+        if (!tuning() || signalsBlocked()) return;
 
         tuning()->projector().setKeystone(getParamAsFloat("Keystone"));
         updateViews();
@@ -266,7 +266,7 @@ namespace omni {
                   closeButtonClicked()),              this,
                 SLOT(prepareRemove()));
         connect(titleBar_.get(), SIGNAL(colorChanged(
-                                    QColor const &)), this,
+                                          QColor const &)), this,
                 SLOT(updateParameters()));
         connect(titleBar_.get(), SIGNAL(
                   freeSetupSelected()),               this,
@@ -288,7 +288,8 @@ namespace omni {
         glView_->setUpdateFrequency(10.0); // 10.0 fps
         glView_->installEventFilter(this);
 
-        connect(glView_.get(),SIGNAL(dataModelChanged()),this,SIGNAL(dataModelChanged()));
+        connect(glView_.get(), SIGNAL(dataModelChanged()), this,
+                SIGNAL(dataModelChanged()));
 
         layout_->addWidget(glView_.get(), TuningLayout::Role::PREVIEW);
 
@@ -423,23 +424,22 @@ namespace omni {
 
       void Tuning::setGroup(QString const& _groupName)
       {
-        this->locked([&]() {
-          /// Hide all widgets temporarily
-          setParametersVisible(false);
-          glView_->setVisible(false);
+        QSignalBlocker blocker(this);
 
-          if (groups_.count(_groupName) == 0)
-          {
-            // Show title bar only if group with that name does not
-            // exist
-            layout_->setWidgets({ { titleBar_.get(),
-                                    TuningLayout::Role::TITLE } });
-          }
-          else
-          {
-            layout_->setWidgets(groups_[_groupName]);
-          }
-        });
+        /// Hide all widgets temporarily
+        setParametersVisible(false);
+        glView_->setVisible(false);
+
+        if (groups_.count(_groupName) == 0)
+        {
+          // Show title bar only if group with that name does not
+          // exist
+          layout_->setWidgets({ { titleBar_.get(),
+                                  TuningLayout::Role::TITLE } });
+        } else
+        {
+          layout_->setWidgets(groups_[_groupName]);
+        }
       }
 
       Tuning::WindowState Tuning::windowState() const
@@ -485,8 +485,7 @@ namespace omni {
       void Tuning::setSelected(bool _isSelected)
       {
         isSelected_ = _isSelected;
-
-        if (isSelected_ && !this->isLocked()) emit selected(index());
+        if (isSelected_) emit selected(index());
 
         updateColor();
       }
@@ -513,58 +512,61 @@ namespace omni {
       {
         if (!dataModel()) return;
 
-        this->locked([&]() {
-          if (windowState_ == NO_DISPLAY)
-          {
-            setGroup("Minimized");
-            return;
-          }
+        QSignalBlocker blocker(this);
 
-          if (windowState_ == DISPLAY_ONLY)
-          {
-            setGroup("PreviewOnly");
-            return;
-          }
+        if (windowState_ == NO_DISPLAY)
+        {
+          setGroup("Minimized");
+          return;
+        }
 
-          auto _mode = dataModel()->mode();
+        if (windowState_ == DISPLAY_ONLY)
+        {
+          setGroup("PreviewOnly");
+          return;
+        }
 
-          // Show close button only in screen- and projection setup
-          titleBar_->setCloseButtonVisible(
-            _mode == Session::Mode::SCREENSETUP ||
-            _mode == Session::Mode::ARRANGE);
+        auto _mode = dataModel()->mode();
 
-          switch (_mode)
-          {
-          case Session::Mode::SCREENSETUP:
-            setGroup("FOVSliders");
-            break;
+        // Show close button only in screen- and projection setup
+        titleBar_->setCloseButtonVisible(
+          _mode == Session::Mode::SCREENSETUP ||
+          _mode == Session::Mode::ARRANGE);
 
-          case Session::Mode::ARRANGE:
+        switch (_mode)
+        {
+        case Session::Mode::SCREENSETUP:
+          setGroup("FOVSliders");
+          break;
 
-            if (windowState_ ==
-                ADJUSTMENT_SLIDERS) setGroup(tuning()->projector().
-                                             setup()
-                                             ->getTypeId().str());
+        case Session::Mode::ARRANGE:
 
-            if (windowState_ == FOV_SLIDERS) setGroup("FOVSliders");
-            break;
+          if (windowState_ ==
+              ADJUSTMENT_SLIDERS) setGroup(tuning()->projector().
+                                           setup()
+                                           ->getTypeId().str());
 
-          case Session::Mode::BLEND:
-          case Session::Mode::WARP:
-          case Session::Mode::COLORCORRECTION:
-          case Session::Mode::EXPORT:
-            setGroup("PreviewOnly");
-            break;
-          case Session::Mode::LIVE:
-            /// Generate calibration data for visualizer when switching to live mode
-            tuning()->visualizer()->generateCalibrationData();
-            setGroup("PreviewOnly");
-            break;
+          if (windowState_ == FOV_SLIDERS) setGroup("FOVSliders");
+          break;
 
-          default:
-            break;
-          }
-        });
+        case Session::Mode::BLEND:
+        case Session::Mode::WARP:
+        case Session::Mode::COLORCORRECTION:
+        case Session::Mode::EXPORT:
+          setGroup("PreviewOnly");
+          break;
+
+        case Session::Mode::LIVE:
+
+          /// Generate calibration data for visualizer when switching to live
+          // mode
+          tuning()->visualizer()->generateCalibrationData();
+          setGroup("PreviewOnly");
+          break;
+
+        default:
+          break;
+        }
       }
 
       void Tuning::resizeEvent(QResizeEvent *event)
@@ -644,7 +646,7 @@ namespace omni {
 
       bool Tuning::eventFilter(QObject *_obj, QEvent *_event)
       {
-        if (this->isLocked()) return QObject::eventFilter(_obj, _event);
+        if (signalsBlocked()) return QObject::eventFilter(_obj, _event);
 
         if ((_event->type() == QEvent::MouseMove) &&
             ((_obj == glView_.get()) || (_obj == titleBar_.get())))
@@ -669,13 +671,12 @@ namespace omni {
       /// Focus event used by TuningList to set current tuning for session
       void Tuning::focusInEvent(QFocusEvent *event)
       {
-        if (!this->isLocked()) setSelected(true);
+        if (!signalsBlocked()) setSelected(true);
         QWidget::focusInEvent(event);
       }
 
       void Tuning::focusOutEvent(QFocusEvent *event)
       {
-        //                if (!this->isLocked()) setSelected(false);
         QWidget::focusOutEvent(event);
       }
     }

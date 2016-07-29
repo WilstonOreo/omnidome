@@ -109,9 +109,6 @@ namespace omni {
         /// Modified flag
         bool modified_ = false;
 
-        /// Locked flag
-        bool locked_;
-
         /// Screen Setup page
         QWidgetPtr<ScreenSetup> screenSetup_;
 

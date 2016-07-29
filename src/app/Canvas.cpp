@@ -100,7 +100,7 @@ namespace omni {
 
         void Canvas::selectCanvasType(QString _id)
         {
-            if (!dataModel() || this->isLocked()) return;
+            if (!dataModel() || signalsBlocked()) return;
 
             tryWithExceptionList<Exception>([&]() {
               canvasMemory_.store(dataModel()->canvas());

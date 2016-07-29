@@ -36,9 +36,9 @@ namespace omni {
       /// Parameter widget for channel correction
       class ChannelCorrectionParameters :
         public ParameterWidget,
-        public mixin::UnsharedDataModel<ChannelCorrection>{
+        public mixin::UnsharedDataModel<ChannelCorrectionParameters,ChannelCorrection>{
           Q_OBJECT
-          OMNI_UI_UNSHARED_DATAMODEL(ChannelCorrection)
+          OMNI_UI_UNSHARED_DATAMODEL(ChannelCorrectionParameters,ChannelCorrection)
         public:
           ChannelCorrectionParameters(QWidget * = nullptr);
           ~ChannelCorrectionParameters();

@@ -33,10 +33,10 @@ namespace omni {
     /// A GLView for visualizing all modes of a projector view (tuning)
     class TuningGLView :
       public GLView,
-      public mixin::SharedDataModel<Session>,
+      public mixin::SharedDataModel<TuningGLView,Session>,
       public mixin::TuningFromIndex<TuningGLView>{
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(TuningGLView,Session)
       public:
         TuningGLView(QWidget * = nullptr);
         ~TuningGLView();

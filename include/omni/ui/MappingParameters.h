@@ -32,10 +32,10 @@ namespace omni
      **/
     class MappingParameters :
         public ParameterWidget,
-        public mixin::UnsharedDataModel<mapping::Interface>
+        public mixin::UnsharedDataModel<MappingParameters,mapping::Interface>
     {
       Q_OBJECT
-      OMNI_UI_UNSHARED_DATAMODEL(mapping::Interface)
+      OMNI_UI_UNSHARED_DATAMODEL(MappingParameters,mapping::Interface)
 
     public:
       MappingParameters(QWidget* _parent = nullptr);

@@ -20,6 +20,7 @@
 #include <omni/ui/Rotation.h>
 
 #include <QHBoxLayout>
+#include <QSignalBlocker>
 
 namespace omni {
     namespace ui {
@@ -97,33 +98,28 @@ namespace omni {
         }
 
         void Rotation::updateX() {
-            if (!this->isLocked()) {
-                emit xChanged();
-                emit rotationChanged();
-            }
+          emit xChanged();
+          emit rotationChanged();
         }
 
         void Rotation::updateY() {
-            if (!this->isLocked()) {
-                emit yChanged();
-                emit rotationChanged();
-            }
+          emit yChanged();
+          emit rotationChanged();
         }
 
         void Rotation::updateZ() {
-            if (!this->isLocked()) {
-                emit zChanged();
-                emit rotationChanged();
-            }
+          emit zChanged();
+          emit rotationChanged();
         }
 
         void Rotation::setRotation(EulerAngles const& _angles) {
-            this->locked([&]() {
-                x_->setValue(_angles.roll().degrees());
-                y_->setValue(_angles.pitch().degrees());
-                z_->setValue(_angles.yaw().degrees());
-                emit rotationChanged();
-            });
+          {
+            QSignalBlocker blocker(this);
+            x_->setValue(_angles.roll().degrees());
+            y_->setValue(_angles.pitch().degrees());
+            z_->setValue(_angles.yaw().degrees());
+          }
+          emit rotationChanged();
         }
     }
 }

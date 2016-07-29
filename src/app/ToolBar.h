@@ -30,9 +30,9 @@ namespace omni {
     /// Omnidome main window toolbar
     class ToolBar :
       public QToolBar,
-      public mixin::SharedDataModel<Session>{
+      public mixin::SharedDataModel<ToolBar,Session>{
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(ToolBar,Session)
 
       public:
         ToolBar(QWidget * = nullptr);

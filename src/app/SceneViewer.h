@@ -34,9 +34,9 @@ namespace omni {
     /// SceneViewer widget for positioning of elements and 3D view of scene
     class SceneViewer :
       public QWidget,
-      public mixin::SharedDataModel<Session>{
+      public mixin::SharedDataModel<SceneViewer,Session>{
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(SceneViewer,Session)
       public:
         SceneViewer(QWidget * = nullptr);
         ~SceneViewer();
@@ -49,7 +49,7 @@ namespace omni {
 
       public slots:
         void triggerUpdate();
-         
+
         /// Show large widget from current input
         void showInputControlWidget();
 

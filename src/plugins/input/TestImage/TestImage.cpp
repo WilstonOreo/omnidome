@@ -44,7 +44,7 @@ namespace omni
     }
 
     void TestImage::update() {
-      bool _allocate = !polarTex_ || !sphericalShader_ || !cubeMapShader_;
+      bool _allocate = !polarTex_ || !sphericalShader_ || !cubeMapShader_;
 
       if (_allocate) {
         primaryContextSwitch([&](QOpenGLFunctions& _) {

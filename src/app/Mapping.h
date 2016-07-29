@@ -39,11 +39,10 @@ namespace omni {
     **/
     class Mapping :
       public DockWidget,
-      public mixin::SharedDataModel<Session>,
+      public mixin::SharedDataModel<Mapping,Session>,
       private mixin::ParameterWidget<> {
-      Q_OBJECT
-             OMNI_UI_SHARED_DATAMODEL(Session)
-
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Mapping,Session)
       public:
         Mapping(QWidget * = nullptr);
         ~Mapping();

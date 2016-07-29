@@ -100,7 +100,7 @@ namespace omni {
 
     void Warp::resetWarpGrid()
     {
-      if (!warpGrid() || this->isLocked()) return;
+      if (!warpGrid() || signalsBlocked()) return;
 
       warpGrid()->reset();
       dataModel()->tunings().current()->visualizer()->updateWarpGrid();

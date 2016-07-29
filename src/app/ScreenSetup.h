@@ -42,10 +42,10 @@ namespace omni {
      **/
     class ScreenSetup :
       public QWidget,
-      public mixin::SharedDataModel<Session>,
+      public mixin::SharedDataModel<ScreenSetup,Session>,
       public mixin::TransformedRect<ScreenSetup>{
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(ScreenSetup,Session)
 
       public:
         ScreenSetup(QWidget * = nullptr);

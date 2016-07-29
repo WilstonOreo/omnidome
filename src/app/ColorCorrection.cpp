@@ -19,6 +19,7 @@
 
 #include "ColorCorrection.h"
 
+#include <QSignalBlocker>
 #include <omni/util.h>
 #include <omni/Session.h>
 #include "ui_omni_ui_ColorCorrection.h"
@@ -64,13 +65,12 @@ namespace omni {
 
     void ColorCorrection::setUsed(bool _isUsed) {
       auto _tuning = dataModel()->tunings().current();
-
       if (!_tuning) return;
 
-      this->locked([&] {
+      {
+        QSignalBlocker blocker(this);
         auto& _colorCorrection = _tuning->colorCorrection();
         _colorCorrection.setUsed(_isUsed);
-
         ui_->chkIsUsed->setChecked(_isUsed);
         ui_->btnAll->setEnabled(_isUsed);
         ui_->btnRed->setEnabled(_isUsed);
@@ -78,8 +78,8 @@ namespace omni {
         ui_->btnBlue->setEnabled(_isUsed);
         ui_->graph->setEnabled(_isUsed);
         ui_->params->setEnabled(_isUsed);
-        emit dataModelChanged();
-      });
+      }
+      emit dataModelChanged();
     }
 
     void ColorCorrection::setChannel(proj::Channel _channel) {
@@ -89,7 +89,9 @@ namespace omni {
 
       if (!_tuning) return;
 
-      this->locked([&] {
+      {
+        QSignalBlocker blocker(this);
+
         ui_->btnAll->setChecked(_channel == Channel::ALL);
         ui_->btnRed->setChecked(_channel == Channel::RED);
         ui_->btnGreen->setChecked(_channel == Channel::GREEN);
@@ -100,7 +102,7 @@ namespace omni {
         ui_->graph->setDataModel(_colorCorrection);
         ui_->params->setChannel(_channel);
         ui_->params->setDataModel(_colorCorrection->correction(_channel));
-      });
+      }
     }
 
     void ColorCorrection::dataToFrontend() {

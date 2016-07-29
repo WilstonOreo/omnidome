@@ -22,6 +22,7 @@
 #include "ui_omni_ui_MainWindow.h"
 
 #include <QFileDialog>
+#include <QSignalBlocker>
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -57,7 +58,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
   ui_(new Ui::MainWindow)
 {
   ui_->setupUi(this);
-  setTabPosition(Qt::AllDockWidgetAreas,QTabWidget::North);
+  setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
   // Remove title bars from dock widgets
   {
@@ -69,7 +70,8 @@ MainWindow::MainWindow(QMainWindow *parent) :
       ui_->dockInputs,
       ui_->dockBlend
     }) {
-      _dockWidget->widget()->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+      _dockWidget->widget()->setSizePolicy(QSizePolicy::Expanding,
+                                           QSizePolicy::Expanding);
     }
   }
 
@@ -96,8 +98,8 @@ MainWindow::MainWindow(QMainWindow *parent) :
     _layout->addWidget(tuningView_.get());
     tuningView_->setBorder(0.5);
     tuningView_->setKeepAspectRatio(true);
-    connect(tuningView_.get(),SIGNAL(dataModelChanged()), 
-        this,SLOT(updateAllViews()));
+    connect(tuningView_.get(), SIGNAL(dataModelChanged()),
+            this, SLOT(updateAllViews()));
 
     export_.reset(new Export(this));
     _layout->addWidget(export_.get());
@@ -233,7 +235,8 @@ MainWindow::MainWindow(QMainWindow *parent) :
             SLOT(buttonState()));
 
     // Connect about button with toolbar showAbout slot
-    connect(ui_->actionAbout,SIGNAL(triggered()),toolBar_.get(),SLOT(showAbout()));
+    connect(ui_->actionAbout, SIGNAL(triggered()), toolBar_.get(),
+            SLOT(showAbout()));
   }
 
   {
@@ -284,30 +287,28 @@ void MainWindow::readSettings()
 void MainWindow::setupSession(std::shared_ptr<Session>& _session)
 {
   using util::enumToInt;
-  locked_ = true;
-  {
-    ui_->dockInputsWidget->clear();
-    ui_->dockSceneWidget->setDataModel(_session);
-    ui_->dockInputsWidget->setDataModel(_session);
-    toolBar_->setDataModel(_session);
-    screenSetup_->setDataModel(_session);
 
-    // Set session to pages
-    sceneViewer_->setDataModel(_session);
-    tuningView_->setDataModel(_session);
-    export_->setDataModel(_session);
+  QSignalBlocker blocker(this);
 
-    ui_->tuningList->setDataModel(_session);
-    ui_->dockMappingWidget->setDataModel(_session);
-    ui_->dockCanvasWidget->setDataModel(_session);
-    ui_->dockWarpWidget->setDataModel(_session);
-    ui_->dockBlendWidget->setDataModel(_session);
-    ui_->dockColorCorrectionWidget->setDataModel(_session);
+  ui_->dockInputsWidget->clear();
+  ui_->dockSceneWidget->setDataModel(_session);
+  ui_->dockInputsWidget->setDataModel(_session);
+  toolBar_->setDataModel(_session);
+  screenSetup_->setDataModel(_session);
 
-    screenSetup_->updateScreens();
-  }
+  // Set session to pages
+  sceneViewer_->setDataModel(_session);
+  tuningView_->setDataModel(_session);
+  export_->setDataModel(_session);
 
-  locked_ = false;
+  ui_->tuningList->setDataModel(_session);
+  ui_->dockMappingWidget->setDataModel(_session);
+  ui_->dockCanvasWidget->setDataModel(_session);
+  ui_->dockWarpWidget->setDataModel(_session);
+  ui_->dockBlendWidget->setDataModel(_session);
+  ui_->dockColorCorrectionWidget->setDataModel(_session);
+
+  screenSetup_->updateScreens();
 }
 
 void MainWindow::newProjection()
@@ -347,7 +348,7 @@ void MainWindow::saveProjectionAs()
 
   if (!_filename.isEmpty())
   {
-    std::unique_ptr<ExceptionList> _widget(new ExceptionList);
+    std::unique_ptr<ExceptionList>_widget(new ExceptionList);
     try {
       filename_ = _filename;
       session_->save(filename_);
@@ -357,6 +358,7 @@ void MainWindow::saveProjectionAs()
     } catch (Exception& e) {
       _widget->addException(e);
     }
+
     if (_widget->exceptionCount() > 0) {
       _widget->exec();
     }
@@ -384,9 +386,9 @@ void MainWindow::openProjection()
 bool MainWindow::openProjection(const QString& _filename)
 {
   filename_ = _filename;
-  std::shared_ptr<Session> _session(new Session);
+  std::shared_ptr<Session>_session(new Session);
 
-  std::unique_ptr<ExceptionList> _widget(new ExceptionList);
+  std::unique_ptr<ExceptionList>_widget(new ExceptionList);
   tryWithExceptionList<Exception>([&]() {
     _session->load(filename_);
     setupSession(_session);
@@ -422,6 +424,7 @@ void MainWindow::updateAllViews()
   case Session::Mode::LIVE:
     sceneViewer_->triggerUpdate();
     break;
+
   default:
   case Session::Mode::WARP:
   case Session::Mode::BLEND:
@@ -429,7 +432,7 @@ void MainWindow::updateAllViews()
     tuningView_->triggerUpdate();
     break;
   }
- 
+
   screenSetup_->updateViews();
   ui_->tuningList->updateViews();
 }
@@ -437,7 +440,7 @@ void MainWindow::updateAllViews()
 /// Sets modified flag to true
 void MainWindow::modified()
 {
-  if (locked_) return;
+  if (signalsBlocked()) return;
 
   modified_ = true;
   updateAllViews();
@@ -579,6 +582,7 @@ void MainWindow::setMode()
     ui_->dockInputs->show();
     ui_->dockMapping->hide();
     ui_->dockScene->show();
+
   default:
     break;
   }

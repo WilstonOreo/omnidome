@@ -36,12 +36,12 @@ namespace omni {
     /// A widget for editing an affine transformation
     class AffineTransform :
       public QWidget,
-      public mixin::UnsharedDataModel<omni::AffineTransform>,
+      public mixin::UnsharedDataModel<AffineTransform,omni::AffineTransform>,
       private mixin::Scale<RangedFloat>{
         Q_OBJECT
-        OMNI_UI_UNSHARED_DATAMODEL(omni::AffineTransform)
+        OMNI_UI_UNSHARED_DATAMODEL(AffineTransform,omni::AffineTransform)
 
-        typedef mixin::Scale<RangedFloat> mixin_scale_type;
+        using mixin_scale_type = mixin::Scale<RangedFloat>;
       public:
         AffineTransform(QWidget * = nullptr);
         ~AffineTransform();

@@ -39,10 +39,10 @@ namespace omni
 
       class TuningList :
         public QScrollArea,
-        public mixin::SharedDataModel<Session>
+        public mixin::SharedDataModel<TuningList,Session>
       {
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(TuningList,Session)
       public:
         TuningList(QWidget* = nullptr);
         ~TuningList();

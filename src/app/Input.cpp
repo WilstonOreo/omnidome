@@ -176,7 +176,7 @@ namespace omni
 
     void Input::changeSelection(QModelIndex _index)
     {
-      if (!dataModel() || this->isLocked()) return;
+      if (!dataModel() || signalsBlocked()) return;
       int _row = _index.row();
 
       if (_row < 1 || _row > dataModel()->inputs().numberOfChildren())

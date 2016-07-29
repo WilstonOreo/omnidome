@@ -77,7 +77,7 @@ namespace omni {
 
     void Mapping::selectMappingType(QString const& _id)
     {
-      if (!dataModel() || this->isLocked()) return;
+      if (!dataModel() || signalsBlocked()) return;
 
       mappingMemory_.store(dataModel()->mapping());
       dataModel()->setMapping(_id);

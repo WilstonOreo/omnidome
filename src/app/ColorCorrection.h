@@ -34,9 +34,9 @@ namespace omni {
     /// Dockwidget for editing color correction of a projector
     class ColorCorrection :
       public DockWidget,
-      public mixin::SharedDataModel<Session>{
+      public mixin::SharedDataModel<ColorCorrection,Session>{
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(ColorCorrection,Session)
       public:
         typedef omni::proj::Channel Channel;
 

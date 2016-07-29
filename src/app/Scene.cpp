@@ -22,6 +22,7 @@
 #include "ui_omni_ui_Scene.h"
 
 #include <omni/util.h>
+#include <QSignalBlocker>
 
 namespace omni {
   namespace ui {
@@ -31,7 +32,8 @@ namespace omni {
     {
       this->setup(ui_);
 
-      this->locked([&]() {
+      QSignalBlocker blocker(this);
+      {
         connect(ui_->chkInput,
                 &QCheckBox::clicked,
                 this,
@@ -88,7 +90,7 @@ namespace omni {
           ui_->lbUnit,
           ui_->chkRescaleValues
         };
-      });
+      }
     }
 
     Scene::~Scene() {
@@ -124,7 +126,7 @@ namespace omni {
     }
 
     void Scene::fitSceneSizeToCanvas() {
-      if (!dataModel() || isLocked()) return;
+      if (!dataModel() || signalsBlocked()) return;
 
       if (!dataModel()->canvas()) return;
 
@@ -141,14 +143,16 @@ namespace omni {
       }
 
       dataModel()->scene().setSize(ui_->boxSize->itemText(_index).toFloat());
-      this->locked([&]() {
+      {
+        QSignalBlocker blocker(this);
         ui_->boxSize->setCurrentIndex(_index);
-      });
+      }
+
       emit sceneScaleChanged(false);
     }
 
     void Scene::setSceneScale() {
-      if (!dataModel() || isLocked()) return;
+      if (!dataModel() || signalsBlocked()) return;
 
       auto& _scene = dataModel()->scene();
       _scene.setSize(ui_->boxSize->currentText().toFloat());
@@ -157,7 +161,7 @@ namespace omni {
     }
 
     void Scene::setUnit() {
-      if (!dataModel() || isLocked()) return;
+      if (!dataModel() || signalsBlocked()) return;
 
       auto& _scene = dataModel()->scene();
       auto && _stringList = ui_->boxUnit->currentText().split(" ");

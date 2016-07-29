@@ -20,7 +20,6 @@
 #define OMNI_UI_INPUT_SYPHON_H_
 
 #include <omni/util.h>
-#include <omni/ui/mixin/Locked.h>
 #include <omni/ui/InputPreview.h>
 #include <omni/ui/ParameterWidget.h>
 #include "Syphon.h"
@@ -32,41 +31,43 @@ namespace omni {
     class SyphonServerManager;
   }
 
-    namespace ui {
-        namespace input {
-            class SyphonServerItemModel;
+  namespace ui {
+    namespace input {
+      class SyphonServerItemModel;
 
-            /// Syphon widget
-            class Syphon :
-              public omni::ui::ParameterWidget,
-              protected omni::ui::mixin::Locked {
-                Q_OBJECT
-            public:
-                Syphon(omni::input::Syphon*, QWidget* = nullptr);
-                ~Syphon();
+      /// Syphon widget
+      class Syphon :
+        public omni::ui::ParameterWidget {
+        Q_OBJECT
 
-            public slots:
-                void updateServerList();
+        public:
+          Syphon(omni::input::Syphon *,
+                 QWidget * = nullptr);
+          ~Syphon();
 
-                /// Pass-through signal to update input preview
-                void triggerUpdate();
+        public slots:
+          void updateServerList();
 
-            signals:
-                void inputChanged();
+          /// Pass-through signal to update input preview
+          void triggerUpdate();
 
-            private slots:
-                void setDescriptionToInput();
-            private:
-                void setup();
+        signals:
+          void inputChanged();
 
-                omni::input::Syphon* input_ = nullptr;
-                QWidgetPtr<InputPreview> preview_;
-                QWidgetPtr<QComboBox> boxServerList_;
-                QUniquePtr<SyphonServerItemModel> model_;
-                std::unique_ptr<omni::input::SyphonServerManager> serverManager_;
-            };
-        }
+        private slots:
+          void setDescriptionToInput();
+
+        private:
+          void setup();
+
+          omni::input::Syphon *input_ = nullptr;
+          QWidgetPtr<InputPreview> preview_;
+          QWidgetPtr<QComboBox>    boxServerList_;
+          QUniquePtr<SyphonServerItemModel> model_;
+          std::unique_ptr<omni::input::SyphonServerManager> serverManager_;
+      };
     }
+  }
 }
 
 

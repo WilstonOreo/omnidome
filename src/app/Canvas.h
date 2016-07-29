@@ -39,10 +39,10 @@ namespace omni {
     /// Dockwidget for editing canvas type and parameters
     class Canvas :
       public DockWidget,
-      public mixin::SharedDataModel<Session>,
+      public mixin::SharedDataModel<Canvas,Session>,
       private mixin::ParameterWidget<ui::CanvasParameters> {
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(Canvas,Session)
       public:
         Canvas(QWidget * = nullptr);
         ~Canvas();

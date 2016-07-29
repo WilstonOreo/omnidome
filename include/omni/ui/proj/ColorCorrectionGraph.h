@@ -33,10 +33,9 @@ namespace omni {
       /// Widget which draws the graph for color corrections for each channel
       class ColorCorrectionGraph :
         public QWidget,
-        public mixin::UnsharedDataModel<omni::proj::ColorCorrection>{
+        public mixin::UnsharedDataModel<ColorCorrectionGraph,omni::proj::ColorCorrection>{
           Q_OBJECT
-          OMNI_UI_UNSHARED_DATAMODEL(omni::proj::ColorCorrection)
-
+          OMNI_UI_UNSHARED_DATAMODEL(ColorCorrectionGraph,omni::proj::ColorCorrection)
         public:
           ColorCorrectionGraph(QWidget * = nullptr);
           ~ColorCorrectionGraph();

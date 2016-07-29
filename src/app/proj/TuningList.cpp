@@ -126,7 +126,7 @@ namespace omni {
                                                  OMNI_MAX_NUMBER_TUNINGS));
                     return;
                 }
-                
+
                 auto *_tuning = dataModel()->tunings().add(false);
 
                 if (!_tuning) return;
@@ -297,7 +297,7 @@ namespace omni {
 
             /// Adjust sliders to scene scale
             void TuningList::updateSceneSize(bool _rescaleValues) {
-                if (!dataModel() || isLocked()) return;
+                if (!dataModel() || signalsBlocked()) return;
 
                 for (auto& _widget : widgets_) {
                     _widget->setRescaleValues(_rescaleValues);
@@ -306,7 +306,7 @@ namespace omni {
             }
 
             void TuningList::updateUnits() {
-                if (!dataModel() || isLocked()) return;
+                if (!dataModel() || signalsBlocked()) return;
 
                 for (auto& _widget : widgets_) {
                     _widget->setUnit(dataModel()->scene().unit().abbreviation());

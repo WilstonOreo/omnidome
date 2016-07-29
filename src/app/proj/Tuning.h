@@ -45,11 +45,10 @@ namespace omni {
        **/
       class Tuning :
         public ParameterWidget,
-        public mixin::SharedDataModel<Session>,
+        public mixin::SharedDataModel<Tuning,Session>,
         public mixin::TuningFromIndex<Tuning> {
-        Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
-
+          Q_OBJECT
+          OMNI_UI_SHARED_DATAMODEL(Tuning,Session)
         public:
           /// View mode (determines which elements are to be displayed)
           enum WindowState

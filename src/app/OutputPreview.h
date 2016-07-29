@@ -30,10 +30,10 @@ namespace omni {
     /// Widget to draw rendered output of a session
     class OutputPreview :
       public QWidget,
-      public mixin::SharedDataModel<Session>,
+      public mixin::SharedDataModel<OutputPreview,Session>,
       public mixin::TransformedRect<OutputPreview>{
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(OutputPreview,Session)
 
       public:
         OutputPreview(QWidget * = nullptr);

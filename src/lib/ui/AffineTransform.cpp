@@ -19,6 +19,8 @@
 
 #include <omni/ui/AffineTransform.h>
 
+#include <QSignalBlocker>
+
 #include "ui_omni_ui_AffineTransform.h"
 
 namespace omni {
@@ -71,13 +73,15 @@ namespace omni {
             if (_range <= 0.0) scaleRange_ = 1.0;
 
             scaleRange_ = _range;
-            this->locked([&] {
-                for (auto& _scale : { ui_->scaleX, ui_->scaleY, ui_->scaleZ, ui_->scale }) {
-                    _scale->setRange(1.0 / scaleRange_, scaleRange_);
-                    _scale->setSingleStep(0.05 / scaleRange_);
-                    _scale->setPageStep(0.5 / scaleRange_);
-                }
-            });
+
+            {
+              QSignalBlocker blocker(this);
+              for (auto& _scale : { ui_->scaleX, ui_->scaleY, ui_->scaleZ, ui_->scale }) {
+                  _scale->setRange(1.0 / scaleRange_, scaleRange_);
+                  _scale->setSingleStep(0.05 / scaleRange_);
+                  _scale->setPageStep(0.5 / scaleRange_);
+              }
+            }
         }
 
         /// Set unit suffix for offset

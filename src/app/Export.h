@@ -35,10 +35,9 @@ namespace omni {
 
     class Export :
       public QWidget,
-      public mixin::SharedDataModel<Session>{
-      Q_OBJECT
-             OMNI_UI_SHARED_DATAMODEL(Session)
-
+      public mixin::SharedDataModel<Export,Session>{
+        Q_OBJECT
+        OMNI_UI_SHARED_DATAMODEL(Export,Session)
       public:
         Export(QWidget * = nullptr);
         ~Export();

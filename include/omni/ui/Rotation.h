@@ -21,15 +21,13 @@
 #define OMNI_UI_ROTATION_H_
 
 #include <omni/geometry/EulerAngles.h>
-#include <omni/ui/mixin/Locked.h>
 #include "Dial.h"
 
 namespace omni {
   namespace ui {
     /// Rotation widget has three dials for rotation in X,Y,Z direction
     class Rotation :
-      public QWidget,
-      protected mixin::Locked {
+      public QWidget {
         Q_OBJECT
 
       public:

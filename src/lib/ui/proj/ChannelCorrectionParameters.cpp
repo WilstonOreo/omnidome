@@ -19,6 +19,7 @@
 
 #include <omni/ui/proj/ChannelCorrectionParameters.h>
 
+#include <QSignalBlocker>
 #include <QPushButton>
 #include <QVBoxLayout>
 
@@ -73,12 +74,14 @@ namespace omni {
              }
 
             void ChannelCorrectionParameters::reset() {
-                this->locked([&](){
-                    brightness_->setValue(0.0);
-                    contrast_->setValue(0.0);
-                    gamma_->setValue(0.0);
-                    multiplier_->setValue(0.5);
-                });
+                {
+                  QSignalBlocker blocker(this);
+                  brightness_->setValue(0.0);
+                  contrast_->setValue(0.0);
+                  gamma_->setValue(0.0);
+                  multiplier_->setValue(0.5);
+                }
+
                 updateDataModel();
             }
 
@@ -96,18 +99,19 @@ namespace omni {
                     return _slider;
                 };
 
-                this->locked([&](){
-                    brightness_ = _addSlider("Brightness");
-                    contrast_ = _addSlider("Contrast");
-                    gamma_ = _addSlider("Gamma");
-                    multiplier_ = _addSlider("Multiplier");
-                    multiplier_->setRange(0.0,1.0);
-                    multiplier_->setDefaultValue(0.5);
+                {
+                  QSignalBlocker blocked(this);
+                  brightness_ = _addSlider("Brightness");
+                  contrast_ = _addSlider("Contrast");
+                  gamma_ = _addSlider("Gamma");
+                  multiplier_ = _addSlider("Multiplier");
+                  multiplier_->setRange(0.0,1.0);
+                  multiplier_->setDefaultValue(0.5);
 
-                    reset_ = new QPushButton("Reset");
-                    layout()->addWidget(reset_);
-                    connect(reset_,SIGNAL(clicked()),this,SLOT(reset()));
-                });
+                  reset_ = new QPushButton("Reset");
+                  layout()->addWidget(reset_);
+                  connect(reset_,SIGNAL(clicked()),this,SLOT(reset()));
+                }
             }
         }
     }

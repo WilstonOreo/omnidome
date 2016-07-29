@@ -20,6 +20,7 @@
 #include <omni/ui/CanvasParameters.h>
 
 #include <omni/visual/Scene.h>
+#include <QSignalBlocker>
 
 namespace omni
 {
@@ -72,14 +73,15 @@ namespace omni
     }
 
     void CanvasParameters::setDataModel(canvas::Interface* _canvas) {
-      this->locked([&]() {
-        mixin::UnsharedDataModel<canvas::Interface>::setDataModel(_canvas);
+      {
+        QSignalBlocker blocker(this);
+        mixin_data_model_type::setDataModel(_canvas);
         if (_canvas->scene()) {
           setScale(_canvas->scene()->size());
           setUnit(_canvas->scene()->unit().abbreviation());
           updateFrontend();
         }
-      });
+      }
       emit dataModelChanged();
     }
 
@@ -88,9 +90,7 @@ namespace omni
       if (transform_) {
         transform_->setRescaleOffsetValues(_rescale);
       }
-      if (!this->isLocked()) {
-        emit dataModelChanged();
-      }
+      emit dataModelChanged();
     }
 
     /// Set slider ranges
@@ -99,9 +99,7 @@ namespace omni
       if (transform_) {
         transform_->setOffsetRangeScale(_scale);
       }
-      if (!this->isLocked()) {
-        emit dataModelChanged();
-      }
+      emit dataModelChanged();
     }
 
     /// Set slider ranges

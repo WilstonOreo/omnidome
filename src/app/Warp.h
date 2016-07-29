@@ -36,9 +36,9 @@ namespace omni {
     /// Dock widget for editing warp grid parameters
     class Warp :
       public DockWidget,
-      public mixin::SharedDataModel<Session>{
+      public mixin::SharedDataModel<Warp,Session>{
         Q_OBJECT
-        OMNI_UI_SHARED_DATAMODEL(Session)
+        OMNI_UI_SHARED_DATAMODEL(Warp,Session)
 
       public:
         Warp(QWidget * = nullptr);

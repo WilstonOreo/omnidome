@@ -31,9 +31,9 @@ namespace omni {
     **/
     class CanvasParameters :
       public ParameterWidget,
-      public mixin::UnsharedDataModel<canvas::Interface>{
+      public mixin::UnsharedDataModel<CanvasParameters,canvas::Interface>{
         Q_OBJECT
-        OMNI_UI_UNSHARED_DATAMODEL(canvas::Interface)
+        OMNI_UI_UNSHARED_DATAMODEL(CanvasParameters,canvas::Interface)
       public:
         CanvasParameters(QWidget *_parent = nullptr);
         virtual ~CanvasParameters();
