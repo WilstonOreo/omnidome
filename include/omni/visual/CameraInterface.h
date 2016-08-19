@@ -21,6 +21,7 @@
 #define OMNI_VISUAL_CAMERAINTERFACE_H_
 
 #include <QOpenGLFunctions>
+#include <QMatrix4x4>
 #include "Tracker.h"
 
 namespace omni {
@@ -56,8 +57,8 @@ namespace omni {
         qreal far() const;
         void setFar(qreal);
 
-        /// Setup perspective camera in OpenGL
-        virtual void setup(qreal _aspect) const = 0;
+        /// Setup camera matrix
+        virtual void setup(qreal _aspect) = 0;
 
         /// Deserialize from stream
         void        fromStream(QDataStream&);
@@ -65,7 +66,7 @@ namespace omni {
         /// Serialize to stream
         void        toStream(QDataStream&) const;
 
-        /// Test for equality. ScreenSetup is ignored
+        /// Test for equality.
         friend bool operator==(CameraInterface const&,
                     CameraInterface const&);
 
@@ -77,7 +78,16 @@ namespace omni {
         inline virtual void setFov(qreal _fov) {
         }
 
+        inline QMatrix4x4 const& matrix() const {
+          return matrix_;
+        }
+
+      protected:
+
+        QMatrix4x4 matrix_;
+
       private:
+
         /// camera orientation
         QVector3D up_;
 

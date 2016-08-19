@@ -1,4 +1,3 @@
-
 /* Copyright (c) 2014-2016 "Omnidome" by cr8tr
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
@@ -37,7 +36,7 @@ namespace omni {
                const QVector3D& _up = QVector3D(0.0, 0.0, 1.0));
 
         /// Setup perspective camera in OpenGL
-        void setup(qreal _aspect) const;
+        void setup(qreal _aspect);
 
         /// Return field of view value
         qreal fov() const;

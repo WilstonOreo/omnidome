@@ -50,6 +50,11 @@ cm8kr_load_plugins(${CM8KR_PLUGIN_PATH}/input)
 # Load mapping inputs
 cm8kr_load_plugins(${CM8KR_PLUGIN_PATH}/mapping)
 
+
+SET(test_OpenGLCore_LIBRARIES ${Qt5_LIBRARIES} ${GL_LIBRARIES} omni)
+SET(test_OpenGLCore_HEADERS_MOC_PATH ${CMAKE_SOURCE_DIR}/src/test/OpenGLCore )
+cm8kr_add_executable(test_OpenGLCore ${CMAKE_SOURCE_DIR}/src/test/OpenGLCore )
+
 # Setup omnidome executable
 SET(omnidome_LIBRARIES ${Qt5_LIBRARIES} ${GL_LIBRARIES} omni)
 SET(omnidome_HEADERS_MOC_PATH ${CM8KR_MAINAPP_SOURCE_PATH} )

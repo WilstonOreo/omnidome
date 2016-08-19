@@ -23,6 +23,7 @@
 #include <memory>
 #include <QColor>
 #include <QVector3D>
+#include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <omni/visual/Interface.h>
 #include <omni/proj/Projector.h>
@@ -76,6 +77,12 @@ namespace omni
       QColor color_;
       QVector3D eye_, topLeft_, topRight_, bottomLeft_, bottomRight_;
 
+      // Buffer storing geometry
+      ContextBoundPtr<QOpenGLBuffer> frustumVbo_;
+      ContextBoundPtr<QOpenGLBuffer> positioningVbo_;
+      ContextBoundPtr<QOpenGLBuffer> haloVbo_;
+
+      static ContextBoundPtr<QOpenGLShaderProgram> wireframeShader_;
       static ContextBoundPtr<QOpenGLShaderProgram> haloShader_;
     };
   }

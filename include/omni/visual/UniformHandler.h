@@ -35,7 +35,7 @@ namespace omni {
       UniformHandler(QOpenGLFunctions& _gl,
                      QOpenGLShaderProgram& _shader);
 
-      /// Destructor. Unbind all active texture units
+      /// Destructor. Unbinds all active texture units.
       ~UniformHandler();
 
       /// Set uniform value
@@ -44,20 +44,20 @@ namespace omni {
         shader_.setUniformValue(_name, _args ...);
       }
 
-      /// Set uniform value for texture with id and optional target
+      /// Set uniform value for texture with id and optional target.
       void texUniform(const char *_name,
                       GLuint _texId,
                       GLuint _target = GL_TEXTURE_2D);
 
-      /**@brief Set uniform value for texture object
-         @detail Texture object can be either QOpenGLTexture or Texture32F
+      /**@brief Set uniform value for texture object.
+         @detail Texture object can be either QOpenGLTexture or Texture32F.
        **/
       template<typename TEXTURE>
       void texUniform(const char *_name, TEXTURE& _tex) {
         texUniform(_name, _tex.textureId(), _tex.target());
       }
 
-      void texRectUniform(const char* _name, GLuint _texId, QSize _size);  
+      void texRectUniform(const char* _name, GLuint _texId, QSize _size);
 
       private:
         QOpenGLFunctions    & gl_;

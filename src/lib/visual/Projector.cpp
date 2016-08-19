@@ -19,6 +19,7 @@
 
 #include <omni/visual/Projector.h>
 
+#include <array>
 #include <omni/util.h>
 #include <omni/visual/Shader.h>
 #include <omni/proj/Frustum.h>
@@ -26,6 +27,7 @@
 namespace omni {
     namespace visual {
         ContextBoundPtr<QOpenGLShaderProgram> Projector::haloShader_;
+        ContextBoundPtr<QOpenGLShaderProgram> Projector::wireframeShader_;
 
         Projector::Projector(const proj::Projector& _proj) :
             proj_(_proj)
@@ -66,44 +68,67 @@ namespace omni {
 
         void Projector::update()
         {
+          proj::Frustum _frustum(proj_);
+
+          eye_         = QVector3D(0, 0, 0);
+          topLeft_     = _frustum.topLeft() *size_;
+          topRight_    = _frustum.topRight() *size_;
+          bottomLeft_  = _frustum.bottomLeft() *size_;
+          bottomRight_ = _frustum.bottomRight() * size_;
+
           withCurrentContext([&](QOpenGLFunctions& _) {
             initShader(haloShader_,"halo");
-          });
+            initShader(wireframeShader_,"wireframe");
 
-            proj::Frustum _frustum(proj_);
-            eye_         = QVector3D(0, 0, 0);
-            topLeft_     = _frustum.topLeft() *size_;
-            topRight_    = _frustum.topRight() *size_;
-            bottomLeft_  = _frustum.bottomLeft() *size_;
-            bottomRight_ = _frustum.bottomRight() * size_;
+            frustumVbo_.reset(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer));
+            frustumVbo_->create();
+            frustumVbo_->setUsagePattern(QOpenGLBuffer::StaticDraw);
+
+            std::array<QVector3D,16> _vertices {
+              eye_, topLeft_,
+              eye_, topRight_,
+              eye_, bottomLeft_,
+              eye_, bottomRight_,
+              topLeft_, topRight_,
+              topLeft_, bottomLeft_,
+              topRight_, bottomRight_,
+              bottomLeft_, bottomRight_
+            };
+
+            frustumVbo_->bind();
+
+            frustumVbo_->allocate(_vertices.data(), _vertices.size() * sizeof(QVector3D));
+            frustumVbo_->write(0,_vertices.data(),_vertices.size()* sizeof(QVector3D));
+            frustumVbo_->release();
+
+            haloVbo_.reset(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer));
+          });
         }
 
         void Projector::draw() const
         {
             Interface::color(color_);
 
+//            const_cast<Projector*>(this)->update();
+
             withCurrentContext([this](QOpenGLFunctions& _)
             {
                 _.glLineWidth(selected_ ? 2.0 : 1.0);
 
-                glPushMatrix();
-                {
-                    glLoadIdentity();
-                    _.glDisable(GL_COLOR_MATERIAL);
-                    _.glDisable(GL_LIGHTING);
+                useShader(*wireframeShader_,[&](UniformHandler& h) {
+                  frustumVbo_->bind();
+                  {
+                    wireframeShader_->enableAttributeArray("vertex");
+                    wireframeShader_->setAttributeBuffer("vertex", GL_FLOAT, 0, 3);
 
-                    // Apply matrix to OpenGL
-                    glMultMatrixf(proj_.matrix().constData());
-                    this->visualLine(eye_, topLeft_);
-                    this->visualLine(eye_, topRight_);
-                    this->visualLine(eye_, bottomLeft_);
-                    this->visualLine(eye_, bottomRight_);
-                    this->visualLine(topLeft_, topRight_);
-                    this->visualLine(topLeft_, bottomLeft_);
-                    this->visualLine(topRight_, bottomRight_);
-                    this->visualLine(bottomLeft_, bottomRight_);
-                }
-                glPopMatrix();
+                    h.uniform("color",QVector4D(color_.redF(),color_.greenF(),color_.blueF(),1.0f));
+                    h.uniform("matrix",proj_.matrix());
+                    glDrawArrays(GL_LINES,0,16);
+
+                    wireframeShader_->disableAttributeArray("vertex");
+                  }
+                  frustumVbo_->release();
+                });
             });
         }
 
@@ -119,9 +144,9 @@ namespace omni {
             auto _p       = proj_.pos();
             auto _setupId =
                 proj_.setup() ? proj_.setup()->getTypeId().str() :
-                "PeripheralSetup";
+                QStringLiteral("PeripheralSetup");
 
-            if (_setupId == "PeripheralSetup")
+            if (_setupId == QStringLiteral("PeripheralSetup"))
             {
                 // Draw line from center to projector ground position
                 this->visualLine(_center, QVector3D(_p.x(), _p.y(), _center.z()));

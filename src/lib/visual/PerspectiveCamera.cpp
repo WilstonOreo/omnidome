@@ -45,20 +45,13 @@ namespace omni {
       fov_ = _fov;
     }
 
-    /// Setup perspective camera in OpenGL
-    void PerspectiveCamera::setup(qreal _aspect) const
+    void PerspectiveCamera::setup(qreal _aspect)
     {
-      QMatrix4x4 _m;
-      glMatrixMode(GL_PROJECTION);
-      glLoadIdentity();
+      matrix_ = QMatrix4x4();
 
       // perspective projection
-      _m.perspective(fov_, _aspect, near(), far());
-
-      _m.lookAt(eye(), center(), up());
-
-      // Apply matrix to OpenGL
-      glMultMatrixf(_m.constData());
+      matrix_.perspective(fov_, _aspect, near(), far());
+      matrix_.lookAt(eye(), center(), up());
     }
 
     /// Deserialize from stream

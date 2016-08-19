@@ -38,11 +38,7 @@ namespace omni
 
     void Box::draw() const
     {
-        glPushMatrix();
-        {
-            vizBox_.draw();
-        }
-        glPopMatrix();
+      vizBox_.draw();
     }
 
     void Box::update()

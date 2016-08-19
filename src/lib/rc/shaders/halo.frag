@@ -1,8 +1,8 @@
-
-varying vec2 texCoord;
+#version 330
 
 uniform vec4 color;
+out vec4 fragColor;
 
 void main() {
-  gl_FragColor = vec4(color.rgb,color.a * (1.0 - clamp(texCoord.y,0.0,1.0)));
+  fragColor = color;
 }

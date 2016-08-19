@@ -4,6 +4,7 @@ layout(location = 0)in vec3 vertex;
 
 uniform mat4 matrix;
 
-void main() {
-	gl_Position = matrix * vec4(vertex,1.0);
+void main(void)
+{
+    gl_Position = matrix * vec4(vertex, 1);
 }

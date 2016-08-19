@@ -70,8 +70,10 @@ int main(int ac, char *av[])
 
   QSurfaceFormat _format;
 
-//  _format.setVersion(3,3);
-  _format.setProfile(QSurfaceFormat::CompatibilityProfile);
+  _format.setVersion(3,3);
+//  _format.setProfile(QSurfaceFormat::CompatibilityProfile);
+  _format.setProfile(QSurfaceFormat::CoreProfile);
+
 #ifdef DEBUG
   _format.setOption(QSurfaceFormat::DebugContext);
 #endif
