@@ -24,6 +24,7 @@ cm8kr_import(
   cpack
   plugin
   qt
+  cereal
 )
 
 cm8kr_set_version(1 0 1)
@@ -41,6 +42,11 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") # If mac os x
   # Put plugins in plugins folder in omnidome.app dir
   set(CM8KR_PLUGIN_OUTPUT_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/omnidome.app/Contents/PlugIns)
 ENDIF()
+
+
+SET(test_Serialization_LIBRARIES ${Qt5_LIBRARIES} omni)
+cm8kr_add_executable(test_Serialization ${CMAKE_SOURCE_DIR}/src/test/Serialization)
+
 
 cm8kr_load_plugins(${CM8KR_PLUGIN_PATH}/canvas)
 
