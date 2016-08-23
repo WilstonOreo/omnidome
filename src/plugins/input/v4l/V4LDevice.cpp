@@ -37,7 +37,9 @@ namespace omni {
 
     V4LDevice::~V4LDevice() {
 
-      /*
+      if(fd_)
+        v4l2_close(fd_);
+
       if(srcFrame) {
         av_frame_free(&srcFrame);
       }
@@ -47,8 +49,6 @@ namespace omni {
           free(rgbFrame->data[0]);
         av_frame_free(&rgbFrame);
       }
-      */
-
     }
 
     bool V4LDevice::open() {
@@ -60,7 +60,7 @@ namespace omni {
 
   		QByteArray dev = dev_.toLocal8Bit();
 
-  		fd_ = v4l2_open(dev.data(), O_RDWR | O_NONBLOCK, 0);
+  		fd_ = v4l2_open(dev.data(), O_RDONLY | O_NONBLOCK, 0);
       if(!fd_) {
         qDebug() << "Opening " << dev_ << " failed";
         return false;

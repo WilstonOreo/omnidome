@@ -64,10 +64,9 @@ namespace omni {
       private:
         std::unique_ptr<QOpenGLTexture> texture_;
 
-        V4LDevice* device_;
+        std::unique_ptr<V4LDevice> device_;
 
         QSize size_;
-        GLuint texId_;
     };
   }
 }

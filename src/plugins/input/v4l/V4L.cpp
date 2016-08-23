@@ -76,10 +76,10 @@ namespace omni {
     bool V4L::load(QString const& _path) {
       qDebug() << "V4L::load";
 
-      device_ = new V4LDevice(_path);
+      device_.reset(new V4LDevice(_path));
       device_->open();
 
-      connect(device_, SIGNAL(frameArrived(V4LFrame)), this, SLOT(onFrameArrived(V4LFrame)));
+      connect(device_.get(), SIGNAL(frameArrived(V4LFrame)), this, SLOT(onFrameArrived(V4LFrame)));
 
       return true;
     }
@@ -120,6 +120,8 @@ namespace omni {
 
     void V4L::onFrameArrived(const V4LFrame& frame) {
 
+      if (!QOpenGLContext::currentContext()) return;
+
       //qDebug() << "V4L::frameArrived";
 
       size_t width  = frame.rgbFrame->width;
@@ -137,7 +139,6 @@ namespace omni {
         QOpenGLTexture::Linear,
         QOpenGLTexture::Linear);
       texture_->allocateStorage();
-      texId_ = texture_->textureId();
 
       this->triggerUpdateCallbacks();
 
