@@ -30,7 +30,6 @@
 #include <omni/proj/Projector.h>
 #include <omni/proj/Setup.h>
 #include <omni/mapping/Interface.h>
-#include <omni/patch/List.h>
 
 namespace omni {
   class Session;
@@ -80,12 +79,6 @@ namespace omni {
 
         /// Returns reference to blend mask (const version)
         BlendMask const      & blendMask() const;
-
-        /// Return list of patches
-        PatchList            & patches();
-
-        /// Return list of patches (const version)
-        PatchList const      & patches() const;
 
         /// Color correction for projector
         ColorCorrection      & colorCorrection();
@@ -182,7 +175,6 @@ namespace omni {
         BlendMask blendMask_;
         ColorCorrection colorCorrection_;
         std::unique_ptr<visualizer_type> viz_;
-        PatchList patches_;
         Session const& session_;
     };
   }

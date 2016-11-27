@@ -103,16 +103,6 @@ namespace omni {
             return blendMask_;
         }
 
-        /// Return list of patches
-        PatchList            & Tuning::patches() {
-          return patches_;
-        }
-
-        /// Return list of patches (const version)
-        PatchList const      & Tuning::patches() const {
-          return patches_;
-        }
-
         ColorCorrection& Tuning::colorCorrection() {
             return colorCorrection_;
         }
@@ -232,7 +222,6 @@ namespace omni {
                 ("outputDisabled",outputDisabled_)
                 ("overlapOpacity",overlapOpacity_)
                 ("colorCorrection",colorCorrection_)
-                ("patches",patches_)
                 ;
 
             _map("screenGeometry", screenGeometry());
@@ -262,7 +251,6 @@ namespace omni {
             _map.get("outputDisabled",outputDisabled_);
             _map.get("overlapOpacity",overlapOpacity_);
             _map.get("colorCorrection",colorCorrection_);
-            _map.get("patches",patches_);
         }
 
         bool operator==(Tuning const& _lhs, Tuning const& _rhs)
