@@ -126,6 +126,7 @@ omni_import(
   base/include_path
   base/build_target
   base/version
+  base/add_submodule
 )
 
   # Setup build directories

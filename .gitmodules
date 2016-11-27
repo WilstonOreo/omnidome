@@ -1,0 +1,6 @@
+[submodule "omnicalib"]
+	path = omnicalib
+	url = git@github.com:WilstonOreo/omnicalib.git
+[submodule "OpenMesh"]
+	path = OpenMesh
+	url = https://www.graphics.rwth-aachen.de:9000/OpenMesh/OpenMesh.git

@@ -15,8 +15,8 @@ include(cmake-scripts/base.cmake)
 
 # Use Qt GL binding for OmniCalibration SDK
 add_definitions(-DOMNIC_USE_QT_GL)
-omni_set_version_for_project(1 0 0 OmniCalibration)
-#omni_add_submodule(omnicalib)
+#omni_set_version_for_project(1 0 0 OmniCalibration)
+omni_add_submodule(omnicalib)
 
 # Import omni modules
 omni_import(
