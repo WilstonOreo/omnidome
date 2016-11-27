@@ -27,10 +27,6 @@
 
 #include <QDebug>
 
-#ifndef OMNI_MAX_NUMBER_TUNINGS
-  #define OMNI_MAX_NUMBER_TUNINGS 6
-#endif
-
 namespace omni {
     namespace ui {
         namespace proj {
@@ -118,15 +114,6 @@ namespace omni {
             /// Add tuning with specific projector setup
             void TuningList::addTuning(QString const& _projSetupId)
             {
-                if (dataModel()->tunings().size() >= OMNI_MAX_NUMBER_TUNINGS)
-                {
-                    QMessageBox::information(this, "Information",
-                                             QString(
-                                                 "You have reached the maximum of %1 projectors.").arg(
-                                                 OMNI_MAX_NUMBER_TUNINGS));
-                    return;
-                }
-
                 auto *_tuning = dataModel()->tunings().add(false);
 
                 if (!_tuning) return;
@@ -180,17 +167,19 @@ namespace omni {
                 // Generate standard colors, for tuning
                 static std::vector<QColor> _colors;
 
+                constexpr int numColors = 16;
+
                 if (_colors.empty())
                 {
-                    _colors.reserve(OMNI_MAX_NUMBER_TUNINGS);
+                    _colors.reserve(numColors);
 
                     int _hue     = 0;
                     int _hueDiff = 120;
 
-                    for (int i = 0; i < OMNI_MAX_NUMBER_TUNINGS; ++i)
+                    for (int i = 0; i < numColors; ++i)
                     {
-                        int _saturation = float(OMNI_MAX_NUMBER_TUNINGS / 2 - i / 2) /
-                                          OMNI_MAX_NUMBER_TUNINGS * 2.0 * 255.0;
+                        int _saturation = float(numColors / 2 - i / 2) /
+                                          numColors * 2.0 * 255.0;
                         _colors.push_back(QColor::fromHsv(_hue, _saturation,
                                                           255));
 
@@ -206,10 +195,8 @@ namespace omni {
                 }
                 int _numTunings = dataModel()->tunings().size();
 
-                if (dataModel()->tunings().size() > OMNI_MAX_NUMBER_TUNINGS) return QColor("#000000");
-
                 /// Find first color in spectrum that is not already used
-                for (int j = 0; j < OMNI_MAX_NUMBER_TUNINGS; ++j)
+                for (int j = 0; j < numColors; ++j)
                 {
                     auto _color       = _colors[j];
                     bool _colorsEqual = false;
@@ -229,7 +216,7 @@ namespace omni {
                     if (!_colorsEqual) return _color;
                 }
 
-                return _colors[_numTunings - 1];
+                return _colors[(_numTunings - 1) % numColors];
             }
 
             void TuningList::removeTuning(int _index)
