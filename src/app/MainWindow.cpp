@@ -533,6 +533,9 @@ void MainWindow::setMode()
   ui_->dockColorCorrection->setVisible(_mode == Session::Mode::COLORCORRECTION);
   ui_->dockScene->hide();
 
+
+  ui_->grpProjectors->setVisible(_mode != Session::Mode::LIVE);
+
   switch (_mode)
   {
   case Session::Mode::SCREENSETUP:
