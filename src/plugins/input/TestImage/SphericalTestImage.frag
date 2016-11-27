@@ -1,5 +1,5 @@
 /// Omnidome Parametric Test Image
-/// (C) 2016 by cr8tr. Licensed under AGPLv2.
+/// (C) 2016 by Michael Winkelmann. Licensed under AGPLv2.
 /// Visit http://omnido.me to checkout our opensource dome mapping software!
 
 varying vec2 vTexCoord;

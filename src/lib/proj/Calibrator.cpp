@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2016 "OmniCalibration" by cr8tr
+/* Copyright (c) 2014-2016 "OmniCalibration" by Michael Winkelmann
  * Calibration Format for Omnidome (http://omnido.me).
  * Created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *

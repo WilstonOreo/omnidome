@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2015 "Omnidome" by Michael Winkelmann
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -31,7 +31,7 @@ namespace omni
     class TestImage : public QObject, public Framebuffer
     {
       OMNI_INPUT_PLUGIN_DECL
-      OMNI_PLUGIN_CR8TR("Test image","Copyright (C) 2016")
+      OMNI_PLUGIN_INFO("Test image","Copyright (C) 2016")
     public:
       OMNI_REGISTER_CLASS(Factory,TestImage)
 

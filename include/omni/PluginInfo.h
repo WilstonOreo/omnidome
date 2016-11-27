@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by Michael Winkelmann
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -111,10 +111,10 @@ namespace omni {
 #define OMNI_PLUGIN_TYPE(T) \
   Q_CLASSINFO("type", T)
 
-#define OMNI_PLUGIN_CR8TR(NAME, DESC)             \
+#define OMNI_PLUGIN_INFO(NAME, DESC)             \
   Q_CLASSINFO("version", OMNIDOME_VERSION_STRING) \
-  OMNI_PLUGIN_AUTHOR("CR8TR")                     \
-  OMNI_PLUGIN_URL("cr8tr.org / omnido.me")        \
+  OMNI_PLUGIN_AUTHOR("Michael Winkelmann")                     \
+  OMNI_PLUGIN_URL("http://omnido.me")        \
   OMNI_PLUGIN_NAME(NAME)                          \
   OMNI_PLUGIN_DESCRIPTION(DESC)
 

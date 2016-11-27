@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2016 "Omnidome" by cr8tr
+/* Copyright (c) 2014-2016 "Omnidome" by Michael Winkelmann
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -33,8 +33,8 @@ namespace omni {
         {
             QCoreApplication::setApplicationName("Omnidome");
             QCoreApplication::setApplicationVersion(OMNIDOME_VERSION_STRING);
-            QCoreApplication::setOrganizationName("cr8tr");
-            QCoreApplication::setOrganizationDomain("cr8tr.org / omnido.me");
+            QCoreApplication::setOrganizationName("Michael Winkelmann");
+            QCoreApplication::setOrganizationDomain("Michael Winkelmann.org / omnido.me");
             loadPlugins();
 
             std::vector<QString> _fonts = {

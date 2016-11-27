@@ -1,6 +1,6 @@
 /*{
  "DESCRIPTION": "Omnidome UVW Map Shader",
- "CREDIT": "cr8tr.org",
+ "CREDIT": "Michael Winkelmann",
  "CATEGORIES":
  [
  "Omnidome"
