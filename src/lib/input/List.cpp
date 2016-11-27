@@ -118,7 +118,7 @@ namespace omni {
 
     bool List::validIndex(int index) const {
     
-      return (index >= 0) || (index < size());
+      return (index >= 0) && (index < size());
     }
 
     bool operator==(List const& _lhs, List const& _rhs)
