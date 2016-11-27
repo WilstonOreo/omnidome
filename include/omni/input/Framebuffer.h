@@ -29,7 +29,7 @@ namespace omni {
     /// Input object that is renderer to a framebuffer
     class Framebuffer : public input::Interface {
     public:
-      Framebuffer(input::Interface const* = nullptr);
+      Framebuffer();
       virtual ~Framebuffer() {};
 
       virtual QSize size() const;

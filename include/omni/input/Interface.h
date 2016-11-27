@@ -32,46 +32,23 @@
 
 namespace omni {
   namespace input {
-    namespace exception {
-      /**@brief Exception is thrown when accessing input of a children
-         @detail Is only thrown when input cannot accept children
-       **/
-      class CannotHaveChildren : public omni::exception::Error {
-        public:
-          OMNI_EXCEPTION(CannotHaveChildren)
-
-          inline QString message() const throw()
-          {
-            return QString("Input cannot have children!");
-          }
-      };
-    }
-
-    class Controller;
 
     /// Generic input interface
     class Interface :
       public TypeIdInterface,
-      public PropertyMapSerializer,
-      private std::map<QString, std::unique_ptr<Interface> >{
+      public PropertyMapSerializer {
       public:
-        friend class Controller;
+        friend class input::List;
 
         typedef Interface                                     interface_type;
         typedef std::vector<Interface const*>                 inputlist_type;
-        typedef std::map<QString, std::unique_ptr<Interface> >container_type;
         typedef std::function<void ()>                        callback_type;
         typedef std::set<QString> categoryset_type;
 
-        using container_type::empty;
-        using container_type::begin;
-        using container_type::end;
-        using container_type::clear;
-
-        Interface(Interface const *_parent = nullptr);
+        Interface() {}
 
         /// Virtual destructor
-        virtual ~Interface();
+        virtual ~Interface() {}
 
         /// An input must return an OpenGL texture ID
         virtual GLuint textureId() const = 0;
@@ -81,10 +58,6 @@ namespace omni {
 
         /// An input must return width and height information
         virtual QSize size() const = 0;
-
-        inline size_t numberOfChildren() const {
-          return container_type::size();
-        }
 
         /// Return width from size
         inline int width() const
@@ -104,17 +77,12 @@ namespace omni {
         }
 
         /// Optional info text
-        QString infoText() const {
+        virtual QString infoText() const {
           return QString();
         }
 
         /// Make new parameter widget
         virtual QWidget* widget();
-
-        /// Make new large control widget for live mode
-        inline virtual QWidget* controlWidget() {
-          return nullptr;
-        }
 
         /**@brief Returns true if this input can be added
            @detail E.g., an input can be added after an initial settings dialog
@@ -123,10 +91,6 @@ namespace omni {
          **/
         inline virtual bool canAdd() {
           return true;
-        }
-
-        inline  virtual bool canHaveChildren() const {
-          return false;
         }
 
         /// Insert a new callback when input has updated and returns its unique id
@@ -149,52 +113,10 @@ namespace omni {
         inline void removeUpdateCallback(int _id) {
           updatedCallbacks_.erase(_id);
         }
-
-        /**@brief Add new input with given type id. Returns nullptr if input
-           with typeid does not exist
-           @param _id Id for the input
-         *@param _typeId Type id of input to determine which kind of input is
-         * created
-         **/
-        Interface* addInput(QString const& _id,
-                            Id const& _typeId);
-
-        /// Input with id and return pointer to input when successfully added
-        Interface* addInput(QString const& _id,
-                            Interface *_i);
-
-        /// Get id of child interface
-        QString getId(Interface const*) const;
-
-        /// Remove input with id
-        virtual void          removeInput(QString const& _id);
-
-        /// Return pointer of input with id, nullptr if input does not exist
-        Interface           * getInput(QString const& _id);
-
-        /// Return pointer of input with id, nullptr if input does not exist
-        Interface const     * getInput(QString const& _id) const;
-
-        /// Return children
-        container_type const& children() const;
-
-        /// Return parent interface (const version)
-        Interface const     * parent() const;
-
-        /// Return absolute path of interface
-        QString path() const;
-
-        /// Set new parent
-        void                  setParent(Interface *);
-
         /// Serialize to property map
-        virtual void          toPropertyMap(PropertyMap&) const;
-
+        virtual void          toPropertyMap(PropertyMap&) const {} 
         /// Deserialize from property map
-        virtual void          fromPropertyMap(PropertyMap const&);
-
-        /// Returns a list of input maintained by controller, except this one
-        inputlist_type        getAllInputs() const;
+        virtual void          fromPropertyMap(PropertyMap const&) {}
 
       private:
         inline virtual void activate() {
@@ -202,8 +124,6 @@ namespace omni {
 
         inline virtual void deactivate() {
         }
-
-        void getInputsRecurse(Interface const* _root, inputlist_type& _list, bool _excludeThis = true) const;
 
         int genCallbackId() const {
           for (size_t i = 0; i <= updatedCallbacks_.size(); ++i) {
@@ -219,7 +139,7 @@ namespace omni {
     };
 
     /// Input Factory typedef
-    typedef AbstractFactory<Interface, Interface const *>Factory;
+    typedef AbstractFactory<Interface> Factory;
   }
 
   typedef input::Interface Input;

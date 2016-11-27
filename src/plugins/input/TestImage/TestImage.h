@@ -41,7 +41,7 @@ namespace omni
         CUBEMAP
       };
 
-      TestImage(Interface const* = nullptr);
+      TestImage();
       ~TestImage();
 
       QSize size() const;

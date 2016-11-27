@@ -34,10 +34,10 @@ namespace omni {
         OMNI_REGISTER_CLASS(Factory, Image)
 
         /// Default Constructor
-        Image(Interface const * = nullptr);
+        Image() {}
 
         /// Destructor
-        ~Image();
+        ~Image() {}
 
         /// Update image
         void     update();

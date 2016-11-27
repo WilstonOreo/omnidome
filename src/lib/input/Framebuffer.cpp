@@ -24,8 +24,7 @@
 
 namespace omni {
   namespace input {
-    Framebuffer::Framebuffer(input::Interface const* _input) :
-      input::Interface(_input),
+    Framebuffer::Framebuffer() :
       size_(0,0) {
     }
 

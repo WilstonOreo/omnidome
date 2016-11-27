@@ -28,13 +28,6 @@
 
 namespace omni {
   namespace input {
-    Image::Image(Interface const *_parent) :
-      Interface(_parent)
-    {}
-
-    Image::~Image() {
-    }
-
     void Image::update()
     {
       if (image_.width() == 0) return;

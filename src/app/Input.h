@@ -79,18 +79,15 @@ namespace omni {
 
         void    inputUpdatedEmitter();
 
-        void    selectInputId(QString const&);
+        void    selectInput(int);
 
         /// Setup the item model with columns etc
         void    prepareModel();
 
         bool    showSettingsDialog(input::Interface *);
 
-        QString itemId(int _row) const;
-
         /// Add an item to input list widget
-        void    addItem(QString const& _id,
-                        input::Interface*);
+        void    addItem(input::Interface*);
 
         void    parameterWidgetSetupOptions(QWidget *_paramWidget) const;
 

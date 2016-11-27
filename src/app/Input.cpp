@@ -27,16 +27,15 @@
 
 #include <omni/Session.h>
 #include <omni/input/Interface.h>
-#include <omni/input/Controller.h>
 
 namespace omni
 {
   namespace ui
   {
     Input::Input(QWidget* _parent) :
-        DockWidget(_parent)
+      DockWidget(_parent)
     {
-        this->setup(ui_);
+      this->setup(ui_);
 
       // Make popup menu for adding inputs
       {
@@ -58,23 +57,28 @@ namespace omni
     }
 
 
-    void Input::setupInputMenu(QMenu* _menu) {
+    void Input::setupInputMenu(QMenu* _menu)
+    {
       std::map<QString,QMenu*> _categoryMenus;
       /// Find all categories
-      for (auto& _idInputClass : omni::input::Factory::classes()) {
-        auto* _input = omni::input::Factory::create(_idInputClass.first,nullptr);
+      for (auto& _idInputClass : omni::input::Factory::classes())
+      {
+        auto* _input = omni::input::Factory::create(_idInputClass.first);
         if (!_input) continue;
 
         auto _id = _idInputClass.first.str();
 
         auto _categories = _input->categories();
-        if (_categories.empty()) {
-            QAction* _menuItem = new QAction(QIcon(QString(":/input/")+ _id + QString(".png")),_id,_menu);
-            _menu->addAction(_menuItem);
+        if (_categories.empty())
+        {
+          QAction* _menuItem = new QAction(QIcon(QString(":/input/")+ _id + QString(".png")),_id,_menu);
+          _menu->addAction(_menuItem);
         }
 
-        for (auto& _category : _categories) {
-          if (!_categoryMenus.count(_category)) {
+        for (auto& _category : _categories)
+        {
+          if (!_categoryMenus.count(_category))
+          {
             _categoryMenus[_category] = new QMenu(_category);
           }
           auto* _catMenu = _categoryMenus[_category];
@@ -84,7 +88,8 @@ namespace omni
       }
 
       /// No categories exist
-      for (auto& _categoryMenu : _categoryMenus) {
+      for (auto& _categoryMenu : _categoryMenus)
+      {
         _menu->addMenu(_categoryMenu.second);
       }
     }
@@ -94,9 +99,9 @@ namespace omni
       prepareModel();
       for (auto& _input : dataModel()->inputs())
       {
-        addItem(_input.first,_input.second.get());
+        addItem(_input.get());
       }
-      selectInputId(dataModel()->inputs().currentId());
+      selectInput(dataModel()->inputs().currentIndex());
       showParameterWidget();
       emit inputIndexChanged();
     }
@@ -106,37 +111,36 @@ namespace omni
       if (!dataModel()) return;
 
       auto _idInput = dataModel()->inputs().addInput(_action->text());
-      auto& _id = _idInput.first;
-      auto& _input = _idInput.second;
+      auto& _input = _idInput;
 
       if (!_input) return;
 
       if (_input->canAdd())
       {
-        addItem(_id,_input);
-        selectInputId(_id);
+        addItem(_input);
+        selectInput(dataModel()->inputs().size()-1);
         showParameterWidget();
         emit inputIndexChanged();
-      } else
+      }
+      else
       {
-        dataModel()->inputs().removeInput(_id);
+        dataModel()->inputs().removeInput(dataModel()->inputs().size()-1);
       }
     }
 
-    void Input::selectInputId(QString const& _id) {
-        dataModel()->inputs().setCurrentId(_id);
-        auto* _current = dataModel()->inputs().current();
-        if (_current) {
-          for (auto& _input : dataModel()->inputs()) {
-            input::Controller::instance()->deactivate(_input.second.get());
-          }
-          input::Controller::instance()->activate(_current);
-          _current->update();
-          emit inputChanged();
-        }
+    void Input::selectInput(int index)
+    {
+      dataModel()->inputs().setCurrentIndex(index);
+      auto* _current = dataModel()->inputs().current();
+      if (_current)
+      {
+        _current->update();
+        emit inputChanged();
+      }
     }
 
-    void Input::inputUpdatedEmitter() {
+    void Input::inputUpdatedEmitter()
+    {
       emit inputChanged();
     }
 
@@ -146,12 +150,12 @@ namespace omni
 
       int _row = ui_->inputList->currentIndex().row();
 
-      if (_row < 1 || _row > dataModel()->inputs().numberOfChildren()) return;
+      if (_row < 1 || _row > dataModel()->inputs().size()) return;
 
       auto* _item = model_->item(_row);
       if (!_item) return;
 
-      dataModel()->inputs().removeInput(_item->text());
+      dataModel()->inputs().removeInput(_row - 1);
       model_->removeRows(_row,1);
 
       this->removeParameterWidget(widget());
@@ -168,34 +172,30 @@ namespace omni
       emit inputIndexChanged();
     }
 
-    QString Input::itemId(int _row) const {
-      auto* _item = model_->item(_row);
-      if (!_item) return QString();
-      return _item->text();
-    }
-
     void Input::changeSelection(QModelIndex _index)
     {
       if (!dataModel() || signalsBlocked()) return;
       int _row = _index.row();
 
-      if (_row < 1 || _row > dataModel()->inputs().numberOfChildren())
+      if (_row < 1 || _row > dataModel()->inputs().size())
       {
-          _row = -1;
+        _row = -1;
       }
 
-      if (itemId(_row) == dataModel()->inputs().currentId()) return;
+      if (_row-1 == dataModel()->inputs().currentIndex()) return;
 
-      selectInputId(itemId(_row));
+      selectInput(_row - 1);
       showParameterWidget();
       emit inputIndexChanged();
     }
-    void Input::showParameterWidget() {
+    void Input::showParameterWidget()
+    {
 
       this->setupParameterWidget(widget(),dataModel()->inputs().current());
-      if (this->parameterWidget()) {
-          connect(this->parameterWidget(),SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
-          connect(this,SIGNAL(inputChanged()),this->parameterWidget(),SLOT(triggerUpdate()));
+      if (this->parameterWidget())
+      {
+        connect(this->parameterWidget(),SIGNAL(inputChanged()),this,SIGNAL(inputChanged()));
+        connect(this,SIGNAL(inputChanged()),this->parameterWidget(),SLOT(triggerUpdate()));
       }
     }
 
@@ -205,53 +205,48 @@ namespace omni
 
       model_.reset(new QStandardItemModel());
       model_->clear();
-      model_->setColumnCount(3);
-      model_->setHeaderData(0,Qt::Horizontal,"Id");
-      model_->setHeaderData(1,Qt::Horizontal,"Input Type");
-      model_->setHeaderData(2,Qt::Horizontal,"Info");
+      model_->setColumnCount(2);
+      model_->setHeaderData(0,Qt::Horizontal,"Input Type");
+      model_->setHeaderData(1,Qt::Horizontal,"Info");
       ui_->inputList->setModel(model_.get());
 
       QList<QStandardItem*> _row;
-      QStandardItem* _hash = new QStandardItem("#");
-      _hash->setEditable(false);
       QStandardItem* _item = new QStandardItem("(no input)");
       _item->setEditable(false);
-      _row << _hash;
       _row << _item;
       model_->invisibleRootItem()->appendRow(_row);
       ui_->inputList->resizeColumnToContents(0);
       ui_->inputList->resizeColumnToContents(1);
-      ui_->inputList->resizeColumnToContents(2);
     }
 
-    void Input::addItem(QString const& _id, input::Interface* _input)
+    void Input::addItem(input::Interface* _input)
     {
       if (!_input) return;
 
       QList<QStandardItem*> _row;
-      auto _addItem = [&](QString const& _id) {
-          QStandardItem* _item = new QStandardItem(_id);
-          _item->setEditable(false);
-          _row << _item;
+      auto _addItem = [&](QString const& _id)
+      {
+        QStandardItem* _item = new QStandardItem(_id);
+        _item->setEditable(false);
+        _row << _item;
       };
 
-      _addItem(_id);
       _addItem(_input->getTypeId().str());
       _addItem(_input->infoText());
 
       model_->invisibleRootItem()->appendRow(_row);
       ui_->inputList->resizeColumnToContents(0);
       ui_->inputList->resizeColumnToContents(1);
-      ui_->inputList->resizeColumnToContents(2);
 
       _input->setUpdateCallback(std::bind(&Input::inputUpdatedEmitter,this));
     }
 
-    void Input::parameterWidgetSetupOptions(QWidget* _paramWidget) const {
-            QSizePolicy _sizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-            _sizePolicy.setVerticalStretch(1);
-            _paramWidget->setSizePolicy(_sizePolicy);
-            _paramWidget->setMinimumSize(QSize(0,128));
+    void Input::parameterWidgetSetupOptions(QWidget* _paramWidget) const
+    {
+      QSizePolicy _sizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+      _sizePolicy.setVerticalStretch(1);
+      _paramWidget->setSizePolicy(_sizePolicy);
+      _paramWidget->setMinimumSize(QSize(0,128));
     }
   }
 }

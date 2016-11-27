@@ -41,7 +41,6 @@
 #include "proj/Tuning.h"
 #include "proj/TuningList.h"
 
-#include "SceneViewer.h"
 #include "ScreenSetup.h"
 #include "Export.h"
 #include "Mapping.h"
@@ -90,9 +89,9 @@ MainWindow::MainWindow(QMainWindow *parent) :
     screenSetup_.reset(new ScreenSetup(this));
     _layout->addWidget(screenSetup_.get());
 
-    sceneViewer_.reset(new SceneViewer(this));
-    _layout->addWidget(sceneViewer_.get());
-    sceneViewer_->view()->setUpdateFrequency(60.0);
+    sceneView_.reset(new SceneGLView(this));
+    _layout->addWidget(sceneView_.get());
+    sceneView_->setUpdateFrequency(60.0);
 
     tuningView_.reset(new TuningGLView(this));
     _layout->addWidget(tuningView_.get());
@@ -184,12 +183,6 @@ MainWindow::MainWindow(QMainWindow *parent) :
               inputIndexChanged()),                 this,
             SLOT(modified()));
 
-    connect(ui_->dockInputsWidget, SIGNAL(
-              inputIndexChanged()),                 sceneViewer_.get(),
-            SLOT(showInputControlWidget()));
-    connect(ui_->dockInputsWidget, SIGNAL(
-              inputRemoved()),                 sceneViewer_.get(),
-            SLOT(removeInputControlWidget()));
     connect(ui_->dockInputsWidget, SIGNAL(
               inputIndexChanged()),                 this,
             SLOT(setMode()));
@@ -297,7 +290,7 @@ void MainWindow::setupSession(std::shared_ptr<Session>& _session)
   screenSetup_->setDataModel(_session);
 
   // Set session to pages
-  sceneViewer_->setDataModel(_session);
+  sceneView_->setDataModel(_session);
   tuningView_->setDataModel(_session);
   export_->setDataModel(_session);
 
@@ -422,7 +415,7 @@ void MainWindow::updateAllViews()
   switch (session_->mode()) {
   case Session::Mode::ARRANGE:
   case Session::Mode::LIVE:
-    sceneViewer_->triggerUpdate();
+    sceneView_->triggerUpdate();
     break;
 
   default:
@@ -520,7 +513,7 @@ void MainWindow::setMode()
   bool _hasTunings = session_->hasOutput();
 
   screenSetup_->setVisible(_mode == Session::Mode::SCREENSETUP);
-  sceneViewer_->setVisible(_mode == Session::Mode::ARRANGE ||
+  sceneView_->setVisible(_mode == Session::Mode::ARRANGE ||
                            (_mode == Session::Mode::LIVE && _hasTunings));
   tuningView_->setVisible((
                             _mode == Session::Mode::WARP ||

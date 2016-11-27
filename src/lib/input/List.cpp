@@ -22,105 +22,108 @@
 #include <algorithm>
 #include <omni/util.h>
 #include <omni/serialization/traits.h>
-#include <omni/serialization/Interface.h>
+#include <omni/serialization/pointer.h>
+#include <omni/serialization/container.h>
 
 namespace omni {
   namespace input {
-    List::List(Interface const *_parent) : Interface(_parent)
-    {}
-
     void List::clear()
     {
-      Interface::clear();
+
     }
 
-    std::pair<QString, Input *>List::addInput(Id const& _typeId) {
-      auto _id = generateId();
-
-      return std::make_pair(_id, input::Interface::addInput(_id, _typeId));
-    }
-
-    void List::removeInput(QString const& _id)
+    Input* List::operator[](int index) const
     {
-      input::Interface::removeInput(_id);
-      if (_id == currentId_) {
-        setCurrentId("");
-      }
-    }
-
-    Input * List::operator[](QString const& _id)
-    {
-      return Interface::getInput(_id);
-    }
-
-    Input const * List::operator[](QString const& _id) const
-    {
-      return Interface::getInput(_id);
+      return getInput(index);
     }
 
     void List::fromPropertyMap(PropertyMap const& _map)
     {
-      input::Interface::fromPropertyMap(_map);
-      _map("currentId",currentId_);
-      setCurrentId(currentId_);
+      clear();
+      PropertyMap _children = _map.getValue("inputs",PropertyMap());
+      auto _ids = _children.ids();
+
+      for (auto& _id : _ids) {
+        _children.getPtr(_id,[&](Id const& _typeId) ->
+                         Input *
+          {
+            return addInput(_typeId);
+          });
+      }
+
+      
+      _map("currentIndex",currentIndex_);
+      setCurrentIndex(currentIndex_);
     }
 
     void List::toPropertyMap(PropertyMap& _map) const {
-      _map("currentId",currentId_);
-      input::Interface::toPropertyMap(_map);
+      _map("currentIndex",currentIndex_); 
+      PropertyMap _children;
+      _map.put("inputs",static_cast<container_type const&>(*this));
     }
 
-    Input const * List::current() const
+    Input* List::current() const
     {
-       return getInput(currentId_);
+       return this->operator[](currentIndex_);
     }
 
-    Input * List::current()
+    Input * List::addInput(Id const& _typeId)
     {
-      return getInput(currentId_);
+      std::unique_ptr<Input> _input(Factory::create(_typeId));
+
+      if (!_input) return nullptr;
+ 
+      container_type::emplace_back(std::move(_input));
+      return container_type::back().get();
     }
 
-    QString List::currentId() const
-    {
-      return currentId_;
+    Input* List::addInput(Input*_input) {
+      container_type::emplace_back(_input);
+      return container_type::back().get();
     }
 
-    void List::setCurrentId(QString const& _id)
-    {
-      if (getInput(_id) == nullptr) {
-        currentId_ = "";
-        return;
+    void List::removeInput(int index) {
+      if (!validIndex(index)) return;
+
+      container_type::erase(container_type::begin() + index);
+      if (!validIndex(index)) {
+        setCurrentIndex(-1);
       }
-      qDebug() << currentId_;
+    }
 
+    Input* List::getInput(int index) const {
+      if (!validIndex(index)) return nullptr;
+      return container_type::at(index).get();
+    }
+
+    int List::currentIndex() const
+    {
+      return currentIndex_;
+    }
+
+    void List::setCurrentIndex(int index)
+    {
       /// Deactivate current input
       if (current()) {
-        controller()->deactivate(current());
+        current()->deactivate();
       }
 
-      currentId_ = _id;
-      qDebug() << currentId_;
+      currentIndex_ = index;
 
       if (current()) {
         current()->update();
-        controller()->activate(current());
+        current()->activate();
       }
-      qDebug() << current();
     }
 
-    /// Return pointer to controller
-    Controller *    List::controller() {
-      return Controller::instance();
-    }
-
-    /// Return pointer to controller (const version)
-    Controller const * List::controller() const {
-      return Controller::instance();
+    bool List::validIndex(int index) const {
+    
+      return (index >= 0) || (index < size());
     }
 
     bool operator==(List const& _lhs, List const& _rhs)
     {
-      if (_lhs.currentId_ != _rhs.currentId_) return false;
+      if (_lhs.currentIndex_ != _rhs.currentIndex_) return false;
 
       if (_lhs.size() != _rhs.size()) return false;
 
@@ -129,25 +132,9 @@ namespace omni {
 
       for (; (it != _lhs.end()) && (jt != _rhs.end()); ++it, ++jt)
       {
-        if (it->first != jt->first) return false;
-
-        if (!it->second->equal(jt->second.get())) return false;
+        if (!(*it)->equal(jt->get())) return false;
       }
       return true;
-    }
-
-    QString List::generateId() const {
-      QString _id("0");
-
-      for (size_t i = 0; i <= numberOfChildren(); ++i) {
-        _id = QString("%1").arg(i);
-
-        if (getInput(_id) == nullptr)
-        {
-          return _id;
-        }
-      }
-      return _id;
     }
   }
 }

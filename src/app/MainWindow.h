@@ -35,7 +35,7 @@ namespace omni {
     namespace Ui {
       class MainWindow;
     }
-    class SceneViewer;
+    class SceneGLView;
     class ScreenSetup;
     class Export;
     class TuningGLView;
@@ -113,7 +113,7 @@ namespace omni {
         QWidgetPtr<ScreenSetup> screenSetup_;
 
         /// ProjectionSetup/Canvas arrangement and live view page
-        QWidgetPtr<SceneViewer> sceneViewer_;
+        QWidgetPtr<SceneGLView> sceneView_;
 
         /// Page for warp grid, blend mask and color correction
         QWidgetPtr<TuningGLView> tuningView_;

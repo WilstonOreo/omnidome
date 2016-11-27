@@ -20,35 +20,34 @@
 #ifndef OMNI_INPUT_LIST_H
 #define OMNI_INPUT_LIST_H
 
-#include <algorithm>
 #include <memory>
-#include <map>
+#include <vector>
 #include <omni/Id.h>
 #include <omni/input/Interface.h>
-#include <omni/input/Controller.h>
+#include <omni/serialization/PropertyMapSerializer.h>
 
 
 namespace omni {
   namespace input {
-    class Controller;
 
     /**@brief Input List contains a list of inputs, accessible over an QString id
      *@detail
      Input List is the root input of a session's input tree.
      Input List is serializable via QDataStream.
      **/
-    class List : public input::Interface {
-      public:
-        List(Interface const * = nullptr);
+    class List : 
+      public PropertyMapSerializer,
+      private std::vector< std::unique_ptr< Input > >
+    {
+      public:  
+        using container_type = std::vector< std::unique_ptr< Input >> ; 
+        List() {}
+        ~List() {}
 
-        /// A list cannot be registered in factory
-        inline void registerInFactory() const {
-        }
-
-        /// Type id is "List"
-        inline Id getTypeId() const {
-          return Id("List");
-        }
+        using container_type::size;
+        using container_type::empty;
+        using container_type::begin;
+        using container_type::end;
 
         /**@brief Add new input with given type id. Returns nullptr if input
            with typeid does not exist
@@ -57,61 +56,30 @@ namespace omni {
          *created
          *@return Pair with input id and pointer to added input
          **/
-        std::pair<QString, Input *>addInput(Id const& _typeId);
+        Input* addInput(Id const& _typeId);
 
         /// Remove input and reset current index if necessary
-        void                       removeInput(QString const& _id);
-
-        /// List can have children
-        inline bool canHaveChildren() const {
-          return true;
-        }
-
-        /// List has no size
-        inline QSize size() const {
-          return QSize(0, 0);
-        }
-
-        /// List does not have a texture
-        inline GLuint textureId() const {
-          return 0;
-        }
-
-        inline QWidget* widget() {
-          return nullptr;
-        }
+        void                       removeInput(int);
 
         /// Return input at index
-        Input       * operator[](QString const& _id);
-
-        /// Returns input at index (const version)
-        Input const * operator[](QString const& _id) const;
+        Input       * operator[](int index) const;
+    
+        Input*        getInput(int index) const;
 
         /// Delete all inputs
         void          clear();
 
-        /**@brief Returns pointer to current input
-         * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
-         **/
-        Input       * current();
+        Input* current() const;
 
-        /**@brief Returns pointer to current input (const version)
-         * @detail Returns nullptr if currentIdx_ == -1 or input list is empty
-         **/
-        Input const * current() const;
+
+        /// Input with id and return pointer to input when successfully added
+        Input* addInput(Input *_i);
 
         /// Return ID of current input
-        QString       currentId() const;
+        int           currentIndex() const;
 
         /// Set current input by ID
-        void          setCurrentId(QString const&);
-
-
-        /// Return pointer to controller
-        Controller*         controller();
-
-        /// Return pointer to controller (const version)
-        Controller const*   controller() const;
+        void          setCurrentIndex(int);
 
         /// Deserialize from property map
         void          fromPropertyMap(PropertyMap const&);
@@ -124,10 +92,9 @@ namespace omni {
                                  List const&);
 
       private:
-        /// Generate a new id for input
-        QString generateId() const;
+        bool validIndex(int) const; 
 
-        QString currentId_;
+        int currentIndex_ = -1;
     };
   }
 

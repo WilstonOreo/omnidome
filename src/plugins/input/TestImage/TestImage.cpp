@@ -33,8 +33,7 @@ namespace omni
     ContextBoundPtr<QOpenGLShaderProgram> TestImage::cubeMapShader_;
     ContextBoundPtr<QOpenGLShaderProgram> TestImage::sphericalShader_;
 
-    TestImage::TestImage(Interface const* _parent) :
-      Framebuffer(_parent),
+    TestImage::TestImage() :
       rulerPos_(0.0,0.0)
     {
     }
