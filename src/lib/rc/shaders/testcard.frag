@@ -11,7 +11,6 @@ const float soft = 0.002;
 const float PI = 3.14159265358979323846264;
 
 #include ":/shaders/grayscale.h"
-#include ":/shaders/digits.h"
 
 float circle(vec2 pos, float r)
 {
@@ -93,31 +92,6 @@ vec3 complementGradient(vec2 pos)
   return vec3(1.0,1.0,1.0);
 }
 
-
-
-
-
-vec3 text(vec2 pos)
-{
-  pos *= CHAR_SIZE;
-pos.x *= CHAR_SIZE.x * 2.0;
-pos.x -= CHAR_SIZE.x*2.0;
-pos.y += 12.0; //*sin(time);
-float col = 0.0;
-col += print_char(ch_P,pos);
-col += print_char(ch_r,pos);
-col += print_char(ch_o,pos);
-col += print_char(ch_j,pos);
-col += print_char(ch_e,pos);
-col += print_char(ch_c,pos);
-col += print_char(ch_t,pos);
-col += print_char(ch_o,pos);
-col += print_char(ch_r,pos);
-pos.x -= CHAR_SIZE.x*1.0;
-col += print_integer(projector_id,2,pos);
-return vec3(col);
-}
-
 vec3 testcard(vec2 pos)
 {
 vec2 gridPos = pos* 8.0 - 0.5;
@@ -132,8 +106,6 @@ if (abs(gridPos.x + 0.5) <= 5.99)
     g = palette(v);
   if (y <= 1.99 && y >= 0.01)
     g = grayscale(v,5.0);
-  if (y <= -0.01 && y >= -1.99)
-    g = text(v);
 
   if (y <= -1.01 && y >= -1.99)
     g = interference(v,10.0);
@@ -160,3 +132,4 @@ vec2 pos = (uv - 0.5) * 2.0 * (resolution.xy / resolution.y);// (-resolution.xy 
 
 gl_FragColor = vec4(testcard(pos), 1.0 );
 }
+
