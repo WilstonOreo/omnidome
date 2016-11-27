@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/shaders/mapping">
+    <file>Cylindrical.frag</file>
+  </qresource>
+</RCC>
