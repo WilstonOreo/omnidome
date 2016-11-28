@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/shaders">
+    <file>ClockShader.frag</file>
+    <file>ClockShader.vert</file>
+  </qresource>
+</RCC>
