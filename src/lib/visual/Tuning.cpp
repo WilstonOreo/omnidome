@@ -137,7 +137,7 @@ namespace omni {
     }
     
     bool Tuning::drawFlipped() const { 
-      return tuning_.projector().setup()->flipped() &&
+      return tuning_.projector().flipped() &&
         (!tuning_.session().hasOutput() || 
          tuning_.session().mode() == omni::Session::Mode::SCREENSETUP);
     }

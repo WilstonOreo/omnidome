@@ -495,15 +495,13 @@ void MainWindow::setTuningIndex()
 void MainWindow::addProjector(QAction *_action)
 {
   auto _id = _action->data().toString();
-
-  /// Check for single projector setups
-  for (auto& _idSetup : omni::proj::SetupFactory::classes())
+  if (_id == "Peripheral")
+  {  
+    ui_->tuningList->addTuning(Projector::PERIPHERAL);
+  } else 
+  if (_id == "Free") 
   {
-    if (_idSetup.first.str() == _id)
-    {
-      ui_->tuningList->addTuning(_id);
-      return;
-    }
+    ui_->tuningList->addTuning(Projector::FREE);
   }
 }
 

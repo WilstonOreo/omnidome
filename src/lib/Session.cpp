@@ -27,9 +27,6 @@
 #include <omni/visual/Tuning.h>
 #include <omni/visual/Session.h>
 
-#include <omni/proj/FreeSetup.h>
-#include <omni/proj/PeripheralSetup.h>
-
 #include <omni/render/Renderer.h>
 
 namespace omni
@@ -38,14 +35,6 @@ namespace omni
     tunings_(*this),
     screenSetup_(this)
   {
-    // Register Projector Setups
-    {
-      using namespace proj;
-      SetupFactory::reg<FreeSetup>();
-      SetupFactory::reg<PeripheralSetup>();
-    }
-
-    // END Register Projector Setups
   }
 
   Session::~Session()

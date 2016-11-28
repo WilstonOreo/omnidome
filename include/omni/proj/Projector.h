@@ -23,32 +23,34 @@
 #include <memory>
 #include <QMatrix4x4>
 #include <QScreen>
-#include <omni/geometry/Angle.h>
-#include "Setup.h"
+#include <omni/geometry/EulerAngles.h>
+#include <omni/serialization/Interface.h>
 
 namespace omni {
   namespace proj {
     /// A projector with a transformation matrix and setup
-    class Projector {
+    class Projector : public EulerAngles {
       public:
+        enum Setup {
+          PERIPHERAL,
+          FREE
+        };
+
         Projector();
-        Projector(
-          qreal _aspectRatio,
-          Angle _fov = 45.0);
 
-        /**@brief Make a new projector setup with a certain id and delete old
-           one
-           @param Id _setupId Id of setup class
-           @param float _sceneSize Scale factor of setup positioning
-         * @return Pointer to new projector setup
-         **/
-        Setup           * setup(Id const& _setupId, float _sceneScale = 1.0);
+        /// Return projector setup mode (FREE vs PERIPHERAL)
+        Setup             setup() const;
 
-        /// Update projector matrix by current setup and return setup
-        Setup           * setup();
+        /// Set projector setup mode
+        void              setSetup(Setup);
 
-        /// Returns projector setup (const version)
-        Setup const     * setup() const;
+        void              setupFree(EulerAngles const&, QVector3D const&);
+        void              setupPeripheral(EulerAngles const&, 
+                            Angle _deltaYaw = 0.0,
+                            qreal _distanceCenter = 0.4, 
+                            qreal _towerHeight = 0.2,
+                            qreal _shift = 0.0
+                          );
 
         /// Aspect ratio of screen
         qreal             aspectRatio() const;
@@ -72,7 +74,7 @@ namespace omni {
         qreal             keystone() const;
 
         /// Set new keystone correction value (0.0 = default)
-        void setKeystone(qreal);
+        void              setKeystone(qreal);
 
         /// Return transformation matrix
         QMatrix4x4 const& matrix() const;
@@ -84,25 +86,70 @@ namespace omni {
         QMatrix4x4        projectionMatrix() const;
 
         /// Return projector position (3rd column of projector matrix)
-        QVector3D         pos() const;
+        QVector3D const&  pos() const;
 
+        /// Returns true if projector roll angle is > 90deg
+        bool flipped() const;
+
+        /// Delta yaw angle from rotating yaw angle
+        Angle deltaYaw() const;
+
+        /// Delta yaw angle from rotating yaw angle
+        void setDeltaYaw(Angle);
+
+        /// Return distance from center
+        qreal distanceCenter() const;
+
+        /// Set distance to center
+        void setDistanceCenter(qreal);
+
+        /// Return tower height (z position)
+        qreal towerHeight() const;
+
+        /// Set tower height (z position of projector)
+        void setTowerHeight(qreal);
+
+        /// Distance to centric line
+        qreal shift() const;
+
+        /// Set shift (distance to centric line)
+        void setShift(qreal);
+
+        /// Scale projector setup by factor
+        void scale(qreal);
+
+        /// Set position from QVector3D
+        void      setPos(QVector3D const&);
+
+        /// Set position from x,y,z position values
+        void      setPos(qreal _x,
+                         qreal _y,
+                         qreal _z);
+        
         /// Write projector to stream
         void              toStream(QDataStream&) const;
 
         /// Read projector from stream
         void              fromStream(QDataStream&);
+        
 
         /// Test for equality
         friend bool       operator==(Projector const&,
                                      Projector const&);
 
-
       private:
+        void      update();
+        Setup setup_ = PERIPHERAL;
         QMatrix4x4 matrix_;
         qreal aspectRatio_ = 0.75;
         Angle fov_;
         qreal keystone_ = 0.0;
-        std::unique_ptr<Setup> setup_;
+        
+        QVector3D pos_;
+        Angle deltaYaw_ = 0.0;
+        qreal distanceCenter_ = 0.4;
+        qreal towerHeight_ = 0.2;
+        qreal shift_ = 0.0;
     };
   }
 

@@ -28,7 +28,6 @@
 #include <omni/proj/CalibrationMode.h>
 #include <omni/proj/ColorCorrection.h>
 #include <omni/proj/Projector.h>
-#include <omni/proj/Setup.h>
 #include <omni/mapping/Interface.h>
 
 namespace omni {

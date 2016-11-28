@@ -23,7 +23,6 @@
 #include <omni/Session.h>
 #include <omni/util.h>
 #include <omni/serialization/PropertyMap.h>
-#include <omni/proj/Setup.h>
 #include <omni/proj/ScreenSetup.h>
 #include <omni/proj/Calibration.h>
 

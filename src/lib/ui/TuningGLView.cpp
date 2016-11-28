@@ -423,7 +423,7 @@ namespace omni {
     }
 
     bool TuningGLView::flipped() const {
-      return tuning()->projector().setup()->flipped() &&
+      return tuning()->projector().flipped() &&
         (!dataModel()->hasOutput() || dataModel()->mode() == Session::Mode::SCREENSETUP);
     }
 

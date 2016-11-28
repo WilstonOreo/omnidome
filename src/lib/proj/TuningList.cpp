@@ -44,7 +44,7 @@ namespace omni
 
       // Assign virtual screen initially, this also sets up projector aspectRatio correctly
       _tuning->assignVirtualScreen();
-      _tuning->projector().setup("PeripheralSetup",session_.scene().size());
+      _tuning->projector().scale(session_.scene().size());
 
       return _tuning;
     }

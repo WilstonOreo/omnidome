@@ -110,33 +110,27 @@ namespace omni {
         void Projector::drawPositioning(QVector3D const& _center) const
         {
             Interface::color(color_);
-
             withCurrentContext([this](QOpenGLFunctions& _)
             {
-                _.glLineWidth(selected_ ? 4.0 : 1.5);
+              _.glLineWidth(selected_ ? 4.0 : 1.5);
             });
 
             auto _p       = proj_.pos();
-            auto _setupId =
-                proj_.setup() ? proj_.setup()->getTypeId().str() :
-                "PeripheralSetup";
 
-            if (_setupId == "PeripheralSetup")
-            {
-                // Draw line from center to projector ground position
-                this->visualLine(_center, QVector3D(_p.x(), _p.y(), _center.z()));
-                this->visualLine(
-                    QVector3D(_p.x(), _p.y(), _center.z()), _p);
-            } else
-            {
-                // Draw manhattan line from center to projector ground position
-                this->visualLine(_center,
-                                 QVector3D(_p.x(), _center.y(), _center.z()));
-                this->visualLine(
-                                 QVector3D(_p.x(), _center.y(), _center.z()),
-                                 QVector3D(_p.x(), _p.y(),      _center.z()));
-                this->visualLine(
-                                 QVector3D(_p.x(), _p.y(),      _center.z()), _p);
+            switch (proj_.setup()) {
+            default:
+            case proj::Projector::FREE:
+              // Draw manhattan line from center to projector ground position  
+              this->visualLine(_center,QVector3D(_p.x(), _center.y(), _center.z()));
+              this->visualLine(QVector3D(_p.x(), _center.y(), _center.z()),
+                              QVector3D(_p.x(), _p.y(),      _center.z()));
+              this->visualLine(QVector3D(_p.x(), _p.y(),      _center.z()), _p);
+              break;
+            case proj::Projector::PERIPHERAL:
+              // Draw line from center to projector ground position
+              this->visualLine(_center, QVector3D(_p.x(), _p.y(), _center.z()));
+              this->visualLine(QVector3D(_p.x(), _p.y(), _center.z()), _p);
+            break;
             }
         }
 

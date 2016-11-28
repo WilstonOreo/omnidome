@@ -31,8 +31,6 @@
 #include <QSignalBlocker>
 
 #include <omni/ui/TuningGLView.h>
-#include <omni/proj/FreeSetup.h>
-#include <omni/proj/PeripheralSetup.h>
 
 #include "proj/TitleBar.h"
 #include "proj/TuningLayout.h"
@@ -79,33 +77,24 @@ namespace omni {
         setParamAsFloat("Keystone",
                         tuning()->projector().keystone());
 
-        auto const *_projSetup = tuning()->projector().setup();
+        auto& _p = tuning()->projector();
+  
+        setParamAsFloat("Yaw",   _p.yaw().degrees());  
+        setParamAsFloat("Pitch", _p.pitch().degrees());  
+        setParamAsFloat("Roll",  _p.roll().degrees());
 
-        if (_projSetup->getTypeId() == "FreeSetup")
-        {
-          auto *_p =
-            static_cast<omni::proj::FreeSetup const *>(_projSetup);
-          setParamAsFloat("Yaw",   _p->yaw().degrees());
-          setParamAsFloat("Pitch", _p->pitch().degrees());
-          setParamAsFloat("Roll",  _p->roll().degrees());
-          setParamAsFloat("X",     _p->pos().x());
-          setParamAsFloat("Y",     _p->pos().y());
-          setParamAsFloat("Z",     _p->pos().z());
-        }
-        else if (_projSetup->getTypeId() == "PeripheralSetup")
-        {
-          auto *_p =
-            static_cast<omni::proj::PeripheralSetup const *>(
-              _projSetup);
-          setParamAsFloat("Yaw",          _p->yaw().degrees());
-          setParamAsFloat("Pitch",
-                          _p->pitch().degrees());
-          setParamAsFloat("Roll",         _p->roll().degrees());
-          setParamAsFloat("Delta Yaw",
-                          _p->deltaYaw().degrees());
-          setParamAsFloat("Distance",     _p->distanceCenter());
-          setParamAsFloat("Tower Height", _p->towerHeight());
-          setParamAsFloat("Shift",        _p->shift());
+        switch(_p.setup()) {
+          case Projector::PERIPHERAL:
+            setParamAsFloat("X",     _p.pos().x());
+            setParamAsFloat("Y",     _p.pos().y());
+            setParamAsFloat("Z",     _p.pos().z());
+          break;
+          case Projector::FREE:
+            setParamAsFloat("Delta Yaw",    _p.deltaYaw().degrees());
+            setParamAsFloat("Distance",     _p.distanceCenter());
+            setParamAsFloat("Tower Height", _p.towerHeight());
+            setParamAsFloat("Shift",        _p.shift());
+          break;
         }
 
         updateColor();
@@ -139,7 +128,7 @@ namespace omni {
       void Tuning::resetToFreeSetup() {
         if (!tuning()) return;
 
-        tuning()->projector().setup("FreeSetup", dataModel()->scene().size());
+        tuning()->projector().setSetup(Projector::FREE);
         sessionModeChange();
         emit projectorSetupChanged();
       }
@@ -148,8 +137,7 @@ namespace omni {
       void Tuning::resetToPeripheralSetup() {
         if (!tuning()) return;
 
-        tuning()->projector().setup("PeripheralSetup",
-                                    dataModel()->scene().size());
+        tuning()->projector().setSetup(Projector::PERIPHERAL);
         sessionModeChange();
         emit projectorSetupChanged();
       }
@@ -158,39 +146,29 @@ namespace omni {
       {
         if (!tuning() || signalsBlocked()) return;
 
-        auto *_projSetup = tuning()->projector().setup();
+        auto& _p = tuning()->projector();
+          
+        _p.setYaw(getParamAsFloat("Yaw"));
+        _p.setPitch(getParamAsFloat("Pitch"));
+        _p.setRoll(getParamAsFloat("Roll"));
 
-        if (!_projSetup) return;
-
-        /// Handle free projector setup
-        if (_projSetup->getTypeId() == "FreeSetup")
-        {
-          auto *_p = static_cast<omni::proj::FreeSetup *>(_projSetup);
-          _p->setYaw(getParamAsFloat("Yaw"));
-          _p->setPitch(getParamAsFloat("Pitch"));
-          _p->setRoll(getParamAsFloat("Roll"));
-          _p->setPos(
+        switch(_p.setup()) {
+          /// Handle free projector setup
+          case Projector::FREE: 
+          _p.setPos(
             getParamAsFloat("X"),
             getParamAsFloat("Y"),
             getParamAsFloat("Z"));
+          break;
+          /// Handle Peripheral projector setup
+          case Projector::PERIPHERAL:
+          _p.setDeltaYaw(getParamAsFloat("Delta Yaw"));
+          _p.setDistanceCenter(getParamAsFloat("Distance"));
+          _p.setTowerHeight(getParamAsFloat("Tower Height"));
+          _p.setShift(getParamAsFloat("Shift"));
+          break;
         }
 
-        /// Handle Peripheral projector setup
-        if (_projSetup->getTypeId() == "PeripheralSetup")
-        {
-          auto *_p =
-            static_cast<omni::proj::PeripheralSetup *>(_projSetup);
-
-          _p->setYaw(getParamAsFloat("Yaw"));
-          _p->setPitch(getParamAsFloat("Pitch"));
-          _p->setRoll(getParamAsFloat("Roll"));
-          _p->setDeltaYaw(getParamAsFloat("Delta Yaw"));
-          _p->setDistanceCenter(getParamAsFloat("Distance"));
-          _p->setTowerHeight(getParamAsFloat("Tower Height"));
-          _p->setShift(getParamAsFloat("Shift"));
-        }
-
-        tuning()->projector().setup();
         tuning()->setColor(titleBar_->color());
 
         glView_->update();
@@ -542,10 +520,9 @@ namespace omni {
         case Session::Mode::ARRANGE:
 
           if (windowState_ ==
-              ADJUSTMENT_SLIDERS) setGroup(tuning()->projector().
-                                           setup()
-                                           ->getTypeId().str());
-
+              ADJUSTMENT_SLIDERS) setGroup(
+                tuning()->projector().setup() == Projector::FREE ?
+                "FreeSetup" : "PeripheralSetup");
           if (windowState_ == FOV_SLIDERS) setGroup("FOVSliders");
           break;
 

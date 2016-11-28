@@ -96,30 +96,25 @@ namespace omni {
 
             void TuningList::addTuning()
             {
-
-                QString _setupId = "PeripheralSetup";
-
+                auto _setup = Projector::PERIPHERAL;
                 if (!dataModel()->tunings().empty())
                 {
                     // Set setup id from last tuning
-                    auto *_setup =
-                        dataModel()->tunings()[dataModel()->tunings().size() -
-                                               1]->projector().setup();
-
-                    if (_setup) _setupId = _setup->getTypeId();
+                    _setup = 
+                      dataModel()->tunings()[dataModel()->tunings().size() - 1]->projector().setup();
                 }
-                addTuning(_setupId);
+                addTuning(_setup);
             }
 
             /// Add tuning with specific projector setup
-            void TuningList::addTuning(QString const& _projSetupId)
+            void TuningList::addTuning(Projector::Setup const& _projSetup)
             {
                 auto *_tuning = dataModel()->tunings().add(false);
 
                 if (!_tuning) return;
 
                 _tuning->setColor(getTuningColor());
-                _tuning->projector().setup(_projSetupId,dataModel()->scene().size());
+                _tuning->projector().setSetup(_projSetup);
                 addTuning(_tuning);
 
                 // Select this tuning index
@@ -128,7 +123,6 @@ namespace omni {
 
             void TuningList::addTuning(omni::proj::Tuning *_tuning)
             {
-
                 int _index = 0;
 
                 for (auto& _sessionTuning : dataModel()->tunings())
