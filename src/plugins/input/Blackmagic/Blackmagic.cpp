@@ -7,48 +7,57 @@
 #include "BlackmagicWidget.h"
 #include "BlackmagicCapture.h"
 
-namespace omni {
-  namespace input {
+namespace omni
+{
+  namespace input
+  {
     ContextBoundPtr<QOpenGLShaderProgram> Blackmagic::shader_;
-    
-    Blackmagic::Blackmagic() : capture_(new BlackmagicCapture(this)) { 
-      connect(capture_,&BlackmagicCapture::updated,[&]() {
+
+    Blackmagic::Blackmagic() : capture_(new BlackmagicCapture(this))
+    {
+      connect(capture_,&BlackmagicCapture::updated,[&]()
+      {
         this->update();
-        this->triggerUpdateCallbacks();    
+        this->triggerUpdateCallbacks();
       });
     }
 
-    Blackmagic::~Blackmagic() {
+    Blackmagic::~Blackmagic()
+    {
     }
 
-    void Blackmagic::activate() {
+    void Blackmagic::activate()
+    {
       capture_->start();
     }
 
-    void Blackmagic::update() { 
+    void Blackmagic::update()
+    {
       if (!capture_->isCapturing()) return;
 
       using namespace visual;
 
-      if (capture_->size() != size() || !shader_) {
-        primaryContextSwitch([&](QOpenGLFunctions& _) {
-            setupFramebuffer(capture_->size());
-            initShader(shader_,"YUV2RGB");
+      if (capture_->size() != size() || !shader_)
+      {
+        primaryContextSwitch([&](QOpenGLFunctions& _)
+        {
+          setupFramebuffer(capture_->size());
+          initShader(shader_,"YUV2RGB");
         });
       }
-      
-     if (!framebuffer() || !framebuffer()->isValid()) return;
 
+      if (!framebuffer() || !framebuffer()->isValid()) return;
 
-      draw_on_framebuffer(framebuffer(),                        
-          [&](QOpenGLFunctions& _) // Projection Operation
+      draw_on_framebuffer(framebuffer(),
+                          [&](QOpenGLFunctions& _) // Projection Operation
       {
         QMatrix4x4 _m;
         _m.ortho(-0.5, 0.5, -0.5, 0.5, -1.0, 1.0);
         glMultMatrixf(_m.constData());
       }, [&](QOpenGLFunctions& _) // Model View Operation
       {
-        useShader(*shader_,[&](UniformHandler& _h) {
+        useShader(*shader_,[&](UniformHandler& _h)
+        {
           _h.uniform("texture_size", QVector2D(size().width(),size().height()));
           _h.texUniform("texture", capture_->textureId());
           Rectangle::draw();
@@ -56,30 +65,31 @@ namespace omni {
       });
     }
 
-    void Blackmagic::deactivate() {
+    void Blackmagic::deactivate()
+    {
       capture_->stop();
     }
 
-    void Blackmagic::setup(IDeckLink* device, IDeckLinkDisplayMode* mode) {
-      capture_->setup(device,mode);
+    void Blackmagic::setup(IDeckLink* device, IDeckLinkDisplayMode* mode)
+    {
+        capture_->setup(device,mode);
     }
-        
-    void Blackmagic::free() {
-      shader_.reset();
-		}
 
     /// Serialize image path to stream
-    void     Blackmagic::toPropertyMap(PropertyMap& _map) const {
+    void     Blackmagic::toPropertyMap(PropertyMap& _map) const
+    {
       Framebuffer::toPropertyMap(_map);
     }
 
     /// Deserialize from stream and load image
-    void     Blackmagic::fromPropertyMap(PropertyMap const& _map) {
+    void     Blackmagic::fromPropertyMap(PropertyMap const& _map)
+    {
       Framebuffer::fromPropertyMap(_map);
     }
 
-    QWidget* Blackmagic::widget() {
-        return new omni::ui::input::Blackmagic(this);
+    QWidget* Blackmagic::widget()
+    {
+      return new omni::ui::input::Blackmagic(this);
     }
   }
 }

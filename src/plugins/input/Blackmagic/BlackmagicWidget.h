@@ -28,6 +28,7 @@
 #include "Blackmagic.h"
 
 class QComboBox;
+class QPushButton;
 class IDeckLink;
 
 class IDeckLinkDisplayMode;
@@ -70,6 +71,7 @@ namespace omni {
 
         public slots:
           void updateDisplayModes();
+          void detectDisplayMode();
 
           /// Pass-through signal to update input preview
           void triggerUpdate();
@@ -84,7 +86,7 @@ namespace omni {
           QWidgetPtr<InputPreview> preview_;
           QWidgetPtr<QComboBox>    deviceList_;
           QWidgetPtr<QComboBox>    displayModeList_;
-          QWidgetPtr<QComboBox>    pixelFormatList_;
+          QWidgetPtr<QPushButton>    btnDetect_;
           QUniquePtr<BlackmagicDeviceItemModel> deviceModel_;
           QUniquePtr<BlackmagicDisplayModeItemModel> displayModeModel_;
       };

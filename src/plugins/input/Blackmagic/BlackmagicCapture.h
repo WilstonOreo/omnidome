@@ -29,32 +29,37 @@
 class IDeckLink;
 class IDeckLinkInput;
 
-namespace omni {
-  namespace input {
-    class BlackmagicCapture : 
+namespace omni
+{
+  namespace input
+  {
+    class BlackmagicCapture :
       public QObject,
       public IDeckLinkInputCallback
     {
       Q_OBJECT
     public:
-	    BlackmagicCapture(QObject* = nullptr);
+      BlackmagicCapture(QObject* = nullptr);
       ~BlackmagicCapture();
 
       void setup(IDeckLink*,IDeckLinkDisplayMode*);
       void start();
       void stop();
-      
-      bool isCapturing() const; 
-      bool isSetup() const; 
+
+      bool isCapturing() const;
+      bool isSetup() const;
 
       GLuint textureId() const;
       QSize const& size() const;
 
-	    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv) { return E_NOINTERFACE; }
-	    virtual ULONG STDMETHODCALLTYPE AddRef(void);
-	    virtual ULONG STDMETHODCALLTYPE  Release(void);
-	    virtual HRESULT STDMETHODCALLTYPE VideoInputFormatChanged(BMDVideoInputFormatChangedEvents, IDeckLinkDisplayMode*, BMDDetectedVideoInputFormatFlags);
-	    virtual HRESULT STDMETHODCALLTYPE VideoInputFrameArrived(IDeckLinkVideoInputFrame*, IDeckLinkAudioInputPacket*);
+      virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
+      {
+        return E_NOINTERFACE;
+      }
+      virtual ULONG STDMETHODCALLTYPE AddRef(void);
+      virtual ULONG STDMETHODCALLTYPE  Release(void);
+      virtual HRESULT STDMETHODCALLTYPE VideoInputFormatChanged(BMDVideoInputFormatChangedEvents, IDeckLinkDisplayMode*, BMDDetectedVideoInputFormatFlags);
+      virtual HRESULT STDMETHODCALLTYPE VideoInputFrameArrived(IDeckLinkVideoInputFrame*, IDeckLinkAudioInputPacket*);
     signals:
       void frameReceived();
       void updated();
@@ -74,7 +79,7 @@ namespace omni {
       GLuint textureId_ = 0;
       std::atomic<int32_t>				refCount_;
       QMutex mutex_;
-      bool sizeChanged_ = true;
+      bool formatDetection_ = false;
       QSize videoFrameSize_;
       void* frameBytes_ = nullptr;
     };

@@ -5,28 +5,20 @@ uniform sampler2D texture;
 
 varying vec2 texture_coords;
 
-vec3 yuv2rgb(vec3 yuv) {
-    float y = yuv.x, u = yuv.y - 0.5, v = yuv.z - 0.5;
-    return vec3(
-      y + 1.370705 * v,
-      y - 0.698001 * v - 0.337633 * u,
-      y + 1.732446 * u
-    );
+vec3 yuv2rgb(float y, vec2 uv) {
+    uv -= vec2(0.5);
+    vec4 uuvv = uv.yyxx * vec4(1.596,-0.813,-0.391,2.018);
+    uuvv.z += uuvv.w;
+    return vec3(1.164 * (y - 1.0 / 16.0)) + uuvv.xyz;
 }
 
 void main() {
-  vec3 color;  
-  vec2 uv = floor(texture_size * texture_coords);
+  vec2 st = floor(texture_size * texture_coords);
     
-  // Convert to YUV
-  vec4 uyvy = texture2D(texture,uv / texture_size);
-  
-  if (mod(uv.x,2.0) == 0.0) {
-    color = yuv2rgb(uyvy.yxz);
-    } else {
-    color = yuv2rgb(uyvy.wxz);
-  }
-//  gl_FragColor = vec4(texture_coords,0.0,1.0);
+  vec4 uyvy = texture2D(texture,st / texture_size);
+  // Choose the right Y component
+  float y = (mod(st.x,2.0) == 0.0) ? uyvy.y : uyvy.w;
 
-  gl_FragColor = vec4(color,1.0);
+  // Convert to YUV and output color
+  gl_FragColor = vec4(yuv2rgb(y,uyvy.xz),1.0);
 }

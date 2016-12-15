@@ -4,6 +4,7 @@
 
 #include <QStandardItem>
 #include <QComboBox>
+#include <QPushButton>
 #include "DeckLinkAPI.h"
 
 namespace omni {
@@ -58,13 +59,9 @@ namespace omni {
 		      deckLink->Release();
 	      }
       	deckLinkIterator->Release();
-	      
-        qDebug() << "Device: " << deckLink;
-        
+  
         return (result == S_OK) ? deckLink : nullptr;
       }
-
-
 
       BlackmagicDisplayModeItemModel::BlackmagicDisplayModeItemModel(QObject* parent) : 
         QStandardItemModel(parent) {
@@ -90,9 +87,6 @@ namespace omni {
 	
         int displayModeCount = 0;
         char*							displayModeName;
-
-        /// Add auto-detect mode
-        addDisplayMode(-1,QStringLiteral("Auto-detect"),QSize(0,0),0.0);
 
 	      while (displayModeIterator->Next(&displayModeUsage) == S_OK)
 	      {
@@ -122,11 +116,6 @@ namespace omni {
       	IDeckLinkDisplayMode*			displayMode = NULL;
 	      IDeckLinkInput*					deckLinkInput = NULL;
 	      IDeckLinkDisplayModeIterator*	displayModeIterator = NULL;
-	      int i = idx - 1;
-		    if (i == -1) {
-          // Auto detection 
-          return nullptr;
-        }
 
 	      result = deckLink->QueryInterface(IID_IDeckLinkInput, (void**)&deckLinkInput);
 	      if (result != S_OK) return nullptr;
@@ -136,39 +125,33 @@ namespace omni {
 
       	while ((result = displayModeIterator->Next(&displayMode)) == S_OK)
 	      {
-		      if (i == 0) break;
-		      --i;
+		      if (idx == 0) break;
+		      --idx;
 		      displayMode->Release();
 	      }
-        
-        qDebug() << "DisplayMode: " << displayMode;
-	
+
         return (result == S_OK) ? displayMode : nullptr;      
       }
           
       void BlackmagicDisplayModeItemModel::addDisplayMode(int idx, QString const& name, QSize const& size, double fps)    
-      {  
-        
+      {
         QList<QStandardItem*> row;    
         auto addItem = [&](QString const& s) {
           QStandardItem* item = new QStandardItem(s);
           item->setEditable(false);
           row << item;
         };
-        if (idx == -1) {
-          addItem("Auto-detect");
-        } else {
-          auto label = QString("%1: %2 (%3x%4 %5 FPS)").
-            arg(idx).arg(name).
-            arg(size.width()).arg(size.height()).
-            arg(fps);
+          
+        auto label = QString("%1: %2 (%3x%4 %5 FPS)").  
+          arg(idx).arg(name).  
+          arg(size.width()).arg(size.height()).    
+          arg(fps);
         
-          addItem(label);
-          addItem(name);
-          addItem(QString::number(size.width()));
-          addItem(QString::number(size.height()));
-          addItem(QString::number(fps));
-        }
+        addItem(label);
+        addItem(name);
+        addItem(QString::number(size.width()));
+        addItem(QString::number(size.height()));  
+        addItem(QString::number(fps));
 
         invisibleRootItem()->appendRow(row);
       }
@@ -193,6 +176,9 @@ namespace omni {
         displayModeModel_->update(deckLink);
       }
 
+      void Blackmagic::detectDisplayMode() {
+      }
+
       void Blackmagic::setup() {
         QLayout *layout = new QVBoxLayout;
         layout->setSpacing(2);
@@ -212,20 +198,18 @@ namespace omni {
         displayModeList_->setModel(displayModeModel_.get());
         layout->addWidget(displayModeList_.get());
       
-        pixelFormatList_.reset(new QComboBox());
-        pixelFormatList_->addItem("8-bit YUV (4:2:2) (default)");
-        pixelFormatList_->addItem("10-bit YUV (4:2:2)");
-        pixelFormatList_->addItem("10-bit RGB (4:4:4)");
-        layout->addWidget(pixelFormatList_.get());
-        
+        btnDetect_.reset(new QPushButton("Detect"));
+        layout->addWidget(btnDetect_.get());
+        connect(btnDetect_.get(),&QPushButton::clicked, this, &Blackmagic::detectDisplayMode);
+
         preview_.reset(new InputPreview(input_));
         connect(preview_.get(), SIGNAL(inputChanged()), this,
                 SIGNAL(inputChanged()));
         layout->addWidget(preview_.get());
 
-
         auto setupInput = [&](int) {
           auto* device = deviceModel_->device(deviceList_->currentIndex());
+          displayModeList_->setVisible(device);
           input_->setup(device,
                         displayModeModel_->displayMode(device,displayModeList_->currentIndex()));  
           input_->activate();
@@ -238,6 +222,7 @@ namespace omni {
 
         updateDisplayModes();
         setupInput(0);
+        displayModeList_->setCurrentIndex(0);
       }
 
     }

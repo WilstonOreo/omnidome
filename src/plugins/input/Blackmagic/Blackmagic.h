@@ -49,9 +49,6 @@ namespace omni {
         /// Capture frame and write to GPU memory
         void update();
 
-        /// Free image from OpenGL context
-        void     free();
-
         /// Serialize image path to property map
         void     toPropertyMap(PropertyMap&) const;
 
