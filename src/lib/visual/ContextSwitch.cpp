@@ -25,21 +25,31 @@ namespace omni {
     void contextSwitch(QOpenGLContext *_context, ContextFunctor f) {
       auto *_current = QOpenGLContext::currentContext();
       if (!_current || !_current->isValid()) return;
-
+#ifndef OMNI_DISABLE_CONTEXT_SWITCH
       if (_context != _current) {
         _context->makeCurrent(_current->surface());
       }
+#endif 
 
       withCurrentContext(f);
 
+#ifndef OMNI_DISABLE_CONTEXT_SWITCH
       if (_context != _current) {
-        _current->makeCurrent(_current->surface());
+       _current->makeCurrent(_current->surface());
       }
+#endif
     }
 
     void primaryContextSwitch(ContextFunctor f) {
-      if (!QOpenGLContext::globalShareContext()) return;
+      if (!QOpenGLContext::globalShareContext() || !QOpenGLContext::globalShareContext()->isValid() || 
+          !QOpenGLContext::currentContext()) return;
+#ifdef OMNI_DISABLE_CONTEXT_SWITCH
+      QOpenGLFunctions glFuncs(QOpenGLContext::globalShareContext());
+      f(glFuncs);
+      glFuncs.glFinish();
+#else
       contextSwitch(QOpenGLContext::globalShareContext(), f);
+#endif
     }
 
     void withCurrentContext(ContextFunctor f)
