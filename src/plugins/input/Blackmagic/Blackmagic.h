@@ -79,9 +79,3 @@ namespace omni {
 
 #endif /* OMNI_INPUT_BLACKMAGIC_H_ */
 
-/*
-   Everything in ofxBlackmagic is lazy, and only gets allocated or converted
-      when
-   you ask for it. "yuv" really means "cb y0 cr y1", i.e., two pixels stored in
-   four bytes.
- */

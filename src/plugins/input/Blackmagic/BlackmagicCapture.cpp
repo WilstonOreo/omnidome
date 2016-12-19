@@ -20,7 +20,6 @@ namespace omni
               this,&BlackmagicCapture::update,Qt::QueuedConnection);
       connect(this,&BlackmagicCapture::sizeChanged,
               this,&BlackmagicCapture::setupTexture,Qt::QueuedConnection);
-
     }
 
     BlackmagicCapture::~BlackmagicCapture()
