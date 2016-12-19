@@ -111,7 +111,6 @@ namespace omni {
         glViewport(
             _rect.left() * d, (height() - _rect.height() - _rect.top()) * d , 
             _rect.width() * d, _rect.height() * d);
-        qDebug() << _rect.top() << _rect.height();
         _tuning->visualizer()->drawFullScreenOutput();
       }
     }
