@@ -12,12 +12,10 @@ vec3 yuv2rgb(float y, vec2 uv) {
     return vec3(1.164 * (y - 1.0 / 16.0)) + uuvv.xyz;
 }
 
-void main() {
-  vec2 st = floor(texture_size * texture_coords);
-    
-  vec4 uyvy = texture2D(texture,st / texture_size);
+void main() {  
+  vec4 uyvy = texture2D(texture,texture_coords);
   // Choose the right Y component
-  float y = (mod(st.x,2.0) == 0.0) ? uyvy.y : uyvy.w;
+  float y = (mod(floor(texture_coords.x * texture_size.x),2.0) == 0.0) ? uyvy.y : uyvy.w;
 
   // Convert to YUV and output color
   gl_FragColor = vec4(yuv2rgb(y,uyvy.xz),1.0);
