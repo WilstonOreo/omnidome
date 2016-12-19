@@ -78,13 +78,13 @@ namespace omni {
     }
  
     void FullscreenTuningGLView::paint() {
-      int d = this->devicePixelRatio();  
-
+      int d = this->devicePixelRatio();
       glViewport(0,0,width()*d,height()*d);
-      glClearColor(0.0,0.0,0.0,1.0);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
       if (showDragWidget()) {
+        glClearColor(0.0,0.0,0.0,1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         QMatrix4x4 _m;
@@ -104,13 +104,16 @@ namespace omni {
         visual::Rectangle::draw(_rect);
       }
 
+      float aspect = float(width()) / height();
+
       for (auto& _tuning : tunings_) {
         if (!_tuning->visualizer()) return;
 
         auto _rect = _tuning->contentGeometry();
         glViewport(
-            _rect.left() * d, _rect.top() * d, 
+            _rect.left() * d, (height() - _rect.height() - _rect.top()) * d , 
             _rect.width() * d, _rect.height() * d);
+        qDebug() << _rect.top() << _rect.height();
         _tuning->visualizer()->drawFullScreenOutput();
       }
     }
