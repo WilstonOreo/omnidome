@@ -88,9 +88,5 @@ namespace omni {
                 }
                 return makeChecksum(_merged);
         }
-
-
-
-
     }
 }
