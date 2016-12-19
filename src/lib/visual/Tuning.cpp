@@ -474,7 +474,7 @@ namespace omni {
       glLoadIdentity();
       QMatrix4x4 _m;
       _m.ortho(-0.5, 0.5, 0.5, -0.5, -1.0,1.0);
-      
+
       glMultMatrixf(_m.constData());
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();

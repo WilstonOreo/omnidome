@@ -104,8 +104,6 @@ namespace omni {
         visual::Rectangle::draw(_rect);
       }
 
-      float aspect = float(width()) / height();
-
       for (auto& _tuning : tunings_) {
         if (!_tuning->visualizer()) return;
 
