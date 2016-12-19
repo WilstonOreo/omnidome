@@ -41,6 +41,7 @@ namespace omni {
           QSize(1024,    768),
           QSize(1280,    720),
           QSize(1280,    800),
+          QSize(1280,   1024),
           QSize(1920,   1080),
           QSize(1920,   1200),
           QSize(2560, 1440)
