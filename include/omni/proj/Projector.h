@@ -157,5 +157,6 @@ namespace omni {
 }
 
 OMNI_DECL_STREAM_OPERATORS(omni::proj::Projector)
+OMNI_DECL_ENUM_STREAM_OPERATORS(omni::proj::Projector::Setup)
 
 #endif /* OMNI_PROJ_PROJECTOR_H_ */

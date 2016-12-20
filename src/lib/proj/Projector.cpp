@@ -202,6 +202,7 @@ namespace omni {
 
     void Projector::toStream(QDataStream& _os) const {
       PropertyMap _map;
+      _map("setup",setup_);
       _map("angles",static_cast<EulerAngles const&>(*this));
       _map("pos",pos_);
       _map("fov", fov_);
@@ -217,6 +218,7 @@ namespace omni {
     void Projector::fromStream(QDataStream& _is) {
       PropertyMap _map;
       _is >> _map;
+      _map.get("setup",setup_);
       _map.get("angles",static_cast<EulerAngles&>(*this));
       _map.get("pos",pos_);
       _map.get("fov", fov_);
