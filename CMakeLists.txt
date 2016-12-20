@@ -24,6 +24,7 @@ omni_import(
   gl
   cpack
   plugin
+  test
   qt
 )
 
@@ -42,6 +43,10 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") # If mac os x
   # Put plugins in plugins folder in omnidome.app dir
   set(OMNI_PLUGIN_OUTPUT_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/omnidome.app/Contents/PlugIns)
 ENDIF()
+
+
+SET(Serialization_LIBRARIES ${Qt5_LIBRARIES} ${GL_LIBRARIES} omni)
+omni_add_test(Serialization "")
 
 omni_load_plugins(${OMNI_PLUGIN_PATH}/canvas)
 

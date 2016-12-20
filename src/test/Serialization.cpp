@@ -27,6 +27,7 @@
 #include <omni/visual/Tuning.h>
 #include <omni/PluginLoader.h>
 
+
 namespace omni
 {
   namespace test
@@ -162,9 +163,8 @@ int main(int ac, char* av[])
   /// Test InputList
   {
     InputList _inputs;
-//    _inputs.addInput("TestImage");
+    _inputs.addInput("TestImage");
     _inputs.addInput("Image");
-    _inputs.addInput("Rewonderland");
     test::Serialization<InputList>("inputs",_inputs);
   }
 }
