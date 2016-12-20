@@ -54,7 +54,6 @@ namespace omni {
 
     void Location::setPath(QString const& _path) {
       path_ = _path;
-      qDebug() << "Location::setPath " << _path;
       QFileInfo _fileInfo(_path);
       fileSize_ = _fileInfo.size();
     /*  if (!exists() && !path_.isEmpty()) {
