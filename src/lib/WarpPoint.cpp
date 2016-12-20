@@ -23,8 +23,7 @@
 #include <omni/serialization/PropertyMap.h>
 
 namespace omni {
-    WarpPoint::WarpPoint()
-    {}
+    WarpPoint::WarpPoint() {}
 
     WarpPoint::WarpPoint(
         QPointF const& _pos,
@@ -105,7 +104,7 @@ namespace omni {
     {
         PropertyMap _map;
 
-        _map.put("pos", pos_)
+        _map("pos", pos_)
             ("c1", c1_)
             ("c2", c2_)
             ("selected", selected_);
@@ -118,9 +117,9 @@ namespace omni {
 
         _is >> _map;
         _map.get("pos", pos_)
-        .get("c1",       c1_)
-        .get("c2",       c2_)
-        .get("selected", selected_);
+            .get("c1",  c1_)
+            .get("c2",  c2_)
+            .get("selected", selected_);
     }
 
     bool operator==(WarpPoint const& _lhs, WarpPoint const& _rhs)

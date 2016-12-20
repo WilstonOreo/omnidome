@@ -81,10 +81,10 @@ namespace omni {
       friend bool    operator==(WarpPoint const&,
                                 WarpPoint const&);
 
-      /// Write tuning to stream
+      /// Write WarpPoint to stream
       void toStream(QDataStream&) const;
 
-      /// Read tuning from stream
+      /// Read WarpPoint from stream
       void fromStream(QDataStream&);
 
     private:
