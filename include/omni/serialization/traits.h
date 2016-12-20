@@ -123,7 +123,7 @@ namespace omni {
      **/
     template<typename STREAM, typename T, typename ... ARGS>
     STREAM& deserialize(STREAM& _stream, T& _t, ARGS&& ... _args) {
-      return traits::Read<T>(_args ...)(_stream, _t);
+        return traits::Read<T>(_args ...)(_stream, _t);
     }
 
     /// Deserialize object of type T and return its value
@@ -138,7 +138,7 @@ namespace omni {
     /// Serialize object to stream
     template<typename STREAM, typename T>
     STREAM& serialize(STREAM& _stream, T const& _t) {
-      return traits::Write<T>()(_stream, _t);
+        return traits::Write<T>()(_stream, _t);
     }
   }
 

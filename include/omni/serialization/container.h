@@ -119,7 +119,6 @@ namespace omni {
         template<typename STREAM, typename OBJ>
         STREAM& operator()(STREAM& _stream, OBJ const& _obj) {
           serialize(_stream, uint32_t(_obj.size()));
-
           for (auto& _element : _obj) {
             serialize(_stream, _element);
           }
