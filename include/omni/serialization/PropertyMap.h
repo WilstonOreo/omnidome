@@ -108,7 +108,7 @@ namespace omni {
           }
           QBuffer _buf;
           _buf.open(QIODevice::WriteOnly);
-          QDataStream _s(&_buf); // ,QIODevice::WriteOnly);
+          QDataStream _s(&_buf); 
           serialize(_s, _t, _args ...);
           properties_[_id] = _buf.data();
           return *this;
@@ -118,8 +118,7 @@ namespace omni {
         template<typename T, typename ... ARGS>
         PropertyMap const& get(QString const& _id, T& _t, ARGS&& ... _args) const {
           if (properties_.count(_id) == 0) {
-            //throw exception::PropertyNotExisting(_id);
-            //return;
+            throw exception::PropertyNotExisting(_id);
             return *this;
           }
 
@@ -132,7 +131,7 @@ namespace omni {
         template<typename T, typename ... ARGS>
         PropertyMap const& get(QString const& _id, T *_t, ARGS&& ... _args) const {
           if (properties_.count(_id) == 0) {
-            //throw exception::PropertyNotExisting(_id);
+            throw exception::PropertyNotExisting(_id);
             return *this;
           }
 
@@ -203,6 +202,10 @@ namespace omni {
             _ids.push_back(_idValue.first);
           }
           return _ids;
+        }
+
+        QByteArray const& data(QString const& id) const {
+            return properties_.at(id);
         }
 
         /// Write property map to stream
