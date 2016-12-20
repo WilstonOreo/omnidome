@@ -1,8 +1,7 @@
 #!/bin/bash 
 rm -rf CMakeCache.txt 
 
-git submodule init
-git submodule update -recursive
+git submodule update --init --remote
 
 mkdir OpenMesh/Build
 cd OpenMesh/Build
