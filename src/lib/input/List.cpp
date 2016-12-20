@@ -40,26 +40,20 @@ namespace omni {
     void List::fromPropertyMap(PropertyMap const& _map)
     {
       clear();
-      PropertyMap _children = _map.getValue("inputs",PropertyMap());
-      auto _ids = _children.ids();
-
-      for (auto& _id : _ids) {
-        _children.getPtr(_id,[&](Id const& _typeId) ->
-                         Input *
-          {
+      QDataStream _stream(_map.data("inputs"));
+      uint32_t _size = deserializeReturn<uint32_t>(_stream, 0);
+      for (uint32_t i = 0; i < _size; ++i) {
+          deserializePtr(_stream,[&](Id const& _typeId) -> Input* {
             return addInput(_typeId);
           });
       }
-
-      
       _map("currentIndex",currentIndex_);
       setCurrentIndex(currentIndex_);
     }
 
     void List::toPropertyMap(PropertyMap& _map) const {
       _map("currentIndex",currentIndex_); 
-      PropertyMap _children;
-      _map.put("inputs",static_cast<container_type const&>(*this));
+      _map("inputs",static_cast<container_type const&>(*this));
     }
 
     Input* List::current() const
@@ -72,7 +66,7 @@ namespace omni {
       std::unique_ptr<Input> _input(Factory::create(_typeId));
 
       if (!_input) return nullptr;
- 
+
       container_type::emplace_back(std::move(_input));
       return container_type::back().get();
     }
