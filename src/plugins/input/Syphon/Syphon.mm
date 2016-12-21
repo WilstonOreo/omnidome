@@ -33,9 +33,7 @@ namespace omni
 {
   namespace input
   {
-    Syphon::Syphon(Interface const* _parent)  :
-      Interface(_parent),
-      size_(0,0)
+    Syphon::Syphon()  : size_(0,0)
     {
     }
 

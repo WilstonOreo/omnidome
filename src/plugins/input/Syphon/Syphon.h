@@ -35,7 +35,7 @@ namespace omni
     public:
       OMNI_REGISTER_CLASS(Factory,Syphon)
 
-      Syphon(Interface const* = nullptr);
+      Syphon();
       ~Syphon();
 
       /// Install update timer on activate
