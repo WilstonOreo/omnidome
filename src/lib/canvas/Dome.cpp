@@ -23,9 +23,8 @@
 
 namespace omni {
   namespace canvas {
-    Dome::Dome() : center_(0.0, 0.0, 0.0)
+    Dome::Dome()
     {
-      update();
     }
 
     Dome::~Dome()
@@ -74,7 +73,7 @@ namespace omni {
 
       auto _r = radius();
       QVector3D _vr(_r, _r, _r);
-      this->bounds_ = Box(-_vr + center_, _vr + center_);
+      this->bounds_ = Box(-_vr, _vr);
       sphere_.update();
     }
 
