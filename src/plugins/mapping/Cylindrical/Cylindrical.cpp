@@ -18,6 +18,7 @@
  */
 
 #include "Cylindrical.h"
+#include "CylindricalWidget.h"
 
 #include <QDataStream>
 #include <QOpenGLShaderProgram>
@@ -37,8 +38,35 @@ namespace omni
     {
     }
 
+    void Cylindrical::bind()
+    {
+      Interface::bind();
+      this->shader_->setUniformValue("angle_begin",GLfloat(beginAngle_));
+      this->shader_->setUniformValue("angle_end",GLfloat(endAngle_));
+    }
+
+    /// Value between 0.0 and 1.0 for top strip position
+    qreal Cylindrical::beginAngle() const {
+      return beginAngle_;
+    }
+
+    /// Top border position of strip. Value is clamped between 0.0 and 1.0
+    void Cylindrical::setBeginAngle(qreal _beginAngle) {
+      beginAngle_ = _beginAngle;
+    }
+
+    /// Value between 0.0 and 1.0 to for bottom strip position
+    qreal Cylindrical::endAngle() const {
+      return endAngle_;
+    }
+
+    /// Bottom border position of strip. Value is clamped between 0.0 and 1.0
+    void Cylindrical::setEndAngle(qreal _endAngle) {
+      endAngle_ = _endAngle;
+    }
+
     QWidget* Cylindrical::widget() {
-        return ui::makeWidget<ui::MappingParameters>(this);
+        return ui::makeWidget<omni::ui::mapping::Cylindrical>(this);
     }
   }
 }

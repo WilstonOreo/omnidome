@@ -16,39 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef OMNI_UI_MAPPING_CYLINDRICAL_H_
+#define OMNI_UI_MAPPING_CYLINDRICAL_H_
 
-#include <QObject>
-#include <omni/mapping/Interface.h>
+#include <omni/ui/MappingParameters.h>
 
 namespace omni {
-  namespace mapping {
-    class Cylindrical : public QObject, public Interface {
-      OMNI_MAPPING_PLUGIN_DECL
-      OMNI_PLUGIN_INFO("Cylindrical mapping", "Copyright (C) 2016")
-    public:
-        OMNI_REGISTER_CLASS(Factory, Cylindrical)
+    namespace ui {
+        namespace mapping {
+            class Cylindrical : public MappingParameters
+            {
+                Q_OBJECT
+            public:
+                Cylindrical(QWidget* = nullptr);
+                ~Cylindrical();
 
-        Cylindrical();
-        ~Cylindrical();
-
-        void bind();
-
-        /// Value between 0.0 and 1.0 for top strip position
-        qreal beginAngle() const;
-
-        /// Top border position of strip. Value is clamped between 0.0 and 1.0
-        void setBeginAngle(qreal);
-
-        /// Value between 0.0 and 1.0 to for bottom strip position
-        qreal endAngle() const;
-
-        /// Bottom border position of strip. Value is clamped between 0.0 and 1.0
-        void setEndAngle(qreal);
-
-        QWidget* widget();
-    private:
-      qreal beginAngle_ = 0.0, endAngle_ = 1.0;
-    };
-
-  }
+            private:
+                bool frontendToData();
+                void dataToFrontend();
+            };
+        }
+    }
 }
+
+#endif /* OMNI_UI_MAPPING_CYLINDRICAL_H_ */
