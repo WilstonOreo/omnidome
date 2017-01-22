@@ -35,8 +35,6 @@ namespace omni {
                 _cylinder->setHeight(getParamAsFloat("Height"));
                 _cylinder->setBeginAngle(getParamAsFloat("Start angle"));
                 _cylinder->setEndAngle(getParamAsFloat("End angle"));
-                _cylinder->setTopCap(getParamAsBool("Top cap"));
-                _cylinder->setBottomCap(getParamAsBool("Bottom cap"));
                 return CanvasParameters::frontendToData();
             }
 
@@ -45,8 +43,6 @@ namespace omni {
               auto* _height = addOffsetWidget("Height",0.2,0.01,1.0);
               auto* _beginAngle = addAngleWidget("Start angle",0.0,0.0,360.0);
               auto* _endAngle = addAngleWidget("End angle",0.0,0.0,360.0);
-              auto* _topCap = addCheckBox("Top cap",false);
-              auto* _bottomCap = addCheckBox("Bottom cap",false);
 
                 /// Retrieve parameters for Cylinder canvas
               auto* _cylinder = static_cast<omni::canvas::Cylinder*>(dataModel());
@@ -54,8 +50,6 @@ namespace omni {
               _height->setValue(_cylinder->height());
               _beginAngle->setValue(_cylinder->beginAngle());
               _endAngle->setValue(_cylinder->endAngle());
-              _topCap->setChecked(_cylinder->topCap());
-              _bottomCap->setChecked(_cylinder->bottomCap());
               CanvasParameters::dataToFrontend();
             }
         }

@@ -55,11 +55,11 @@ namespace omni
       float endAngle() const;
       void setEndAngle(float);
 
-      bool topCap() const;
-      void setTopCap(bool);
+      /// Center point on the bottom
+      QVector3D center() const;
 
-      bool bottomCap() const;
-      void setBottomCap(bool);
+      void toPropertyMap(PropertyMap& _map) const;
+      void fromPropertyMap(PropertyMap const& _map);
 
       /// Make new box parameter widget
       ui::CanvasParameters* widget();
@@ -70,9 +70,6 @@ namespace omni
       float beginAngle_ = 0.0;
       float endAngle_ = 360.0;
       const size_t segments_ = 64;
-
-      bool topCap_ = false;
-      bool bottomCap_ = false;
 
       visual::VertexVBO vbo_;
       visual::VertexVBO::vertex_buffer_type vertices_;

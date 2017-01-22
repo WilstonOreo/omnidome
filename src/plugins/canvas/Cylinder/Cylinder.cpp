@@ -80,28 +80,12 @@ namespace omni
       update();
     }
 
-    bool Cylinder::topCap() const {
-      return topCap_;
-    }
-
-    void Cylinder::setTopCap(bool _topCap) {
-      topCap_ = _topCap;
-      update();
-    }
-
-    bool Cylinder::bottomCap() const {
-      return bottomCap_;
-    }
-
-    void Cylinder::setBottomCap(bool _bottomCap) {
-      bottomCap_ = _bottomCap;
-      update();
-    }
-
     void Cylinder::update() {
       if (beginAngle_ > endAngle_) {
         std::swap(beginAngle_,endAngle_);
       }
+
+      this->bounds_ = omni::Box();
 
       primaryContextSwitch([&](QOpenGLFunctions& _) {
         vertices_.clear();
@@ -132,7 +116,9 @@ namespace omni
 
           QVector3D n(x,y,0.0);
           vertices_.emplace_back(QVector3D(x,y,1.0),n,QVector2D(tx,1.0));
+          bounds_.extend(vertices_.back().pos());
           vertices_.emplace_back(n,n,QVector2D(tx,0.0));
+          bounds_.extend(vertices_.back().pos());
         }
 
         for (size_t i = 0; i <= segments_; ++i)
@@ -154,6 +140,28 @@ namespace omni
 
     ui::CanvasParameters* Cylinder::widget() {
         return ui::makeWidget<ui::canvas::Cylinder>(this);
+    }
+
+    QVector3D Cylinder::center() const {
+        auto _center = bounds_.center();
+        return QVector3D(_center.x(),_center.y(),0.0);
+    }
+
+    void Cylinder::toPropertyMap(PropertyMap& _map) const {
+       Envelope::toPropertyMap(_map);
+       _map("diameter",diameter())
+           ("height",height())
+           ("beginAngle",beginAngle())
+           ("endAngle",endAngle());
+    }
+
+    void Cylinder::fromPropertyMap(PropertyMap const& _map) {
+       Envelope::fromPropertyMap(_map);
+       diameter_ = _map.getValue<qreal>("diameter",qreal(5.0));
+       height_ = _map.getValue<qreal>("height",qreal(2.0));
+       beginAngle_ = _map.getValue<qreal>("beginAngle",qreal(0.0));
+       endAngle_ = _map.getValue<qreal>("endAngle",qreal(360.0));
+       update();
     }
   }
 }
