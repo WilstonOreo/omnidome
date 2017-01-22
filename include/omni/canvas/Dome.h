@@ -66,9 +66,6 @@ namespace omni {
       protected:
         /// Sphere visualizer
         visual::Sphere sphere_;
-
-      private:
-        QVector3D center_;
     };
   }
 }
