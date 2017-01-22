@@ -73,7 +73,6 @@ namespace omni
 
     private:
       visual::Box vizBox_;
-      QVector3D center_;
       EulerAngles angles_;
     };
   }

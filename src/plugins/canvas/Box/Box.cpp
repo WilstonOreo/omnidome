@@ -27,7 +27,7 @@ namespace omni
 {
   namespace canvas
   {
-    Box::Box() : center_(0.0,0.0,0.0)
+    Box::Box() 
     {
       setSize(QVector3D(5,5,5));
     }
