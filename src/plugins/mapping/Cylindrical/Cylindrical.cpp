@@ -53,6 +53,7 @@ namespace omni
     /// Top border position of strip. Value is clamped between 0.0 and 1.0
     void Cylindrical::setBeginAngle(qreal _beginAngle) {
       beginAngle_ = _beginAngle;
+      validate();
     }
 
     /// Value between 0.0 and 1.0 to for bottom strip position
@@ -63,10 +64,31 @@ namespace omni
     /// Bottom border position of strip. Value is clamped between 0.0 and 1.0
     void Cylindrical::setEndAngle(qreal _endAngle) {
       endAngle_ = _endAngle;
+      validate();
+    }
+
+    void Cylindrical::validate()
+    {
+      if (beginAngle_ < 0.0) beginAngle_ = 0.0;
+      if (endAngle_ > 1.0) endAngle_ = 1.0;
+      if (beginAngle_ > endAngle_) std::swap(beginAngle_,endAngle_);
     }
 
     QWidget* Cylindrical::widget() {
         return ui::makeWidget<omni::ui::mapping::Cylindrical>(this);
+    }
+
+    void Cylindrical::toPropertyMap(PropertyMap& _map) const {
+      mapping::Interface::toPropertyMap(_map);
+      _map("beginAngle",beginAngle_)
+          ("endAngle",endAngle_);
+    }
+
+    void Cylindrical::fromPropertyMap(PropertyMap const& _map) {
+      mapping::Interface::fromPropertyMap(_map);
+      _map.get("beginAngle",beginAngle_)
+          .get("endAngle",endAngle_);
+      validate();
     }
   }
 }

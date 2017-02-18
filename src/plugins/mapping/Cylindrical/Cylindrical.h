@@ -45,8 +45,12 @@ namespace omni {
         /// Bottom border position of strip. Value is clamped between 0.0 and 1.0
         void setEndAngle(qreal);
 
+        void toPropertyMap(PropertyMap& _map) const;
+        void fromPropertyMap(PropertyMap const& _map);
+
         QWidget* widget();
     private:
+        void validate();
       qreal beginAngle_ = 0.0, endAngle_ = 1.0;
     };
 
