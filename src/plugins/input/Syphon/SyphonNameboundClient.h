@@ -1,7 +1,7 @@
 /*
     SyphonNameboundClient.h
 	Syphon (Implementations)
-	
+
     Copyright 2010-2013 bangnoise (Tom Butterworth) & vade (Anton Marini).
     All rights reserved.
 
@@ -26,7 +26,7 @@
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /*
 	SyphonNameboundClient
 
@@ -56,7 +56,10 @@
 	SyphonClient *_client;
 	SyphonClient *_lockedClient;
 	BOOL _searchPending;
+  void (^_handler)(id);
 }
+- (id)initWithHandler: (void (^)(SyphonClient *client))handler;
+
 @property (readwrite, retain) NSString *name;
 @property (readwrite, retain) NSString *appName;
 - (void)lockClient;

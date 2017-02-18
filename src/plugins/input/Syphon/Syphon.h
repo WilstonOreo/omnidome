@@ -60,14 +60,10 @@ namespace omni
       void toPropertyMap(PropertyMap&) const;
       void fromPropertyMap(PropertyMap const&);
 
-    protected:
-      void timerEvent(QTimerEvent *);
-
     private:
 	     void* client_ = nullptr;
        void* latestImage_ = nullptr;
 
-       int timerId_ = 0;
        GLuint texId_ = 0;
        bool isSetup_ = false;
        QSize size_;

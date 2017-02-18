@@ -28,6 +28,11 @@ namespace omni {
       class SyphonServerItemModel : public QStandardItemModel {
         Q_OBJECT
       public:
+        enum ItemRole {
+          AppNameRole = Qt::UserRole + 1,
+          ServerNameRole
+        };
+
         SyphonServerItemModel(QObject* _parent = nullptr);
         ~SyphonServerItemModel();
 

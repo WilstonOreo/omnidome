@@ -42,11 +42,11 @@ namespace omni {
     }
 
     const char * SyphonServerDescription::serverNameAsConstChar() const {
-      return serverName().toLatin1().data();
+      return serverName().toUtf8().constData();
     }
 
     const char* SyphonServerDescription::applicationNameAsConstChar() const {
-      return applicationName().toLatin1().data();
+      return applicationName().toUtf8().constData();
     }
   }
 }

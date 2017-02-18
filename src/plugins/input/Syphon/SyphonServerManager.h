@@ -74,7 +74,7 @@ namespace omni {
                                  QString& dest);
 
         bool isSetup_ = false;
-        std::vector<SyphonServerDescription> serverList_;
+        ServerList serverList_;
     };
   }
 }

@@ -59,26 +59,22 @@ namespace omni {
 
     void SyphonServerManager::refresh(bool _isAnnounce){
       ServerList eventArgs;
-
       for(NSDictionary* serverDescription in [[SyphonServerDirectory sharedDirectory] servers])
-    {
+      {
         NSString* name = [serverDescription objectForKey:SyphonServerDescriptionNameKey];
         NSString* appName = [serverDescription objectForKey:SyphonServerDescriptionAppNameKey];
         //NSString *uuid = [serverDescription objectForKey:SyphonServerDescriptionUUIDKey];
         //NSImage* appImage = [serverDescription objectForKey:SyphonServerDescriptionIconKey];
         //NSString *title = [NSString stringWithString:appName];
 
+        SyphonServerDescription sy([appName UTF8String],[name UTF8String]);
         if(_isAnnounce){
-            bool exists = serverExists(SyphonServerDescription([appName UTF8String], [name UTF8String]));
-            if(!exists){
-                SyphonServerDescription sy = SyphonServerDescription(QString([appName UTF8String]),QString([name UTF8String]));
+            if(!serverExists(sy)){
                 serverList_.push_back(sy);
                 eventArgs.push_back(sy);
-
-                qDebug() <<"Adding server: "<< QString([name UTF8String])<<" appName: "<< QString([appName UTF8String])<<"\n";
             }
         } else {
-            eventArgs.push_back(SyphonServerDescription(QString([appName UTF8String]),QString([name UTF8String])));
+            eventArgs.push_back(sy);
         }
     }
 
@@ -88,8 +84,6 @@ namespace omni {
         for (auto& _serverDescription : serverList_) {
             if(std::find(foundServers.begin(), foundServers.end(), _serverDescription) == foundServers.end()){
                 eventArgs.push_back(_serverDescription);
-                qDebug() << "Removing server: " << _serverDescription.serverName();
-                qDebug() <<" appName: "<< _serverDescription.applicationName();
             }
         }
         serverList_ = foundServers;

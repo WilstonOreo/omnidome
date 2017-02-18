@@ -47,19 +47,10 @@ namespace omni
       [pool drain];
     }
 
-    void Syphon::timerEvent(QTimerEvent *) {
-      this->update();
-      this->triggerUpdateCallbacks();
-    }
-
     void Syphon::setDescription(SyphonServerDescription const& _description) {
-      int _oldTimerId = timerId_;
-      if (timerId_) deactivate();
+      deactivate();
       description_ = _description;
-
-      if (_oldTimerId) {
-        activate();
-      }
+      activate();
     }
 
     SyphonServerDescription const& Syphon::description() const {
@@ -74,14 +65,14 @@ namespace omni
     void Syphon::update() {
       if (!QOpenGLContext::currentContext()) return;
       if(isSetup_)
-    {
+      {
       NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
       [(SyphonNameboundClient*)client_ lockClient];
           SyphonClient *client = [(SyphonNameboundClient*)client_ client];
 
           latestImage_ = [client newFrameImageForContext:CGLGetCurrentContext()];
-
 		      NSSize _texSize = [(SyphonImage*)latestImage_ textureSize];
+
           if (_texSize.width * _texSize.height == 0) {
             [pool drain];
             texId_ = 0;
@@ -102,30 +93,33 @@ namespace omni
       // Need pool
       NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-	     client_ = [[SyphonNameboundClient alloc] init];
-	     isSetup_ = true;
+	     client_ = [[SyphonNameboundClient alloc] initWithHandler:^(SyphonClient* client) {
+         this->update();
+         this->triggerUpdateCallbacks();
+       }];
 
         NSString *nsAppName =
-        [NSString stringWithCString:description_.applicationNameAsConstChar() encoding:[NSString defaultCStringEncoding]];
+        [NSString stringWithCString:description_.applicationNameAsConstChar()];
+
+        qDebug() << Q_FUNC_INFO << description_.applicationNameAsConstChar() << description_.serverNameAsConstChar();
 
         NSString *nsServerName =
-        [NSString stringWithCString:description_.serverNameAsConstChar() encoding:[NSString defaultCStringEncoding]];
+        [NSString stringWithCString:description_.serverNameAsConstChar()];
 
         [(SyphonNameboundClient*)client_ setAppName:nsAppName];
         [(SyphonNameboundClient*)client_ setName:nsServerName];
 
+        [(SyphonNameboundClient*)client_ lockClient];
+
+        isSetup_ = true;
+
         [pool drain];
 
-        int _timerId = this->startTimer(20);
-        if (!timerId_) {
-          timerId_ = _timerId;
-        }
+        update();
+        triggerUpdateCallbacks();
       }
 
       void Syphon::deactivate() {
-         this->killTimer(timerId_);
-         timerId_ = 0;
-
         NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
         if(isSetup_)
         {
@@ -137,7 +131,7 @@ namespace omni
           isSetup_ = false;
         } else
         {
-          qDebug() << "syphonClient is not setup, or is not properly connected to server.  Cannot unbind.\n";
+          qDebug() << "syphonClient is not setup, or is not properly connected to server.  Cannot unbind.";
         }
 
         [pool drain];
@@ -159,16 +153,10 @@ namespace omni
 
     void Syphon::fromPropertyMap(PropertyMap const& _map)
     {
-      int _oldTimerId = timerId_;
-      if (timerId_) {
-        deactivate();
-      }
-
+      deactivate();
       input::Interface::fromPropertyMap(_map);
       _map.get("description",description_);
-      if (_oldTimerId) {
-        activate();
-      }
+      activate();
     }
   }
 }

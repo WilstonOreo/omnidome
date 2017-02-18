@@ -36,33 +36,22 @@ namespace omni {
         if (_index < 0 || _index >= rowCount())
           return omni::input::SyphonServerDescription();
 
-        auto _appNameItem = item(_index,1);
-        auto _serverNameItem = item(_index,2);
-
-        if (!_appNameItem || !_serverNameItem)
-          return omni::input::SyphonServerDescription();
-
+        auto* i = item(_index);
         return omni::input::SyphonServerDescription(
-          _appNameItem->text(),
-          _serverNameItem->text()
+          i->data(AppNameRole).toString(),
+          i->data(ServerNameRole).toString()
         );
       }
 
       void SyphonServerItemModel::addDescription(
         omni::input::SyphonServerDescription const& _desc) {
-        QList<QStandardItem*> _row;
         QStandardItem* _labelItem = new QStandardItem(
             _desc.applicationName() + " : " +
             _desc.serverName());
         _labelItem->setEditable(false);
-        QStandardItem* _appNameItem = new QStandardItem(_desc.applicationName());
-        _appNameItem->setEditable(false);
-        QStandardItem* _serverNameItem = new QStandardItem(_desc.serverName());
-        _serverNameItem->setEditable(false);
-        _row << _labelItem;
-        _row << _appNameItem;
-        _row << _serverNameItem;
-        invisibleRootItem()->appendRow(_row);
+        _labelItem->setData(_desc.applicationName(),AppNameRole);
+        _labelItem->setData(_desc.serverName(),ServerNameRole);
+        invisibleRootItem()->appendRow(_labelItem);
       }
     }
   }

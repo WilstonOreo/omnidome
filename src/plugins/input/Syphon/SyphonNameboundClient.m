@@ -1,7 +1,7 @@
 /*
     SyphonNameboundClient.m
 	Syphon (Implementations)
-	
+
     Copyright 2010-2011 bangnoise (Tom Butterworth) & vade (Anton Marini).
     All rights reserved.
 
@@ -26,7 +26,7 @@
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 #import "SyphonNameboundClient.h"
 
 @interface SyphonNameboundClient (Private)
@@ -37,10 +37,26 @@
 - (id)init
 {
     self = [super init];
-	if (self)
+    _handler = nil;
+  if (self)
 	{
 		_lock = OS_SPINLOCK_INIT;
         _searchPending = YES;
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServerAnnounce:) name:SyphonServerAnnounceNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServerUpdate:) name:SyphonServerUpdateNotification object:nil];
+	}
+	return self;
+}
+
+- (id)initWithHandler:(void (^)(SyphonClient *client))handler
+{
+  self = [super init];
+  _handler = handler;
+
+  if (self)
+	{
+		_lock = OS_SPINLOCK_INIT;
+    _searchPending = YES;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServerAnnounce:) name:SyphonServerAnnounceNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServerUpdate:) name:SyphonServerUpdateNotification object:nil];
 	}
@@ -135,29 +151,29 @@
 {
 	SyphonClient *newClient = [client retain];
 	SyphonClient *oldClient;
-	
+
 	if (!isLocked) OSSpinLockLock(&_lock);
 	oldClient = _client;
 	_client = newClient;
 	if (!isLocked) OSSpinLockUnlock(&_lock);
-	
+
 	// If we were registered for notifications and no longer require them
 	// remove ourself from the notification center
-	
+
 	if (oldClient == nil && newClient != nil)
 	{
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:SyphonServerAnnounceNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServerRetire:) name:SyphonServerRetireNotification object:nil];
 	}
-	
+
 	// If we weren't registered already, but need to register now, do so
-	
+
 	if (newClient == nil && oldClient != nil)
 	{
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServerAnnounce:) name:SyphonServerAnnounceNotification object:nil];
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:SyphonServerRetireNotification object:nil];
 	}
-	
+
 	// Release the old client
 	[oldClient release];
 }
@@ -166,7 +182,7 @@
 {
 	NSString *searchName = self.name;
 	NSString *searchApp = self.appName;
-	
+
 	if ([searchName length] == 0)
 	{
 		searchName = nil;
@@ -187,9 +203,8 @@
 - (void)setClientFromSearchHavingLock:(BOOL)isLocked
 {
 	SyphonClient *newClient = nil;
-	
+
 	if (!isLocked) OSSpinLockLock(&_lock);
-    
     NSArray *matches = [[SyphonServerDirectory sharedDirectory] serversMatchingName:_name appName:_appname];
 
     if ([matches count] != 0)
@@ -202,13 +217,13 @@
         }
         else
         {
-            newClient = [[SyphonClient alloc] initWithServerDescription:[matches lastObject] options:nil newFrameHandler:nil];
+            newClient = [[SyphonClient alloc] initWithServerDescription:[matches lastObject] options:nil newFrameHandler:_handler];
         }
     }
 	[self setClient:newClient havingLock:YES];
-	
+
     if (!isLocked) OSSpinLockUnlock(&_lock);
-	
+
     [newClient release];
 }
 
@@ -219,8 +234,7 @@
 	if ((_client == nil || ![self parametersMatchDescription:[_client serverDescription]])
 		&& [self parametersMatchDescription:newInfo])
 	{
-		SyphonClient *newClient = [[SyphonClient alloc] initWithServerDescription:newInfo options:nil newFrameHandler:nil];
-		
+		SyphonClient *newClient = [[SyphonClient alloc] initWithServerDescription:newInfo options:nil newFrameHandler:_handler];
 		[self setClient:newClient havingLock:NO];
 		[newClient release];
 	}
@@ -239,13 +253,13 @@
 		{
 			[self setClient:nil havingLock:NO];
 		}
-		
+
 	}
 	// If we don't have a matching client but this client's new details match, then set up a new client
 	if (_client == nil && [self parametersMatchDescription:newInfo])
 	{
-		SyphonClient *newClient = [[SyphonClient alloc] initWithServerDescription:newInfo options:nil newFrameHandler:nil];
-		
+		SyphonClient *newClient = [[SyphonClient alloc] initWithServerDescription:newInfo options:nil newFrameHandler:_handler];
+
 		[self setClient:newClient havingLock:NO];
 		[newClient release];
 	}
@@ -255,7 +269,7 @@
 {
 	NSString *retiringUUID = [[notification object] objectForKey:SyphonServerDescriptionUUIDKey];
 	NSString *ourUUID = [[_client serverDescription] objectForKey:SyphonServerDescriptionUUIDKey];
-	
+
 	if ([retiringUUID isEqualToString:ourUUID])
 	{
 		[self setClientFromSearchHavingLock:NO];
