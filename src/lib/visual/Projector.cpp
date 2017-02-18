@@ -120,7 +120,7 @@ namespace omni {
             switch (proj_.setup()) {
             default:
             case proj::Projector::FREE:
-              // Draw manhattan line from center to projector ground position  
+              // Draw manhattan line from center to projector ground position
               this->visualLine(_center,QVector3D(_p.x(), _center.y(), _center.z()));
               this->visualLine(QVector3D(_p.x(), _center.y(), _center.z()),
                               QVector3D(_p.x(), _p.y(),      _center.z()));
