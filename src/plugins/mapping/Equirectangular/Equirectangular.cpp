@@ -53,6 +53,7 @@ namespace omni
     void Equirectangular::setStripTop(qreal _stripTop)
     {
       stripTop_ = _stripTop;
+      validate();
     }
 
     qreal Equirectangular::stripBottom() const
@@ -63,6 +64,7 @@ namespace omni
     void Equirectangular::setStripBottom(qreal _stripBottom)
     {
       stripBottom_ = _stripBottom;
+      validate();
     }
 
     void Equirectangular::validate()
@@ -89,9 +91,7 @@ namespace omni
 
     bool operator==(Equirectangular const& _lhs, Equirectangular const& _rhs)
     {
-    //  const Rotatable& _blhs(_lhs);
-    //  const Rotatable& _brhs(_rhs);
-      return //(_blhs == _brhs) &&
+      return
         OMNI_TEST_MEMBER_EQUAL(stripTop_) &&
         OMNI_TEST_MEMBER_EQUAL(stripBottom_);
     }
