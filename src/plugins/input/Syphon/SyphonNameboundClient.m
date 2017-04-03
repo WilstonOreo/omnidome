@@ -230,7 +230,7 @@
 - (void)handleServerAnnounce:(NSNotification *)notification
 {
 	NSDictionary *newInfo = [notification object];
-    // If we don't have a client, or our current client doesn't match our parameters any more
+  // If we don't have a client, or our current client doesn't match our parameters any more
 	if ((_client == nil || ![self parametersMatchDescription:[_client serverDescription]])
 		&& [self parametersMatchDescription:newInfo])
 	{
@@ -272,6 +272,7 @@
 
 	if ([retiringUUID isEqualToString:ourUUID])
 	{
+    _client = nil;
 		[self setClientFromSearchHavingLock:NO];
 	}
 }

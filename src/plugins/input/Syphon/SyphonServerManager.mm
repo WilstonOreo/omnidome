@@ -1,5 +1,5 @@
-/* Copyright (c) 2014-2015 "Omnidome" by Michael Winkelmann
- * Dome Mapping Projection Software (http://omnido.me).
+/* Copyright (c) 2014-2017 "Omnidome" by Michael Winkelmann
+undefined
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
  * This file is part of Omnidome.
