@@ -34,7 +34,7 @@ include(CMakeParseArguments)
 omni_option(QT_MAJOR_VERSION "Qt Major Version" 5 )
 
 # Qt Minor version, default is 6
-omni_option(QT_MINOR_VERSION "Qt Minor Version" 7 )
+omni_option(QT_MINOR_VERSION "Qt Minor Version" 8 )
 omni_option(QT_PATH "Qt Path" "$ENV{HOME}/Qt" )
 
 MACRO(find_qt5_component COMPONENT_NAME)
