@@ -36,7 +36,7 @@ namespace omni {
           FREE
         };
 
-        Projector();
+        Projector(Setup = PERIPHERAL);
 
         /// Return projector setup mode (FREE vs PERIPHERAL)
         Setup             setup() const;
@@ -45,9 +45,9 @@ namespace omni {
         void              setSetup(Setup);
 
         void              setupFree(EulerAngles const&, QVector3D const&);
-        void              setupPeripheral(EulerAngles const&, 
+        void              setupPeripheral(EulerAngles const&,
                             Angle _deltaYaw = 0.0,
-                            qreal _distanceCenter = 0.4, 
+                            qreal _distanceCenter = 0.4,
                             qreal _towerHeight = 0.2,
                             qreal _shift = 0.0
                           );
@@ -125,13 +125,13 @@ namespace omni {
         void      setPos(qreal _x,
                          qreal _y,
                          qreal _z);
-        
+
         /// Write projector to stream
         void              toStream(QDataStream&) const;
 
         /// Read projector from stream
         void              fromStream(QDataStream&);
-        
+
 
         /// Test for equality
         friend bool       operator==(Projector const&,
@@ -141,10 +141,10 @@ namespace omni {
         void      update();
         Setup setup_ = PERIPHERAL;
         QMatrix4x4 matrix_;
-        qreal aspectRatio_ = 0.75;
+        qreal aspectRatio_ = 1.5;
         Angle fov_;
         qreal keystone_ = 0.0;
-        
+
         QVector3D pos_;
         Angle deltaYaw_ = 0.0;
         qreal distanceCenter_ = 0.4;

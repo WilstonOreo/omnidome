@@ -96,25 +96,25 @@ namespace omni {
 
             void TuningList::addTuning()
             {
-                auto _setup = Projector::PERIPHERAL;
-                if (!dataModel()->tunings().empty())
+                omni::proj::Projector _projector;
+                if (dataModel()->tunings().current())
                 {
                     // Set setup id from last tuning
-                    _setup = 
-                      dataModel()->tunings()[dataModel()->tunings().size() - 1]->projector().setup();
+                    _projector =
+                      dataModel()->tunings().current()->projector();
                 }
-                addTuning(_setup);
+                addTuning(_projector);
             }
 
             /// Add tuning with specific projector setup
-            void TuningList::addTuning(Projector::Setup const& _projSetup)
+            void TuningList::addTuning(Projector const& _proj)
             {
                 auto *_tuning = dataModel()->tunings().add(false);
 
                 if (!_tuning) return;
 
                 _tuning->setColor(getTuningColor());
-                _tuning->projector().setSetup(_projSetup);
+                _tuning->projector() = _proj;
                 addTuning(_tuning);
 
                 // Select this tuning index
@@ -152,6 +152,7 @@ namespace omni {
                                      dataModelChanged()), this,
                                  SIGNAL(tuningChanged()));
                 _widget->sessionModeChange();
+                _widget->updateParameters();
 
                 emit tuningAdded();
             }

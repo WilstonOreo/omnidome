@@ -496,10 +496,10 @@ void MainWindow::addProjector(QAction *_action)
 {
   auto _id = _action->data().toString();
   if (_id == "Peripheral")
-  {  
+  {
     ui_->tuningList->addTuning(Projector::PERIPHERAL);
-  } else 
-  if (_id == "Free") 
+  } else
+  if (_id == "Free")
   {
     ui_->tuningList->addTuning(Projector::FREE);
   }

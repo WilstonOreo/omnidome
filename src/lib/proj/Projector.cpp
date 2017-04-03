@@ -28,13 +28,13 @@
 
 namespace omni {
   namespace proj {
-    Projector::Projector() :
+    Projector::Projector(Setup _setup) :
       fov_(45.0)
     {
-      setupPeripheral(EulerAngles(0.0,0.0,0.0));
+      setSetup(_setup);
     }
 
-    Projector::Setup Projector::setup() const 
+    Projector::Setup Projector::setup() const
     {
       return setup_;
     }
@@ -44,16 +44,16 @@ namespace omni {
       update();
     }
 
-        
+
     void Projector::setupFree(EulerAngles const& _angles, QVector3D const& _pos) {
         static_cast<EulerAngles&>(*this) = _angles;
         pos_ = _pos;
         setSetup(FREE);
     }
-     
-    void Projector::setupPeripheral(EulerAngles const& _angles, 
+
+    void Projector::setupPeripheral(EulerAngles const& _angles,
                             Angle _deltaYaw,
-                            qreal _distanceCenter, 
+                            qreal _distanceCenter,
                             qreal _towerHeight,
                             qreal _shift
                           ) {
@@ -133,13 +133,13 @@ namespace omni {
       return pos_;
     }
 
-    void Projector::setPos(QVector3D const& _pos) 
+    void Projector::setPos(QVector3D const& _pos)
     {
       pos_ = _pos;
       update();
     }
-    
-    void Projector::setPos(qreal _x, qreal _y, qreal _z) 
+
+    void Projector::setPos(qreal _x, qreal _y, qreal _z)
     {
       setPos(QVector3D(_x,_y,_z));
     }
@@ -248,7 +248,7 @@ namespace omni {
 
     void Projector::update() {
       QMatrix4x4 _m;
-   
+
       switch (setup_) {
         case FREE:
         _m.translate(pos_);
@@ -264,11 +264,11 @@ namespace omni {
         _m.translate(_pos);
         _m.rotate(yaw().degrees() + deltaYaw_.degrees(),QVector3D(0.0,0.0,1.0));
         _m.rotate(-pitch().degrees(),QVector3D(0.0,1.0,0.0));
-        _m.rotate(roll().degrees(),QVector3D(1.0,0.0,0.0));                  
+        _m.rotate(roll().degrees(),QVector3D(1.0,0.0,0.0));
         }
         break;
       }
-      
+
       setMatrix(_m);
     }
   }

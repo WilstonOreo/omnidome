@@ -66,7 +66,7 @@ namespace omni
         void addTuning();
 
         /// Add tuning with specific projector setup
-        void addTuning(Projector::Setup const&);
+        void addTuning(Projector const&);
 
         /// Remove tuning
         void removeTuning(int _index);

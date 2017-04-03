@@ -122,6 +122,8 @@ namespace omni {
           /// Reset to peripheral projector setup (discards previous projector
           // setup)
           void resetToPeripheralSetup();
+          /// Set parameters from sliders to tuning
+          void updateParameters();
 
         signals:
           void selected(int);
@@ -156,8 +158,6 @@ namespace omni {
         private slots:
           void startDrag();
 
-          /// Set parameters from sliders to tuning
-          void updateParameters();
 
           /// Set FOV to projector from slider
           void setFov();
