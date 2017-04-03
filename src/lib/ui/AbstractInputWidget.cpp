@@ -38,7 +38,9 @@ namespace omni {
       valueLabel_->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
       valueLabel_->setSizePolicy(QSizePolicy::Expanding,
                                  QSizePolicy::Expanding);
-      valueLabel_->setStyleSheet("background : transparent; color: #808080;");
+      valueLabel_->setStyleSheet(
+        "* { font-family: \"Dosis\"; font: light \"Dosis\"; } "
+        "QLabel { background : transparent; color: #808080; } ");
       layout()->addWidget(valueLabel_);
     }
 

@@ -1,6 +1,6 @@
 * {
-   font-family: "Source Sans Pro";
-   font: light "Source Sans Pro"
+   font-family: "Dosis";
+   font: light "Dosis";
 }
 
 QWidget
@@ -58,7 +58,7 @@ QHeaderView::section
 QToolBar {
     border: 0px solid #212121;
     background-color: #212121;
-    font: bold "Source Sans Pro";
+    font: bold "Dosis";
 }
 
 
@@ -131,7 +131,7 @@ QAbstractButton:hover
 }
 
 QLabel {
-   font: light small "Source Sans Pro";
+   font: light small "Dosis";
    font-size: 9px;
 }
 

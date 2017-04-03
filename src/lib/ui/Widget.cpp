@@ -67,7 +67,9 @@ namespace omni {
             label_ = new QLabel("", this);
             label_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
             label_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            label_->setStyleSheet("background : transparent; color: #808080;");
+            label_->setStyleSheet(
+              "* { font-family: \"Dosis\"; font: light \"Dosis\"; } "
+              "QLabel { background : transparent; color: #808080; } ");
             label_->setPalette(this->palette());
 
             QLayout *_layout = new QHBoxLayout(this);

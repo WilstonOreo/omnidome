@@ -38,9 +38,9 @@ namespace omni {
             loadPlugins();
 
             std::vector<QString> _fonts = {
-                ":/fonts/SourceSansPro-Bold.ttf",
-                ":/fonts/SourceSansPro-Light.ttf",
-                ":/fonts/SourceSansPro-Regular.ttf"
+                ":/fonts/Dosis-Bold.ttf",
+                ":/fonts/Dosis-Light.ttf",
+                ":/fonts/Dosis-Regular.ttf"
             };
 
             for (auto& _font : _fonts) {
