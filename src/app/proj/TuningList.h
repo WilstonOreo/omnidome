@@ -142,7 +142,7 @@ namespace omni
         QWidget* contents_;
         QLayout* layout_;
 
-        std::vector<QUniquePtr<Tuning>> widgets_;
+        std::vector<QWidgetPtr<Tuning>> widgets_;
       };
     }
   }
