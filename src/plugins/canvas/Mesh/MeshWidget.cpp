@@ -97,11 +97,7 @@ namespace omni {
                 /// Set last directory
                 QFileInfo _info(_filename);
                 lastDir_ = _info.absolutePath();
-                /*try {
-                } catch (...) {
-                    QErrorMessage _errorMessageBox(this);
-                    _errorMessageBox.showMessage("Error loading mesh.");
-                }*/
+                emit dataModelChanged();
             }
         }
     }

@@ -115,7 +115,6 @@ namespace omni {
           });
 
           qDebug() << "Mesh has" << vertexCount_ << "vertices.";
-
           qDebug() << bounds_.min() << " " << bounds_.max();
 
           needsUpdate_ = false;
