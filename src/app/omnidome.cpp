@@ -77,8 +77,8 @@ int main(int ac, char *av[])
 #endif
   QSurfaceFormat::setDefaultFormat(_format);
 
-
   omni::ui::Application _a(ac, av);
+  Q_INIT_RESOURCE(libomni);
 
   /// Command line parser is only available in debug mode
 #ifdef DEBUG

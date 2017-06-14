@@ -92,12 +92,6 @@ namespace omni {
         /// Set radius
         void setRadius(qreal);
 
-        /// Write transformation to stream
-        void        toStream(QDataStream&) const;
-
-        /// Read transformation from stream
-        void        fromStream(QDataStream&);
-
         /// Test for equality
         friend bool operator==(PolarVec const&,
                                PolarVec const&);
@@ -111,6 +105,6 @@ namespace omni {
   using geometry::PolarVec;
 }
 
-OMNI_DECL_STREAM_OPERATORS(omni::geometry::PolarVec)
+Q_DECLARE_METATYPE(omni::geometry::PolarVec)
 
 #endif /* OMNI_GEOMETRY_POLARVEC_H_ */

@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by Michael Winkelmann
+/* Copyright (c) 2014-2017 "Omnidome" by Michael Winkelmann
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -26,15 +26,14 @@
 #include <omni/serialization/PropertyMap.h>
 
 namespace omni {
-    BlendBrush::BlendBrush() : size_(100.0,100.0)
+    BlendBrush::BlendBrush(QObject* parent) :
+      QObject(parent),
+      size_(100.0,100.0)
     {
-        generate();
-    }
-
-    BlendBrush::BlendBrush(QVector2D const& _size, float _feather) :
-        size_(_size),
-        feather_(_feather)
-    {
+        connect(this,&BlendBrush::sizeChanged,this,&BlendBrush::generate);
+        connect(this,&BlendBrush::featherChanged,this,&BlendBrush::generate);
+        connect(this,&BlendBrush::invertedChanged,this,&BlendBrush::generate);
+        connect(this,&BlendBrush::opacityChanged,this,&BlendBrush::generate);
         generate();
     }
 
@@ -45,8 +44,10 @@ namespace omni {
 
     void BlendBrush::setSize(QVector2D const& _size)
     {
+      if (size_ != _size) {
         size_ = clampBrushSize(_size);
-        generate();
+        emit sizeChanged();
+      }
     }
 
     void BlendBrush::changeSize(QVector2D const& _delta)
@@ -54,72 +55,9 @@ namespace omni {
         setSize(size_ + _delta);
     }
 
-    float BlendBrush::opacity() const {
-        return opacity_;
-    }
-
-    void BlendBrush::setOpacity(float _opacity) {
-        opacity_ = _opacity;
-
-        if (opacity_ < 0.0) {
-            opacity_ = 0.0;
-        }
-
-        if (opacity_ > 1.0) {
-            opacity_ = 1.0;
-        }
-        generate();
-    }
-
-    float BlendBrush::feather() const
-    {
-        return feather_;
-    }
-
-    void BlendBrush::setFeather(float _feather)
-    {
-        feather_ = _feather;
-
-        if (feather_ < 0.0) feather_ = 0.0;
-
-        if (feather_ > 10.0) feather_ = 10.0;
-        generate();
-    }
-
-    bool BlendBrush::invert() const
-    {
-        return invert_;
-    }
-
-    void BlendBrush::setInvert(bool _invert)
-    {
-        invert_ = _invert;
-        generate();
-    }
-
-    void BlendBrush::setBrush(
-        QVector2D const& _size,
-        float _feather,
-        float _opacity, bool _invert)
-    {
-        size_ = clampBrushSize(_size);
-
-        feather_ = _feather;
-
-        if (feather_ < 0.0) feather_ = 0.0;
-        if (feather_ > 10.0) feather_ = 10.0;
-        invert_ = _invert;
-
-        if (opacity_ < 0.0) {
-            opacity_ = 0.0;
-        }
-
-        if (opacity_ > 1.0) {
-            opacity_ = 1.0;
-        }
-        opacity_ = _opacity;
-        generate();
-    }
+    OMNI_PROPERTY_RW_IMPL(BlendBrush,bool,inverted,setInverted)
+    OMNI_PROPERTY_REAL_BOUND_IMPL(BlendBrush,feather,setFeather,0.0,10.0)
+    OMNI_PROPERTY_REAL_BOUND_IMPL(BlendBrush,opacity,setOpacity,0.0,1.0)
 
     void BlendBrush::stamp(QPointF const& _p, Buffer<uint8_t>& _buf) const
     {
@@ -145,7 +83,7 @@ namespace omni {
                 auto  _v   = buffer_(i, j);
                 auto& _pix = _buf(_posx, _posy);
 
-                if (invert())
+                if (inverted())
                 {
                     _pix = _pix * _v;
                 }
@@ -239,36 +177,5 @@ namespace omni {
         return QVector2D(
           qBound(30.0f,_size.x(),  400.0f),
           qBound(30.0f / _aspect,_size.y(),  400.0f / _aspect));
-    }
-
-    /// Write blend brush to stream
-    void BlendBrush::toStream(QDataStream& _os) const {
-        PropertyMap _map;
-
-        _map("size", size_)
-            ("feather", feather_)
-            ("opacity", opacity_)
-            ("invert", invert_);
-        _os << _map;
-    }
-
-    /// Read blend brush from stream
-    void BlendBrush::fromStream(QDataStream& _is) {
-        PropertyMap _map;
-        _is >> _map;
-        _map.get("size",    size_);
-        _map.get("feather", feather_);
-        _map.get("opacity", opacity_);
-        _map.get("invert",  invert_);
-        generate();
-    }
-
-    bool operator==(BlendBrush const& _lhs, BlendBrush const& _rhs)
-    {
-        return
-            OMNI_TEST_MEMBER_EQUAL(size_) &&
-            OMNI_TEST_MEMBER_EQUAL(feather_) &&
-            OMNI_TEST_MEMBER_EQUAL(opacity_) &&
-            OMNI_TEST_MEMBER_EQUAL(invert_);
     }
 }

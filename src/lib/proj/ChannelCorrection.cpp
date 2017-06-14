@@ -19,101 +19,46 @@
 
 #include <cmath>
 #include <omni/proj/ChannelCorrection.h>
-#include <omni/serialization/PropertyMap.h>
 #include <omni/util.h>
 
 namespace omni {
     namespace proj {
-        double ChannelCorrection::gamma() const {
-            return gamma_;
+        ChannelCorrection(QObject* parent) : QObject(parent) {
+
         }
 
-        void ChannelCorrection::setGamma(double _gamma) {
-            gamma_ = qBound(-1.0, _gamma, 1.0);
+        ChannelCorrection::~ChannelCorrection() {
+
         }
 
-        double ChannelCorrection::brightness() const {
-            return brightness_;
-        }
-
-        double ChannelCorrection::contrast(double v) const {
-            double _c = (contrast() <= 0.0) ?
+        qreal ChannelCorrection::contrastCorrected(qreal v) const {
+            qreal _c = (contrast() <= 0.0) ?
                 contrast()*multiplier() + 1.0 :
                 (1.0 / (1.0 - contrast()*multiplier()));
             return ((v - 0.5) * std::max(_c, 0.0)) + 0.5;
         }
 
-        double ChannelCorrection::brightness(double v) const {
+        qreal ChannelCorrection::brightnessCorrected(qreal v) const {
         	return std::max(v + brightness() * multiplier(),0.0);
         }
 
-        double ChannelCorrection::gamma(double v) const {
-            double g = 0.0;
-            if (gamma() >= 0.0) {
-            	g = 1.0 / (1.0 + gamma() * multiplier());
-            } else {
-            	g = (1.0 - gamma() * multiplier());
-            }
-            return std::pow(v,g*g*g*g);
+        qreal ChannelCorrection::gammaCorrected(qreal v) const {
+          qreal g = 0.0;
+          if (gamma() >= 0.0) {
+            g = 1.0 / (1.0 + gamma() * multiplier());
+          } else {
+          	g = (1.0 - gamma() * multiplier());
+          }
+          return std::pow(v,g*g*g*g);
         }
 
-        void ChannelCorrection::setBrightness(double _brightness) {
-            brightness_ = qBound(-1.0, _brightness, 1.0);
-        }
-
-        double ChannelCorrection::contrast() const {
-            return contrast_;
-        }
-
-        void ChannelCorrection::setContrast(double _contrast) {
-            contrast_ = qBound(-1.0, _contrast, 1.0);
-        }
-
-        double ChannelCorrection::multiplier() const {
-            return multiplier_;
-        }
-
-        void ChannelCorrection::setMultiplier(double _multiplier) {
-            multiplier_ = qBound(0.0, _multiplier, 1.0);
-        }
-
-        double ChannelCorrection::corrected(double _value) const {
+        qreal ChannelCorrection::corrected(qreal _value) const {
             return brightness(contrast(gamma(_value)));
         }
 
-        /// Test for equality
-        bool operator==(ChannelCorrection const& _lhs, ChannelCorrection const& _rhs) {
-            return
-                OMNI_TEST_MEMBER_EQUAL(gamma_) &&
-                OMNI_TEST_MEMBER_EQUAL(brightness_) &&
-                OMNI_TEST_MEMBER_EQUAL(contrast_) &&
-                OMNI_TEST_MEMBER_EQUAL(multiplier_);
-        }
+        OMNI_DEFINE_PROPERTY_REAL_BOUND(ChannelCorrection,contrast,setContrast,-1.0,1.0);
+        OMNI_DEFINE_PROPERTY_REAL_BOUND(ChannelCorrection,brightness,setBrightness,-1.0,1.0);
+        OMNI_DEFINE_PROPERTY_REAL_BOUND(ChannelCorrection,gamma,setGamma,-1.0,1.0);
+        OMNI_DEFINE_PROPERTY_REAL_BOUND(ChannelCorrection,multiplier,setMultiplier,0.0,1.0);
     }
-}
-
-QDataStream& operator>>(QDataStream& _is, omni::proj::ChannelCorrection& _channelCorrection) {
-    using namespace omni;
-    PropertyMap _map;
-    _is >> _map;
-    _map.get<double>("gamma",_channelCorrection,
-        std::mem_fn(&proj::ChannelCorrection::setGamma));
-    _map.get<double>("brightness",_channelCorrection,
-        std::mem_fn(&proj::ChannelCorrection::setBrightness));
-    _map.get<double>("contrast",_channelCorrection,
-        std::mem_fn(&proj::ChannelCorrection::setContrast));
-    _map.get<double>("multiplier",_channelCorrection,
-        std::mem_fn(&proj::ChannelCorrection::setMultiplier));
-    return _is;
-}
-
-QDataStream& operator<<(QDataStream& _os, omni::proj::ChannelCorrection const& _channelCorrection) {
-    using namespace omni;
-    PropertyMap _map;
-    _map("gamma",_channelCorrection.gamma())
-        ("brightness",_channelCorrection.brightness())
-        ("contrast",_channelCorrection.contrast())
-        ("multiplier",_channelCorrection.multiplier());
-    _os << _map;
-    return _os;
 }

@@ -47,55 +47,56 @@ namespace omni {
           correction.
                It holds a color as well. It can render a projector calibration
      **/
-    class Tuning {
+    class Tuning : public QObject {
+        Q_OBJECT
+        Q_PROPERTY(bool virtualScreen READ virtualScreen WRITE setVirtualScreen NOTIFY virtualScreenChanged)
+        Q_PROPERTY(QRect screenGeometry READ screenGeometry WRITE screenGeometry NOTIFY screenGeometryChanged)
+        Q_PROPERTY(QRect contentGeometry READ contentGeometry WRITE contentGeometry NOTIFY contentGeometryChanged)
+        Q_PROPERTY(int width READ width NOTIFY contentGeometryChanged STORED false)
+        Q_PROPERTY(int height READ width NOTIFY contentGeometryChanged STORED false)
+        Q_PROPERTY(Projector* projector READ projector CONSTANT)
+        Q_PROPERTY(WarpGrid* warpGrid READ warpGrid CONSTANT)
+        Q_PROPERTY(BlendMask* blendMask READ blendMask CONSTANT)
+        Q_PROPERTY(ColorCorrection* colorCorrection READ colorCorrection CONSTANT)
+
+        Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+        Q_PROPERTY(bool output READ output WRITE setOutput NOTIFY outputChanged)
+        Q_PROPERTY(qreal overlapOpacity READ setOverlapOpacity NOTIFY overlapOpacityChanged)
       public:
         typedef omni::visual::Tuning visualizer_type;
 
         /// Constructor
-        Tuning(Session const&);
+        Tuning(QObject* = nullptr);
+        ~Tuning();
 
-        /// Assign virtual screen to tuning
-        void assignVirtualScreen();
+        bool virtualScreen() const;
+        void setVirtualScreen(bool);
 
-        /// Set screen for this tuning
-        void                   setScreen(QScreen const *_screen,
-                                         int _subScreenIndex);
+        QRect const& screenGeometry() const;
+        void setScreenGeometry(QRect const&);
 
-        QScreen const        * screen() const;
-        int                    subScreenIndex() const;
+        QRect const& contentGeometry() const;
+        void setContentGeometry(QRect const&);
 
-        Projector            & projector();
-        Projector const      & projector() const;
+        Projector            * projector() const;
 
         /// Returns reference to warp grid
-        WarpGrid             & warpGrid();
-
-        /// Returns reference to warp grid (const version)
-        WarpGrid const       & warpGrid() const;
+        WarpGrid             * warpGrid() const;
 
         /// Returns reference to blend mask
-        BlendMask            & blendMask();
-
-        /// Returns reference to blend mask (const version)
-        BlendMask const      & blendMask() const;
+        BlendMask            * blendMask() const;
 
         /// Color correction for projector
-        ColorCorrection      & colorCorrection();
+        ColorCorrection      * colorCorrection() const;
 
-        /// Color correction for projector (const)
-        ColorCorrection const& colorCorrection() const;
-
-        /// Returns color for mapping
+        /// Returns color for tuning
         QColor                 color() const;
 
-        /// Sets color for mapping
+        /// Sets color for tuning
         void                   setColor(QColor const&);
 
         /// Return pointer to visualizer
-        visualizer_type      * visualizer();
-
-        /// Return pointer to visualizer (const version)
-        visualizer_type const* visualizer() const;
+        visualizer_type      * visualizer() const;
 
         /// Make visualizer if it is not instantiated yet
         visualizer_type      * makeVisualizer();
@@ -104,14 +105,7 @@ namespace omni {
         bool                   hasScreen() const;
 
         /// Render calibration
-        void                   renderCalibration(Calibration& _calib)
-        const;
-
-        /// Rectangle of the output screen on desktop
-        QRect                  screenGeometry() const;
-
-        /// Content rectangle (position) inside the screen
-        QRect                  contentGeometry() const;
+        void                   renderCalibration(Calibration& _calib) const;
 
         /// Render and return calibration
         Calibration renderCalibration() const;
@@ -140,45 +134,26 @@ namespace omni {
         /// Set opacity of overlap mask in blend mode
         void        setOverlapOpacity(float);
 
-        /// Write tuning to stream
-        void        toStream(QDataStream&) const;
-
-        /// Read tuning from stream
-        void        fromStream(QDataStream&);
-
-        /// Test for equality
-        friend bool operator==(Tuning const&,
-                               Tuning const&);
-
-        /// Return const reference to owning session
-        Session const& session() const;
-
-        /// Return id of tuning
-        int id() const;
+      signals:
+        void virtualScreenChanged();
+        void outputChanged();
+        void overlapOpacityChanged();
+        void colorChanged();
 
       private:
-        bool   outputDisabled_ = false;
+        bool virtualScreen_ = false;
+        QRect screenGeometry_;
+        QRect contentGeometry_;
+        bool   output_ = true;
         bool   overlapOpacity_ = 0.0;
         QColor color_;
-        Projector projector_;
-
-        /**@brief Screen this tuning is assigned to.
-           @detail If screen is nullptr, tuning is assigned to virtual screen
-         **/
-        QScreen const* screen_ = nullptr;
-
-        /// SubScreen index of this tuning
-        int subScreenIndex_ = 0;
-
-        WarpGrid  warpGrid_;
-        BlendMask blendMask_;
-        ColorCorrection colorCorrection_;
+        Projector* projector_;
+        WarpGrid* warpGrid_;
+        BlendMask* blendMask_;
+        ColorCorrection* colorCorrection_;
         std::unique_ptr<visualizer_type> viz_;
-        Session const& session_;
     };
   }
 }
-
-OMNI_DECL_STREAM_OPERATORS(omni::proj::Tuning)
 
 #endif /* OMNI_MAPPING_H_ */

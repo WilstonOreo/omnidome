@@ -102,7 +102,7 @@ namespace omni {
         bool  virtualScreen_ = true;
         QRect screenGeometry_;
         QRect contentGeometry_;
-        ColorCorrection colorCorrection_;
+        QUniquePtr<ColorCorrection> colorCorrection_;
         pixeldata_type data_;
     };
   }

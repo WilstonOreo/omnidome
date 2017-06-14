@@ -24,54 +24,22 @@
 
 namespace omni {
   namespace geometry {
-    AffineTransform::AffineTransform() :
+    AffineTransform::AffineTransform(QObject* parent) :
+        QObject(parent),
+        rotation_(new EulerAngles(this)),
         scale_(1.0, 1.0, 1.0),
         translation_(0.0, 0.0, 0.0) {}
 
-    EulerAngles const& AffineTransform::rotation() const {
+    EulerAngles* AffineTransform::rotation() const {
         return rotation_;
     }
 
-    EulerAngles& AffineTransform::rotation() {
-        return rotation_;
-    }
-
-    void AffineTransform::setRotation(EulerAngles const& _rotation) {
-        rotation_ = _rotation;
-    }
-
-    QVector3D AffineTransform::scale() const {
-        float _s = uniformScale();
-        return uniformScaleEnabled_ ? QVector3D(_s,_s,_s) : scale_;
-    }
-
-    /// Return scale factor
-    float AffineTransform::uniformScale()  const {
-      return uniformScale_;
-    }
-
-    void AffineTransform::setScale(QVector3D const& _scale) {
-        scale_ = _scale;
-    }
-
-    void AffineTransform::setScale(float _uniformScale) {
-        uniformScale_ = _uniformScale;
-        if (!uniformScaleEnabled_) {
-          scale_ = QVector3D(_uniformScale,_uniformScale,_uniformScale);
-        }
-    }
-
-    QVector3D const& AffineTransform::translation() const {
-        return translation_;
-    }
-
-    QVector3D& AffineTransform::translation() {
-        return translation_;
-    }
-
-    void AffineTransform::setTranslation(QVector3D const& _translation) {
-        translation_ = _translation;
-    }
+    OMNI_PROPERTY_RW_IMPL(AffineTransform,bool,rotationEnabled,setRotationEnabled)
+    OMNI_PROPERTY_RW_IMPL(AffineTransform,AffineTransform::ScaleMode,scaleMode,setScaleMode)
+    OMNI_PROPERTY_RW_IMPL(AffineTransform,QVector3D,scale,setScale)
+    OMNI_PROPERTY_RW_IMPL(AffineTransform,qreal,uniformScale,setUniformScale)
+    OMNI_PROPERTY_RW_IMPL(AffineTransform,bool,translationEnabled,setTranslationEnabled)
+    OMNI_PROPERTY_RW_IMPL(AffineTransform,QVector3D,translation,setTranslation)
 
     QMatrix4x4 AffineTransform::matrix() const {
         return matrix(QVector3D(0.0, 0.0, 0.0));
@@ -82,94 +50,16 @@ namespace omni {
 
         _m.translate(_center);
         if (translationEnabled()) _m.translate(translation_);
-        if (rotationEnabled()) _m *= rotation_.matrix();
-        if (scaleEnabled()) {
-          _m.scale(scale());
+        if (rotationEnabled()) _m *= rotation_->matrix();
 
+        switch(scaleMode()) {
+        case SCALE_UNIFORM: _m.scale(scale()); break;
+        case SCALE_NON_UNIFORM: _m.scale(uniformScale()); break;
+        default: case SCALE_NONE: break;
         }
         _m.translate(-_center);
         return _m;
     }
 
-    /// Return true if rotation is enabled
-    bool AffineTransform::rotationEnabled() const {
-        return rotationEnabled_;
-    }
-
-    /// Enable or disable rotation
-    void AffineTransform::setRotationEnabled(bool _enabled) {
-        rotationEnabled_ = _enabled;
-    }
-
-    /// Return true if scaling is enabled
-    bool AffineTransform::uniformScaleEnabled() const {
-        return uniformScaleEnabled_;
-    }
-
-    /// Enable or disable scale
-    void AffineTransform::setUniformScaleEnabled(bool _enabled) {
-        uniformScaleEnabled_ = _enabled;
-    }
-
-    /// Return true if scaling is enabled
-    bool AffineTransform::scaleEnabled() const {
-        return scaleEnabled_;
-    }
-
-    /// Enable or disable scale
-    void AffineTransform::setScaleEnabled(bool _enabled) {
-        scaleEnabled_ = _enabled;
-    }
-
-    /// Return true if translation is enabled
-    bool AffineTransform::translationEnabled() const {
-        return translationEnabled_;
-    }
-
-    /// Enable or disable translation
-    void AffineTransform::setTranslationEnabled(bool _enabled) {
-        translationEnabled_ = _enabled;
-    }
-
-    /// Write transformation to stream
-    void AffineTransform::toStream(QDataStream& _os) const {
-        PropertyMap _map;
-        _map("rotationEnabled",rotationEnabled_)
-            ("rotation",rotation_)
-            ("scaleEnabled",scaleEnabled_)
-            ("scale",scale_)
-            ("uniformScale",uniformScale_)
-            ("uniformScaleEnabled",uniformScaleEnabled_)
-            ("translationEnabled",translationEnabled_)
-            ("translation",translation_);
-        _os << _map;
-    }
-
-    /// Read transformation from stream
-    void AffineTransform::fromStream(QDataStream& _is) {
-        PropertyMap _map;
-        _is >> _map;
-        _map.get("rotationEnabled",rotationEnabled_);
-        _map.get("rotation",rotation_);
-        _map.get("scaleEnabled",scaleEnabled_);
-        _map.get("scale",scale_);
-        _map.get("uniformScale",uniformScale_);
-        _map.get("uniformScaleEnabled",uniformScaleEnabled_);
-        _map.get("translationEnabled",translationEnabled_);
-        _map.get("translation",translation_);
-
-        OMNI_DEBUG << translation_;
-    }
-
-    bool operator==(AffineTransform const& _lhs, AffineTransform const& _rhs) {
-        return
-            OMNI_TEST_MEMBER_EQUAL(rotationEnabled_) &&
-            OMNI_TEST_MEMBER_EQUAL(rotation_) &&
-            OMNI_TEST_MEMBER_EQUAL(scaleEnabled_) &&
-            OMNI_TEST_MEMBER_EQUAL(scale_) &&
-            OMNI_TEST_MEMBER_EQUAL(uniformScaleEnabled_) &&
-            OMNI_TEST_MEMBER_EQUAL(translationEnabled_) &&
-            OMNI_TEST_MEMBER_EQUAL(translation_);
-    }
   }
 }

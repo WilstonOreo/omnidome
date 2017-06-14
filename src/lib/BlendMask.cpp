@@ -24,8 +24,8 @@
 #include <omni/serialization/PropertyMap.h>
 
 namespace omni {
-  BlendMask::BlendMask(proj::Tuning const& _tuning) :
-    tuning_(_tuning),
+  BlendMask::BlendMask(QObject* parent) :
+    QObject(parent),
     rect_(0.1, 0.1, 0.8, 0.9),
     gamma_(2.0)
   {
@@ -80,96 +80,26 @@ namespace omni {
     return gamma_;
   }
 
-  void BlendMask::setBrush(
-    float _size,
-    float _feather, float _opacity, bool _invert) {
-    _size = qBound(30.0f, _size, 512.0f);
-    brush_.setBrush(QVector2D(transformedPoint(QPointF(_size,
-                                                       _size))), _feather, _opacity,
-                    _invert);
-  }
-
-  /// Invert brush
-  void BlendMask::invertBrush(bool _invert) {
-    brush_.setInvert(_invert);
-  }
-
-  /// Change brush size by +- amount of pixel
-  void BlendMask::changeBrushSize(float _delta) {
-    float _size = qBound(30.0f, brushSize() + _delta, 512.0f);
-
-    brush_.setSize(QVector2D(transformedPoint(QPointF(_size, _size))));
-  }
-
-  BlendBrush const& BlendMask::brush() const
+  BlendBrush* BlendMask::brush() const
   {
     return brush_;
   }
 
-  float BlendMask::brushSize() const {
-    return brush_.size().x() * tuning_.width() / float(resolution());
-  }
-
   void BlendMask::stamp(const QPointF& _pos)
   {
-    brush_.stamp(transformedPoint(_pos), strokeBuffer_);
+    brush_->stamp(transformedPoint(_pos), strokeBuffer_);
   }
 
   float BlendMask::drawLine(QPointF const& _p0,
                             QPointF const& _p1,
                             float          _leftOver)
   {
-    return brush_.drawLine(
+    return brush_->drawLine(
       transformedPoint(_p0),
       transformedPoint(_p1), strokeBuffer_, _leftOver);
   }
 
-  BlendMask::buffer_type const& BlendMask::strokeBuffer() const
-  {
-    return strokeBuffer_;
-  }
-
-  void BlendMask::resize(int width, int height)
-  {
-    strokeBuffer_.resize(width, height);
-  }
-
-  void * BlendMask::strokeBufferData() const
-  {
-    return (void *)(strokeBuffer_.data().data());
-  }
-
   QPointF BlendMask::transformedPoint(QPointF const& _pos) const {
-    return float(resolution()) * QPointF(_pos.x() / tuning_.width(),
-                                         _pos.y() / tuning_.height());
-  }
-
-  void BlendMask::toStream(QDataStream& _os) const {
-    omni::PropertyMap _map;
-
-    _map("rect", rect_)
-      ("gamma", gamma_)
-      ("brush", brush_)
-      ("strokeBuffer", strokeBuffer_);
-    _os << _map;
-  }
-
-  void BlendMask::fromStream(QDataStream& _is) {
-    PropertyMap _map;
-
-    _is >> _map;
-    _map.get("rect", rect_);
-    _map.get("gamma", gamma_);
-    _map.get("brush",        brush_);
-    _map.get("strokeBuffer", strokeBuffer_);
-  }
-
-  bool operator==(BlendMask const& _lhs, BlendMask const& _rhs)
-  {
-    return
-      OMNI_TEST_MEMBER_EQUAL(rect_) &&
-      OMNI_TEST_MEMBER_EQUAL(gamma_) &&
-      OMNI_TEST_MEMBER_EQUAL(brush_) &&
-      OMNI_TEST_MEMBER_EQUAL(strokeBuffer_);
+    return float(resolution()) * QPointF(_pos.x(),_pos.y());
   }
 }

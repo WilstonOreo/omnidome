@@ -26,10 +26,10 @@
 
 namespace omni {
     namespace canvas {
-        Interface::Interface() {
+        Interface::Interface(QObject* parent) : QObject(parent) {
             // Disable scaling and translation by default
-            transform_.setTranslationEnabled(false);
-            transform_.setScaleEnabled(false);
+            transform_->setTranslationEnabled(false);
+            transform_->setScaleMode(AffineTransform::SCALE_NONE);
         }
 
         Interface::~Interface() {}
@@ -39,6 +39,7 @@ namespace omni {
         {
             return (bounds().max() + bounds().min()) * 0.5;
         }
+
         /// Draws with culled front or back faces, depending on view mode
         void Interface::drawWithViewMode() const {
           withCurrentContext([&](QOpenGLFunctions& _) {
@@ -66,16 +67,8 @@ namespace omni {
             return bounds().size().length() * 0.5;
         }
 
-        AffineTransform const& Interface::transform() const {
+        AffineTransform* Interface::transform() const {
             return transform_;
-        }
-
-        AffineTransform& Interface::transform() {
-            return transform_;
-        }
-
-        void Interface::setTransform(AffineTransform const& _transform) {
-            transform_ = _transform;
         }
 
         Interface::ViewMode Interface::viewMode() const {
@@ -98,24 +91,7 @@ namespace omni {
         /// Transformation matrix for canvas
         QMatrix4x4 Interface::matrix() const
         {
-            return transform_.matrix();
-        }
-        /// Write mapping to stream
-        void Interface::toPropertyMap(PropertyMap& _map) const {
-            _map("transform",transform_);
-        }
-
-        /// Read mapping from stream
-        void Interface::fromPropertyMap(PropertyMap const& _map) {
-            _map.get("transform",transform_);
-
-            /// Fix for translation
-            if (scene()) {
-              OMNI_DEBUG << scene()->size();
-              transform_.setTranslation(transform_.translation() / scene()->size());
-            }
-
-            OMNI_DEBUG << transform_.translation();
+            return transform_->matrix();
         }
     }
 }

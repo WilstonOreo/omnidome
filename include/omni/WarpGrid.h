@@ -29,12 +29,18 @@ namespace omni {
   /**@brief A warp grid is a 2D bezier grid with MxN points
      @detail Default size 6x6 points. Selected points are also stored:
    **/
-  class WarpGrid {
+  class WarpGrid : public QObject {
+      Q_OBJECT
+
+      Q_PROPERTY(Interpolation interpolation READ interpolation WRITE setInterpolation NOTIFY interpolationChanged)
+      Q_PROPERTY(int vertical READ vertical WRITE setVertical NOTIFY resolutionChanged)
+      Q_PROPERTY(int horizontal READ horizontal WRITE setHorizontal NOTIFY resolutionChanged)
     public:
       enum class Interpolation {
         BICUBIC,
         LINEAR
       };
+      Q_ENUM(Interpolation)
 
       /// Default constructor
       WarpGrid();
@@ -48,6 +54,7 @@ namespace omni {
 
       /// Return vertical resolution
       int           vertical() const;
+
 
       /// Return horizontal resolution
       int           horizontal() const;
@@ -108,6 +115,10 @@ namespace omni {
       /// Test for equality (is equal if all warp points are equal
       friend bool                  operator==(WarpGrid const&,
                                               WarpGrid const&);
+    signals:
+      void resolutionChanged();
+      void interpolationChanged();
+      void pointsChanged();
 
     private:
       /// Return index to nearest point

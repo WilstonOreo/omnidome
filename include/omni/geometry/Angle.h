@@ -21,6 +21,7 @@
 #define OMNI_GEOMETRY_ANGLE_H_
 
 #include <QtGlobal>
+#include <QMetaType>
 
 namespace omni {
   namespace geometry {
@@ -61,16 +62,16 @@ namespace omni {
       friend bool  operator==(Angle const&,
                               Angle const&);
 
+      friend bool  operator!=(Angle const&,
+                              Angle const&);
+
       private:
-        qreal angle_;
+        qreal angle_ = 0.0;
     };
   }
   using geometry::Angle;
 }
 
-QDataStream& operator<<(QDataStream& _os,
-                        const omni::geometry::Angle& _angle);
-QDataStream& operator>>(QDataStream& _is,
-                        omni::geometry::Angle& _angle);
+Q_DECLARE_METATYPE(omni::geometry::Angle)
 
 #endif /* OMNI_GEOMETRY_ANGLE_H_ */

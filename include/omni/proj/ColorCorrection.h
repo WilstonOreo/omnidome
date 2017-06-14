@@ -23,82 +23,61 @@
 #include <omni/proj/Channel.h>
 #include <omnic/ColorCorrectionLOT.h>
 #include <QColor>
+#include <omni/serialization/Serializer.h>
 
 namespace omni {
   namespace proj {
     /// Color correction for RGB color space
-    class ColorCorrection {
-      public:
+    class ColorCorrection : public QObject, public Serializer<ColorCorrection> {
+      Q_OBJECT
+      Q_PROPERTY(bool used READ isUsed WRITE setUsed NOTIFY usedChanged)
+      Q_PROPERTY(ChannelCorrection* all READ all CONSTANT)
+      Q_PROPERTY(ChannelCorrection* red READ red CONSTANT)
+      Q_PROPERTY(ChannelCorrection* blue READ blue CONSTANT)
+      Q_PROPERTY(ChannelCorrection* green READ green CONSTANT)
+    public:
+        ColorCorrection(QObject* = nullptr);
+        ~ColorCorrection();
+
         bool                     isUsed() const;
         void                     setUsed(bool _isUsed);
 
-        /// Return reference to channel correction for all channels
-        ChannelCorrection      & all();
+        /// Return channel correction for all channels
+        ChannelCorrection      * all() const;
 
-        /// Return reference to channel correction for all channels (const)
-        ChannelCorrection const& all() const;
+        /// Return channel correction for red channel
+        ChannelCorrection      * red() const;
 
-        /// Set channel correction for all channels
-        void                     setAll(ChannelCorrection const&);
-
-        /// Return reference to channel correction for red channel
-        ChannelCorrection      & red();
-
-        /// Return reference to channel correction for red channel
-        ChannelCorrection const& red() const;
-
-        /// Set channel correction for red channel
-        void                     setRed(ChannelCorrection const&);
-
-        /// Return reference to channel correction for green channel
-        ChannelCorrection      & green();
-
-        /// Return reference to channel correction for green channel
-        ChannelCorrection const& green() const;
-
-        /// Set channel correction for green channel
-        void                     setGreen(ChannelCorrection const&);
+        /// Return channel correction for green channel
+        ChannelCorrection      * green() const;
 
         /// Return reference to channel correction for blue channel
-        ChannelCorrection      & blue();
-
-        /// Return reference to channel correction for blue channel
-        ChannelCorrection const& blue() const;
-
-        /// Set channel correction for blue channel
-        void                     setBlue(ChannelCorrection const&);
-
-        /// Return corrected color
-        QColor corrected(QColor) const;
+        ChannelCorrection      * blue() const;
 
         /// Return color correction for given channel
-        ChannelCorrection *correction(Channel);
-
-        /// Return color correction for given channel (const version)
-        ChannelCorrection const *correction(Channel) const;
-
-        /// Return QColor for channel
-        static QColor channelColor(Channel);
+        ChannelCorrection *correction(Channel) const;
 
         /// Calculate color look up tables for omnidome calibration format
         omnic::ColorCorrectionLOT calculateLookUpTable(uint32_t _quantization = 1024) const;
 
-        // Test if two color corrections are equal
-        friend bool operator==(ColorCorrection const&,
-                               ColorCorrection const&);
+        /// Return corrected color
+        Q_INVOKABLE QColor corrected(QColor) const;
+
+        /// Return QColor for channel
+        Q_INVOKABLE static QColor channelColor(Channel);
+      signals:
+        void usedChanged();
 
       private:
         bool isUsed_ = true;
-        ChannelCorrection all_, red_, green_, blue_;
+        ChannelCorrection* all_;
+        ChannelCorrection* red_;
+        ChannelCorrection* green_;
+        ChannelCorrection* blue_;
     };
   }
 
   using proj::ColorCorrection;
 }
-
-QDataStream& operator>>(QDataStream&,
-                        omni::proj::ColorCorrection&);
-QDataStream& operator<<(QDataStream&,
-                        omni::proj::ColorCorrection const&);
 
 #endif /* OMNI_PROJ_COLORCORRECTION_H_ */

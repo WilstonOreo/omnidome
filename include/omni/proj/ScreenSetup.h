@@ -30,18 +30,64 @@ namespace omni {
   namespace proj {
     class Tuning;
 
+    class TileIndex {
+    public:
+      TileIndex(int row_ = 0, int column_ = 0);
+
+      int row() const;
+      void setRow(int);
+      int column() const;
+      void setColumn();
+
+    private:
+      int row_ = 0;
+      int column_ = 0;
+    };
+
+    /// Tiling in Rows and Columns: for screen
+    class Tiling {
+    public:
+      Tiling(int rows = 1, int columns = 1);
+
+      int rows() const;
+      void setRows(int) const;
+      int columns() const;
+      void setColumns(int) const;
+
+      void setRowsAndColumns(int rows, int columns);
+
+      int numberOfTiles() const;
+
+      bool contains(TileIndex const&) const;
+      QRect contentRect(QRect const& screenGeometry, TileIndex const&) const;
+      QSize size(QRect const&) const;
+      qreal aspectRatio(QRect const&) const;
+
+      /** @brief Static method for getting default tiling for a screen geometry.
+        **/
+      static Tiling defaultTiling(QRect const&);
+
+      /// Returns screen size that supports triple heads
+      static std::vector<QSize> const& screenResolutions();
+
+      inline static constexpr int maxRows() { return 8; }
+      inline static constexpr int maxColumns() { return 8; }
+
+    private:
+      int rows_ = 1;
+      int columns_ = 1;
+    };
+
     /// Singleton class which manages the current screen setup
-    class ScreenSetup {
+    class ScreenSetup : public QObject {
+        Q_OBJECT
       public:
         ScreenSetup(Session const *_session);
 
-        /**@brief Returns the screen geometry for a screen
+        /**@brief Returns the screen geometry for a screen.
            @detail If screen is null, the geometry for the virtual screen is returned
          **/
-        QRect screenGeometry(QScreen const* = nullptr) const;
-
-        /// Returns screen size that supports triple heads
-        static std::vector<QSize>const& screenResolutions();
+        QRect screenGeometry(QScreen const*) const;
 
         /// Return standard screen, where omnidome has to be placed
         static QScreen const          * standardScreen();
@@ -49,39 +95,14 @@ namespace omni {
         /// Return const pointer to session
         Session const                 * session() const;
 
-        /**@brief Returns the number of subscreens for a single screen
-           @detail If screen is nullptr, number of subscreen for virtual screen
-                   is returned.
+        /**@brief Returns the default tiling for a screen.
+           @detail If screen is null, the default tiling for the
+                   virtual screen is returned.
          **/
-        int   subScreenCount(QScreen const * = nullptr) const;
+        static Tiling   defaultTiling(QScreen const *);
 
-        /** @brief Static method for getting subscreen count for screen
-            @detail Screen must not be nullptr!
-         **/
-        static int   subScreenCountForScreen(QScreen const *);
-
-        /**@brief Returns the number of subscreens for a single screen
-           @detail If screen is nullptr, number of subscreen for virtual screen
-                   is returned.
-         **/
-        int   subScreenWidth(QScreen const * = nullptr) const;
-
-        /** @brief Static method for getting subscreen width for screen
-            @detail Screen must not be nullptr!
-         **/
-        static int   subScreenWidthForScreen(QScreen const *);
-
-        /// Returns the rectangle of a subscreen with a certain index
-        QRect subScreenRect(int _index, QScreen const* = nullptr) const;
-
-        /** @brief Static method for getting subscreen count for screen
-            @detail Screen must not be nullptr!
-         **/
-        static QRect   subScreenRectForScreen(int _index, QScreen const *);
-
-        /// Return aspect ratio of subscreen
-        qreal subScreenAspectRatio(QScreen const* = nullptr) const;
-
+        Tiling tiling(QScreen const*) const;
+        void setTiling(QScreen const*, Tiling const&);
 
         static QRect desktopRect(
           bool _excludeStandardScreen = true);
@@ -95,8 +116,7 @@ namespace omni {
         /// Returns true if no tuning is assigned to a screen
         bool  noTuningsAssigned() const;
 
-        bool  noTuningsAssigned(QScreen const *)
-        const;
+        bool  noTuningsAssigned(QScreen const *) const;
 
         std::set<QScreen const*> usedScreens() const;
 
@@ -116,7 +136,9 @@ namespace omni {
         bool  operator==(const ScreenSetup&) const;
 
       private:
+        Tiling addDefaultTilingForScreen(QScreen* screen);
         Session const *session_;
+        std::map<QScreen const*,Tiling> screenTilings_;
     };
   }
 

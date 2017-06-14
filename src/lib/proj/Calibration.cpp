@@ -51,9 +51,12 @@ namespace omni
       int _h = data_.height() <= 0 ? _tuning.height() : data_.height();
       QSize _size(_w,_h);
 
-      virtualScreen_ = !_tuning.screen(); // Screen is virtual when tuning has
+      virtualScreen_ = _tuning.virtualScreen(); // Screen is virtual when tuning has
       // no screen
-      colorCorrection_ = _tuning.colorCorrection();
+      colorCorrection_.reset(new ColorCorrection());
+      colorCorrection_->fromVariant(_tuning.colorCorrection()->toVariant());
+
+      _tuning.colorCorrection();
       screenGeometry_  = _tuning.screenGeometry();
       contentGeometry_ = _tuning.contentGeometry();
       data_.resize(_w, _h);
@@ -70,7 +73,6 @@ namespace omni
 
       primaryContextSwitch([&](QOpenGLFunctions& _)
       {
-
         /// Update visualizers
         _sessionViz->update();
         _tuningViz->update();
@@ -219,7 +221,7 @@ namespace omni
       getLower8bit(_lower8bit);
 
       // Encode color correction information into the green channel
-      
+
       encodeAlphaMask(_upper8bit);
       QImage _image(_w, _h * 2, QImage::Format_RGB32);
       encodeColorCorrection(_lower8bit, Channel::BLUE);

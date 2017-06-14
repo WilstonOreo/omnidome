@@ -48,6 +48,7 @@ namespace omni {
                  ++x) points_.emplace_back((getTexCoord(x, y) - QVector2D(0.5,
                                                                           0.5)).toPointF());
         hasChanged_ = true;
+        emit pointsChanged();
     }
 
     void WarpGrid::resize(int _horz, int _vert)
@@ -58,6 +59,7 @@ namespace omni {
         horizontal_ = _horz;
         vertical_   = _vert;
         reset();
+        emit resolutionChanged();
     }
 
     int WarpGrid::vertical() const
@@ -65,9 +67,17 @@ namespace omni {
         return vertical_;
     }
 
+    void WarpGrid::setVertical(int vertical) {
+        resize(horizontal_,vertical);
+    }
+
     int WarpGrid::horizontal() const
     {
         return horizontal_;
+    }
+
+    void WarpGrid::setHorizontal(int horizontal) {
+        resize(horizontal_,horizontal);
     }
 
     /// Return interpolation type (BICUBIC is default)

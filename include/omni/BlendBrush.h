@@ -20,8 +20,10 @@
 #ifndef OMNI_BLENDBRUSH_H_
 #define OMNI_BLENDBRUSH_H_
 
+#include <QObject>
 #include <QVector2D>
 #include <omni/Buffer.h>
+#include <omni/serialization/Serializer.h>
 
 class QPointF;
 class QDataStream;
@@ -30,16 +32,15 @@ namespace omni {
   /**@brief BlendBrush for drawing on the blendmask
    * @detail Holds an internal pixel buffer
    **/
-  class BlendBrush {
+  class BlendBrush : public QObject, public Serializer<BlendBrush> {
+      Q_OBJECT
+      Q_PROPERTY(QVector2D size READ size WRITE setSize NOTIFY sizeChanged)
+      Q_PROPERTY(qreal feather READ feather WRITE setFeather NOTIFY featherChanged)
+      Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
+      Q_PROPERTY(bool inverted READ inverted WRITE setInverted NOTIFY invertedChanged)
     public:
       /// Default constructor
-      BlendBrush();
-
-      /**@brief Constructor with a size and feather value (1.0 by default)
-         @detail Updates internal pixel buffer
-       **/
-      BlendBrush(QVector2D const& _size,
-                 float _feather = 1.0);
+      BlendBrush(QObject* = nullptr);
 
       /// Returns brush size
       QVector2D const& size() const;
@@ -55,36 +56,30 @@ namespace omni {
       void  changeSize(QVector2D const& _delta);
 
       /// Return feather value
-      float feather() const;
+      qreal feather() const;
 
       /// Return opacity value
-      float opacity() const;
+      qreal opacity() const;
 
       /**@brief Set opacity value
        * @detail Value must be between 0.0 and 1.0 and is clamped if necessary.
        *         A value 0.0 means a hard brush, a value of 1.0 means soft
        *brush.
        **/
-      void  setOpacity(float _opacity);
+      void  setOpacity(qreal _opacity);
 
       /**@brief Set feather value
        * @detail Value must be between 0.0 and 1.0 and is clamped if necessary.
        *         A value 0.0 means a hard brush, a value of 1.0 means soft
        *brush.
        **/
-      void  setFeather(float _feather);
+      void  setFeather(qreal _feather);
 
       /// Returns true if the brush is inverted (aka eraser mode)
-      bool  invert() const;
+      bool  inverted() const;
 
       /// Sets inverted flag of the brush
-      void  setInvert(bool _invert);
-
-      /// Set brush settings and generate pixel buffer
-      void  setBrush(QVector2D const&  _size,
-                     float _feather,
-                     float _opacity,
-                     bool _invert);
+      void  setInverted(bool _inverted);
 
       /// Draws internal pixel buffer in given blend buffer
       void stamp(const QPointF& _pos,
@@ -105,15 +100,11 @@ namespace omni {
 
       Buffer<float>const& buffer() const;
 
-      /// Write blend brush to stream
-      void                toStream(QDataStream&) const;
-
-      /// Read blend brush from stream
-      void                fromStream(QDataStream&);
-
-      /// Test for equality, buffer is ignored
-      friend bool         operator==(BlendBrush const&,
-                                     BlendBrush const&);
+    signals:
+      void sizeChanged();
+      void opacityChanged();
+      void featherChanged();
+      void invertedChanged();
 
     private:
       /// Generate internal pixel buffer with given size and feather parameters
@@ -125,13 +116,11 @@ namespace omni {
       /// Internal pixel buffer
       Buffer<float> buffer_;
 
-      float opacity_ = 1.0;
+      qreal opacity_ = 1.0;
       QVector2D size_;
-      float feather_ = 1.0;
-      bool  invert_  = false;
+      qreal feather_ = 1.0;
+      bool  inverted_  = false;
   };
 }
-
-OMNI_DECL_STREAM_OPERATORS(omni::BlendBrush)
 
 #endif /* OMNI_BLENDBRUSH_H_ */

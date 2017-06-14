@@ -40,7 +40,7 @@ namespace omni {
                                  QSizePolicy::Expanding);
       valueLabel_->setStyleSheet(
         "* { font-family: \"Dosis\"; font: light \"Dosis\"; } "
-        "QLabel { background : transparent; color: #808080; } ");
+        "QLabel { background : transparent; color: #eeeeee; } ");
       layout()->addWidget(valueLabel_);
     }
 

@@ -26,11 +26,97 @@
 
 namespace omni {
   namespace proj {
+    TileIndex(int _row, int _column) :
+      row_(_row),
+      column_(_column) {}
+
+    int
+
+    int row() const;
+    void setRow(int);
+    int column() const;
+    void setColumn();
+
+    Tiling::Tiling(int _rows = 1, int _columns = 1) {
+      setRows(_rows);
+      setColumns(_columns);
+    }
+
+    int Tiling::rows() const {
+      return rows_;
+    }
+
+    void Tiling::setRows(int _rows) {
+      rows_ = qBound(1,_rows,maxRows());
+    }
+
+    int Tiling::columns() const {
+      return columns_;
+    }
+
+    void Tiling::setColumns(int _columns) {
+      columns_ = qBound(1,_columns,maxColumns());
+    }
+
+    int Tiling::numberOfTiles() const {
+      return rows_ * columns_;
+    }
+
+    bool Tiling::contains(TileIndex const& tile) const {
+      return (tile.row() >= 0 && tile.row() < rows()) &&
+             (tile.column() >= 0 && tile.column() < column());
+    }
+
+    QRect Tiling::contentRect(QRect const& rect, TileIndex const& _tileIndex) {
+      if (contains(_tileIndex)) return QRect();
+      auto p = [&s,this](int r, int c) {
+        return QPoint(r*rect.width() / rows(),c*rect.height() / columns() );
+      }
+      return QRect(
+        p(_tileIndex.row(),_tileIndex.column()),
+        p(_tileIndex.row() + 1,_tileIndex.column() + 1));
+    }
+
+    QSize Tiling::size(QRect const& _screenGeometry) const {
+      return contentRect(_screenGeometry).size();
+    }
+
+    Tiling Tiling::autoTiling(QRect const& screen) {
+      // Go through list of screen resolutions and see if the
+      // current screen has subscreens
+      for (auto& _screenSize : screenResolutions())
+      {
+        if (_screenSize.height() == _screenGeometry.height())
+        {
+          if ((_screenGeometry.width() % _screenSize.width()) == 0)
+          {
+            return Tiling(1,_screenGeometry.width() / _screenSize.width());
+          }
+        }
+      }
+      return Tiling();
+    }
+
     ScreenSetup::ScreenSetup(Session const *_session) :
       session_(_session)
-    {}
+    {
+      auto screens = QGuiApplication::screens();
+      for (auto& screen : screens) {
+        addDefaultTilingForScreen(screen);
+      }
 
-    std::vector<QSize>const& ScreenSetup::screenResolutions()
+      connect(qGuiApp,&QGuiApplication::screenAdded,this,
+             &ScreenSetup::addDefaultTilingForScreen);
+              [&](QScreen* screen) {
+                screenTilings_[screen] = defaultTiling(screen);
+              });
+      connect(qGuiApp,&QGuiApplication::screenRemoved,
+              [&](QScreen* screen) {
+                screenTilings_.erase(screen);
+              });
+    }
+
+    std::vector<QSize>const& Tiling::screenResolutions()
     {
       static std::vector<QSize> _sizes;
 
@@ -98,13 +184,6 @@ namespace omni {
     /// Returns combined desktop and virtual desktop rect
     QRect ScreenSetup::combinedDesktopRect() const {
       /// If there are no tunings assigned, ignore desktopRect
-
-      /*QRect _desktopRect;
-         auto  _screens = ScreenSetup::screens();
-         for (auto& _screen : _screens) {
-          if (noTuningsAssigned(_screen)) continue;
-          _desktopRect |= _screen->geometry();
-         }*/
       return desktopRect() | virtualScreenRect();
     }
 
@@ -118,7 +197,7 @@ namespace omni {
       return _screen->geometry();
     }
 
-    int ScreenSetup::subScreenCount(QScreen const *_screen) const
+    Tiling ScreenSetup::defaultTiling(QScreen const *_screen) const
     {
       // Return subscreen count for virtual screen,
       // which is equal to the number of unassigned projectors
@@ -128,41 +207,15 @@ namespace omni {
         for (auto& _tuning : session_->tunings()) {
           if (!_tuning->screen()) ++_numberOfUnassignedProjectors;
         }
-        return _numberOfUnassignedProjectors;
+        return Tiling(1,_numberOfUnassignedProjectors);
       }
 
-      return subScreenCountForScreen(_screen);
+      return Tiling::defaultTiling(_screen);
     }
 
-    int   ScreenSetup::subScreenCountForScreen(QScreen const * _screen) {
-      // Go through list of screen resolutions and see if the
-      // current screen has subscreens
-      for (auto& _screenSize : screenResolutions())
-      {
-        if (_screenSize.height() == _screen->geometry().height())
-        {
-          if ((_screen->geometry().width() % _screenSize.width()) == 0)
-          {
-            return _screen->geometry().width() / _screenSize.width();
-          }
-        }
-      }
-      return 1;
-    }
-
-    int ScreenSetup::subScreenWidth(QScreen const *_screen) const
-    {
-      return screenGeometry(_screen).width() / subScreenCount(_screen);
-    }
-
-    int ScreenSetup::subScreenWidthForScreen(QScreen const *_screen)
-    {
-      return _screen->geometry().width() / subScreenCountForScreen(_screen);
-    }
-
-    QRect ScreenSetup::subScreenRect(
-      int _subScreenIndex,
-      QScreen const *_screen) const
+    QRect ScreenSetup::contentRect(
+      QScreen const *_screen
+      TileIndex const& _tileIndex) const
     {
       int _w = subScreenWidth(_screen);
       return QRect(_w * _subScreenIndex, 0, _w, screenGeometry(_screen).height());
@@ -174,7 +227,8 @@ namespace omni {
     }
 
     qreal ScreenSetup::subScreenAspectRatio(QScreen const* _screen) const {
-      return float(subScreenWidth(_screen)) / float(screenGeometry(_screen).height());
+      return
+      float(subScreenWidth(_screen)) / float(screenGeometry(_screen).height());
     }
 
     QRect ScreenSetup::desktopRect(bool _excludeStandardScreen)
@@ -253,6 +307,10 @@ namespace omni {
     bool ScreenSetup::operator==(const ScreenSetup& _rhs) const
     {
       return false;
+    }
+
+    void ScreenSetup::addDefaultTilingForScreen(QScreen* screen) {
+      screenTilings_[screen] = defaultTiling(screen);
     }
   }
 }

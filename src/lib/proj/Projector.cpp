@@ -28,50 +28,24 @@
 
 namespace omni {
   namespace proj {
-    Projector::Projector(Setup _setup) :
+    Projector::Projector(QObject* parent) :
+      QObject(parent),
+      angles_(new EulerAngles(this)),
       fov_(45.0)
     {
-      setSetup(_setup);
-    }
-
-    Projector::Setup Projector::setup() const
-    {
-      return setup_;
-    }
-
-    void Projector::setSetup(Setup _setup) {
-      setup_ = _setup;
+      connect(this,&Projector::setupChanged,this,&Projector::update);
+      connect(this,&Projector::deltaYawChanged,this,&Projector::update);
+      connect(this,&Projector::posChanged,this,&Projector::update);
+      connect(this,&Projector::keystoneChanged,this,&Projector::update);
+      connect(this,&Projector::aspectRatioChanged,this,&Projector::update);
+      connect(this,&Projector::distanceCenterChanged,this,&Projector::update);
+      connect(this,&Projector::towerHeightChanged,this,&Projector::update);
+      connect(this,&Projector::shiftChanged,this,&Projector::update);
       update();
     }
 
-
-    void Projector::setupFree(EulerAngles const& _angles, QVector3D const& _pos) {
-        static_cast<EulerAngles&>(*this) = _angles;
-        pos_ = _pos;
-        setSetup(FREE);
-    }
-
-    void Projector::setupPeripheral(EulerAngles const& _angles,
-                            Angle _deltaYaw,
-                            qreal _distanceCenter,
-                            qreal _towerHeight,
-                            qreal _shift
-                          ) {
-        static_cast<EulerAngles&>(*this) = _angles;
-        deltaYaw_ = _deltaYaw;
-        distanceCenter_ = _distanceCenter;
-        towerHeight_ = _towerHeight;
-        shift_ = _shift;
-        setSetup(PERIPHERAL);
-    }
-
-    qreal Projector::aspectRatio() const
-    {
-      return aspectRatio_;
-    }
-
-    void Projector::setAspectRatio(qreal _aspectRatio) {
-      aspectRatio_ = _aspectRatio;
+    EulerAngles*  Projector::angles() const {
+      return angles_;
     }
 
     qreal Projector::throwRatio() const
@@ -81,14 +55,7 @@ namespace omni {
 
     void Projector::setThrowRatio(qreal _throwRatio)
     {
-      fov_ = Angle::fromRad(2.0 * atan(1.0 / (_throwRatio * 2.0)));
-    }
-
-    void Projector::setFov(Angle _fov)
-    {
-      fov_ = _fov;
-      if (fov_.degrees() < 1.0) fov_ = 1.0;
-      if (fov_.degrees() >= 180.0) fov_ = 180.0;
+      setFov(Angle::fromRad(2.0 * atan(1.0 / (_throwRatio * 2.0))));
     }
 
     Angle Projector::fov() const
@@ -96,22 +63,19 @@ namespace omni {
       return fov_;
     }
 
-    qreal Projector::keystone() const {
-      return keystone_;
-    }
-
-    void Projector::setKeystone(qreal _keystone) {
-      keystone_ = _keystone;
+    void Projector::setFov(Angle _fov)
+    {
+      if (fov_ != _fov) {
+        fov_ = _fov;
+        if (fov_.degrees() < 1.0) fov_ = 1.0;
+        if (fov_.degrees() >= 180.0) fov_ = 180.0;
+        emit fovChanged();
+      }
     }
 
     QMatrix4x4 const& Projector::matrix() const
     {
       return matrix_;
-    }
-
-    void Projector::setMatrix(QMatrix4x4 const& _matrix)
-    {
-      matrix_ = _matrix;
     }
 
     QMatrix4x4 Projector::projectionMatrix() const
@@ -128,65 +92,10 @@ namespace omni {
       return _m;
     }
 
-    QVector3D const& Projector::pos() const
-    {
-      return pos_;
-    }
-
-    void Projector::setPos(QVector3D const& _pos)
-    {
-      pos_ = _pos;
-      update();
-    }
 
     void Projector::setPos(qreal _x, qreal _y, qreal _z)
     {
       setPos(QVector3D(_x,_y,_z));
-    }
-
-
-    Angle Projector::deltaYaw() const
-    {
-      return deltaYaw_;
-    }
-
-    void Projector::setDeltaYaw(Angle _deltaYaw)
-    {
-      deltaYaw_=_deltaYaw;
-      update();
-    }
-
-    qreal Projector::distanceCenter() const
-    {
-      return distanceCenter_;
-    }
-
-    void Projector::setDistanceCenter(qreal _distanceCenter)
-    {
-      distanceCenter_=_distanceCenter;
-      update();
-    }
-
-    qreal Projector::towerHeight() const
-    {
-      return towerHeight_;
-    }
-
-    void Projector::setTowerHeight(qreal _towerHeight)
-    {
-      towerHeight_ = _towerHeight;
-      update();
-    }
-
-    qreal Projector::shift() const
-    {
-      return shift_;
-    }
-
-    void Projector::setShift(qreal _shift)
-    {
-      shift_=_shift;
-      update();
     }
 
     void Projector::scale(qreal _scale) {
@@ -200,62 +109,16 @@ namespace omni {
       return std::abs(roll().degrees()) > 90.0;
     }
 
-    void Projector::toStream(QDataStream& _os) const {
-      PropertyMap _map;
-      _map("setup",setup_);
-      _map("angles",static_cast<EulerAngles const&>(*this));
-      _map("pos",pos_);
-      _map("fov", fov_);
-      _map("keystone", keystone_);
-      _map("aspectRatio", aspectRatio_);
-      _map("deltaYaw",deltaYaw_)
-          ("distanceCenter",distanceCenter_)
-          ("towerHeight",towerHeight_)
-          ("shift",shift_);
-      _os << _map;
-    }
-
-    void Projector::fromStream(QDataStream& _is) {
-      PropertyMap _map;
-      _is >> _map;
-      _map.get("setup",setup_);
-      _map.get("angles",static_cast<EulerAngles&>(*this));
-      _map.get("pos",pos_);
-      _map.get("fov", fov_);
-      _map.get("keystone", keystone_);
-      _map.get("aspectRatio",aspectRatio_);
-      _map.get("deltaYaw",deltaYaw_);
-      _map.get("distanceCenter",distanceCenter_);
-      _map.get("towerHeight",towerHeight_);
-      _map.get("shift",shift_);
-      update();
-    }
-
-    bool operator==(Projector const& _lhs, Projector const& _rhs)
-    {
-      return
-        (static_cast<EulerAngles const&>(_lhs) == static_cast<EulerAngles const&>(_rhs)) &&
-        OMNI_TEST_MEMBER_EQUAL(matrix_) &&
-        OMNI_TEST_MEMBER_EQUAL(fov_) &&
-        OMNI_TEST_MEMBER_EQUAL(keystone_) &&
-        OMNI_TEST_MEMBER_EQUAL(aspectRatio_) &&
-        OMNI_TEST_MEMBER_EQUAL(pos_) &&
-        OMNI_TEST_MEMBER_EQUAL(deltaYaw_) &&
-        OMNI_TEST_MEMBER_EQUAL(distanceCenter_) &&
-        OMNI_TEST_MEMBER_EQUAL(towerHeight_) &&
-        OMNI_TEST_MEMBER_EQUAL(shift_);
-    }
-
     void Projector::update() {
       QMatrix4x4 _m;
 
       switch (setup_) {
         case FREE:
         _m.translate(pos_);
-        _m *= EulerAngles::matrix();
+        _m *= angles()->matrix();
         break;
         case PERIPHERAL: {
-        qreal _theta = yaw().radians();
+        qreal _theta = angles()->yaw().radians();
         qreal _ct = -cos(_theta), _st = -sin(_theta);
         QVector2D _shiftVec = QVector2D(-_st,_ct) * shift_;
         QVector2D _p = _shiftVec +  distanceCenter_ * QVector2D(_ct,_st);
@@ -268,8 +131,17 @@ namespace omni {
         }
         break;
       }
-
-      setMatrix(_m);
+      matrix_ = _m;
+      emit changed();
     }
+
+    OMNI_PROPERTY_RW_IMPL(Projector,Angle,deltaYaw,setDeltaYaw)
+    OMNI_PROPERTY_RW_IMPL(Projector,qreal,aspectRatio,setAspectRatio)
+    OMNI_PROPERTY_RW_IMPL(Projector,qreal,distanceCenter,setDistanceCenter)
+    OMNI_PROPERTY_RW_IMPL(Projector,qreal,towerHeight,setTowerHeight)
+    OMNI_PROPERTY_RW_IMPL(Projector,qreal,shift,setShift)
+    OMNI_PROPERTY_RW_IMPL(Projector,Projector::Setup,setup,setSetup)
+    OMNI_PROPERTY_RW_IMPL(Projector,QVector3D,pos,setPos)
+    OMNI_PROPERTY_RW_IMPL(Projector,qreal,keystone,setKeystone)
   }
 }

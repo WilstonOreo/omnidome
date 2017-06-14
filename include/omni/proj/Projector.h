@@ -29,28 +29,35 @@
 namespace omni {
   namespace proj {
     /// A projector with a transformation matrix and setup
-    class Projector : public EulerAngles {
+    class Projector : public QObject {
+        Q_OBJECT
+        Q_PROPERTY(Setup setup READ setup WRITE setSetup NOFITY setupChanged)
+        Q_PROPERTY(EulerAngles* angles READ angles CONSTANT)
+        Q_PROPERTY(Angle deltaYaw READ deltaYaw WRITE setDeltaYaw NOTIFY deltaYawChanged)
+        Q_PROPERTY(QVector3D pos READ pos WRITE setPos NOTIFY posChanged)
+        Q_PROPERTY(Angle fov READ fov WRITE setFov NOTIFY fovChanged)
+        Q_PROPERTY(qreal throwRatio READ throwRatio WRITE setThrowRatio NOTIFY fovChanged STORED false)
+        Q_PROPERTY(qreal keystone READ keystone WRITE setKeystone NOTIFY keystoneChanged)
+        Q_PROPERTY(qreal aspectRatio READ aspectRatio WRITE setAspectRatio NOFITY aspectRatioChanged)
+        Q_PROPERTY(qreal distanceCenter READ distanceCenter WRITE setDistanceCenter NOTIFY distanceCenterChanged)
+        Q_PROPERTY(qreal towerHeight READ towerHeight WRITE setTowerHeight NOTIFY towerHeightChanged)
+        Q_PROPERTY(qreal shift READ shift WRITE setShift NOTIFY shiftChanged)
       public:
         enum Setup {
           PERIPHERAL,
           FREE
         };
+        Q_ENUM(Setup)
 
-        Projector(Setup = PERIPHERAL);
+        Projector(QObject* = nullptr);
+
+        EulerAngles*      angles() const;
 
         /// Return projector setup mode (FREE vs PERIPHERAL)
         Setup             setup() const;
 
         /// Set projector setup mode
         void              setSetup(Setup);
-
-        void              setupFree(EulerAngles const&, QVector3D const&);
-        void              setupPeripheral(EulerAngles const&,
-                            Angle _deltaYaw = 0.0,
-                            qreal _distanceCenter = 0.4,
-                            qreal _towerHeight = 0.2,
-                            qreal _shift = 0.0
-                          );
 
         /// Aspect ratio of screen
         qreal             aspectRatio() const;
@@ -125,20 +132,21 @@ namespace omni {
         void      setPos(qreal _x,
                          qreal _y,
                          qreal _z);
-
-        /// Write projector to stream
-        void              toStream(QDataStream&) const;
-
-        /// Read projector from stream
-        void              fromStream(QDataStream&);
-
-
-        /// Test for equality
-        friend bool       operator==(Projector const&,
-                                     Projector const&);
+      signals:
+        void changed();
+        void setupChanged();
+        void deltaYawChanged();
+        void posChanged();
+        void fovChanged();
+        void keystoneChanged();
+        void aspectRatioChanged();
+        void distanceCenterChanged();
+        void towerHeightChanged();
+        void shiftChanged();
 
       private:
         void      update();
+        EulerAngles* angles_;
         Setup setup_ = PERIPHERAL;
         QMatrix4x4 matrix_;
         qreal aspectRatio_ = 1.5;
@@ -155,8 +163,5 @@ namespace omni {
 
   using proj::Projector;
 }
-
-OMNI_DECL_STREAM_OPERATORS(omni::proj::Projector)
-OMNI_DECL_ENUM_STREAM_OPERATORS(omni::proj::Projector::Setup)
 
 #endif /* OMNI_PROJ_PROJECTOR_H_ */

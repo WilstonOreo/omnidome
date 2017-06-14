@@ -35,14 +35,17 @@ namespace omni {
 
     /// Generic input interface
     class Interface :
+      public QObject,
       public TypeIdInterface,
       public PropertyMapSerializer {
+        Q_OBJECT
+        Q_PROPERTY(int width READ width CONSTANT)
+        Q_PROPERTY(int height READ height CONSTANT)
       public:
         friend class input::List;
 
         typedef Interface                                     interface_type;
         typedef std::vector<Interface const*>                 inputlist_type;
-        typedef std::function<void ()>                        callback_type;
         typedef std::set<QString> categoryset_type;
 
         Interface() {}
@@ -71,18 +74,15 @@ namespace omni {
           return size().height();
         }
 
-        /// Input can have a fixed set of categories
-        virtual categoryset_type categories() const {
-          return categoryset_type();
-        }
-
         /// Optional info text
         virtual QString infoText() const {
           return QString();
         }
 
+#ifndef OMNI_DEAMON
         /// Make new parameter widget
         virtual QWidget* widget();
+#endif
 
         /**@brief Returns true if this input can be added
            @detail E.g., an input can be added after an initial settings dialog
@@ -93,30 +93,12 @@ namespace omni {
           return true;
         }
 
-        /// Insert a new callback when input has updated and returns its unique id
-        inline int setUpdateCallback(callback_type _updatedCallback) {
-          int _id = genCallbackId();
-          updatedCallbacks_[_id] = _updatedCallback;
-          return _id;
-        }
-
-        inline callback_type updatedCallback(int _id) {
-          return updatedCallbacks_.at(_id);
-        }
-
-        void triggerUpdateCallbacks() const {
-          for (auto& _idCallback : updatedCallbacks_) {
-            _idCallback.second();
-          }
-        }
-
-        inline void removeUpdateCallback(int _id) {
-          updatedCallbacks_.erase(_id);
-        }
         /// Serialize to property map
-        virtual void          toPropertyMap(PropertyMap&) const {} 
+        virtual void          toPropertyMap(PropertyMap&) const {}
         /// Deserialize from property map
         virtual void          fromPropertyMap(PropertyMap const&) {}
+      signals:
+        void updated();
 
       private:
         inline virtual void activate() {
@@ -124,18 +106,6 @@ namespace omni {
 
         inline virtual void deactivate() {
         }
-
-        int genCallbackId() const {
-          for (size_t i = 0; i <= updatedCallbacks_.size(); ++i) {
-            if (!updatedCallbacks_.count(i)) {
-              return i;
-            }
-          }
-          return updatedCallbacks_.size();
-        }
-
-        Interface const *parent_ = nullptr;
-        std::map<int,callback_type>  updatedCallbacks_;
     };
 
     /// Input Factory typedef

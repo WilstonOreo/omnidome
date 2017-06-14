@@ -44,11 +44,15 @@ namespace omni {
      *         It might be a dome or a planar surface.
      **/
     class Interface :
+      public QObject,
       public TypeIdInterface,
       public PropertyMapSerializer,
       public visual::Interface {
+        Q_OBJECT
+        Q_PROPERTY(ViewMode viewMode READ viewMode WRITE setViewMode NOTIFY viewModeChanged)
+        Q_PROPERTY(AffineTransform* transform READ transform CONSTANT)
       public:
-        Interface();
+        Interface(QObject* = nullptr);
 
         /// Virtual destructor
         virtual ~Interface();
@@ -58,6 +62,7 @@ namespace omni {
             OUTSIDE,
             BOTH
         };
+        Q_ENUM(ViewMode)
 
         /// Return current view mode
         ViewMode viewMode() const;
@@ -82,40 +87,35 @@ namespace omni {
         /// Canvas radius (is half of size by default)
         virtual qreal          radius() const;
 
-        /// Return const ref to affine transform
-        AffineTransform const& transform() const;
-
         /// Return ref to affine transform
-        AffineTransform  & transform();
-
-        /// Set new affine transform
-        void               setTransform(AffineTransform const& _transform);
+        AffineTransform  * transform() const;
 
         /// The scene this canvas belongs to
         visual::Scene const*       scene() const;
 
-        /**@brief Set the scene this canvas belongs to.
-           @detail Is set automatically when a canvas is added to a session
-         **/
-        void               setScene(visual::Scene const*);
 
         /// Transformation matrix for canvas
         virtual QMatrix4x4 matrix() const;
 
+#ifndef OMNI_DEAMON
         /// Returns pointer to new parameter widget
         virtual ui::CanvasParameters* widget() = 0;
+#endif
 
-        /// Write mapping to stream
-        virtual void       toPropertyMap(PropertyMap&) const;
-
-        /// Read mapping from stream
-        virtual void       fromPropertyMap(PropertyMap const&);
+      signals:
+        void viewModeChanged();
+        void geometryChanged();
 
       protected:
         bool needsUpdate_ = true;
 
       private:
-        AffineTransform transform_;
+
+        /**@brief Set the scene this canvas belongs to.
+           @detail Is set automatically when a canvas is added to a session
+         **/
+        void               setScene(visual::Scene const*);
+        AffineTransform* transform_;
         ViewMode viewMode_ = ViewMode::BOTH;
         visual::Scene const* scene_ = nullptr;
     };

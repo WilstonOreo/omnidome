@@ -30,21 +30,15 @@ namespace omni
 {
   namespace proj
   {
-    TuningList::TuningList(Session const& _session) :
-      session_(_session) {
-
-    }
-
     Tuning* TuningList::add(bool _makeCurrent)
     {
-      container_type::emplace_back(new Tuning(session_));
+      container_type::emplace_back(new Tuning(this));
       auto* _tuning = container_type::back().get();
       if (_makeCurrent)
         setCurrentIndex(container_type::size()-1);
 
       // Assign virtual screen initially, this also sets up projector aspectRatio correctly
       _tuning->assignVirtualScreen();
-      _tuning->projector().scale(session_.scene().size());
 
       return _tuning;
     }
@@ -68,14 +62,16 @@ namespace omni
       if (_currentIdx < 0)
       {
         currentIdx_ = 0;
-        return;
       }
       if (_currentIdx >= size())
       {
         currentIdx_ = size() - 1;
-        return;
       }
-      currentIdx_ = _currentIdx;
+
+      if (currentIdx_ != _currentIdx) {
+        currentIdx_ = _currentIdx;
+        emit currentIndexChanged();
+      }
     }
 
     int TuningList::currentIndex() const
@@ -134,25 +130,6 @@ namespace omni
 
       for (auto& _tuning : *this)
         _stream << *_tuning;
-    }
-
-    bool operator==(TuningList const& _lhs, TuningList const& _rhs)
-    {
-      // Lambda for testing if pointers of two tunings are equal
-      auto _tuningsEqual = [](Tuning const* _a, Tuning const* _b) -> bool
-      {
-        return _a && _b // Test if pointer have same address
-          ?
-          // Derefence pointers and use equality operator to test equality
-          ((*_a) == (*_b))
-          :
-          // Compare pointers and if test of pointer are not nullptrs
-          (_a == _b);
-      };
-
-      return
-        OMNI_TEST_MEMBER_EQUAL(currentIdx_) &&
-        util::testPtrVectorEqual(_lhs,_rhs,_tuningsEqual);
     }
 
     bool TuningList::validIndex(int _idx) const

@@ -29,10 +29,20 @@ namespace omni {
     class Tuning;
   }
 
+  class BlendBrush;
+
   /**@brief A blend mask consists of an edge mask and stroke mask with a brush
    * @detail Edge mask and stroke mask are stored in different buffers
    */
-  class BlendMask {
+  class BlendMask : public QObject, public Serializer<BlendMask> {
+      Q_OBJECT
+      Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
+      Q_PROPERTY(qreal topWidth READ topWidth WRITE setTopWidth NOTIFY topWidthChanged STORED false)
+      Q_PROPERTY(qreal bottomWidth READ bottomWidth WRITE setBottomWidth NOTIFY bottomWidthChanged STORED false)
+      Q_PROPERTY(qreal leftWidth READ leftWidth WRITE setLeftWidth NOTIFY leftWidthChanged STORED false)
+      Q_PROPERTY(qreal rightWidth READ rightWidth WRITE setRightWidth NOTIFY rightWidthChanged STORED false)
+      Q_PROPERTY(qreal gamma READ gamma WRITE setGamma NOTIFY gammaChanged)
+      Q_PROPERTY(BlendBrush* brush READ brush CONSTANT)
     public:
       /// Resolution of blend mask
       inline static constexpr int resolution() {
@@ -41,10 +51,10 @@ namespace omni {
 
       typedef Buffer<uint8_t> buffer_type;
 
-      BlendMask(proj::Tuning const& _tuning);
+      BlendMask(QObject* parent = nullptr);
 
       /// Clears stroke buffer
-      void clear();
+      Q_INVOKABLE void clear();
 
       /**@brief Sets rect of blends
        *@detail Clamps rect to borders 0,0,1,1 if its overlapping
@@ -72,22 +82,8 @@ namespace omni {
       /// Return gamma value
       float             gamma() const;
 
-      /// Set blend brush settings
-      void  setBrush(
-              float _size,
-              float _feather, float _opacity, bool _invert);
-
-      /// Brush size for tuning
-      float brushSize() const;
-
-      /// Invert brush
-      void invertBrush(bool);
-
-      /// Change brush size by +- amount of pixel
-      void changeBrushSize(float _delta);
-
-      /// Return reference blend brush (const version)
-      BlendBrush const& brush() const;
+      /// Return blend brush
+      BlendBrush*       brush() const;
 
       /// Stamp on stroke buffer with current brush at position x y
       void              stamp(const QPointF& _pos);
@@ -99,24 +95,13 @@ namespace omni {
                                  QPointF const& _p1,
                                  float          _leftOver = 0.0);
 
-      /// Returns stroke buffer (read only)
-      buffer_type const& strokeBuffer() const;
-
-      void          resize(int width,
-                           int height);
-
-      /// Return void* pointer to strokebuffer data, used for OpenGL Texture
-      void      * strokeBufferData() const;
-
-      /// Write blend mask to stream
-      void        toStream(QDataStream&) const;
-
-      /// Read blend mask from stream
-      void        fromStream(QDataStream&);
-
-      /// Test for equality, buffers are ignored
-      friend bool operator==(BlendMask const&,
-                             BlendMask const&);
+    signals:
+      void rectChanged();
+      void topWidthChanged();
+      void bottomWidthChanged();
+      void leftWidthChanged();
+      void rightWidthChanged();
+      void gammaChanged();
 
     private:
       /// Transform point from tuning coordinates to stroke buffer coordinates
@@ -126,14 +111,11 @@ namespace omni {
       float borderValue(float _x,
                         float _y) const;
 
-      proj::Tuning const& tuning_;
       QRectF rect_;
       float  gamma_;
-      BlendBrush brush_;
+      BlendBrush* brush_ = nullptr;
       buffer_type     strokeBuffer_;
   };
 }
-
-OMNI_DECL_STREAM_OPERATORS(omni::BlendMask)
 
 #endif /* OMNI_BLEND_MASK_H_ */

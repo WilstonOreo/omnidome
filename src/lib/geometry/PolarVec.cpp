@@ -145,16 +145,6 @@ namespace omni {
       radius_ = _radius;
     }
 
-    /// Write transformation to stream
-    void PolarVec::toStream(QDataStream& _os) const {
-      _os << longitude_ << latitude_ << radius_;
-    }
-
-    /// Read transformation from stream
-    void PolarVec::fromStream(QDataStream& _is) {
-      _is >> longitude_ >> latitude_ >> radius_;
-    }
-
     bool operator==(PolarVec const& _lhs, PolarVec const& _rhs)
     {
       return

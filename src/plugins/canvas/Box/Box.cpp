@@ -27,8 +27,9 @@ namespace omni
 {
   namespace canvas
   {
-    Box::Box() 
+    Box::Box(QObject* parent) : Envelope(parent)
     {
+      connect(this,&Box::sizeChanged,this,&Canvas::)
       setSize(QVector3D(5,5,5));
     }
 
@@ -60,6 +61,7 @@ namespace omni
       bounds_.setMinMax(
           QVector3D(-_s.x()*0.5,-_s.y()*0.5,0.0),
           QVector3D( _s.x()*0.5, _s.y()*0.5,_s.z()));
+      emit sizeChanged();
     }
 
     QVector3D Box::center() const {

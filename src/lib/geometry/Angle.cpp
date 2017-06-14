@@ -88,6 +88,11 @@ namespace omni {
     {
       return OMNI_TEST_MEMBER_EQUAL(angle_);
     }
+
+    bool operator!=(Angle const& _lhs, Angle const& _rhs)
+    {
+      return !(_lhs == _rhs);
+    }
   }
 }
 

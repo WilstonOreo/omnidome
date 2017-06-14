@@ -24,14 +24,22 @@
 
 namespace omni {
   /// Common blend mask settings for the all tunings in a session
-  class BlendSettings {
+  class BlendSettings : public QObject {
+      Q_OBJECT
+      Q_PROPERTY(ColorMode colorMode READ colorMode WRITE setColorMode NOTIFY colorModeChanged)
+      Q_PROPERTY(qreal inputOpacity READ inputOpacity WRITE setInputOpacity NOTIFY inputOpacityChanged)
+      Q_PROPERTY(bool showInWarpMode READ showInWarpMode WRITE setShowInWarpMode NOTIFY showInWarpModeChanged)
     public:
+      BlendSettings(QObject* = nullptr);
+      ~BlendSettings();
+
       /// Blend Mask display colorColorMode
       enum class ColorMode
       {
         COLORED, // Displays blend mask with color of tuning
         WHITE    // Displays white blend mask
       };
+      Q_ENUM(ColorMode)
 
       /// Return colorColorMode of blend mask colorColorMode
       ColorMode colorMode() const;
@@ -40,10 +48,10 @@ namespace omni {
       void setColorMode(ColorMode);
 
       /// Return input opacity of blend mask
-      float       inputOpacity() const;
+      qreal       inputOpacity() const;
 
       /// Opacity of input when in blend mask colorColorMode
-      void        setInputOpacity(float _input);
+      void        setInputOpacity(qreal _input);
 
       /// Show blend mask in warp colorColorMode
       bool        showInWarpMode() const;
@@ -51,23 +59,16 @@ namespace omni {
       /// Set flag if blend mask is visible in warp colorColorMode
       void        setShowInWarpMode(bool);
 
-      /// Deserialize from stream
-      void        fromStream(QDataStream&);
-
-      /// Serialize to stream
-      void        toStream(QDataStream&) const;
-
-      /// Test for equality.
-      friend bool operator==(BlendSettings const&,
-                             BlendSettings const&);
+    signals:
+      void colorModeChanged();
+      void inputOpacityChanged();
+      void showInWarpModeChanged();
 
     private:
       ColorMode colorMode_  = ColorMode::COLORED;
       bool  showInWarpMode_ = false;
-      float inputOpacity_   = 0.0;
+      qreal inputOpacity_   = 0.0;
   };
 }
-
-OMNI_DECL_STREAM_OPERATORS(omni::BlendSettings)
 
 #endif /* OMNI_BLENDSETTINGS_H_ */

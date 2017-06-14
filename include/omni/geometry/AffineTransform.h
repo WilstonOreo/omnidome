@@ -21,52 +21,32 @@
 
 #include <QVector3D>
 #include <QMatrix4x4>
-#include <omni/serialization/Interface.h>
+#include <omni/serialization/Serializer.h>
 #include "EulerAngles.h"
 
 namespace omni {
   namespace geometry {
     /**@brief An affine linear transform with rotation, scale and translation
     **/
-    class AffineTransform {
+    class AffineTransform : public QObject, public Serializer<AffineTransform> {
+        Q_OBJECT
+        Q_PROPERTY(bool rotationEnabled READ rotationEnabled WRITE setRotationEnabled NOTIFY rotationEnabledChanged)
+        Q_PROPERTY(EulerAngles* rotation READ rotation CONSTANT)
+        Q_PROPERTY(ScaleMode scaleMode READ scaleMode WRITE setScaleMode NOTIFY scaleModeChanged)
+        Q_PROPERTY(QVector3D scale READ scale WRITE setScale NOTIFY scaleChanged)
+        Q_PROPERTY(qreal uniformScale READ uniformScale WRITE setUniformScale NOTIFY uniformScaleChanged)
+        Q_PROPERTY(bool translationEnabled READ translationEnabled WRITE setTranslationEnabled NOTIFY translationEnabledChanged)
+        Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translationChanged)
       public:
-        AffineTransform();
+        enum ScaleMode {
+          SCALE_NONE,
+          SCALE_UNIFORM,
+          SCALE_NON_UNIFORM
+        };
+        Q_ENUM(ScaleMode)
 
-        /// Return ref to rotation angles
-        EulerAngles      & rotation();
+        AffineTransform(QObject* = nullptr);
 
-        /// Return const ref to rotation angles
-        EulerAngles const& rotation() const;
-
-        /// Set new rotation angles
-        void               setRotation(EulerAngles const&);
-
-        /// Return scale vector
-        QVector3D scale()  const;
-
-        /// Return scale factor
-        float uniformScale()  const;
-
-        /// Set new scale vector
-        void             setScale(QVector3D const&);
-
-        /// Set uniform value for scale
-        void             setScale(float);
-
-        /// Return reference to translation vector
-        QVector3D      & translation();
-
-        /// Return reference to translation vector (const)
-        QVector3D const& translation() const;
-
-        /// Set new translation vector
-        void             setTranslation(QVector3D const&);
-
-        /// Calculate transformation matrix
-        QMatrix4x4       matrix() const;
-
-        /// Calculate matrix for transformation around a center point
-        QMatrix4x4       matrix(QVector3D const& _center) const;
 
         /// Return true if rotation is enabled
         bool             rotationEnabled() const;
@@ -74,17 +54,26 @@ namespace omni {
         /// Enable or disable rotation
         void             setRotationEnabled(bool);
 
-        /// Return true if scaling is enabled
-        bool             scaleEnabled() const;
+        /// Return ref to rotation angles
+        EulerAngles      * rotation() const;
 
-        /// Return true if scaling is uniform (means scaling is equal for xyz)
-        bool             uniformScaleEnabled() const;
+        /// Return scale mode
+        ScaleMode        scaleMode() const;
 
-        /// Set whether scaling is uniform
-        void             setUniformScaleEnabled(bool);
+        /// Set scale mode
+        void             setScaleMode(ScaleMode);
 
-        /// Enable or disable scale
-        void             setScaleEnabled(bool);
+        /// Return scale vector
+        QVector3D        scale()  const;
+
+        /// Set new scale vector
+        void             setScale(QVector3D);
+
+        /// Return scale factor
+        qreal            uniformScale()  const;
+
+        /// Set uniform value for scale
+        void             setUniformScale(qreal);
 
         /// Return true if translation is enabled
         bool             translationEnabled() const;
@@ -92,24 +81,33 @@ namespace omni {
         /// Enable or disable translation
         void             setTranslationEnabled(bool);
 
-        /// Write transformation to stream
-        void             toStream(QDataStream&) const;
+        /// Return translation vector
+        QVector3D        translation() const;
 
-        /// Read transformation from stream
-        void             fromStream(QDataStream&);
+        /// Set new translation vector
+        void             setTranslation(QVector3D);
 
-        /// Test for equality
-        friend bool      operator==(AffineTransform const&,
-                                    AffineTransform const&);
+        /// Calculate transformation matrix
+        QMatrix4x4       matrix() const;
+
+        /// Calculate matrix for transformation around a center point
+        QMatrix4x4       matrix(QVector3D const& _center) const;
+
+      signals:
+        void rotationEnabledChanged();
+        void scaleModeChanged();
+        void scaleChanged();
+        void uniformScaleChanged();
+        void translationEnabledChanged();
+        void translationChanged();
 
       private:
         bool rotationEnabled_ = true;
-        EulerAngles rotation_;
+        EulerAngles* rotation_;
 
-        bool scaleEnabled_ = true;
-        bool uniformScaleEnabled_ = false;
+        ScaleMode scaleMode_ = SCALE_UNIFORM;
         QVector3D scale_;
-        float uniformScale_ = 1.0;
+        qreal uniformScale_ = 1.0;
 
         bool translationEnabled_ = true;
         QVector3D translation_;
@@ -118,7 +116,5 @@ namespace omni {
 
   using geometry::AffineTransform;
 }
-
-OMNI_DECL_STREAM_OPERATORS(omni::geometry::AffineTransform)
 
 #endif /* OMNI_GEOMETRY_AFFINETRANSFORM_H_ */

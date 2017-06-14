@@ -32,15 +32,17 @@ namespace omni
     /**@brief A box-shaped canvas.
       *@detail Can be used for rooms or boxes
      **/
-    class Box : public QObject, public Envelope
+    class Box : public Envelope
     {
-        OMNI_CANVAS_PLUGIN_DECL
-        OMNI_PLUGIN_INFO("Box canvas","Copyright (C) 2016")
+      Q_OBJECT
+      Q_PROPERTY(QVector3D size READ size WRITE setSize NOTIFY sizeChanged)
+      OMNI_CANVAS_PLUGIN_DECL
+      OMNI_PLUGIN_INFO("Box canvas","Copyright (C) 2017")
     public:
       OMNI_REGISTER_CLASS(Factory,Box)
 
       /// Default constructor
-      Box();
+      Box(QObject* = nullptr);
 
       /// Destructor
       ~Box();
@@ -70,10 +72,11 @@ namespace omni
       ui::CanvasParameters* widget();
 
       QMatrix4x4 matrix() const;
+    signals:
+      void sizeChanged();
 
     private:
       visual::Box vizBox_;
-      EulerAngles angles_;
     };
   }
 }

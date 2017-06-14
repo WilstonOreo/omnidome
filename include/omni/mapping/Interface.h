@@ -52,11 +52,18 @@ namespace omni {
      * @detail Holds inputs and shader
      */
     class Interface :
+      public QObject,
       public TypeIdInterface,
       public PropertyMapSerializer,
       public visual::Interface {
+        Q_OBJECT
+        Q_PROPERTY(bool flipHorizontal READ flipHorizontal WRITE setFlipHorizontal NOTIFY flipHorizontalChanged)
+        Q_PROPERTY(bool flipVertical READ flipVertical WRITE setFlipVertical NOTIFY flipVerticalChanged)
+        Q_PROPERTY(bool boundToCanvas READ boundToCanvas WRITE setBoundToCanvas NOTIFY boundToCanvasChanged)
+        Q_PROPERTY(bool isUVW READ isUVW CONSTANT)
+        Q_PROPERTY(AffineTransform* transform READ transform CONSTANT)
       public:
-        Interface();
+        Interface(QObject* = nullptr);
 
         virtual ~Interface();
 
@@ -92,16 +99,10 @@ namespace omni {
           return true;
         }
 
-        /// Static function to retrieve all registered mappings that support UVW
-        // coords
-        static IdSet     getUVWMappings();
-
-        /// Static function to retrieve all registered mappings that dont
-        // support UVW coords
-        static IdSet     getPlanarMappings();
-
+#ifndef OMNI_DAEMON
         /// Return pointer to parameter widget
         virtual QWidget* widget() = 0;
+#endif
 
         inline void draw() const {
           draw(1.0);
@@ -113,11 +114,8 @@ namespace omni {
         /// Update mapping visualizer
         inline virtual void update() {}
 
-        /// Return const ref to affine transform
-        AffineTransform const& transform() const;
-
         /// Return ref to affine transform
-        AffineTransform  & transform();
+        AffineTransform  * transform() const;
 
         /// Set new affine transform
         void               setTransform(AffineTransform const& _transform);
@@ -128,16 +126,10 @@ namespace omni {
         /**@brief If true, mapping transform is attached to canvas transform
            @detail Is true by default
          **/
-        bool               isBoundToCanvas() const;
+        bool               boundToCanvas() const;
 
         /// Set whether mapping transform is attached to canvas transform
         void               setBoundToCanvas(bool);
-
-        /// Write mapping to stream
-        virtual void       toPropertyMap(PropertyMap&) const;
-
-        /// Read mapping from stream
-        virtual void       fromPropertyMap(PropertyMap const&);
 
         /// The scene this canvas belongs to
         visual::Scene const*       scene() const;
@@ -146,6 +138,11 @@ namespace omni {
            @detail Is set automatically when a canvas is added to a session
          **/
         void               setScene(visual::Scene const*);
+
+      signals:
+        void flipVerticalChanged();
+        void flipHorizontalChanged();
+        void boundToCanvasChanged();
 
       protected:
         std::unique_ptr<QOpenGLShaderProgram> shader_;
@@ -162,7 +159,7 @@ namespace omni {
          **/
         virtual QString fragmentShaderSourceCode() const;
 
-        AffineTransform transform_;
+        AffineTransform* transform_;
         bool boundToCanvas_  = true;
         bool flipHorizontal_ = false;
         bool flipVertical_   = false;

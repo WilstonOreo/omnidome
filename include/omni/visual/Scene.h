@@ -60,17 +60,24 @@ namespace omni {
        visualization
        @detail Belongs to a session
      **/
-    class Scene {
+    class Scene : public QObject {
+        Q_OBJECT
+        Q_PROPERTY(qreal size READ size WRITE setSize NOTIFY sizeChanged)
+        Q_PROPERTY(LengthUnit unit READ unit WRITE setUnit NOTIFY unitChanged)
+        Q_PROPERTY(LengthUnit unit READ unit WRITE setUnit NOTIFY unitChanged)
+        Q_PROPERTY(LengthUnit unit READ unit WRITE setUnit NOTIFY unitChanged)
+        Q_PROPERTY(LengthUnit unit READ unit WRITE setUnit NOTIFY unitChanged)
+
       public:
         typedef std::map<QString,std::unique_ptr<CameraInterface>> camera_map_type;
 
         Scene();
 
         /// Scene size (min, max dimensions)
-        float          size() const;
+        qreal          size() const;
 
         /// Set scene size
-        void           setSize(float);
+        void           setSize(qreal);
 
         /// Length unit for scene
         LengthUnit const& unit() const;
@@ -118,31 +125,28 @@ namespace omni {
         void setMoveMode(MoveMode);
 
         /// Inside / outside transparency for 3D canvas view
-        float insideOutside() const;
+        qreal insideOutside() const;
 
         /* @brief Set inside / outside transparency for 3D canvas view
            @param _insideOutside Value 0.0 means inside is only visible
                   1.0 means outside is visible.
          */
-        void setInsideOutside(float _insideOutside);
+        void setInsideOutside(qreal _insideOutside);
 
         /// Opacity value for wireframe between 0.0 and 1.0
-        float wireframe() const;
+        qreal wireframe() const;
 
         /* @brief Set wireframe opacity for canvas view
            @param _wireframe Value 0.0 means wireframes are not drawn.
                   1.0 means wireframe is fully visible and thick.
          */
-        void setWireframe(float _wireframe);
+        void setWireframe(qreal _wireframe);
 
         /// Update light for use in OpenGL
         void        updateLights();
 
         /// Return reference to camera
-        visual::CameraInterface* camera();
-
-        /// Return const reference to camera
-        visual::CameraInterface const* camera() const;
+        visual::CameraInterface* camera() const;
 
         /// Return current camera id
         QString currentCameraId() const;
@@ -171,9 +175,9 @@ namespace omni {
 
 
       private:
-        float      insideOutside_            = 0.5;
-        float      size_                     = 10.0;
-        float      wireframe_                = 0.0;
+        qreal      insideOutside_            = 0.5;
+        qreal      size_                     = 10.0;
+        qreal      wireframe_                = 0.0;
         LengthUnit unit_;
         bool       displayInput_             = true;
         bool       displayGrid_              = true;

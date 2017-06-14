@@ -22,43 +22,41 @@
 
 #include <QMatrix4x4>
 #include <omni/geometry/Angle.h>
+#include <omni/serialization/Serializer.h>
 
 namespace omni {
   namespace geometry {
     /// Mixin class for a zyx Euler Angle Rotation system
-    struct EulerAngles
+    class EulerAngles : public QObject, public Serializer<EulerAngles>
     {
+      Q_OBJECT
+      Q_PROPERTY(Angle yaw READ yaw WRITE setYaw NOTIFY yawChanged)
+      Q_PROPERTY(Angle pitch READ pitch WRITE setPitch NOTIFY pitchChanged)
+      Q_PROPERTY(Angle roll READ roll WRITE setRoll NOTIFY rollChanged)
+    public:
       /// Default constructor, all angles are zero
-      EulerAngles();
+      EulerAngles(QObject* = nullptr);
 
       /// Constructor by values
       EulerAngles(Angle _yaw,
                   Angle _pitch,
-                  Angle _roll);
+                  Angle _roll,
+                  QObject* _parent = nullptr);
 
       /// Reference to yaw angle (Angle in Z direction)
-      Angle           & yaw();
-
-      /// Reference to yaw angle (Angle in Z direction, const version)
-      Angle const     & yaw() const;
+      Angle             yaw() const;
 
       /// Set yaw angle (Z direction angle) to new value
       void              setYaw(Angle _yaw);
 
       /// Reference to pitch angle (Angle in Y direction)
-      Angle           & pitch();
-
-      /// Reference to pitch angle (Angle in Y direction, const version)
-      Angle const     & pitch() const;
+      Angle             pitch() const;
 
       /// Set pitch angle (Y direction angle) to new value
       void              setPitch(Angle _pitch);
 
       /// Reference to roll angle (Angle in X direction)
-      Angle           & roll();
-
-      /// Reference to roll angle (Angle in X direction)
-      Angle const     & roll() const;
+      Angle             roll() const;
 
       /// Set roll angle (X direction angle) to new value
       void              setRoll(Angle _roll);
@@ -70,10 +68,10 @@ namespace omni {
 
       /// Calculate the rotation matrix
       QMatrix4x4  matrix() const;
-
-      /// Test for equality
-      friend bool operator==(EulerAngles const&,
-                             EulerAngles const&);
+      signals:
+        void yawChanged();
+        void pitchChanged();
+        void rollChanged();
 
       private:
         /// Yaw Angle (Z direction)
@@ -88,11 +86,6 @@ namespace omni {
   }
   using geometry::EulerAngles;
 }
-
-QDataStream& operator>>(QDataStream&,
-                        omni::geometry::EulerAngles&);
-QDataStream& operator<<(QDataStream&,
-                        omni::geometry::EulerAngles const&);
 
 
 #endif /* OMNI_GEOMETRY_EULERANGLES_H_ */

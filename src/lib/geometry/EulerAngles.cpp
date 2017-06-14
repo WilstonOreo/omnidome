@@ -24,60 +24,21 @@
 
 namespace omni {
   namespace geometry {
-    EulerAngles::EulerAngles() :
-      yaw_(0), pitch_(0), roll_(0)
+    EulerAngles::EulerAngles(QObject* parent) :
+      QObject(parent)
     {}
 
-    EulerAngles::EulerAngles(Angle _yaw, Angle _pitch, Angle _roll) :
+    EulerAngles::EulerAngles(Angle _yaw, Angle _pitch, Angle _roll,
+      QObject* parent) :
+      QObject(parent),
       yaw_(_yaw),
       pitch_(_pitch),
       roll_(_roll)
     {}
 
-    Angle& EulerAngles::yaw()
-    {
-      return yaw_;
-    }
-
-    Angle const& EulerAngles::yaw() const
-    {
-      return yaw_;
-    }
-
-    void EulerAngles::setYaw(Angle _yaw)
-    {
-      yaw_ = _yaw;
-    }
-
-    Angle& EulerAngles::pitch()
-    {
-      return pitch_;
-    }
-
-    Angle const& EulerAngles::pitch() const
-    {
-      return pitch_;
-    }
-
-    void EulerAngles::setPitch(Angle _pitch)
-    {
-      pitch_ = _pitch;
-    }
-
-    Angle& EulerAngles::roll()
-    {
-      return roll_;
-    }
-
-    Angle const& EulerAngles::roll() const
-    {
-      return roll_;
-    }
-
-    void EulerAngles::setRoll(Angle _roll)
-    {
-      roll_ = _roll;
-    }
+    OMNI_PROPERTY_RW_IMPL(EulerAngles,Angle,yaw,setYaw)
+    OMNI_PROPERTY_RW_IMPL(EulerAngles,Angle,pitch,setPitch)
+    OMNI_PROPERTY_RW_IMPL(EulerAngles,Angle,roll,setRoll)
 
     QMatrix4x4 EulerAngles::matrix(Angle _yaw, Angle _pitch, Angle _roll)
     {
@@ -94,24 +55,5 @@ namespace omni {
     {
       return matrix(yaw_, pitch_, roll_);
     }
-
-    bool operator==(EulerAngles const& _lhs, EulerAngles const& _rhs) {
-      return
-        OMNI_TEST_MEMBER_EQUAL(yaw_) &&
-        OMNI_TEST_MEMBER_EQUAL(pitch_) &&
-        OMNI_TEST_MEMBER_EQUAL(roll_);
-    }
   }
-}
-
-QDataStream& operator>>(QDataStream& _stream, omni::EulerAngles& _angles)
-{
-  _stream >> _angles.yaw() >> _angles.pitch() >> _angles.roll();
-  return _stream;
-}
-
-QDataStream& operator<<(QDataStream& _stream, omni::EulerAngles const& _angles)
-{
-  _stream << _angles.yaw() << _angles.pitch() << _angles.roll();
-  return _stream;
 }

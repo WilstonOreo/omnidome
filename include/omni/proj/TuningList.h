@@ -27,16 +27,18 @@
 
 namespace omni {
   class Session;
-  
+
   namespace proj {
     /**@brief Tuning List contains a list of tunings
      *@detail Tuning List is serializable via QDataStream
      **/
-    class TuningList : private std::vector<std::unique_ptr<Tuning> >{
-      public:
-        TuningList(Session const&);
-
-        typedef std::vector<std::unique_ptr<Tuning> >container_type;
+    class TuningList :
+      public QObject,
+      private std::vector<Tuning*> {
+      Q_OBJECT
+      Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+    public:
+        typedef std::vector<Tuning*>container_type;
 
         using container_type::size;
         using container_type::empty;
@@ -56,15 +58,10 @@ namespace omni {
         /// Remove tuning with custom index
         void           remove(int);
 
-        /**@brief Returns pointer to current tuning
-         * @detail Returns nullptr if currentIdx_ == -1 or tuning list is empty
-         **/
-        Tuning       * current();
-
         /**@brief Returns pointer to current tuning (const version)
          * @detail Returns nullptr if currentIdx_ == -1 or tuning list is empty
          **/
-        Tuning const * current() const;
+        Tuning*       current() const;
 
         /// Set new current index, must be between 0 and size()-1
         void           setCurrentIndex(int);
@@ -76,10 +73,7 @@ namespace omni {
         void           clear();
 
         /// Returns tuning at a specific index
-        Tuning       * operator[](int);
-
-        /// Returns tuning at a specific index (const version)
-        Tuning const * operator[](int) const;
+        Tuning       * operator[](int) const;
 
         /// Deserialize list from stream
         void           fromStream(QDataStream&);
@@ -87,17 +81,14 @@ namespace omni {
         /// Serialize list to stream
         void           toStream(QDataStream&) const;
 
-        /// Test both lists for equality
-        friend bool    operator==(TuningList const&,
-                                  TuningList const&);
+      signals:
+        void currentIndexChanged();
 
       private:
         /// Test of index is between 0 and size()-1
         bool validIndex(int) const;
 
         int currentIdx_ = -1;
-
-        Session const& session_;
     };
   }
 }

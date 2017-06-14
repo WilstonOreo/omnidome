@@ -39,7 +39,7 @@ namespace omni {
       public:
         SubScreenItem();
         SubScreenItem(ScreenItem* _parent,
-                      int _index);
+                      TileIndex const&);
 
         /// Currently assigned tuning widget
         omni::ui::proj::Tuning      * tuningWidget();
@@ -99,9 +99,9 @@ namespace omni {
         /// Detach all tunings/projectors
         void           detachTunings();
 
-        SubScreenItem* item(int _index);
+        SubScreenItem* item(TileIndex const&);
 
-        SubScreenItem const* item(int _index) const;
+        SubScreenItem const* item(TileIndex const&) const;
 
         /// Return pointer to currently hovered item
         SubScreenItem* hoveredItem();

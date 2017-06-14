@@ -253,7 +253,6 @@
 		{
 			[self setClient:nil havingLock:NO];
 		}
-
 	}
 	// If we don't have a matching client but this client's new details match, then set up a new client
 	if (_client == nil && [self parametersMatchDescription:newInfo])
