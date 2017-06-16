@@ -55,10 +55,6 @@ namespace omni {
         setSize(size_ + _delta);
     }
 
-    OMNI_PROPERTY_RW_IMPL(BlendBrush,bool,inverted,setInverted)
-    OMNI_PROPERTY_REAL_BOUND_IMPL(BlendBrush,feather,setFeather,0.0,10.0)
-    OMNI_PROPERTY_REAL_BOUND_IMPL(BlendBrush,opacity,setOpacity,0.0,1.0)
-
     void BlendBrush::stamp(QPointF const& _p, Buffer<uint8_t>& _buf) const
     {
         int _sizeX = size().x();

@@ -22,7 +22,7 @@
 
 #include <map>
 #include <memory>
-#include <omni/serialization/Interface.h>
+#include <omni/Serializer.h>
 #include <omni/visual/Light.h>
 #include <omni/visual/CameraInterface.h>
 #include <omni/LengthUnit.h>
@@ -30,31 +30,6 @@
 
 namespace omni {
   namespace visual {
-    /// Enum class to determine which scene element is edited
-    enum class EditMode {
-      CAMERA,
-      MOVE,
-      ROTATE
-    };
-
-    /// Which direction to move with mouse
-    enum class MoveMode {
-      MOVE_X,
-      MOVE_Y,
-      MOVE_Z,
-      MOVE_XY
-    };
-
-    /// Rotate pitch, yaw, roll
-    enum class RotateMode {
-      PITCH,
-      YAW,
-      ROLL
-    };
-
-    enum class ProjectorSelectionMode {
-      ALL, SELECTED, NONE
-    };
 
     /**@brief A class that holds settings and elements for session 3d
        visualization
@@ -62,55 +37,51 @@ namespace omni {
      **/
     class Scene : public QObject {
         Q_OBJECT
-        Q_PROPERTY(qreal size READ size WRITE setSize NOTIFY sizeChanged)
-        Q_PROPERTY(LengthUnit unit READ unit WRITE setUnit NOTIFY unitChanged)
-        Q_PROPERTY(LengthUnit unit READ unit WRITE setUnit NOTIFY unitChanged)
-        Q_PROPERTY(LengthUnit unit READ unit WRITE setUnit NOTIFY unitChanged)
-        Q_PROPERTY(LengthUnit unit READ unit WRITE setUnit NOTIFY unitChanged)
+    public:
+        /// Enum class to determine which scene element is edited
+        enum EditMode {
+          EDIT_CAMERA,
+          EDIT_MOVE,
+          EDIT_ROTATE
+        };
+        Q_ENUMS(EditMode)
+
+        /// Which direction to move with mouse
+        enum MoveMode {
+          MOVE_X,
+          MOVE_Y,
+          MOVE_Z,
+          MOVE_XY
+        };
+        Q_ENUMS(MoveMode)
+
+        /// Rotate pitch, yaw, roll
+        enum RotateMode {
+          ROTATE_PITCH,
+          ROTATE_YAW,
+          ROTATE_ROLL
+        };
+        Q_ENUMS(RotateMode)
+
+        enum ProjectorDisplayMode {
+          PROJ_ALL, PROJ_SELECTED, PROJ_NONE
+        };
+        Q_ENUMS(ProjectorSelectionMode)
+      private:
+        OMNI_PROPERTY_RW_DEFAULT(qreal,size,setSize,10.0)
+        OMNI_PROPERTY_RW(LengthUnit,unit,setUnit)
+        OMNI_PROPERTY_RW_DEFAULT(bool,displayInput,setDisplayInput,true)
+        OMNI_PROPERTY_RW_DEFAULT(bool,displayGrid,setDisplayGrid,true)
+        OMNI_PROPERTY_RW_DEFAULT(Scene::ProjectorDisplayMode,displayProjectors,setDisplayProjectors,PROJ_ALL)
+        OMNI_PROPERTY_RW_DEFAULT(Scene::ProjectorDisplayMode,displayProjectedAreas,setDisplayProjectedAreas,PROJ_ALL)
 
       public:
         typedef std::map<QString,std::unique_ptr<CameraInterface>> camera_map_type;
 
         Scene();
 
-        /// Scene size (min, max dimensions)
-        qreal          size() const;
-
-        /// Set scene size
-        void           setSize(qreal);
-
-        /// Length unit for scene
-        LengthUnit const& unit() const;
-
         /// Set unit from string prefix
         void           setUnit(QString const&);
-
-        /// Set unit from length unit type
-        void           setUnit(LengthUnit const&);
-
-        /// Input is shown on canvas
-        bool           displayInput() const;
-
-        /// Turn displaying of input on canvas on/off
-        void           setDisplayInput(bool);
-
-        /// Display line grid
-        bool           displayGrid() const;
-
-        /// Turn displaying of grid on/off
-        void           setDisplayGrid(bool);
-
-        /// Display projector frustra (selected projector is always shown)
-        ProjectorSelectionMode displayProjectors() const;
-
-        /// Turn displaying of projectors on/off
-        void           setDisplayProjectors(ProjectorSelectionMode);
-
-        /// Display projected areas
-        ProjectorSelectionMode           displayProjectedAreas() const;
-
-        /// Turn displaying of projector areas on/off
-        void           setDisplayProjectedAreas(ProjectorSelectionMode);
 
         /// Return scene element
         EditMode       editMode() const;
@@ -157,30 +128,17 @@ namespace omni {
         camera_map_type& cameras();
         camera_map_type const& cameras() const;
 
-        /// Deserialize from stream
-        void        fromStream(QDataStream&);
-
-        /// Serialize to stream
-        void        toStream(QDataStream&) const;
-
-        /// Test for equality. ScreenSetup is ignored
-        friend bool operator==(Scene const&,
-                               Scene const&);
-
         /// Draw grid with given scene size if it is to be displayed
         void drawGrid() const;
 
         /// Update grid
         void updateGrid();
+      signals:
 
 
       private:
         qreal      insideOutside_            = 0.5;
-        qreal      size_                     = 10.0;
         qreal      wireframe_                = 0.0;
-        LengthUnit unit_;
-        bool       displayInput_             = true;
-        bool       displayGrid_              = true;
         ProjectorSelectionMode       displayProjectors_        = ProjectorSelectionMode::ALL;
         ProjectorSelectionMode       displayProjectedAreas_    = ProjectorSelectionMode::ALL;
         EditMode   editMode_                 = EditMode::CAMERA;
@@ -195,12 +153,5 @@ namespace omni {
   }
   using visual::Scene;
 }
-
-OMNI_DECL_ENUM_STREAM_OPERATORS(omni::visual::EditMode)
-OMNI_DECL_ENUM_STREAM_OPERATORS(omni::visual::MoveMode)
-OMNI_DECL_ENUM_STREAM_OPERATORS(omni::visual::RotateMode)
-OMNI_DECL_ENUM_STREAM_OPERATORS(omni::visual::ProjectorSelectionMode)
-
-OMNI_DECL_STREAM_OPERATORS(omni::visual::Scene)
 
 #endif /* OMNI_VISUAL_SCENE_H_ */

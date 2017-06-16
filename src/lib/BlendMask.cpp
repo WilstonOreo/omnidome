@@ -26,8 +26,7 @@
 namespace omni {
   BlendMask::BlendMask(QObject* parent) :
     QObject(parent),
-    rect_(0.1, 0.1, 0.8, 0.9),
-    gamma_(2.0)
+    rect_(0.1, 0.1, 0.8, 0.9)
   {
     // Stroke buffer size is fixed to 1 mega pixel
     strokeBuffer_.resize(resolution(), resolution());
@@ -36,16 +35,6 @@ namespace omni {
   void BlendMask::clear()
   {
     strokeBuffer_.clear();
-  }
-
-  void BlendMask::setRect(QRectF const& _rect)
-  {
-    rect_ = _rect;
-  }
-
-  QRectF BlendMask::rect() const
-  {
-    return rect_;
   }
 
   float BlendMask::topWidth() const
@@ -66,23 +55,6 @@ namespace omni {
   float BlendMask::rightWidth() const
   {
     return 1.0 - rect_.right();
-  }
-
-  void BlendMask::setGamma(float _gamma)
-  {
-    gamma_ = _gamma;
-
-    if (gamma_ < 0.1) gamma_ = 0.1;
-  }
-
-  float BlendMask::gamma() const
-  {
-    return gamma_;
-  }
-
-  BlendBrush* BlendMask::brush() const
-  {
-    return brush_;
   }
 
   void BlendMask::stamp(const QPointF& _pos)

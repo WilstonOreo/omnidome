@@ -20,6 +20,7 @@
 #ifndef OMNI_SESSION_H_
 #define OMNI_SESSION_H_
 
+#include <omni/Serializer.h>
 #include <omni/proj/TuningList.h>
 #include <omni/input/List.h>
 #include <omni/canvas/Interface.h>
@@ -38,7 +39,7 @@ namespace omni {
   /**@brief A session consists of a canvas, a mapping, a list of tunings and one
      or several inputs
    */
-  class Session : public QObject {
+  class Session : public QObject, public Serializer<Session> {
       Q_OBJECT
       Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
       Q_PROPERTY(Mapping* READ mapping WRITE setMapping NOTIFY mappingChanged)
@@ -155,7 +156,7 @@ namespace omni {
       ScreenSetup* screenSetup_;
 
       /// Current session mode
-      Mode mode_ = Mode::SCREENSETUP;
+      Mode mode_ = MODE_SCREENSETUP;
 
       visual::Scene*  scene_;
       BlendSettings*  blendSettings_;

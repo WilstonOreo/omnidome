@@ -29,6 +29,9 @@
 #include <omni/visual/ContextBoundPtr.h>
 
 namespace omni {
+
+  class Session;
+
   namespace proj {
     class Tuning;
 
@@ -40,10 +43,7 @@ namespace omni {
         typedef omnic::PixelData pixeldata_type;
 
         /// Create empty calibration from with optional output mode
-        Calibration();
-
-        /// Create and render calibration from tuning
-        Calibration(Tuning const&);
+        Calibration(Session const&);
 
         /// Render calibration from tuning
         void render(Tuning const&);
@@ -81,6 +81,7 @@ namespace omni {
         omnic::CalibratedProjector calibratedProjector() const;
 
       private:
+
         template<typename OPERATION>
         static void bufferToImage(pixeldata_type const& _buffer,
                                   QImage& _image,
@@ -102,6 +103,7 @@ namespace omni {
         bool  virtualScreen_ = true;
         QRect screenGeometry_;
         QRect contentGeometry_;
+        Session const& session_;
         QUniquePtr<ColorCorrection> colorCorrection_;
         pixeldata_type data_;
     };

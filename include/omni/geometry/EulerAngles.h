@@ -22,7 +22,8 @@
 
 #include <QMatrix4x4>
 #include <omni/geometry/Angle.h>
-#include <omni/serialization/Serializer.h>
+#include <omni/Serializer.h>
+#include <omni/property.h>
 
 namespace omni {
   namespace geometry {
@@ -30,9 +31,9 @@ namespace omni {
     class EulerAngles : public QObject, public Serializer<EulerAngles>
     {
       Q_OBJECT
-      Q_PROPERTY(Angle yaw READ yaw WRITE setYaw NOTIFY yawChanged)
-      Q_PROPERTY(Angle pitch READ pitch WRITE setPitch NOTIFY pitchChanged)
-      Q_PROPERTY(Angle roll READ roll WRITE setRoll NOTIFY rollChanged)
+      OMNI_PROPERTY_RW(Angle,yaw,setYaw)
+      OMNI_PROPERTY_RW(Angle,pitch,setPitch)
+      OMNI_PROPERTY_RW(Angle,roll,setRoll)
     public:
       /// Default constructor, all angles are zero
       EulerAngles(QObject* = nullptr);
@@ -43,24 +44,6 @@ namespace omni {
                   Angle _roll,
                   QObject* _parent = nullptr);
 
-      /// Reference to yaw angle (Angle in Z direction)
-      Angle             yaw() const;
-
-      /// Set yaw angle (Z direction angle) to new value
-      void              setYaw(Angle _yaw);
-
-      /// Reference to pitch angle (Angle in Y direction)
-      Angle             pitch() const;
-
-      /// Set pitch angle (Y direction angle) to new value
-      void              setPitch(Angle _pitch);
-
-      /// Reference to roll angle (Angle in X direction)
-      Angle             roll() const;
-
-      /// Set roll angle (X direction angle) to new value
-      void              setRoll(Angle _roll);
-
       /// Public Static function to get rotation matrix conveniently
       static QMatrix4x4 matrix(Angle _yaw,
                                Angle _pitch,
@@ -68,20 +51,10 @@ namespace omni {
 
       /// Calculate the rotation matrix
       QMatrix4x4  matrix() const;
-      signals:
+    signals:
         void yawChanged();
         void pitchChanged();
         void rollChanged();
-
-      private:
-        /// Yaw Angle (Z direction)
-        Angle yaw_;
-
-        /// Pitch Angle (Y direction)
-        Angle pitch_;
-
-        /// Roll Angle (X direction)
-        Angle roll_;
     };
   }
   using geometry::EulerAngles;

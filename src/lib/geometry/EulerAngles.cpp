@@ -36,10 +36,6 @@ namespace omni {
       roll_(_roll)
     {}
 
-    OMNI_PROPERTY_RW_IMPL(EulerAngles,Angle,yaw,setYaw)
-    OMNI_PROPERTY_RW_IMPL(EulerAngles,Angle,pitch,setPitch)
-    OMNI_PROPERTY_RW_IMPL(EulerAngles,Angle,roll,setRoll)
-
     QMatrix4x4 EulerAngles::matrix(Angle _yaw, Angle _pitch, Angle _roll)
     {
       QMatrix4x4 _matrix;

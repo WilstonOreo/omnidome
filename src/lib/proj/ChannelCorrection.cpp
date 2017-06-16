@@ -55,10 +55,5 @@ namespace omni {
         qreal ChannelCorrection::corrected(qreal _value) const {
             return brightness(contrast(gamma(_value)));
         }
-
-        OMNI_DEFINE_PROPERTY_REAL_BOUND(ChannelCorrection,contrast,setContrast,-1.0,1.0);
-        OMNI_DEFINE_PROPERTY_REAL_BOUND(ChannelCorrection,brightness,setBrightness,-1.0,1.0);
-        OMNI_DEFINE_PROPERTY_REAL_BOUND(ChannelCorrection,gamma,setGamma,-1.0,1.0);
-        OMNI_DEFINE_PROPERTY_REAL_BOUND(ChannelCorrection,multiplier,setMultiplier,0.0,1.0);
     }
 }

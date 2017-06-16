@@ -20,10 +20,10 @@
 #ifndef OMNI_BLENDBRUSH_H_
 #define OMNI_BLENDBRUSH_H_
 
-#include <QObject>
 #include <QVector2D>
 #include <omni/Buffer.h>
-#include <omni/serialization/Serializer.h>
+#include <omni/Serializer.h>
+#include <omni/property.h>
 
 class QPointF;
 class QDataStream;
@@ -34,10 +34,10 @@ namespace omni {
    **/
   class BlendBrush : public QObject, public Serializer<BlendBrush> {
       Q_OBJECT
+      OMNI_PROPERTY_CLAMPED(qreal,feather,setFeather,1.0,0.0,10.0)
+      OMNI_PROPERTY_CLAMPED(qreal,opacity,setOpacity,1.0,0.0,1.0)
+      OMNI_PROPERTY_RW_DEFAULT(bool,inverted,setInverted,false)
       Q_PROPERTY(QVector2D size READ size WRITE setSize NOTIFY sizeChanged)
-      Q_PROPERTY(qreal feather READ feather WRITE setFeather NOTIFY featherChanged)
-      Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
-      Q_PROPERTY(bool inverted READ inverted WRITE setInverted NOTIFY invertedChanged)
     public:
       /// Default constructor
       BlendBrush(QObject* = nullptr);
@@ -55,31 +55,6 @@ namespace omni {
        **/
       void  changeSize(QVector2D const& _delta);
 
-      /// Return feather value
-      qreal feather() const;
-
-      /// Return opacity value
-      qreal opacity() const;
-
-      /**@brief Set opacity value
-       * @detail Value must be between 0.0 and 1.0 and is clamped if necessary.
-       *         A value 0.0 means a hard brush, a value of 1.0 means soft
-       *brush.
-       **/
-      void  setOpacity(qreal _opacity);
-
-      /**@brief Set feather value
-       * @detail Value must be between 0.0 and 1.0 and is clamped if necessary.
-       *         A value 0.0 means a hard brush, a value of 1.0 means soft
-       *brush.
-       **/
-      void  setFeather(qreal _feather);
-
-      /// Returns true if the brush is inverted (aka eraser mode)
-      bool  inverted() const;
-
-      /// Sets inverted flag of the brush
-      void  setInverted(bool _inverted);
 
       /// Draws internal pixel buffer in given blend buffer
       void stamp(const QPointF& _pos,
@@ -116,10 +91,7 @@ namespace omni {
       /// Internal pixel buffer
       Buffer<float> buffer_;
 
-      qreal opacity_ = 1.0;
       QVector2D size_;
-      qreal feather_ = 1.0;
-      bool  inverted_  = false;
   };
 }
 

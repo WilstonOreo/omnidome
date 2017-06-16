@@ -36,24 +36,6 @@ namespace omni {
         ColorCorrection::~ColorCorrection() {
         }
 
-        OMNI_DEFINE_PROPERTY_RW(ColorCorrection,bool,isUsed,setUsed)
-
-        ChannelCorrection* ColorCorrection::all() const {
-            return all_;
-        }
-
-        ChannelCorrection* ColorCorrection::red() const {
-            return red_;
-        }
-
-        ChannelCorrection* ColorCorrection::green() const {
-            return green_;
-        }
-
-        ChannelCorrection* ColorCorrection::blue() const {
-            return blue_;
-        }
-
         QColor ColorCorrection::corrected(QColor _color) const {
             qreal _r = all_->corrected(red_->corrected(_color->redF()));
             qreal _g = all_->corrected(green_->corrected(_color->greenF()));

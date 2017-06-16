@@ -21,7 +21,8 @@
 
 #include <QVector3D>
 #include <QMatrix4x4>
-#include <omni/serialization/Serializer.h>
+#include <omni/Serializer.h>
+#include <omni/property.h>
 #include "EulerAngles.h"
 
 namespace omni {
@@ -30,62 +31,24 @@ namespace omni {
     **/
     class AffineTransform : public QObject, public Serializer<AffineTransform> {
         Q_OBJECT
-        Q_PROPERTY(bool rotationEnabled READ rotationEnabled WRITE setRotationEnabled NOTIFY rotationEnabledChanged)
-        Q_PROPERTY(EulerAngles* rotation READ rotation CONSTANT)
-        Q_PROPERTY(ScaleMode scaleMode READ scaleMode WRITE setScaleMode NOTIFY scaleModeChanged)
-        Q_PROPERTY(QVector3D scale READ scale WRITE setScale NOTIFY scaleChanged)
-        Q_PROPERTY(qreal uniformScale READ uniformScale WRITE setUniformScale NOTIFY uniformScaleChanged)
-        Q_PROPERTY(bool translationEnabled READ translationEnabled WRITE setTranslationEnabled NOTIFY translationEnabledChanged)
-        Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translationChanged)
-      public:
+    public:
         enum ScaleMode {
           SCALE_NONE,
           SCALE_UNIFORM,
           SCALE_NON_UNIFORM
         };
         Q_ENUM(ScaleMode)
+    private:
+        OMNI_PROPERTY_RW_DEFAULT(bool,rotationEnabled,setRotationEnabled,true)
+        OMNI_PROPERTY_OBJ(EulerAngles,rotation)
+        OMNI_PROPERTY_RW_DEFAULT(ScaleMode,scaleMode,setScaleMode,SCALE_UNIFORM)
+        OMNI_PROPERTY_RW(QVector3D,scale,setScale)
+        OMNI_PROPERTY_RW_DEFAULT(qreal,uniformScale,setUniformScale,1.0)
+        OMNI_PROPERTY_RW_DEFAULT(bool,translationEnabled,setTranslationEnabled,true)
+        OMNI_PROPERTY_RW(QVector3D,translation,setTranslation)
+      public:
 
         AffineTransform(QObject* = nullptr);
-
-
-        /// Return true if rotation is enabled
-        bool             rotationEnabled() const;
-
-        /// Enable or disable rotation
-        void             setRotationEnabled(bool);
-
-        /// Return ref to rotation angles
-        EulerAngles      * rotation() const;
-
-        /// Return scale mode
-        ScaleMode        scaleMode() const;
-
-        /// Set scale mode
-        void             setScaleMode(ScaleMode);
-
-        /// Return scale vector
-        QVector3D        scale()  const;
-
-        /// Set new scale vector
-        void             setScale(QVector3D);
-
-        /// Return scale factor
-        qreal            uniformScale()  const;
-
-        /// Set uniform value for scale
-        void             setUniformScale(qreal);
-
-        /// Return true if translation is enabled
-        bool             translationEnabled() const;
-
-        /// Enable or disable translation
-        void             setTranslationEnabled(bool);
-
-        /// Return translation vector
-        QVector3D        translation() const;
-
-        /// Set new translation vector
-        void             setTranslation(QVector3D);
 
         /// Calculate transformation matrix
         QMatrix4x4       matrix() const;
@@ -100,17 +63,6 @@ namespace omni {
         void uniformScaleChanged();
         void translationEnabledChanged();
         void translationChanged();
-
-      private:
-        bool rotationEnabled_ = true;
-        EulerAngles* rotation_;
-
-        ScaleMode scaleMode_ = SCALE_UNIFORM;
-        QVector3D scale_;
-        qreal uniformScale_ = 1.0;
-
-        bool translationEnabled_ = true;
-        QVector3D translation_;
     };
   }
 

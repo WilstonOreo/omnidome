@@ -34,7 +34,7 @@ namespace omni
 {
   namespace proj
   {
-    Calibration::Calibration() {}
+    Calibration::Calibration(Session const&) :  {}
 
     Calibration::Calibration(Tuning const& _tuning)
     {

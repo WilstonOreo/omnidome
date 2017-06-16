@@ -19,6 +19,11 @@
 #ifndef OMNI_SERIALIZATION_SERIALIZER_H_
 #define OMNI_SERIALIZATION_SERIALIZER_H_
 
+#include <QObject>
+#include <QMetaProperty>
+#include <QVariant>
+#include <iostream>
+
 namespace omni {
   namespace serialization {
     template<typename T>
@@ -30,49 +35,67 @@ namespace omni {
       }
 
       QVariant toVariant() const {
-        auto mo = metaObject();
-        QVariantMap map;
-        for (int i = 0; i < mo->propertyCount(); ++i) {
-          auto prop = mo->property(i);
-          if (!prop.stored()) continue;
-          map[prop.name()] = prop.read(this);
-        }
-        return QVariant::fromValue(map);
+        return toVariant(static_cast<T const*>(this));
       }
 
       void fromVariant(QVariant const& v) {
-        if (!v.canConvert<QVariant>()) return;
-        auto mo = metaObject();
+        fromVariant(static_cast<T*>(this),v);
+      }
+
+      bool equal(T const* other) const {
+        auto* thisMo = metaObject();
+        auto* thatMo = other->metaObject();
+        if (thisMo->propertyCount() != thatMo->propertyCount()) return false;
+
+        return this->toVariant() == other->toVariant();
+      }
+
+      void copy(T* other) {
+          other->fromVariant(this->toVariant());
+      }
+
+    private:
+      QMetaObject const* metaObject() const {
+        return static_cast<T const*>(this)->metaObject();
+      }
+
+      static QVariant toVariant(QObject const* o) {
+        auto mo = o->metaObject();
+        QVariantMap map;
+        for (int i = 0; i < mo->propertyCount(); ++i) {
+          auto prop = mo->property(i);
+          if (!prop.isStored()) continue;
+
+          if (!prop.isWritable() && prop.isConstant()) {
+              auto subO = qvariant_cast<QObject*>(prop.read(o));
+              if (!subO) continue;
+              map[prop.name()] = toVariant(subO);
+              continue;
+          }
+          map[prop.name()] = prop.read(o);
+        }
+        return map;
+      }
+
+      static void fromVariant(QObject* o, QVariant const& v) {
+        if (!v.canConvert<QVariantMap>()) return;
+        auto mo = o->metaObject();
         auto map = v.toMap();
         for (int i = 0; i < mo->propertyCount(); ++i) {
           auto prop = mo->property(i);
           if (!prop.isStored()) continue;
-          prop.write(this,map[prop.name()]);
+          if (!prop.isWritable() && prop.isConstant()) {
+              qDebug() << prop.name();
+              auto subO = qvariant_cast<QObject*>(prop.read(o));
+              if (!subO) continue;
+              fromVariant(subO,map[prop.name()]);
+              continue;
+          }
+          prop.write(o,map[prop.name()]);
         }
       }
 
-      bool equal(T const& other) const {
-        auto* thisMo = metaObject();
-        auto* thatMo = other.metaObject();
-        if (thisMo->propertyCount() != thatMo->propertyCount()) return false;
 
-        int count = this->propertyCount();
-        for (int i = 0; i < count; ++i) {
-            auto thisProp = thisMo->property(i);
-            auto thatProp = thatMo->property(i);
-            if (!thisProp.isStored() || !thatProp.isStored()) continue;
-
-            QVariant thisVal = thisProp.read(this);
-            QVariant thatVal = thatProp.read(&other);
-            if (thisVal != thatVal) return false;
-        }
-        return true;
-      }
-
-    private:
-      QMetaObject* metaObject() const {
-        return this->metaObject();
-      }
     };
   }
 

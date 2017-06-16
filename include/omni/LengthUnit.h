@@ -21,7 +21,6 @@
 
 #include <map>
 #include <QString>
-#include <omni/serialization/Interface.h>
 
 namespace omni {
   /// An encapsulation for length units
@@ -67,16 +66,6 @@ namespace omni {
       /// Return plural name of unit
       QString namePlural() const;
 
-      /// Deserialize from stream
-      void        fromStream(QDataStream&);
-
-      /// Serialize to stream
-      void        toStream(QDataStream&) const;
-
-      /// Test for equality. ScreenSetup is ignored
-      friend bool operator==(LengthUnit const&,
-                             LengthUnit const&);
-
     private:
       typedef std::map<Type, QString>map_type;
 
@@ -84,7 +73,6 @@ namespace omni {
   };
 }
 
-OMNI_DECL_ENUM_STREAM_OPERATORS(omni::LengthUnit::Type)
-OMNI_DECL_STREAM_OPERATORS(omni::LengthUnit)
+Q_DECLARE_METATYPE(omni::LengthUnit)
 
 #endif /* OMNI_LENGTHUNIT_H_ */

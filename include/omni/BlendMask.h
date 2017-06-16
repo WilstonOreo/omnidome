@@ -36,13 +36,13 @@ namespace omni {
    */
   class BlendMask : public QObject, public Serializer<BlendMask> {
       Q_OBJECT
-      Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
+      OMNI_PROPERTY_RW(QRectF,rect,setRect)
+      OMNI_PROPERTY_CLAMPED(qreal,gamma,setGamma,2.0,0.1,5.0)
+      OMNI_PROPERTY_OBJ(BlendBrush,brush)
       Q_PROPERTY(qreal topWidth READ topWidth WRITE setTopWidth NOTIFY topWidthChanged STORED false)
       Q_PROPERTY(qreal bottomWidth READ bottomWidth WRITE setBottomWidth NOTIFY bottomWidthChanged STORED false)
       Q_PROPERTY(qreal leftWidth READ leftWidth WRITE setLeftWidth NOTIFY leftWidthChanged STORED false)
       Q_PROPERTY(qreal rightWidth READ rightWidth WRITE setRightWidth NOTIFY rightWidthChanged STORED false)
-      Q_PROPERTY(qreal gamma READ gamma WRITE setGamma NOTIFY gammaChanged)
-      Q_PROPERTY(BlendBrush* brush READ brush CONSTANT)
     public:
       /// Resolution of blend mask
       inline static constexpr int resolution() {
@@ -56,14 +56,6 @@ namespace omni {
       /// Clears stroke buffer
       Q_INVOKABLE void clear();
 
-      /**@brief Sets rect of blends
-       *@detail Clamps rect to borders 0,0,1,1 if its overlapping
-       **/
-      void setRect(QRectF const&);
-
-      /// Returns rectangle
-      QRectF            rect() const;
-
       /// Returns distance to top edge
       float             topWidth() const;
 
@@ -75,15 +67,6 @@ namespace omni {
 
       /// Returns distance to right edge
       float             rightWidth() const;
-
-      /// Sets gamma value for edge mask
-      void              setGamma(float _gamma);
-
-      /// Return gamma value
-      float             gamma() const;
-
-      /// Return blend brush
-      BlendBrush*       brush() const;
 
       /// Stamp on stroke buffer with current brush at position x y
       void              stamp(const QPointF& _pos);
@@ -111,9 +94,6 @@ namespace omni {
       float borderValue(float _x,
                         float _y) const;
 
-      QRectF rect_;
-      float  gamma_;
-      BlendBrush* brush_ = nullptr;
       buffer_type     strokeBuffer_;
   };
 }

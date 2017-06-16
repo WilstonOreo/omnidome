@@ -134,18 +134,4 @@ namespace omni {
     return namePlural(type_);
   }
 
-  /// Deserialize from stream
-  void LengthUnit::fromStream(QDataStream& _is) {
-    _is >> type_;
-  }
-
-  /// Serialize to stream
-  void LengthUnit::toStream(QDataStream& _os) const {
-    _os << type_;
-  }
-
-  /// Test for equality. ScreenSetup is ignored
-  bool operator==(LengthUnit const& _lhs, LengthUnit const& _rhs) {
-    return OMNI_TEST_MEMBER_EQUAL(type_);
-  }
 }

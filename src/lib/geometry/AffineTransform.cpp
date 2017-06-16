@@ -30,17 +30,6 @@ namespace omni {
         scale_(1.0, 1.0, 1.0),
         translation_(0.0, 0.0, 0.0) {}
 
-    EulerAngles* AffineTransform::rotation() const {
-        return rotation_;
-    }
-
-    OMNI_PROPERTY_RW_IMPL(AffineTransform,bool,rotationEnabled,setRotationEnabled)
-    OMNI_PROPERTY_RW_IMPL(AffineTransform,AffineTransform::ScaleMode,scaleMode,setScaleMode)
-    OMNI_PROPERTY_RW_IMPL(AffineTransform,QVector3D,scale,setScale)
-    OMNI_PROPERTY_RW_IMPL(AffineTransform,qreal,uniformScale,setUniformScale)
-    OMNI_PROPERTY_RW_IMPL(AffineTransform,bool,translationEnabled,setTranslationEnabled)
-    OMNI_PROPERTY_RW_IMPL(AffineTransform,QVector3D,translation,setTranslation)
-
     QMatrix4x4 AffineTransform::matrix() const {
         return matrix(QVector3D(0.0, 0.0, 0.0));
     }

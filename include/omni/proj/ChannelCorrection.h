@@ -19,53 +19,30 @@
 #ifndef OMNI_PROJ_CHANNELCORRECTION_H_
 #define OMNI_PROJ_CHANNELCORRECTION_H_
 
-#include <QObject>
+#include <omni/Serializer.h>
+#include <omni/property.h>
 
 namespace omni {
   namespace proj {
     /// Brightness, contrast and gamma correction for a single color channel
-    class ChannelCorrection : public QObject {
+    class ChannelCorrection : public QObject, public Serializer<ChannelCorrection>  {
         Q_OBJECT
-        Q_PROPERTY(qreal gamma READ gamma WRITE setGamma NOTIFY gammaChanged)
-        Q_PROPERTY(qreal brightness READ brightness WRITE setBrightness NOTIFY brightnessChanged)
-        Q_PROPERTY(qreal contrast READ contrast WRITE setContrast NOTIFY contrastChanged)
-        Q_PROPERTY(qreal multiplier READ multiplier WRITE setMultipliesetMultiplierr NOTIFY multiplierChanged)
+        OMNI_PROPERTY_CLAMPED(qreal,gamma,setGamma,0.0,-1.0,1.0)
+        OMNI_PROPERTY_CLAMPED(qreal,brightness,setBrightness,0.0,-1.0,1.0)
+        OMNI_PROPERTY_CLAMPED(qreal,contrast,setContrast,0.0,-1.0,1.0)
+        OMNI_PROPERTY_CLAMPED(qreal,multiplier,setMultiplier,0.5,0.0,1.0)
       public:
         ChannelCorrection(QObject* = nullptr);
         ~ChannelCorrection();
 
-        /// Return gamma value
-        qreal      gamma() const;
-
-        /// Set new gamma value, value is clamped between -1 and 1
-        void        setGamma(qreal);
-
         /// Calculate gamma corrected value
         Q_INVOKABLE qreal gammaCorrected(qreal v) const;
-
-        /// Return brightness value
-        qreal      brightness() const;
 
         /// Calculate brightness for given value
         Q_INVOKABLE qreal      brightnessCorrected(qreal v) const;
 
-        /// Set new brightness value, value is clamped between -1 and 1
-        void        setBrightness(qreal);
-
-        /// Return contrast value
-        qreal      contrast() const;
-
         /// Calculate contrast for given value
         Q_INVOKABLE qreal      contrastCorrected(qreal v) const;
-
-        /// Set new contrast value, value is clamped between -1 and 1
-        void        setContrast(qreal);
-
-        /// Value contrast, brightness and gamma are multiplied
-        qreal      multiplier() const;
-
-        /// Set new multiplier value
-        void        setMultiplier(qreal _multiplier);
 
         /// Return corrected value, value is NOT clamped!
         Q_INVOKABLE qreal      corrected(qreal _value) const;
@@ -75,19 +52,6 @@ namespace omni {
         void brightnessChanged();
         void contrastChanged();
         void multiplierChanged();
-
-      private:
-        // Gamma between -1 and 1
-        qreal gamma_ = 0.0;
-
-        /// Brightness between -1 and 1
-        qreal brightness_ = 0.0;
-
-        /// Contrast between -1 and 1
-        qreal contrast_ = 0.0;
-
-        /// Multiplier between 0.0 and 1.0
-        qreal multiplier_ = 0.5;
     };
   }
 }

@@ -23,36 +23,20 @@
 #include <omni/proj/Channel.h>
 #include <omnic/ColorCorrectionLOT.h>
 #include <QColor>
-#include <omni/serialization/Serializer.h>
 
 namespace omni {
   namespace proj {
     /// Color correction for RGB color space
     class ColorCorrection : public QObject, public Serializer<ColorCorrection> {
       Q_OBJECT
-      Q_PROPERTY(bool used READ isUsed WRITE setUsed NOTIFY usedChanged)
-      Q_PROPERTY(ChannelCorrection* all READ all CONSTANT)
-      Q_PROPERTY(ChannelCorrection* red READ red CONSTANT)
-      Q_PROPERTY(ChannelCorrection* blue READ blue CONSTANT)
-      Q_PROPERTY(ChannelCorrection* green READ green CONSTANT)
+      OMNI_PROPERTY_RW_DEFAULT(bool,isUsed,setUsed,true)
+      OMNI_PROPERTY_OBJ(ChannelCorrection,all)
+      OMNI_PROPERTY_OBJ(ChannelCorrection,red)
+      OMNI_PROPERTY_OBJ(ChannelCorrection,blue)
+      OMNI_PROPERTY_OBJ(ChannelCorrection,green)
     public:
         ColorCorrection(QObject* = nullptr);
         ~ColorCorrection();
-
-        bool                     isUsed() const;
-        void                     setUsed(bool _isUsed);
-
-        /// Return channel correction for all channels
-        ChannelCorrection      * all() const;
-
-        /// Return channel correction for red channel
-        ChannelCorrection      * red() const;
-
-        /// Return channel correction for green channel
-        ChannelCorrection      * green() const;
-
-        /// Return reference to channel correction for blue channel
-        ChannelCorrection      * blue() const;
 
         /// Return color correction for given channel
         ChannelCorrection *correction(Channel) const;
@@ -65,15 +49,8 @@ namespace omni {
 
         /// Return QColor for channel
         Q_INVOKABLE static QColor channelColor(Channel);
-      signals:
-        void usedChanged();
-
-      private:
-        bool isUsed_ = true;
-        ChannelCorrection* all_;
-        ChannelCorrection* red_;
-        ChannelCorrection* green_;
-        ChannelCorrection* blue_;
+    signals:
+        void isUsedChanged();
     };
   }
 
