@@ -176,7 +176,7 @@ namespace omni {
     }
 
     void Session::drawCanvasWithFrustumIntersections(
-      ProjectorSelectionMode _selectionMode) const
+      Scene::ProjectorSelectionMode _selectionMode) const
     {
       projectorDrawFunction(_selectionMode, [&](Projector const&, int i) {
         auto _tuning = session_.tunings()[i];
@@ -220,31 +220,31 @@ namespace omni {
     }
 
     template<typename F>
-    void Session::projectorDrawFunction(ProjectorSelectionMode _selectionMode,
+    void Session::projectorDrawFunction(Scene::ProjectorSelectionMode _selectionMode,
                                         F f) const {
       int i = 0;
 
       for (auto& _proj : projectors_) {
         switch (_selectionMode) {
         default:
-        case ProjectorSelectionMode::ALL:
+        case Scene::ProjectorSelectionMode::ALL:
           f(_proj, i);
           break;
 
-        case ProjectorSelectionMode::SELECTED:
+        case Scene::ProjectorSelectionMode::SELECTED:
 
           if (i == session_.tunings().currentIndex()) {
             f(_proj, i);
           }
 
-        case ProjectorSelectionMode::NONE:
+        case Scene::ProjectorSelectionMode::NONE:
           break;
         }
         ++i;
       }
     }
 
-    void Session::drawProjectors(ProjectorSelectionMode _selectedMode) const
+    void Session::drawProjectors(Scene::ProjectorSelectionMode _selectedMode) const
     {
       if (needsUpdate()) return;
 
@@ -268,7 +268,7 @@ namespace omni {
       });
     }
 
-    void Session::drawProjectorHalos(ProjectorSelectionMode _selectionMode) const
+    void Session::drawProjectorHalos(Scene::ProjectorSelectionMode _selectionMode) const
     {
       if (needsUpdate()) return;
 

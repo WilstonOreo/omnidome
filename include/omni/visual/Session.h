@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by Michael Winkelmann
+/* Copyright (c) 2014-2017 "Omnidome" by Michael Winkelmann
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -25,7 +25,7 @@
 #include <omni/visual/ProjectorViewMode.h>
 #include <omni/visual/Projector.h>
 #include <omni/visual/WarpGrid.h>
-
+#include <omni/visual/Scene.h>
 
 namespace omni {
   namespace visual {
@@ -50,7 +50,7 @@ namespace omni {
         void drawCanvasFor3DView();
 
         /// Canvas with frustum intersection of all projectors
-        void drawCanvasWithFrustumIntersections(ProjectorSelectionMode) const;
+        void drawCanvasWithFrustumIntersections(Scene::ProjectorSelectionMode) const;
 
         /// Draw frustum canvas intersection
         void drawFrustumIntersection(proj::Projector const &,
@@ -62,12 +62,12 @@ namespace omni {
         /**@brief Draw projectors.
            @detail If _selectedOnly true, only currently selected projector is drawn
          **/
-        void drawProjectors(ProjectorSelectionMode = ProjectorSelectionMode::ALL) const;
+        void drawProjectors(Scene::ProjectorSelectionMode = Scene::PROJ_ALL) const;
 
         /**@brief Draw projector halos.
            @detail If _selectedOnly true, only currently selected projector is drawn
          **/
-        void drawProjectorHalos(ProjectorSelectionMode = ProjectorSelectionMode::ALL) const;
+        void drawProjectorHalos(Scene::ProjectorSelectionMode = Scene::PROJ_ALL) const;
 
         /// Returns true if an update is required
         bool needsUpdate() const;
@@ -77,7 +77,7 @@ namespace omni {
         void drawCanvasWithMatrix() const;
 
         template<typename F>
-        void projectorDrawFunction(ProjectorSelectionMode, F f) const;
+        void projectorDrawFunction(Scene::ProjectorSelectionMode, F f) const;
 
         omni::Session const& session_;
         static ContextBoundPtr<QOpenGLShaderProgram> frustumShader_;

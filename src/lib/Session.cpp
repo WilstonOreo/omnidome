@@ -175,40 +175,6 @@ namespace omni
     _stream >> *this;
   }
 
-  void Session::toStream(QDataStream& _os) const {
-      PropertyMap _map;
-      _map("version",OMNIDOME_VERSION_STRING);
-      _map("tunings",tunings_)
-          ("mapping",mapping_)
-          ("inputs",inputs_)
-          ("canvas",canvas_)
-          ("mode",mode_)
-          ("scene",scene_)
-          ("blendSettings",blendSettings_)
-          ("exportSettings",exportSettings_);
-      _os << _map;
-  }
-
-  void Session::fromStream(QDataStream& _is) {
-      /// Reset visualizer
-      viz_.reset();
-
-      PropertyMap _map;
-      _is >> _map;
-      _map.get("tunings",tunings_);
-      _map.getPtr("mapping",[&](Id const& _id) {
-         return setMapping(_id);
-      });
-      _map.get("inputs",inputs_);
-      _map.getPtr("canvas",[&](Id const& _id) {
-          return setCanvas(_id);
-      });
-      _map.get("mode",mode_);
-      _map.get("scene",scene_);
-      _map.get("blendSettings",blendSettings_);
-      _map.get("exportSettings",exportSettings_);
-  }
-
   Session::visualizer_type* Session::makeVisualizer() {
     if (!viz_ && QOpenGLContext::currentContext()) {
       viz_.reset(new visualizer_type(*this));
@@ -223,20 +189,5 @@ namespace omni
 
   Session::visualizer_type const* Session::visualizer() const {
     return viz_.get();
-  }
-
-
-  bool operator==(Session const& _lhs,Session const& _rhs)
-  {
-    return
-      OMNI_TEST_MEMBER_EQUAL(tunings_) &&
-      OMNI_TEST_PTR_MEMBER_EQUAL(mapping_) &&
-      OMNI_TEST_MEMBER_EQUAL(inputs_) &&
-      OMNI_TEST_PTR_MEMBER_EQUAL(canvas_) &&
-      OMNI_TEST_MEMBER_EQUAL(mode_) &&
-      OMNI_TEST_MEMBER_EQUAL(scene_) &&
-      OMNI_TEST_MEMBER_EQUAL(blendSettings_) &&
-      OMNI_TEST_MEMBER_EQUAL(exportSettings_)
-      ;
   }
 }
