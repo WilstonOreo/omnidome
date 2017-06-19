@@ -19,15 +19,8 @@
 
 #include <omni/BlendSettings.h>
 
-#include <omni/util.h>
-#include <omni/serialization/PropertyMap.h>
-
 namespace omni {
     BlendSettings::BlendSettings(QObject* parent) : QObject(parent) {}
     BlendSettings::~BlendSettings() {
     }
-
-    OMNI_PROPERTY_RW_IMPL(BlendSettings,BlendSettings::ColorMode,colorMode,setColorMode)
-    OMNI_PROPERTY_REAL_BOUND_IMPL(BlendSettings,inputOpacity,setInputOpacity,0.0,1.0)
-    OMNI_PROPERTY_RW_IMPL(BlendSettings,bool,showInWarpMode,setShowInWarpMode)
 }

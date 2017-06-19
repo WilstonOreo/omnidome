@@ -20,54 +20,33 @@
 #ifndef OMNI_BLENDSETTINGS_H_
 #define OMNI_BLENDSETTINGS_H_
 
-#include <omni/serialization/Interface.h>
+#include <omni/Serializer.h>
+#include <omni/property.h>
 
 namespace omni {
   /// Common blend mask settings for the all tunings in a session
   class BlendSettings : public QObject {
       Q_OBJECT
-      Q_PROPERTY(ColorMode colorMode READ colorMode WRITE setColorMode NOTIFY colorModeChanged)
-      Q_PROPERTY(qreal inputOpacity READ inputOpacity WRITE setInputOpacity NOTIFY inputOpacityChanged)
-      Q_PROPERTY(bool showInWarpMode READ showInWarpMode WRITE setShowInWarpMode NOTIFY showInWarpModeChanged)
-    public:
-      BlendSettings(QObject* = nullptr);
-      ~BlendSettings();
-
+  public:
       /// Blend Mask display colorColorMode
-      enum class ColorMode
+      enum ColorMode
       {
-        COLORED, // Displays blend mask with color of tuning
-        WHITE    // Displays white blend mask
+        CM_COLORED, // Displays blend mask with color of tuning
+        CM_WHITE    // Displays white blend mask
       };
       Q_ENUM(ColorMode)
-
-      /// Return colorColorMode of blend mask colorColorMode
-      ColorMode colorMode() const;
-
-      /// Set blend mask colorColorMode
-      void setColorMode(ColorMode);
-
-      /// Return input opacity of blend mask
-      qreal       inputOpacity() const;
-
-      /// Opacity of input when in blend mask colorColorMode
-      void        setInputOpacity(qreal _input);
-
-      /// Show blend mask in warp colorColorMode
-      bool        showInWarpMode() const;
-
-      /// Set flag if blend mask is visible in warp colorColorMode
-      void        setShowInWarpMode(bool);
+  private:
+      OMNI_PROPERTY_RW_DEFAULT(ColorMode,colorMode,setColorMode,CM_COLORED)
+      OMNI_PROPERTY_RW_DEFAULT(qreal,inputOpacity,setInputOpacity,0.0)
+      OMNI_PROPERTY_RW_DEFAULT(bool,showInWarpMode,setShowInWarpMode,false)
+  public:
+      BlendSettings(QObject* = nullptr);
+      ~BlendSettings();
 
     signals:
       void colorModeChanged();
       void inputOpacityChanged();
       void showInWarpModeChanged();
-
-    private:
-      ColorMode colorMode_  = ColorMode::COLORED;
-      bool  showInWarpMode_ = false;
-      qreal inputOpacity_   = 0.0;
   };
 }
 
