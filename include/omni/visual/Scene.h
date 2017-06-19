@@ -23,6 +23,7 @@
 #include <map>
 #include <memory>
 #include <omni/Serializer.h>
+#include <omni/property.h>
 #include <omni/visual/Light.h>
 #include <omni/visual/CameraInterface.h>
 #include <omni/LengthUnit.h>
@@ -35,7 +36,7 @@ namespace omni {
        visualization
        @detail Belongs to a session
      **/
-    class Scene : public QObject {
+    class Scene : public QObject, public Serializer<Scene> {
         Q_OBJECT
     public:
         /// Enum class to determine which scene element is edited
@@ -63,7 +64,7 @@ namespace omni {
         };
         Q_ENUMS(RotateMode)
 
-        enum ProjectorDisplayMode {
+        enum ProjectorSelectionMode {
           PROJ_ALL, PROJ_SELECTED, PROJ_NONE
         };
         Q_ENUMS(ProjectorSelectionMode)
@@ -72,58 +73,26 @@ namespace omni {
         OMNI_PROPERTY_RW(LengthUnit,unit,setUnit)
         OMNI_PROPERTY_RW_DEFAULT(bool,displayInput,setDisplayInput,true)
         OMNI_PROPERTY_RW_DEFAULT(bool,displayGrid,setDisplayGrid,true)
-        OMNI_PROPERTY_RW_DEFAULT(Scene::ProjectorDisplayMode,displayProjectors,setDisplayProjectors,PROJ_ALL)
-        OMNI_PROPERTY_RW_DEFAULT(Scene::ProjectorDisplayMode,displayProjectedAreas,setDisplayProjectedAreas,PROJ_ALL)
+        OMNI_PROPERTY_RW_DEFAULT(ProjectorSelectionMode,displayProjectors,setDisplayProjectors,PROJ_ALL)
+        OMNI_PROPERTY_RW_DEFAULT(ProjectorSelectionMode,displayProjectedAreas,setDisplayProjectedAreas,PROJ_ALL)
 
+        OMNI_PROPERTY_CLAMPED(qreal,insideOutside,setInsideOutside,0.5,0.0,1.0)
+        OMNI_PROPERTY_CLAMPED(qreal,wireframe,setWireframe,0.0,0.0,1.0)
+        OMNI_PROPERTY_RW_DEFAULT(EditMode,editMode,setEditMode,EDIT_CAMERA)
+        OMNI_PROPERTY_RW_DEFAULT(RotateMode,rotateMode,setRotateMode,ROTATE_YAW)
+        OMNI_PROPERTY_RW_DEFAULT(MoveMode,moveMode,setMoveMode,MOVE_XY)
+
+        OMNI_PROPERTY_RW(QString,currentCameraId,setCurrentCameraId)
       public:
         typedef std::map<QString,std::unique_ptr<CameraInterface>> camera_map_type;
 
         Scene();
-
-        /// Set unit from string prefix
-        void           setUnit(QString const&);
-
-        /// Return scene element
-        EditMode       editMode() const;
-
-        /// Set mode which scene element is to be manipulated
-        void setEditMode(EditMode);
-
-        RotateMode        rotateMode() const;
-        void setRotateMode(RotateMode);
-
-        MoveMode          moveMode() const;
-        void setMoveMode(MoveMode);
-
-        /// Inside / outside transparency for 3D canvas view
-        qreal insideOutside() const;
-
-        /* @brief Set inside / outside transparency for 3D canvas view
-           @param _insideOutside Value 0.0 means inside is only visible
-                  1.0 means outside is visible.
-         */
-        void setInsideOutside(qreal _insideOutside);
-
-        /// Opacity value for wireframe between 0.0 and 1.0
-        qreal wireframe() const;
-
-        /* @brief Set wireframe opacity for canvas view
-           @param _wireframe Value 0.0 means wireframes are not drawn.
-                  1.0 means wireframe is fully visible and thick.
-         */
-        void setWireframe(qreal _wireframe);
 
         /// Update light for use in OpenGL
         void        updateLights();
 
         /// Return reference to camera
         visual::CameraInterface* camera() const;
-
-        /// Return current camera id
-        QString currentCameraId() const;
-
-        /// Set id to current camera
-        void setCurrentCameraId(QString const&);
 
         camera_map_type& cameras();
         camera_map_type const& cameras() const;
@@ -133,19 +102,22 @@ namespace omni {
 
         /// Update grid
         void updateGrid();
-      signals:
 
+    signals:
+        void sizeChanged();
+        void unitChanged();
+        void displayInputChanged();
+        void displayGridChanged();
+        void displayProjectorsChanged();
+        void displayProjectedAreasChanged();
+        void insideOutsideChanged();
+        void wireframeChanged();
+        void editModeChanged();
+        void rotateModeChanged();
+        void moveModeChanged();
+        void currentCameraIdChanged();
 
       private:
-        qreal      insideOutside_            = 0.5;
-        qreal      wireframe_                = 0.0;
-        ProjectorSelectionMode       displayProjectors_        = ProjectorSelectionMode::ALL;
-        ProjectorSelectionMode       displayProjectedAreas_    = ProjectorSelectionMode::ALL;
-        EditMode   editMode_                 = EditMode::CAMERA;
-        RotateMode rotateMode_               = RotateMode::YAW;
-        MoveMode   moveMode_                 = MoveMode::MOVE_XY;
-
-        QString cameraId_;
         std::vector<visual::Light> lights_;
         std::map<QString,std::unique_ptr<visual::CameraInterface>> cameras_;
         std::unique_ptr<visual::Grid>   grid_;
