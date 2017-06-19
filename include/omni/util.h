@@ -159,23 +159,4 @@ namespace omni {
 #define OMNI_TEST_PTR_MEMBER_EQUAL(member) \
   omni::util::testPtrEqual(_lhs.member.get(), _rhs.member.get())
 
-#define OMNI_PROPERTY_RW_IMPL(CLASS,TYPE,READ,WRITE) \
-  TYPE CLASS::READ() const { return READ##_; }\
-  void CLASS::WRITE(TYPE _##READ) { \
-    if (READ##_ != _##READ) { \
-      READ##_ = _##READ; \
-      emit READ##Changed(); \
-    } \
-  }
-
-
-#define OMNI_PROPERTY_REAL_BOUND_IMPL(CLASS,READ,WRITE,MIN,MAX) \
-  qreal CLASS::READ() const { return READ##_; }\
-  void CLASS::WRITE(qreal _##READ) { \
-    if (READ##_ != _##READ) { \
-      READ##_ = qBound(qreal(MIN),_##READ,qreal(MAX)); \
-      emit READ##Changed(); \
-    } \
-  }
-
 #endif /* OMNI_UTIL_H_ */
