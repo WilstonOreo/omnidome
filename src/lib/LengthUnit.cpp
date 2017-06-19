@@ -134,4 +134,15 @@ namespace omni {
     return namePlural(type_);
   }
 
+  /// Test for equality
+  bool  operator==(LengthUnit const& _lhs,
+                   LengthUnit const& _rhs) {
+      return OMNI_TEST_MEMBER_EQUAL(type_);
+  }
+
+  bool  operator!=(LengthUnit const& _lhs,
+                   LengthUnit const& _rhs) {
+      return !(_lhs == _rhs);
+  }
+
 }

@@ -21,6 +21,7 @@
 
 #include <map>
 #include <QString>
+#include <QMetaType>
 
 namespace omni {
   /// An encapsulation for length units
@@ -65,6 +66,14 @@ namespace omni {
 
       /// Return plural name of unit
       QString namePlural() const;
+
+      /// Test for equality
+      friend bool  operator==(LengthUnit const&,
+                              LengthUnit const&);
+
+      friend bool  operator!=(LengthUnit const&,
+                              LengthUnit const&);
+
 
     private:
       typedef std::map<Type, QString>map_type;
