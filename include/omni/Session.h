@@ -23,7 +23,7 @@
 #include <omni/Serializer.h>
 #include <omni/proj/TuningList.h>
 #include <omni/input/List.h>
-#include <omni/canvas/Interface.h>
+#include <omni/Canvas.h>
 #include <omni/proj/ScreenSetup.h>
 #include <omni/render/ExportSettings.h>
 #include <omni/BlendSettings.h>

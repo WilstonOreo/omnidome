@@ -20,7 +20,7 @@
 #define OMNI_PROJ_CALIBRATIONMODE_H_
 
 #include <omni/serialization/Interface.h>
-#include <omni/mapping/Interface.h>
+#include <omni/Mapping.h>
 
 namespace omni {
   namespace proj {

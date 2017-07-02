@@ -40,28 +40,9 @@ namespace omni {
             blendMask_(new BlendMask(this)),
             colorCorrection_(new ColorCorrection(this))
         {
-        }
-
-        bool Tuning::virtualScreen() const {
-          return virtualScreen_;
-        }
-
-        void Tuning::setVirtualScreen(bool) {
-
-        }
-
-        /// Content rectangle (position) inside the screen
-        QRect Tuning::contentGeometry() const {
-          return contentGeometry_;
-        }
-
-        void Tuning::setContentGeometry(QRect const& _contentGeometry) {
-          if (contentGeometry_ != _contentGeometry) {
-            contentGeometry_ = _contentGeometry;
-            //projector_.setAspectRatio(session_.screenSetup().subScreenAspectRatio(screen()));
-            //blendMask_.setBrush(100.0,blendMask_.brush().feather(),blendMask_.brush().opacity(),blendMask_.brush().invert());
-            contentGeometryChanged();
-          }
+            connect(this,&Tuning::contentGeometryChanged,[&]() {
+                ///@todo Change projector aspect
+            });
         }
 
         int Tuning::width() const
@@ -72,25 +53,6 @@ namespace omni {
         int Tuning::height() const
         {
           return contentGeometry().height();
-        }
-
-        Projector* Tuning::projector() const
-        {
-            return projector_;
-        }
-
-        WarpGrid* Tuning::warpGrid() const
-        {
-            return warpGrid_;
-        }
-
-        BlendMask* Tuning::blendMask() const
-        {
-            return blendMask_;
-        }
-
-        ColorCorrection* Tuning::colorCorrection() const {
-            return colorCorrection_;
         }
 
         /// Return pointer to visualizer
@@ -120,12 +82,5 @@ namespace omni {
         Calibration Tuning::renderCalibration() const {
             return Calibration(*this);
         }
-
-        OMNI_DEFINE_PROPERTY_RW(Tuning,bool,output,setOutput)
-        OMNI_DEFINE_PROPERTY_RW(Tuning,bool,virtualScreen,setVirtualScreen)
-        OMNI_DEFINE_PROPERTY_RW(Tuning,qreal,overlapOpacity,setOverlapOpacity)
-        OMNI_DEFINE_PROPERTY_RW(Tuning,QColor,color,setColor)
-        OMNI_DEFINE_PROPERTY_RW(Tuning,QRect,contentGeometry,setContentGeometry)
-        OMNI_DEFINE_PROPERTY_RW(Tuning,QRect,screenGeometry,setScreenGeometry)
     }
 }

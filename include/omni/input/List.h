@@ -23,9 +23,8 @@
 #include <memory>
 #include <vector>
 #include <omni/Id.h>
-#include <omni/input/Interface.h>
+#include <omni/Input.h>
 #include <omni/serialization/PropertyMapSerializer.h>
-
 
 namespace omni {
   namespace input {

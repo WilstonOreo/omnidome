@@ -26,21 +26,27 @@
 
 namespace omni {
   namespace render {
-    /// Mode how calibrations are stitched together
-    enum class SeparationMode
+
+    /// Class for defining render options for calibration data
+    class ExportSettings : public QObject, public Serializer<ExportSettings> {
+        Q_OBJECT
+    public:
+        /// Mode how calibrations are stitched together
+    enum SeparationMode
     {
-      NONE,
-      SCREENS,
-      PROJECTORS
+      SEP_NONE,
+      SEP_SCREENS,
+      SEP_PROJECTORS
     };
+    Q_ENUMS(SeparationMode)
 
     enum class OutputType {
       OMNI_CALIBRATION,
       PLAIN_IMAGE
     };
+    Q_ENUMS(OutputType)
+      private:
 
-    /// Class for defining render options for calibration data
-    class ExportSettings {
       public:
         /**@brief Mapping output mode
            @detail Determines if uvw map, texture coordinates or the actual

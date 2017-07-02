@@ -28,7 +28,6 @@
 #include <omni/proj/CalibrationMode.h>
 #include <omni/proj/ColorCorrection.h>
 #include <omni/proj/Projector.h>
-#include <omni/mapping/Interface.h>
 
 namespace omni {
   class Session;
@@ -47,53 +46,28 @@ namespace omni {
           correction.
                It holds a color as well. It can render a projector calibration
      **/
-    class Tuning : public QObject {
+    class Tuning : public QObject, public Serializer<Tuning> {
         Q_OBJECT
-        Q_PROPERTY(bool virtualScreen READ virtualScreen WRITE setVirtualScreen NOTIFY virtualScreenChanged)
-        Q_PROPERTY(QRect screenGeometry READ screenGeometry WRITE screenGeometry NOTIFY screenGeometryChanged)
-        Q_PROPERTY(QRect contentGeometry READ contentGeometry WRITE contentGeometry NOTIFY contentGeometryChanged)
+        OMNI_PROPERTY_RW_DEFAULT(bool,virtualScreen,setVirtualScreen,false)
+        OMNI_PROPERTY_RW(QRect,screenGeometry,setScreenGeometry)
+        OMNI_PROPERTY_RW(QRect,contentGeometry,setContentGeometry)
         Q_PROPERTY(int width READ width NOTIFY contentGeometryChanged STORED false)
         Q_PROPERTY(int height READ width NOTIFY contentGeometryChanged STORED false)
-        Q_PROPERTY(Projector* projector READ projector CONSTANT)
-        Q_PROPERTY(WarpGrid* warpGrid READ warpGrid CONSTANT)
-        Q_PROPERTY(BlendMask* blendMask READ blendMask CONSTANT)
-        Q_PROPERTY(ColorCorrection* colorCorrection READ colorCorrection CONSTANT)
 
-        Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
-        Q_PROPERTY(bool output READ output WRITE setOutput NOTIFY outputChanged)
-        Q_PROPERTY(qreal overlapOpacity READ setOverlapOpacity NOTIFY overlapOpacityChanged)
+        OMNI_PROPERTY_OBJ(Projector,projector)
+        OMNI_PROPERTY_OBJ(WarpGrid,warpGrid)
+        OMNI_PROPERTY_OBJ(BlendMask,blendMask)
+        OMNI_PROPERTY_OBJ(ColorCorrection,colorCorrection)
+
+        OMNI_PROPERTY_RW(QColor,color,setColor)
+        OMNI_PROPERTY_RW(bool,showOutput,setShowOutput)
+        OMNI_PROPERTY_RW_DEFAULT(qreal,overlapOpacity,setOverlapOpacity,0.0)
       public:
         typedef omni::visual::Tuning visualizer_type;
 
         /// Constructor
         Tuning(QObject* = nullptr);
         ~Tuning();
-
-        bool virtualScreen() const;
-        void setVirtualScreen(bool);
-
-        QRect const& screenGeometry() const;
-        void setScreenGeometry(QRect const&);
-
-        QRect const& contentGeometry() const;
-        void setContentGeometry(QRect const&);
-
-        Projector            * projector() const;
-
-        /// Returns reference to warp grid
-        WarpGrid             * warpGrid() const;
-
-        /// Returns reference to blend mask
-        BlendMask            * blendMask() const;
-
-        /// Color correction for projector
-        ColorCorrection      * colorCorrection() const;
-
-        /// Returns color for tuning
-        QColor                 color() const;
-
-        /// Sets color for tuning
-        void                   setColor(QColor const&);
 
         /// Return pointer to visualizer
         visualizer_type      * visualizer() const;
@@ -116,41 +90,15 @@ namespace omni {
         /// Returns height of screen
         int         height() const;
 
-        /// Return flag if output is disabled, projector output is black
-        bool        outputDisabled() const;
-
-        /// Return flag if output is enabled
-        bool        outputEnabled() const;
-
-        /// Disable output if _disabled is true, enable otherwise
-        void        setOutputDisabled(bool _disabled = true);
-
-        /// Enable output if _enabled is true, disable otherwise
-        void        setOutputEnabled(bool _enabled = true);
-
-        /// Return opacity of overlapped blend mask
-        float       overlapOpacity() const;
-
-        /// Set opacity of overlap mask in blend mode
-        void        setOverlapOpacity(float);
-
       signals:
         void virtualScreenChanged();
-        void outputChanged();
-        void overlapOpacityChanged();
+        void screenGeometryChanged();
+        void contentGeometryChanged();
         void colorChanged();
+        void showOutputChanged();
+        void overlapOpacityChanged();
 
       private:
-        bool virtualScreen_ = false;
-        QRect screenGeometry_;
-        QRect contentGeometry_;
-        bool   output_ = true;
-        bool   overlapOpacity_ = 0.0;
-        QColor color_;
-        Projector* projector_;
-        WarpGrid* warpGrid_;
-        BlendMask* blendMask_;
-        ColorCorrection* colorCorrection_;
         std::unique_ptr<visualizer_type> viz_;
     };
   }

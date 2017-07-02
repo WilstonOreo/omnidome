@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by Michael Winkelmann
+/* Copyright (c) 2014-2017 "Omnidome" by Michael Winkelmann
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -17,8 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_MAPPING_INTERFACE_H_
-#define OMNI_MAPPING_INTERFACE_H_
+#ifndef OMNI_MAPPING_H_
+#define OMNI_MAPPING_H_
 
 #include <map>
 #include <memory>
@@ -30,13 +30,12 @@
 class QOpenGLShaderProgram;
 
 namespace omni {
-  namespace input {
-    class Interface;
-    class List;
-  }
+
   namespace visual {
     class Scene;
   }
+
+  class Input;
 
   namespace mapping {
     enum class OutputMode
@@ -45,50 +44,40 @@ namespace omni {
       TEXCOORDS,     // Draw texture coordinates of mapping
       UVW,           // Draws uvw coordinates of mapping
       LIGHTING_ONLY, // Draw plain canvas with lighting
-      LIGHTING_TEX   // Draw canvas with
+      LIGHTING_TEX   // Draw canvas with lighting
     };
+  }
+
 
     /**@brief Mapping interface with one or several inputs and shader
      * @detail Holds inputs and shader
      */
-    class Interface :
+    class Mapping :
       public QObject,
       public TypeIdInterface,
       public PropertyMapSerializer,
       public visual::Interface {
         Q_OBJECT
-        Q_PROPERTY(bool flipHorizontal READ flipHorizontal WRITE setFlipHorizontal NOTIFY flipHorizontalChanged)
-        Q_PROPERTY(bool flipVertical READ flipVertical WRITE setFlipVertical NOTIFY flipVerticalChanged)
-        Q_PROPERTY(bool boundToCanvas READ boundToCanvas WRITE setBoundToCanvas NOTIFY boundToCanvasChanged)
+        OMNI_PROPERTY_RW_DEFAULT(bool,flipHorizontal,setFlipHorizontal,false)
+        OMNI_PROPERTY_RW_DEFAULT(bool,flipVertical,setFlipVertical,false)
+        OMNI_PROPERTY_RW_DEFAULT(bool,boundToCanvas,setBoundToCanvas,false)
         Q_PROPERTY(bool isUVW READ isUVW CONSTANT)
-        Q_PROPERTY(AffineTransform* transform READ transform CONSTANT)
+        OMNI_PROPERTY_OBJ(AffineTransform,transform)
       public:
-        Interface(QObject* = nullptr);
+        Mapping(QObject* = nullptr);
 
-        virtual ~Interface();
+        virtual ~Mapping();
 
         /// Initialized OpenGL shader
         void         initialize();
 
         /// Bind shaders and set uniforms
         virtual void bind();
-        void bind(input::Interface const*, OutputMode, bool _grayscale);
-        void bind(input::Interface const*, float _transparency);
+        void bind(Input const*, mapping::OutputMode, bool _grayscale);
+        void bind(Input const*, float _transparency);
 
         /// Release shader
         void release();
-
-        /// Flip horizontally
-        bool flipHorizontal() const;
-
-        /// Flip horizontally
-        void setFlipHorizontal(bool);
-
-        /// Flip vertically
-        bool flipVertical() const;
-
-        /// Flip vertically
-        void setFlipVertical(bool);
 
         /**@brief Flag which tells if this mapping uses UVW texture coordinates
            (true by default)
@@ -114,24 +103,10 @@ namespace omni {
         /// Update mapping visualizer
         inline virtual void update() {}
 
-        /// Return ref to affine transform
-        AffineTransform  * transform() const;
-
-        /// Set new affine transform
-        void               setTransform(AffineTransform const& _transform);
-
         /// Return matrix of transform
         virtual QMatrix4x4 matrix() const;
 
-        /**@brief If true, mapping transform is attached to canvas transform
-           @detail Is true by default
-         **/
-        bool               boundToCanvas() const;
-
-        /// Set whether mapping transform is attached to canvas transform
-        void               setBoundToCanvas(bool);
-
-        /// The scene this canvas belongs to
+        /// The scene this mapping belongs to
         visual::Scene const*       scene() const;
 
         /**@brief Set the scene this canvas belongs to.
@@ -159,33 +134,24 @@ namespace omni {
          **/
         virtual QString fragmentShaderSourceCode() const;
 
-        AffineTransform* transform_;
-        bool boundToCanvas_  = true;
-        bool flipHorizontal_ = false;
-        bool flipVertical_   = false;
-
         visual::Scene const* scene_ = nullptr;
     };
 
-    /// Abstract mapping factory
-    typedef AbstractFactory<Interface>Factory;
-  }
-
-  typedef mapping::Interface Mapping;
-  typedef mapping::Factory   MappingFactory;
+  /// Abstract mapping factory
+  typedef AbstractFactory<Mapping> MappingFactory;
 }
 
 OMNI_DECL_ENUM_STREAM_OPERATORS(omni::mapping::OutputMode)
 
-#define OMNI_MAPPING_INTERFACE_IID  "org.omnidome.mapping.Interface"
+#define OMNI_MAPPING_IID  "org.omnidome.mapping.Interface"
 
-Q_DECLARE_INTERFACE(omni::mapping::Interface, OMNI_MAPPING_INTERFACE_IID)
+Q_DECLARE_INTERFACE(omni::Mapping, OMNI_MAPPING_IID)
 
 #define OMNI_MAPPING_PLUGIN_DECL                    \
   Q_OBJECT                                          \
-  Q_PLUGIN_METADATA(IID OMNI_MAPPING_INTERFACE_IID) \
-  Q_INTERFACES(omni::mapping::Interface)            \
+  Q_PLUGIN_METADATA(IID OMNI_MAPPING_IID)           \
+  Q_INTERFACES(omni::Mapping)                       \
   OMNI_PLUGIN_TYPE("Mapping")
 
 
-#endif /* OMNI_MAPPING_INTERFACE_H_ */
+#endif /* OMNI_MAPPING_H_ */

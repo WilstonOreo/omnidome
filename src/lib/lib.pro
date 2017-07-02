@@ -7,21 +7,20 @@ include(../common.pri)
 
 
 HEADERS += \
+  $$OMNI_INCLUDE/Input.h \
+  $$OMNI_INCLUDE/Canvas.h \
+  $$OMNI_INCLUDE/Mapping.h \
   $$OMNI_INCLUDE/canvas/Dome.h \
   $$OMNI_INCLUDE/canvas/Envelope.h \
-  $$OMNI_INCLUDE/canvas/Interface.h \
   $$OMNI_INCLUDE/canvas/util.h \
-  $$OMNI_INCLUDE/canvas/AffineTransform.h \
-  $$OMNI_INCLUDE/canvas/Angle.h \
-  $$OMNI_INCLUDE/canvas/Box.h \
-  $$OMNI_INCLUDE/canvas/EulerAngles.h \
-  $$OMNI_INCLUDE/canvas/PolarVec.h \
-  $$OMNI_INCLUDE/canvas/Vertex.h \
-  $$OMNI_INCLUDE/canvas/Vertex2D.h \
+  $$OMNI_INCLUDE/geometry/AffineTransform.h \
+  $$OMNI_INCLUDE/geometry/Angle.h \
+  $$OMNI_INCLUDE/geometry/Box.h \
+  $$OMNI_INCLUDE/geometry/EulerAngles.h \
+  $$OMNI_INCLUDE/geometry/PolarVec.h \
+  $$OMNI_INCLUDE/geometry/Vertex.h \
+  $$OMNI_INCLUDE/geometry/Vertex2D.h \
   $$OMNI_INCLUDE/input/Framebuffer.h \
-  $$OMNI_INCLUDE/input/Interface.h \
-  $$OMNI_INCLUDE/input/List.h \
-  $$OMNI_INCLUDE/mapping/Interface.h \
   $$OMNI_INCLUDE/media/Image.h \
   $$OMNI_INCLUDE/media/Location.h \
   $$OMNI_INCLUDE/proj/Calibration.h \
@@ -39,11 +38,11 @@ HEADERS += \
   $$OMNI_INCLUDE/proj/ExportSettings.h \
   $$OMNI_INCLUDE/proj/Renderer.h \
   $$OMNI_INCLUDE/proj/container.h \
-  $$OMNI_INCLUDE/proj/Interface.h \
-  $$OMNI_INCLUDE/proj/pointer.h \
-  $$OMNI_INCLUDE/proj/PropertyMap.h \
-  $$OMNI_INCLUDE/proj/PropertyMapSerializer.h \
-  $$OMNI_INCLUDE/proj/traits.h \
+  $$OMNI_INCLUDE/serialization/Interface.h \
+  $$OMNI_INCLUDE/serialization/pointer.h \
+  $$OMNI_INCLUDE/serialization/PropertyMap.h \
+  $$OMNI_INCLUDE/serialization/PropertyMapSerializer.h \
+  $$OMNI_INCLUDE/serialization/traits.h \
   $$OMNI_INCLUDE/ui/mixin/DataModel.h \
   $$OMNI_INCLUDE/ui/mixin/Editor.h \
   $$OMNI_INCLUDE/ui/ParameterWidget.h \

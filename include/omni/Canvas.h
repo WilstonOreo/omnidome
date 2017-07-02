@@ -26,8 +26,7 @@
 #include <omni/geometry/Box.h>
 #include <omni/geometry/AffineTransform.h>
 #include <omni/serialization/PropertyMapSerializer.h>
-#include <omni/mapping/Interface.h>
-#include <omni/visual/Interface.h>
+#include <omni/Visualizer.h>
 
 namespace omni {
   namespace ui {
@@ -37,38 +36,32 @@ namespace omni {
     class Scene;
   }
 
-  namespace canvas {
-    /**@brief Abstract interface for a canvas
+  /**@brief Abstract interface for a canvas
      * @detail A canvas represents the surface on which the projection is
      *performed.
      *         It might be a dome or a planar surface.
      **/
-    class Interface :
+    class Canvas :
       public QObject,
       public TypeIdInterface,
+      public SerializationInterface,
       public PropertyMapSerializer,
-      public visual::Interface {
+      public Visualizer {
         Q_OBJECT
-        Q_PROPERTY(ViewMode viewMode READ viewMode WRITE setViewMode NOTIFY viewModeChanged)
-        Q_PROPERTY(AffineTransform* transform READ transform CONSTANT)
+        enum ViewMode {
+            VIEW_INSIDE,
+            VIEW_OUTSIDE,
+            VIEW_BOTH
+        };
+        Q_ENUM(ViewMode)
+      private:
+        OMNI_PROPERTY_RW_DEFAULT(ViewMode,viewMode,setViewMode,VIEW_BOTH)
+        OMNI_PROPERTY_OBJ(AffineTransform,transform)
       public:
         Interface(QObject* = nullptr);
 
         /// Virtual destructor
         virtual ~Interface();
-
-        enum class ViewMode {
-            INSIDE,
-            OUTSIDE,
-            BOTH
-        };
-        Q_ENUM(ViewMode)
-
-        /// Return current view mode
-        ViewMode viewMode() const;
-
-        /// Set view mode
-        void setViewMode(ViewMode _viewMode);
 
         /// Draws with culled front or back faces, depending on view mode
         void drawWithViewMode() const;
@@ -90,10 +83,6 @@ namespace omni {
         /// Return ref to affine transform
         AffineTransform  * transform() const;
 
-        /// The scene this canvas belongs to
-        visual::Scene const*       scene() const;
-
-
         /// Transformation matrix for canvas
         virtual QMatrix4x4 matrix() const;
 
@@ -108,34 +97,20 @@ namespace omni {
 
       protected:
         bool needsUpdate_ = true;
-
-      private:
-
-        /**@brief Set the scene this canvas belongs to.
-           @detail Is set automatically when a canvas is added to a session
-         **/
-        void               setScene(visual::Scene const*);
-        AffineTransform* transform_;
-        ViewMode viewMode_ = ViewMode::BOTH;
-        visual::Scene const* scene_ = nullptr;
     };
 
-    /// Our canvas factory
-    typedef AbstractFactory<Interface>Factory;
-  }
-
-  typedef canvas::Interface Canvas;
-  typedef canvas::Factory   CanvasFactory;
+  /// Our canvas factory
+  typedef AbstractFactory<Canvas> CanvasFactory;
 }
 
 #define OMNI_CANVAS_INTERFACE_IID  "org.omnidome.canvas.Interface"
 
-Q_DECLARE_INTERFACE(omni::canvas::Interface, OMNI_CANVAS_INTERFACE_IID)
+Q_DECLARE_INTERFACE(omni::Canvas, OMNI_CANVAS_IID)
 
 #define OMNI_CANVAS_PLUGIN_DECL                    \
   Q_OBJECT                                         \
   Q_PLUGIN_METADATA(IID OMNI_CANVAS_INTERFACE_IID) \
-  Q_INTERFACES(omni::canvas::Interface)            \
+  Q_INTERFACES(omni::Canvas)                       \
   OMNI_PLUGIN_TYPE("Canvas")
 
 #endif /* OMNI_CANVAS_INTERFACE_H_ */
