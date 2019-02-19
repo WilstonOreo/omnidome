@@ -34,7 +34,7 @@ include(CMakeParseArguments)
 omni_option(QT_MAJOR_VERSION "Qt Major Version" 5 )
 
 # Qt Minor version, default is 6
-omni_option(QT_MINOR_VERSION "Qt Minor Version" 8 )
+omni_option(QT_MINOR_VERSION "Qt Minor Version" 11.3 )
 omni_option(QT_PATH "Qt Path" "$ENV{HOME}/Qt" )
 
 MACRO(find_qt5_component COMPONENT_NAME)
@@ -120,9 +120,10 @@ MACRO(setup_qt)
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(Qt5_LOCATION "${QT_PATH}/${QT_VERSION}/gcc_64")
+  set(Qt5_LOCATION "${QT_PATH}")#"/${QT_VERSION}/gcc_64")
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  
+  message(STATUS "SETUP QT ${Qt5_LOCATION}")
+
   if(NOT IS_DIRECTORY ${Qt5_LOCATION})
     return()
   endif()
