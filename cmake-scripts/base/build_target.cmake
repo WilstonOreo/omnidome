@@ -245,7 +245,7 @@ MACRO(omni_mainapp BUILD_TARGET)
       # Deploy target for MacOSX deploy
       ADD_CUSTOM_TARGET(
             deploy
-            ${QT5_LOCATION}/bin/macdeployqt ${APP_OUTPUT_DIR} -dmg
+            ${Qt5_LOCATION}/bin/macdeployqt ${APP_OUTPUT_DIR} -dmg
               DEPENDS ${BUILD_TARGET}
               WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
               COMMENT "Make DMG file for MacOS X."
