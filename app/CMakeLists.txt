@@ -76,8 +76,10 @@ add_executable(omnidome MACOSX_BUNDLE ${SOURCES})
     SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION_STRING}")
     SET(MACOSX_BUNDLE_ICON_FILE "${BUILD_TARGET}")
     SET(MACOSX_BUNDLE_COPYRIGHT "(C) ${OMNI_YEAR}. ${OMNI_URL}")
+    set_target_properties(${BUILD_TARGET} PROPERTIES
+      MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/data/Info.plist")
 
-    SET_SOURCE_FILES_PROPERTIES("${OMNI_DEPLOYMENT_RESOURCE_PATH}/${MACOSX_BUNDLE_ICON_FILE}.icns"
+    SET_SOURCE_FILES_PROPERTIES("${CMAKE_CURRENT_SOURCE_DIR}/data/omnidome.icns"
       PROPERTIES
       MACOSX_PACKAGE_LOCATION Resources
     )
@@ -93,7 +95,8 @@ add_executable(omnidome MACOSX_BUNDLE ${SOURCES})
                        COMMAND ${CMAKE_COMMAND} -E copy
                        "${CMAKE_CURRENT_SOURCE_DIR}/data/omnidome.icns"
                        "${APP_OUTPUT_DIR}/Contents/Resources" )
-    add_custom_command(TARGET omnidome POST_BUILD
+
+                   add_custom_command(TARGET omnidome POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E copy
                        "${CMAKE_CURRENT_SOURCE_DIR}/data/Info.plist"
                        "${APP_OUTPUT_DIR}/Contents" )
