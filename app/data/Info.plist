@@ -7,15 +7,15 @@
 	<key>CFBundleExecutable</key>
         <string>omnidome</string>
 	<key>CFBundleGetInfoString</key>
-  <string>Omnidome</string>
+        <string>Omnidome</string>
         <key>CFBundleIconFile</key>
         <string>omnidome</string>
 	<key>CFBundleIdentifier</key>
-  <string>omnidome</string>
+        <string>Omnidome</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleLongVersionString</key>
-  <string>2.0.0</string>
+        <string>2.0.0</string>
 	<key>CFBundleName</key>
         <string>Omnidome</string>
 	<key>CFBundlePackageType</key>
@@ -33,7 +33,7 @@
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>NSHumanReadableCopyright</key>
-  	<string>${MACOSX_BUNDLE_COPYRIGHT}</string>
+        <string>Copyright (C) 2019. Michael Winkelmann and Brook Cronin.</string>
   	<key>NSPrincipalClass</key>
   	<string>NSApplication</string>
   	<key>NSHighResolutionCapable</key>
