@@ -101,6 +101,14 @@ add_executable(omnidome MACOSX_BUNDLE ${SOURCES})
                        "${CMAKE_CURRENT_SOURCE_DIR}/data/Info.plist"
                        "${APP_OUTPUT_DIR}/Contents" )
 
+ADD_CUSTOM_TARGET(
+      bundle
+      ${Qt5_DIR}/../../../bin/macdeployqt ${CMAKE_CURRENT_BINARY_DIR}/${APP_OUTPUT_DIR} -dmg
+        DEPENDS omnidome
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Make DMG file for MacOS X."
+        VERBATIM
+)
 ELSE()
 add_executable(omnidome ${SOURCES})
 ENDIF()
@@ -119,3 +127,6 @@ target_link_libraries(omnidome
         omni
         omniwidget
 )
+
+
+
