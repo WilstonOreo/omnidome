@@ -1,0 +1,33 @@
+<RCC>
+  <qresource>
+    <file>shaders/colorcorrection.h</file>
+    <file>shaders/grayscale.h</file>
+    <file>shaders/vertexshader_texcoord.h</file>
+    <file>shaders/digits.h</file>
+    <file>shaders/frustum.frag</file>
+    <file>shaders/frustum.vert</file>
+    <file>shaders/blend.frag</file>
+    <file>shaders/blend.vert</file>
+    <file>shaders/blendbrush.frag</file>
+    <file>shaders/blendbrush.vert</file>
+    <file>shaders/blendBrushCursor.frag</file>
+    <file>shaders/blendBrushCursor.vert</file>
+    <file>shaders/calibration.frag</file>
+    <file>shaders/calibration.vert</file>
+    <file>shaders/halo.frag</file>
+    <file>shaders/halo.vert</file>
+    <file>shaders/grid.frag</file>
+    <file>shaders/grid.vert</file>
+    <file>shaders/merge.frag</file>
+    <file>shaders/merge.vert</file>
+    <file>shaders/texture.frag</file>
+    <file>shaders/texture.vert</file>
+    <file>shaders/textureRect.frag</file>
+    <file>shaders/textureRect.vert</file>
+    <file>shaders/testcard.frag</file>
+    <file>shaders/testcard.vert</file>
+    <file>shaders/test_image.vert</file>
+    <file>shaders/mapping/Template.frag</file>
+    <file>shaders/mapping/common.vert</file>
+  </qresource>
+</RCC>

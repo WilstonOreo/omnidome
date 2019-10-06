@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>omni::ui::Blend</class>
+ <widget class="QWidget" name="omni::ui::Blend">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>394</width>
+    <height>510</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="grpBrush">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Brush</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="omni::ui::BrushPreview" name="brushPreview" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkInvert">
+        <property name="text">
+         <string>Invert</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderSize" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderOpacity" native="true"/>
+      </item>
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderFeather" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grpEdgeMask">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Edge Mask</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderGamma" native="true"/>
+      </item>
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderTop" native="true"/>
+      </item>
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderLeft" native="true"/>
+      </item>
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderRight" native="true"/>
+      </item>
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderBottom" native="true"/>
+      </item>
+      <item>
+       <widget class="QComboBox" name="boxMaskColor">
+        <property name="currentText">
+         <string>Colored Mask</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Colored Mask</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>White Mask</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="omni::ui::RangedFloat" name="sliderInputOpacity" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>omni::ui::RangedFloat</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/RangedFloat.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::BrushPreview</class>
+   <extends>QWidget</extends>
+   <header>BrushPreview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

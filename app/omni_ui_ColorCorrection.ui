@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>omni::ui::ColorCorrection</class>
+ <widget class="QWidget" name="omni::ui::ColorCorrection">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QCheckBox" name="chkIsUsed">
+     <property name="text">
+      <string>Color Correction is used</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="boxChannelButtons" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>8</number>
+      </property>
+      <property name="leftMargin">
+       <number>4</number>
+      </property>
+      <property name="topMargin">
+       <number>4</number>
+      </property>
+      <property name="rightMargin">
+       <number>4</number>
+      </property>
+      <property name="bottomMargin">
+       <number>4</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="btnAll">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	border: 2.5px solid #FFFFFF;
+}
+
+QPushButton:pressed, QPushButton:checked {
+   background-color: #FFFFFF;
+   color: #212121;
+}</string>
+        </property>
+        <property name="text">
+         <string>ALL</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnRed">
+        <property name="styleSheet">
+         <string notr="true">QPushButton 
+{	border: 2.5px solid #FF0000;}
+
+QPushButton:pressed, QPushButton:checked {    background-color: #FF0000;
+   color: #212121;
+}</string>
+        </property>
+        <property name="text">
+         <string>RED</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnGreen">
+        <property name="styleSheet">
+         <string notr="true">QPushButton 
+{	border: 2.5px solid #00FF00;}
+
+QPushButton:pressed, QPushButton:checked {    background-color: #00FF00;
+   color: #212121;
+}</string>
+        </property>
+        <property name="text">
+         <string>GREEN</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnBlue">
+        <property name="styleSheet">
+         <string notr="true">QPushButton 
+{	border: 2.5px solid #0000FF;}
+
+QPushButton:pressed, QPushButton:checked {    background-color: #0000FF;
+   color: #212121;
+}</string>
+        </property>
+        <property name="text">
+         <string>BLUE</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="omni::ui::proj::ColorCorrectionGraph" name="graph" native="true"/>
+   </item>
+   <item>
+    <widget class="omni::ui::proj::ChannelCorrectionParameters" name="params" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>omni::ui::proj::ChannelCorrectionParameters</class>
+   <extends>QWidget</extends>
+   <header>proj/ChannelCorrectionParameters.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omni::ui::proj::ColorCorrectionGraph</class>
+   <extends>QWidget</extends>
+   <header>proj/ColorCorrectionGraph.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+ <slots>
+  <slot>setAllChannels()</slot>
+  <slot>setRedChannel()</slot>
+  <slot>setGreenChannel()</slot>
+  <slot>setBlueChannel()</slot>
+ </slots>
+</ui>

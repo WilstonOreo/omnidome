@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>omni::ui::MappingWidget</class>
+ <widget class="QWidget" name="omni::ui::MappingWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>334</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="slim::GradientSlider" name="titleBar" native="true">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>10</y>
+     <width>120</width>
+     <height>80</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="slim::RangedFloat" name="widget_2" native="true">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>150</y>
+     <width>120</width>
+     <height>80</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="slim::RangedFloat" name="widget_3" native="true">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>150</y>
+     <width>120</width>
+     <height>80</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>slim::GradientSlider</class>
+   <extends>QWidget</extends>
+   <header location="global">slim/GradientSlider.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>slim::RangedFloat</class>
+   <extends>QWidget</extends>
+   <header location="global">slim/RangedFloat.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

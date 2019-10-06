@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>omni::ui::Scene</class>
+ <widget class="QWidget" name="omni::ui::Scene">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>327</width>
+    <height>272</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout_2">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMaximumSize</enum>
+   </property>
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::ExpandingFieldsGrow</enum>
+   </property>
+   <property name="horizontalSpacing">
+    <number>-1</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>2</number>
+   </property>
+   <property name="leftMargin">
+    <number>6</number>
+   </property>
+   <property name="topMargin">
+    <number>6</number>
+   </property>
+   <property name="rightMargin">
+    <number>18</number>
+   </property>
+   <property name="bottomMargin">
+    <number>6</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lbSceneSize">
+     <property name="text">
+      <string>Scene Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="boxSize">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <item>
+      <property name="text">
+       <string>0.01</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.5</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1.0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>5.0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>10.0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>25.0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>50.0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>100.0</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lbUnit">
+     <property name="text">
+      <string>Unit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="boxUnit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <item>
+      <property name="text">
+       <string>m (meters)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>cm (centimeters)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>mm (millimeters)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>in (inches)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ft (feet)</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="btnFitToCanvas">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Fit to canvas</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QCheckBox" name="chkRescaleValues">
+     <property name="toolTip">
+      <string>Positions and sizes are rescaled when checked</string>
+     </property>
+     <property name="text">
+      <string>Rescale values</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="lbDisplay">
+     <property name="text">
+      <string>Display</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QFrame" name="frameDisplay">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>4</number>
+      </property>
+      <property name="leftMargin">
+       <number>12</number>
+      </property>
+      <property name="topMargin">
+       <number>8</number>
+      </property>
+      <property name="bottomMargin">
+       <number>8</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="chkInput">
+        <property name="whatsThis">
+         <string>Display selected input on canvas</string>
+        </property>
+        <property name="text">
+         <string>Input</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkGrid">
+        <property name="whatsThis">
+         <string>Display grid</string>
+        </property>
+        <property name="text">
+         <string>Grid</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="lbProjectors">
+     <property name="text">
+      <string>Projectors</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QComboBox" name="boxProjectors">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <item>
+      <property name="text">
+       <string>Display all</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Display selected only</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Display none</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="lbProjectedAreas">
+     <property name="text">
+      <string>Projected Areas</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QComboBox" name="boxProjectedAreas">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <item>
+      <property name="text">
+       <string>Display all</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Display selected only</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Display none</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="lbInsideOutside">
+     <property name="text">
+      <string>Inside / Outside</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="1">
+    <widget class="omni::ui::RangedFloat" name="sliderInsideOutside" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLabel" name="lbCameraFOV">
+     <property name="text">
+      <string>Camera FOV</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1">
+    <widget class="omni::ui::RangedFloat" name="sliderFOV" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0">
+    <widget class="QLabel" name="lbWireframe">
+     <property name="text">
+      <string>Wireframe</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="1">
+    <widget class="omni::ui::RangedFloat" name="sliderWireframe" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>omni::ui::RangedFloat</class>
+   <extends>QWidget</extends>
+   <header location="global">omni/ui/RangedFloat.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,11 @@
+bin/
+moc/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+doc/html/
+*.o
+.DS_Store
+CMakeLists.txt.user

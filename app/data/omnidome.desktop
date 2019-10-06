@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Omnidome
+GenericName=Omnidome
+Comment=Arbitrary Surface Mapping
+Exec=omnidome %U
+TryExec=omnidome
+Icon=/usr/share/Omnidome/icon.png
+Terminal=false
+Categories=Utility;Application;Graphics;Mapping;3D
+StartupNotify=true

@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/shaders">
+    <file>YUV2RGB.frag</file>
+    <file>YUV2RGB.vert</file>
+  </qresource>
+</RCC>
