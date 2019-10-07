@@ -17,6 +17,7 @@ set(CMAKE_AUTOUIC ON)
 
 include(${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 
+add_definitions(-DGL_SILENCE_DEPRECATION)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
       set( CMAKE_MACOSX_RPATH 1)
