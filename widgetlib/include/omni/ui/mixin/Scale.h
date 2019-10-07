@@ -43,6 +43,7 @@ namespace omni {
             for (auto& _slider_info : sliders_) {
               auto& _slider = _slider_info.first;
               auto& _info   = _slider_info.second;
+              QSignalBlocker s(_slider);
               _slider->setRange(_info.min_ * scale_, _info.max_ * scale_);
 
               if (rescaleValues_) {

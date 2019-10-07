@@ -78,7 +78,7 @@ namespace omni
     }
 
     ui::CanvasParameters* Box::widget() {
-        return ui::makeWidget<ui::canvas::Box>(this);
+        return new ui::canvas::Box;
     }
 
     QMatrix4x4 Box::matrix() const {

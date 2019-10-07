@@ -40,11 +40,11 @@ namespace omni {
             }
 
             Mesh::canvas_type* Mesh::mesh() {
-                return static_cast<omni::canvas::Mesh*>(dataModel());
+                return static_cast<omni::canvas::Mesh*>(dataModel()->canvas());
             }
 
             Mesh::canvas_type const* Mesh::mesh() const {
-                return static_cast<omni::canvas::Mesh const*>(dataModel());
+                return static_cast<omni::canvas::Mesh const*>(dataModel()->canvas());
             }
 
             bool Mesh::frontendToData() {

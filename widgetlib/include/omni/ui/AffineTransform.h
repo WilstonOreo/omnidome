@@ -44,7 +44,7 @@ namespace omni {
         using mixin_scale_type = mixin::Scale<RangedFloat>;
       public:
         AffineTransform(QWidget * = nullptr);
-        ~AffineTransform();
+        ~AffineTransform() override;
 
         /// Return true if translation sliders are visible
         bool  isTranslationVisible() const;

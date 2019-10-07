@@ -22,6 +22,7 @@
 
 #include <QComboBox>
 #include <omni/canvas/Interface.h>
+#include <omni/Session.h>
 #include <omni/ui/ParameterWidget.h>
 #include <omni/ui/mixin/DataModel.h>
 
@@ -31,16 +32,16 @@ namespace omni {
     **/
     class CanvasParameters :
       public ParameterWidget,
-      public mixin::UnsharedDataModel<CanvasParameters,canvas::Interface>{
+      public mixin::UnsharedDataModel<CanvasParameters,Session>{
         Q_OBJECT
-        OMNI_UI_UNSHARED_DATAMODEL(CanvasParameters,canvas::Interface)
+        OMNI_UI_UNSHARED_DATAMODEL(CanvasParameters,Session)
       public:
         CanvasParameters(QWidget *_parent = nullptr);
-        virtual ~CanvasParameters();
+        virtual ~CanvasParameters() override;
 
       public slots:
         // Set data model with scale and unit
-        void setDataModel(canvas::Interface*);
+        void setDataModel(Session*);
 
        /**@brief Set flag if values are rescaled
           @param _rescale Boolean which tells if values are rescaled
@@ -65,7 +66,8 @@ namespace omni {
         virtual bool frontendToData() override;
 
       private:
-        visual::Scene const* scene_ = nullptr;
+        visual::Scene* scene() const;
+        canvas::Interface* canvas() const;
 
         /// Transform widget
         QWidgetPtr<omni::ui::AffineTransform> transform_;

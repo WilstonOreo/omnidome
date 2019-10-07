@@ -74,7 +74,7 @@ namespace omni {
 
           vertexCount_ = _vertices.size();
 
-          float _sceneSize = scene()->size();
+          float _sceneSize = 1.0f; //scene()->size();
 
           int _largestExtentAxis = 0;
           if (bounds_.size().y() > bounds_.size().x()) {
@@ -159,7 +159,7 @@ namespace omni {
         }
 
         ui::CanvasParameters* Mesh::widget() {
-            return ui::makeWidget<omni::ui::canvas::Mesh>(this);
+            return new omni::ui::canvas::Mesh;
         }
 
         void Mesh::updateBoundingBox() {

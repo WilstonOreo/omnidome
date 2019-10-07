@@ -29,7 +29,7 @@ namespace omni {
             Box::~Box() {}
 
             bool Box::frontendToData() {
-                auto *_box = static_cast<omni::canvas::Box *>(dataModel());
+                auto *_box = static_cast<omni::canvas::Box *>(dataModel()->canvas());
                 _box->setSize(QVector3D(
                                   getParamAsFloat("Width"),
                                   getParamAsFloat("Length"),
@@ -44,7 +44,7 @@ namespace omni {
                     auto *_width = addOffsetWidget("Width", 0.5, 0.01, 1.0);
 
                     /// Retrieve parameters for Box canvas
-                    auto *_box = static_cast<omni::canvas::Box *>(dataModel());
+                    auto *_box = static_cast<omni::canvas::Box *>(dataModel()->canvas());
                     _width->setValue(_box->size().x());
                     _length->setValue(_box->size().y());
                     _height->setValue(_box->size().z());

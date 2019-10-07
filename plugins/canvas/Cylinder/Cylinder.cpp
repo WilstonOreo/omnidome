@@ -135,7 +135,7 @@ namespace omni
     }
 
     ui::CanvasParameters* Cylinder::widget() {
-        return ui::makeWidget<ui::canvas::Cylinder>(this);
+        return new ui::canvas::Cylinder;
     }
 
     QVector3D Cylinder::center() const {

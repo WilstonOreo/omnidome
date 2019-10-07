@@ -30,7 +30,7 @@ namespace omni {
 
             bool Cylinder::frontendToData() {
                 if (!dataModel()) return false;
-                auto *_cylinder = static_cast<omni::canvas::Cylinder *>(dataModel());
+                auto *_cylinder = static_cast<omni::canvas::Cylinder *>(dataModel()->canvas());
                 _cylinder->setDiameter(getParamAsFloat("Diameter"));
                 _cylinder->setHeight(getParamAsFloat("Height"));
                 _cylinder->setBeginAngle(getParamAsFloat("Start angle"));
@@ -45,7 +45,7 @@ namespace omni {
               auto* _endAngle = addAngleWidget("End angle",0.0,0.0,360.0);
 
                 /// Retrieve parameters for Cylinder canvas
-              auto* _cylinder = static_cast<omni::canvas::Cylinder*>(dataModel());
+              auto* _cylinder = static_cast<omni::canvas::Cylinder*>(dataModel()->canvas());
               _diameter->setValue(_cylinder->diameter());
               _height->setValue(_cylinder->height());
               _beginAngle->setValue(_cylinder->beginAngle());

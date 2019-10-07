@@ -29,7 +29,7 @@ namespace omni {
             Planar::~Planar() {}
 
             bool Planar::frontendToData() {
-                auto* _planar = static_cast<omni::canvas::Planar*>(dataModel());
+                auto* _planar = static_cast<omni::canvas::Planar*>(dataModel()->canvas());
                 _planar->setHeight( getParamAsFloat("Length") );
                 _planar->setWidth( getParamAsFloat("Width") );
                 return CanvasParameters::frontendToData();
@@ -40,7 +40,7 @@ namespace omni {
                 auto* _width = addOffsetWidget("Width",0.1,0.01,1.0);
 
                 /// Retrieve parameters for Planar canvas
-                auto* _planar = static_cast<omni::canvas::Planar*>(dataModel());
+                auto* _planar = static_cast<omni::canvas::Planar*>(dataModel()->canvas());
                 _width->setValue(_planar->width());
                 _length->setValue(_planar->height());
                 return CanvasParameters::dataToFrontend();

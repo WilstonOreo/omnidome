@@ -34,7 +34,7 @@ namespace omni
     }
 
     ui::CanvasParameters* HalfDome::widget() {
-        return ui::makeWidget<ui::canvas::HalfDome>(this);
+        return new ui::canvas::HalfDome;
     }
   }
 }

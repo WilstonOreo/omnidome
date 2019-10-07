@@ -83,11 +83,7 @@ namespace omni
   Canvas* Session::setCanvas(Id const& _id)
   {
     canvas_.reset(canvas::Factory::create(_id));
-    /// Attach scene to canvas
-    if (canvas_) {
-      canvas_->setScene(&scene());
-    }
-    return canvas();
+    return canvas_.get();
   }
 
   Canvas* Session::canvas()

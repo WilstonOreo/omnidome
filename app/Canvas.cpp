@@ -120,6 +120,7 @@ namespace omni {
 
         void Canvas::showParameterWidget() {
             if (this->setupParameterWidget(widget(),dataModel()->canvas())) {
+                this->parameterWidget()->setDataModel(dataModel().get());
                 dataModel()->canvas()->update();
 
                 // Update parameters when canvas has changed

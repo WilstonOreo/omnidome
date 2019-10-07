@@ -46,16 +46,13 @@ namespace omni
           return false;
         }
         transform_->updateDataModel();
-
-        dataModel()->setViewMode(util::intToEnum<Canvas::ViewMode>(boxViewMode_
-                                                                     ->
-                                                                     currentIndex()));
+        canvas()->setViewMode(util::intToEnum<Canvas::ViewMode>(boxViewMode_->currentIndex()));
         return true;
     }
 
     void CanvasParameters::dataToFrontend() {
         if (!transform_) {
-          transform_.reset(addAffineTransformWidget("Transform", &dataModel()->transform()));
+          transform_.reset(addAffineTransformWidget("Transform", &canvas()->transform()));
         }
 
         if (!boxViewMode_) {
@@ -68,19 +65,17 @@ namespace omni
                 static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                 this, &CanvasParameters::updateDataModel);
         }
-        boxViewMode_->setCurrentIndex(util::enumToInt(dataModel()->
+        boxViewMode_->setCurrentIndex(util::enumToInt(canvas()->
                                                                viewMode()));
     }
 
-    void CanvasParameters::setDataModel(canvas::Interface* _canvas) {
+    void CanvasParameters::setDataModel(Session* s) {
       {
         QSignalBlocker blocker(this);
-        mixin_data_model_type::setDataModel(_canvas);
-        if (_canvas->scene()) {
-          setScale(_canvas->scene()->size());
-          setUnit(_canvas->scene()->unit().abbreviation());
-          updateFrontend();
-        }
+        mixin_data_model_type::setDataModel(s);
+        setScale(scene()->size());
+        setUnit(scene()->unit().abbreviation());
+        updateFrontend();
       }
       emit dataModelChanged();
     }
@@ -108,6 +103,15 @@ namespace omni
       if (transform_) {
         transform_->setOffsetUnit(_unit);
       }
+    }
+
+    visual::Scene* CanvasParameters::scene() const {
+        return &dataModel()->scene();
+
+    }
+
+    canvas::Interface* CanvasParameters::canvas() const {
+        return dataModel()->canvas();
     }
   }
 }

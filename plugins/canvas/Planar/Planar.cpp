@@ -93,7 +93,7 @@ namespace omni
     }
 
     ui::CanvasParameters* Planar::widget() {
-        return ui::makeWidget<ui::canvas::Planar>(this);
+        return new ui::canvas::Planar;
     }
   }
 }

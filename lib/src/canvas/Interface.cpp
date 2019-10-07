@@ -87,14 +87,6 @@ namespace omni {
           viewMode_ = _viewMode;
         }
 
-        void Interface::setScene(visual::Scene const* _scene) {
-          scene_=_scene;
-        }
-
-        visual::Scene const* Interface::scene() const {
-          return scene_;
-        }
-
         /// Transformation matrix for canvas
         QMatrix4x4 Interface::matrix() const
         {
@@ -108,14 +100,6 @@ namespace omni {
         /// Read mapping from stream
         void Interface::fromPropertyMap(PropertyMap const& _map) {
             _map.get("transform",transform_);
-
-            /// Fix for translation
-            if (scene()) {
-              OMNI_DEBUG << scene()->size();
-              transform_.setTranslation(transform_.translation() / scene()->size());
-            }
-
-            OMNI_DEBUG << transform_.translation();
         }
     }
 }

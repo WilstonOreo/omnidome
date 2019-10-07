@@ -30,16 +30,16 @@ namespace omni {
 
             bool HalfDome::frontendToData() {
                 if (!dataModel()) return false;
-                auto *_halfdome = static_cast<omni::canvas::HalfDome *>(dataModel());
+                auto *_halfdome = static_cast<omni::canvas::HalfDome *>(dataModel()->canvas());
                 _halfdome->setDiameter(getParamAsFloat("Diameter"));
                 return CanvasParameters::frontendToData();
             }
 
             void HalfDome::dataToFrontend() {
-              auto* _diameter = addOffsetWidget("Diameter",0.5,0.01,1.0);
+              auto* _diameter = addOffsetWidget("Diameter",0.5f,0.01f,1.0f);
 
                 /// Retrieve parameters for HalfDome canvas
-              auto* _halfdome = static_cast<omni::canvas::HalfDome*>(dataModel());
+              auto* _halfdome = static_cast<omni::canvas::HalfDome*>(dataModel()->canvas());
               _diameter->setValue(_halfdome->diameter());
               CanvasParameters::dataToFrontend();
             }

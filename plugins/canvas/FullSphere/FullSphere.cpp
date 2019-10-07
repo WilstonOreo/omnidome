@@ -34,7 +34,7 @@ namespace omni
     }
 
     ui::CanvasParameters* FullSphere::widget() {
-        return ui::makeWidget<ui::canvas::FullSphere>(this);
+        return new ui::canvas::FullSphere;
     }
   }
 }
