@@ -54,7 +54,7 @@ namespace omni {
         void showLiveMode();
 
       protected:
-        void showEvent(QShowEvent*);
+        void showEvent(QShowEvent*) override;
 
       private:
         std::unique_ptr<Ui::Scene> ui_;
@@ -62,8 +62,8 @@ namespace omni {
         /// Set of Widgets for manipulating scene size and units
         std::set<QWidget*> sceneSizeWidgets_;
 
-        void dataToFrontend();
-        bool frontendToData();
+        void dataToFrontend() override;
+        bool frontendToData() override;
 
     };
   }

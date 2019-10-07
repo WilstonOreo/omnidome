@@ -205,10 +205,10 @@ namespace omni {
   public:                                                            \
     typedef omni::ui::mixin::DataModel<DERIVED, MODEL,               \
                                        SHARED>mixin_data_model_type; \
-    inline void updateDataModel() {                                  \
+    inline void updateDataModel() override {                         \
       mixin_data_model_type::updateDataModel();                      \
     }                                                                \
-    inline void updateFrontend() {                                   \
+    inline void updateFrontend() override {                          \
       QSignalBlocker blocker(this);                                  \
       mixin_data_model_type::updateFrontend();                       \
       update();                                                      \
