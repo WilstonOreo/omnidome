@@ -156,15 +156,7 @@ namespace omni {
       return true;
     }
 
-    omni::BlendMask const * Blend::blendMask() const
-    {
-      if (!dataModel()) return nullptr;
-
-      return dataModel()->tunings().current() ? &dataModel()->tunings().
-             current()->blendMask() : nullptr;
-    }
-
-    omni::BlendMask * Blend::blendMask()
+    omni::BlendMask* Blend::blendMask() const
     {
       if (!dataModel()) return nullptr;
 

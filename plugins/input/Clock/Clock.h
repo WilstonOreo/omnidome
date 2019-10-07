@@ -60,7 +60,7 @@ namespace omni {
       int getSeconds() const;
 
     protected:
-      void timerEvent(QTimerEvent*);
+      void timerEvent(QTimerEvent*) override;
     private:
       int getMilliseconds() const;
       double getTime() const;

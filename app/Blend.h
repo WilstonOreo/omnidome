@@ -44,20 +44,19 @@ namespace omni {
 
       public:
         Blend(QWidget * = nullptr);
-        ~Blend();
+        ~Blend() override;
 
       signals:
         void dataModelChanged();
 
       private:
         /// Update sliders from given blend mask
-        void                   dataToFrontend();
+        void                   dataToFrontend() override;
 
         /// Assign slider values to blend mask
-        bool                   frontendToData();
+        bool                   frontendToData() override;
 
-        omni::BlendMask const* blendMask() const;
-        omni::BlendMask      * blendMask();
+        omni::BlendMask* blendMask() const;
 
         std::unique_ptr<Ui::Blend> ui_;
     };

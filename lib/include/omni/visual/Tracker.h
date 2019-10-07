@@ -30,6 +30,7 @@ namespace omni {
         Tracker();
         Tracker(const QVector3D& _center,
                 const PolarVec& _direction);
+        virtual ~Tracker() {}
 
         void track(float _longitude,
                    float _latitude,

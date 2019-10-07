@@ -39,7 +39,7 @@ namespace omni {
         OMNI_UI_SHARED_DATAMODEL(TuningGLView,Session)
       public:
         TuningGLView(QWidget * = nullptr);
-        ~TuningGLView();
+        ~TuningGLView() override;
 
         /// If disabled, this widget accepts user inputs
         bool                    viewOnly() const;
@@ -82,17 +82,17 @@ namespace omni {
         void    dataModelChanged();
 
       protected:
-        void paint();
-        void mouseMoveEvent(QMouseEvent *event);
-        void mousePressEvent(QMouseEvent *event);
-        void mouseReleaseEvent(QMouseEvent *event);
-        void wheelEvent(QWheelEvent *event);
-        void keyPressEvent(QKeyEvent *event);
-        void showEvent(QShowEvent *event);
+        void paint() override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
+        void wheelEvent(QWheelEvent *event) override;
+        void keyPressEvent(QKeyEvent *event) override;
+        void showEvent(QShowEvent *event) override;
 
       private:
-        virtual void dataToFrontend();
-        inline virtual bool frontendToData() {
+        virtual void dataToFrontend() override;
+        inline virtual bool frontendToData() override {
           return false;
         }
 
@@ -134,7 +134,7 @@ namespace omni {
         void drawOnSurface(F f);
 
         /// Initialize OpenGL objects
-        bool initialize();
+        bool initialize() override;
 
         /// Flags which determines if aspect ratio is used when drawing content
         bool keepAspectRatio_ = false;

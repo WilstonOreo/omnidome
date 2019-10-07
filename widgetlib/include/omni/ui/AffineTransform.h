@@ -88,10 +88,10 @@ namespace omni {
         void  setup();
 
         /// Update sliders from current transform
-        void  dataToFrontend();
+        void  dataToFrontend() override;
 
         /// Assign slider values to current transform
-        bool  frontendToData();
+        bool  frontendToData() override;
 
         float scaleRange_ = 1.0;
         std::unique_ptr<Ui::AffineTransform> ui_;

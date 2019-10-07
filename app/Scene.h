@@ -37,7 +37,7 @@ namespace omni {
         OMNI_UI_SHARED_DATAMODEL(Scene,Session)
       public:
         Scene(QWidget *_parent = nullptr);
-        ~Scene();
+        ~Scene() override;
 
       signals:
         void dataModelChanged();

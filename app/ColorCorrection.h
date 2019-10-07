@@ -41,7 +41,7 @@ namespace omni {
         typedef omni::proj::Channel Channel;
 
         ColorCorrection(QWidget *_parent = nullptr);
-        ~ColorCorrection();
+        ~ColorCorrection() override;
 
       public slots:
         /// Select color correction for all channels
@@ -67,10 +67,10 @@ namespace omni {
 
       private:
         /// Update sliders from current color correction
-        void dataToFrontend();
+        void dataToFrontend() override;
 
         /// Assign slider values to current color correction
-        bool frontendToData();
+        bool frontendToData() override;
 
         std::unique_ptr<Ui::ColorCorrection> ui_;
     };

@@ -38,7 +38,7 @@ namespace omni {
 
       public:
         SceneGLView(QWidget *_parent = nullptr);
-        ~SceneGLView();
+        ~SceneGLView() override;
 
       public slots:
         void         changeZoom(int _value);
@@ -46,21 +46,21 @@ namespace omni {
         void dataModelChanged();
 
       protected:
-        void paint();
+        void paint() override;
 
         /// Change zoom on mouse wheel event
-        virtual void wheelEvent(QWheelEvent *event);
-        virtual void keyPressEvent(QKeyEvent *event);
-        virtual void mouseMoveEvent(QMouseEvent *event);
-        virtual void showEvent(QShowEvent* event);
+        virtual void wheelEvent(QWheelEvent *event) override;
+        virtual void keyPressEvent(QKeyEvent *event) override;
+        virtual void mouseMoveEvent(QMouseEvent *event) override;
+        virtual void showEvent(QShowEvent* event) override;
 
       private:
-        virtual void dataToFrontend();
-        inline virtual bool frontendToData() {
+        virtual void dataToFrontend() override;
+        inline virtual bool frontendToData() override {
           return false;
         }
 
-        bool         initialize();
+        bool         initialize() override;
     };
   }
 }

@@ -34,6 +34,7 @@ namespace omni {
                qreal _near = 0.1,
                qreal _far = 1000.0,
                const QVector3D& _up = QVector3D(0.0, 0.0, 1.0));
+        ~CameraInterface() override = default;
 
         /// Right vector
         QVector3D right() const;
@@ -60,10 +61,10 @@ namespace omni {
         virtual void setup(qreal _aspect) const = 0;
 
         /// Deserialize from stream
-        void        fromStream(QDataStream&);
+        void        fromStream(QDataStream&) override;
 
         /// Serialize to stream
-        void        toStream(QDataStream&) const;
+        void        toStream(QDataStream&) const override;
 
         /// Test for equality. ScreenSetup is ignored
         friend bool operator==(CameraInterface const&,
@@ -74,7 +75,7 @@ namespace omni {
           return 0.0;
         }
 
-        inline virtual void setFov(qreal _fov) {
+        inline virtual void setFov(qreal) {
         }
 
       private:

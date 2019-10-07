@@ -41,7 +41,7 @@ namespace omni {
           OMNI_UI_UNSHARED_DATAMODEL(ChannelCorrectionParameters,ChannelCorrection)
         public:
           ChannelCorrectionParameters(QWidget * = nullptr);
-          ~ChannelCorrectionParameters();
+          ~ChannelCorrectionParameters() override;
 
           /// Return channel
           Channel channel() const;
@@ -62,10 +62,10 @@ namespace omni {
           void    setup();
 
           /// Update sliders from current warp grid
-          void    dataToFrontend();
+          void    dataToFrontend() override;
 
           /// Assign slider values to current warp grid
-          bool    frontendToData();
+          bool    frontendToData() override;
 
           RangedFloat *brightness_ = nullptr;
           RangedFloat *contrast_   = nullptr;

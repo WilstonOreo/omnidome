@@ -31,7 +31,7 @@ namespace omni {
         DockWidget(QWidget * = nullptr);
 
         template<typename UI>
-        DockWidget(UI& _ui, QWidget *_parent = nullptr) :
+        DockWidget(UI&, QWidget *_parent = nullptr) :
           QScrollArea(_parent) {}
 
         virtual ~DockWidget() {}

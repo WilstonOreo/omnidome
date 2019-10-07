@@ -55,7 +55,7 @@ namespace omni {
     void withCurrentContext(ContextFunctor f)
     {
       auto _currentContext = QOpenGLContext::currentContext();
-      if (!_currentContext || !_currentContext->isValid()) return;
+      if (!_currentContext || !_currentContext->isValid()) return;
 
       QOpenGLFunctions glFuncs(_currentContext);
       f(glFuncs);

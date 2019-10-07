@@ -42,7 +42,7 @@ namespace omni {
 
       public:
         Warp(QWidget * = nullptr);
-        ~Warp();
+        ~Warp() override;
 
       public slots:
         void resetWarpGrid();
@@ -54,10 +54,10 @@ namespace omni {
 
       private:
         /// Update sliders from current warp grid
-        void                  dataToFrontend();
+        void                  dataToFrontend() override;
 
         /// Assign slider values to current warp grid
-        bool                  frontendToData();
+        bool                  frontendToData() override;
 
         omni::WarpGrid const* warpGrid() const;
         omni::WarpGrid      * warpGrid();

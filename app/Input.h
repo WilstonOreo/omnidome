@@ -68,10 +68,10 @@ namespace omni {
 
       private:
         /// Update sliders from given blend mask
-        void dataToFrontend();
+        void dataToFrontend() override;
 
         /// Assign slider values to blend mask
-        inline bool frontendToData() {
+        inline bool frontendToData() override {
           return false;
         }
 
@@ -89,7 +89,7 @@ namespace omni {
         /// Add an item to input list widget
         void    addItem(input::Interface*);
 
-        void    parameterWidgetSetupOptions(QWidget *_paramWidget) const;
+        void    parameterWidgetSetupOptions(QWidget *_paramWidget) const override;
 
         void    showParameterWidget();
 

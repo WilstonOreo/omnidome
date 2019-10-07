@@ -45,7 +45,7 @@ namespace omni
         OMNI_UI_SHARED_DATAMODEL(TuningList,Session)
       public:
         TuningList(QWidget* = nullptr);
-        ~TuningList();
+        ~TuningList() override;
 
         /// Return fullscreen and preview widget from index
         std::set<TuningGLView*> getViews(int _index) const;
@@ -99,9 +99,9 @@ namespace omni
         void enableSelectedTuningOnly();
 
       protected:
-        void resizeEvent(QResizeEvent*);
-        void keyPressEvent(QKeyEvent*);
-        bool eventFilter(QObject *obj, QEvent *event);
+        void resizeEvent(QResizeEvent*) override;
+        void keyPressEvent(QKeyEvent*) override;
+        bool eventFilter(QObject *obj, QEvent *event) override;
 
       signals:
         /// Signal which is emitted when the current tuning has changed
@@ -121,10 +121,10 @@ namespace omni
 
       private:
           /// Update sliders from current session
-          void dataToFrontend();
+          void dataToFrontend() override;
 
           /// Assign slider values to current session
-          inline bool frontendToData() {
+          inline bool frontendToData() override {
               return false;
           }
 

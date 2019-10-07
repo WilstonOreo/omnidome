@@ -71,7 +71,7 @@ namespace omni {
                  QWidget *_parent = nullptr);
 
           /// Destructor
-          ~Tuning();
+          ~Tuning() override;
 
           /// Return pointer to preview widget
           TuningGLView      * previewWidget();
@@ -123,7 +123,7 @@ namespace omni {
           // setup)
           void resetToPeripheralSetup();
           /// Set parameters from sliders to tuning
-          void updateParameters();
+          void updateParameters() override;
 
         signals:
           void selected(int);
@@ -133,27 +133,27 @@ namespace omni {
 
         protected:
           /// Handles resizing of sliders and preview
-          void resizeEvent(QResizeEvent *);
+          void resizeEvent(QResizeEvent *) override;
 
           /// Handles proper resizing of the widget
-          void showEvent(QShowEvent *);
+          void showEvent(QShowEvent *) override;
 
           /// Paint border
-          void paintEvent(QPaintEvent *);
+          void paintEvent(QPaintEvent *) override;
 
           /// Mouse Move Event and handler for dragging to ScreenSetup widget
-          void mouseMoveEvent(QMouseEvent *);
+          void mouseMoveEvent(QMouseEvent *) override;
 
           /// Handles focus events from child widgets
           bool eventFilter(QObject *,
-                           QEvent *);
+                           QEvent *) override;
 
           /// Focus in event used by TuningList to set current tuning for
           // session
-          void focusInEvent(QFocusEvent *);
+          void focusInEvent(QFocusEvent *) override;
 
           /// Focus out for deselecting tuning
-          void focusOutEvent(QFocusEvent *);
+          void focusOutEvent(QFocusEvent *) override;
 
         private slots:
           void startDrag();
@@ -175,14 +175,14 @@ namespace omni {
           void prepareRemove();
 
         private:
-          void dataToFrontend();
-          bool frontendToData();
+          void dataToFrontend() override;
+          bool frontendToData() override;
 
           /// Setup (only called in constructor)
           void setup();
 
           /// Id of first focussed widget
-          inline virtual int firstFocusId() const {
+          inline virtual int firstFocusId() const override {
             return std::min(layout()->count()-1,2); // Title bar and view cannot be focussed
           }
 

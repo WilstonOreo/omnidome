@@ -49,9 +49,9 @@ namespace omni {
 
       public:
         ScreenSetup(QWidget * = nullptr);
-        ~ScreenSetup();
+        ~ScreenSetup() override;
 
-        inline QRect desktopRect() const {
+        inline QRect desktopRect() const override {
           return omni::proj::ScreenSetup::desktopRect();
         }
 
@@ -74,24 +74,24 @@ namespace omni {
         void dataModelChanged();
 
       protected:
-        void paintEvent(QPaintEvent *);
+        void paintEvent(QPaintEvent *) override;
 
-        void mouseMoveEvent(QMouseEvent *);
+        void mouseMoveEvent(QMouseEvent *) override;
 
         /// Detach tuning on double click on screen event
-        void mouseDoubleClickEvent(QMouseEvent *);
-        void dragEnterEvent(QDragEnterEvent *);
-        void dragMoveEvent(QDragMoveEvent *);
-        void dropEvent(QDropEvent *);
+        void mouseDoubleClickEvent(QMouseEvent *) override;
+        void dragEnterEvent(QDragEnterEvent *) override;
+        void dragMoveEvent(QDragMoveEvent *) override;
+        void dropEvent(QDropEvent *) override;
 
       private:
         friend ScreenItem;
         friend SubScreenItem;
 
         /// Set session parameters
-        void dataToFrontend();
+        void dataToFrontend() override;
 
-        bool frontendToData() {
+        bool frontendToData() override {
           return false;
         }
 

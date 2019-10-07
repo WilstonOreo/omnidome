@@ -40,7 +40,7 @@ namespace omni {
         OMNI_UI_SHARED_DATAMODEL(Export,Session)
       public:
         Export(QWidget * = nullptr);
-        ~Export();
+        ~Export() override;
 
       public slots:
         void exportToFile();
@@ -54,8 +54,8 @@ namespace omni {
         void dataModelChanged();
 
       private:
-        void dataToFrontend();
-        inline bool frontendToData() {
+        void dataToFrontend() override;
+        inline bool frontendToData() override {
           return false;
         }
 

@@ -39,15 +39,15 @@ namespace omni
 
     public:
       MappingParameters(QWidget* _parent = nullptr);
-      ~MappingParameters();
+      ~MappingParameters() override;
 
     signals:
         void dataModelChanged();
     protected:
-      virtual void dataToFrontend();
+      virtual void dataToFrontend() override;
 
                 /// Return true if data has changed by front end
-      virtual bool frontendToData();
+      virtual bool frontendToData() override;
 
       /// Add flip and bound to canvas parameters
       void addDefaultParameters();

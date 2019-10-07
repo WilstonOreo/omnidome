@@ -38,7 +38,7 @@ namespace omni {
           OMNI_UI_UNSHARED_DATAMODEL(ColorCorrectionGraph,omni::proj::ColorCorrection)
         public:
           ColorCorrectionGraph(QWidget * = nullptr);
-          ~ColorCorrectionGraph();
+          ~ColorCorrectionGraph() override;
 
           /// Return selected channel
           Channel channel() const;
@@ -48,22 +48,22 @@ namespace omni {
 
         protected:
           /// Paint graph event
-          void    paintEvent(QPaintEvent *);
+          void    paintEvent(QPaintEvent *) override;
 
           /// Re-paint on resize
-          void    resizeEvent(QResizeEvent *);
+          void    resizeEvent(QResizeEvent *) override;
 
         signals:
           void    dataModelChanged();
 
         private:
           /// Update widget from current color correction
-          void dataToFrontend();
+          void dataToFrontend() override;
 
           /**@brief ColorCorrectionGraph cannot change data, hence there is nothing to
                     do here
           **/
-          inline bool frontendToData() {
+          inline bool frontendToData() override {
             return false;
           }
 

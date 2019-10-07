@@ -214,7 +214,7 @@ namespace omni {
       update();                                                      \
     }                                                                \
   private:                                                           \
-    void emitDataModelChangedSignal() {                              \
+    void emitDataModelChangedSignal() override {                     \
       emit dataModelChanged();                                       \
     }                                                                \
   public:

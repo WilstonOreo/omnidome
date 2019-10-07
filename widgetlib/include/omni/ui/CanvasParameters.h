@@ -50,21 +50,23 @@ namespace omni {
         /**@brief Set slider ranges
            @param _factor Scale factor
          **/
-        virtual void     setScale(float _factor);
+        virtual void     setScale(float _factor) override;
 
         /// Set slider units
-        virtual void     setUnit(QString const&);
+        virtual void     setUnit(QString const&) override;
 
       signals:
         void         dataModelChanged();
 
       protected:
-        virtual void dataToFrontend();
+        virtual void dataToFrontend() override;
 
         /// Return true if data has changed by front end
-        virtual bool frontendToData();
+        virtual bool frontendToData() override;
 
       private:
+        visual::Scene const* scene_ = nullptr;
+
         /// Transform widget
         QWidgetPtr<omni::ui::AffineTransform> transform_;
         QWidgetPtr<QComboBox> boxViewMode_;

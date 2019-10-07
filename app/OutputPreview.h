@@ -38,10 +38,10 @@ namespace omni {
 
       public:
         OutputPreview(QWidget * = nullptr);
-        ~OutputPreview();
+        ~OutputPreview() override;
 
         /// Return desktop rectangle
-        QRect desktopRect() const;
+        QRect desktopRect() const override;
 
       public slots:
         void  triggerUpdate();
@@ -50,9 +50,9 @@ namespace omni {
         void  dataModelChanged();
 
       protected:
-        void  resizeEvent(QResizeEvent *);
-        void  paintEvent(QPaintEvent *);
-        void  timerEvent(QTimerEvent *);
+        void  resizeEvent(QResizeEvent *) override;
+        void  paintEvent(QPaintEvent *) override;
+        void  timerEvent(QTimerEvent *) override;
 
       private:
         void  drawBorder(QColor _color,
@@ -69,8 +69,8 @@ namespace omni {
         /// Return non transformed rectangle for tuning
         QRect getRectForTuning(proj::Tuning const *);
 
-        void  dataToFrontend();
-        inline bool frontendToData() {
+        void  dataToFrontend() override;
+        inline bool frontendToData() override {
           return false;
         }
 

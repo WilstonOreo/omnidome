@@ -45,7 +45,7 @@ namespace omni {
         OMNI_UI_SHARED_DATAMODEL(Canvas,Session)
       public:
         Canvas(QWidget * = nullptr);
-        ~Canvas();
+        ~Canvas() override;
 
       signals:
         void dataModelChanged();
@@ -63,10 +63,10 @@ namespace omni {
 
       private:
         /// Update widgets from current mapping
-        void dataToFrontend();
+        void dataToFrontend() override;
 
         /// Assign widget values to current mapping
-        bool frontendToData();
+        bool frontendToData() override;
 
         void showParameterWidget();
 

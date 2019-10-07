@@ -36,7 +36,7 @@ namespace omni {
 
       public:
         ToolBar(QWidget * = nullptr);
-        ~ToolBar();
+        ~ToolBar() override;
 
       public slots:
         void setScreenSetupMode();
@@ -60,10 +60,10 @@ namespace omni {
         void setMode(Session::Mode);
 
         /// Update buttons from session
-        void dataToFrontend();
+        void dataToFrontend() override;
 
         /// Set session mode from buttons
-        bool frontendToData() {
+        bool frontendToData() override {
           return false;
         }
 
