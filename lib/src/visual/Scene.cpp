@@ -207,8 +207,6 @@ namespace omni {
       _map.get("moveMode",              moveMode_);
       _map.get("insideOutside",     insideOutside_);
       _map.get("lights", lights_);
-
-      // _map.get("cameras", cameras_);
     }
 
     /// Serialize to stream
@@ -226,7 +224,6 @@ namespace omni {
         ("insideOutside", insideOutside_)
         ("lights", lights_);
 
-      //      ("cameras", cameras_);
       _os << _map;
     }
 
