@@ -158,15 +158,20 @@ MainWindow::MainWindow(QMainWindow *parent) :
             ui_->tuningList, SLOT(enableSelectedTuningOnly()));
 
     // Connect canvas parameter change with view update
-    connect(ui_->dockCanvasWidget, SIGNAL(
-              dataModelChanged()),                     this,
-            SLOT(updateAllViews()));
-    connect(ui_->dockCanvasWidget, SIGNAL(canvasTypeChanged()),
-            this, SLOT(modified()));
+    connect(ui_->dockCanvasWidget, &omni::ui::Canvas::dataModelChanged,[this]() {
+        modified();
+        updateAllViews();
+    });
+
+    connect(ui_->dockCanvasWidget, &omni::ui::Canvas::canvasTypeChanged,[this]() {
+        modified();
+    });
 
     // Connect scene parameter change with 3d view update
-    connect(ui_->dockSceneWidget, SIGNAL(dataModelChanged()),
-            this, SLOT(updateAllViews()));
+    connect(ui_->dockSceneWidget, &omni::ui::Scene::dataModelChanged, [this]() {
+        modified();
+        updateAllViews();
+    });
 
     /// Handle scene scale and unit events
     connect(ui_->dockSceneWidget, SIGNAL(sceneScaleChanged(bool)),
@@ -179,29 +184,19 @@ MainWindow::MainWindow(QMainWindow *parent) :
             ui_->tuningList, SLOT(updateUnits()));
 
     // Update all views when input has changed
-    connect(ui_->dockInputsWidget, SIGNAL(
-              inputIndexChanged()),                 this,
-            SLOT(modified()));
-
-    connect(ui_->dockInputsWidget, SIGNAL(
-              inputIndexChanged()),                 this,
-            SLOT(setMode()));
-    connect(ui_->dockInputsWidget, SIGNAL(
-              inputChanged()),                 this,
-            SLOT(updateAllViews()));
+    connect(ui_->dockInputsWidget, &omni::ui::Input::inputIndexChanged, [this]() {
+        modified();
+        setMode();
+        updateAllViews();
+    });
 
     // Update all views when mapping mode has changed
-    connect(ui_->dockMappingWidget, SIGNAL(
-              dataModelChanged()),                    this,
-            SLOT(modified()));
-    connect(ui_->dockMappingWidget, SIGNAL(
-              dataModelChanged()),                    this,
-            SLOT(updateAllViews()));
-    connect(ui_->dockMappingWidget, SIGNAL(
-              dataModelChanged()),                      toolBar_.get(),
-            SLOT(buttonStates()));
-    connect(ui_->dockMappingWidget, &Mapping::dataModelChanged,
-            export_.get(), &Export::updateFrontend);
+    connect(ui_->dockMappingWidget, &omni::ui::Mapping::dataModelChanged, [this]() {
+        modified();
+        updateAllViews();
+        toolBar_->buttonStates();
+        export_->updateFrontend();
+    });
 
     // Update all views when warp grid has changed
     connect(ui_->dockWarpWidget, SIGNAL(
@@ -220,12 +215,10 @@ MainWindow::MainWindow(QMainWindow *parent) :
             SLOT(modified()));
 
     // Connect add tuning button with tuning list
-    connect(ui_->btnAddTuning, SIGNAL(
-              clicked()),                           ui_->tuningList,
-            SLOT(addTuning()));
-    connect(ui_->btnAddTuning, SIGNAL(
-              clicked()),                           this,
-            SLOT(buttonState()));
+    connect(ui_->btnAddTuning, &QAbstractButton::clicked,[this]() {
+        ui_->tuningList->addTuning();
+        buttonState();
+    });
 
     // Connect about button with toolbar showAbout slot
     connect(ui_->actionAbout, SIGNAL(triggered()), toolBar_.get(),
