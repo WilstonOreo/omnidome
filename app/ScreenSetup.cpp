@@ -63,7 +63,7 @@ namespace omni
 
     void ScreenSetup::setTuningList(proj::TuningList* _list) {
       tuningList_ = _list;
-      connect(tuningList_,SIGNAL(tuningAdded()),this,SLOT(assignNewTuningToNextFreeScreen()));
+     // connect(tuningList_,SIGNAL(tuningAdded()),this,SLOT(assignNewTuningToNextFreeScreen()));
     }
 
     proj::TuningList* ScreenSetup::tuningList() {
