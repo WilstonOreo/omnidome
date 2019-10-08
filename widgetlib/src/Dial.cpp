@@ -330,9 +330,10 @@ namespace omni {
                 mixin_range_type::for_each_step([&](int _step, double i,
                                                     bool _isPage)
                 {
-                    _p.setPen(QPen(i >= mixin_range_type::value() ?
-                                   colorSet().shadow() :
-                                   colorSet().windowText(), 1));
+                    _p.setPen(QPen((i >= mixin_range_type::value() ?
+                                   colorSet().light() :
+                                   colorSet().windowText()).lighter(150),
+                                   1.5));
                     paintTick(_p, i, _isPage ? 0.25 : 0.125);
                 });
             }
