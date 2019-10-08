@@ -31,7 +31,7 @@ namespace omni {
       GLView(_parent),
       screen_(_screen) {
       setStyleSheet("* { background:black; }");
-      setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+      setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
 #ifdef Q_OS_LINUX
       setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
@@ -51,8 +51,9 @@ namespace omni {
       if (_tuning->screen() != screen_) return;
 
       tunings_.insert(_tuning);
+      setGeometry(screen_->geometry());
+      show();
 
-      showFullScreen();
       update();
     }
     
@@ -68,7 +69,8 @@ namespace omni {
     void FullscreenTuningGLView::showDragWidget(int _index, QColor _color) {
       dragWidgetIndex_ = _index;
       dragWidgetColor_ = _color;
-      showFullScreen();
+      setGeometry(screen_->geometry());
+      show();
       update();
     }
 
