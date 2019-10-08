@@ -84,12 +84,12 @@ namespace omni {
         setParamAsFloat("Roll",  _p.roll().degrees());
 
         switch(_p.setup()) {
-          case Projector::PERIPHERAL:
+          case Projector::FREE:
             setParamAsFloat("X",     _p.pos().x());
             setParamAsFloat("Y",     _p.pos().y());
             setParamAsFloat("Z",     _p.pos().z());
           break;
-          case Projector::FREE:
+          case Projector::PERIPHERAL:
             setParamAsFloat("Delta Yaw",    _p.deltaYaw().degrees());
             setParamAsFloat("Distance",     _p.distanceCenter());
             setParamAsFloat("Tower Height", _p.towerHeight());
@@ -147,7 +147,6 @@ namespace omni {
         if (!tuning() || signalsBlocked()) return;
 
         auto& _p = tuning()->projector();
-          
         _p.setYaw(getParamAsFloat("Yaw"));
         _p.setPitch(getParamAsFloat("Pitch"));
         _p.setRoll(getParamAsFloat("Roll"));
