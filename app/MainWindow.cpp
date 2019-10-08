@@ -183,12 +183,16 @@ MainWindow::MainWindow(QMainWindow *parent) :
     connect(ui_->dockSceneWidget, SIGNAL(unitChanged()),
             ui_->tuningList, SLOT(updateUnits()));
 
-    // Update all views when input has changed
-    connect(ui_->dockInputsWidget, &omni::ui::Input::inputIndexChanged, [this]() {
-        modified();
-        setMode();
-        updateAllViews();
-    });
+    connect(ui_->dockInputsWidget, SIGNAL(
+                  inputIndexChanged()),                 this,
+                SLOT(modified()));
+
+        connect(ui_->dockInputsWidget, SIGNAL(
+                  inputIndexChanged()),                 this,
+                SLOT(setMode()));
+        connect(ui_->dockInputsWidget, SIGNAL(
+                  inputChanged()),                 this,
+                SLOT(updateAllViews()));
 
     // Update all views when mapping mode has changed
     connect(ui_->dockMappingWidget, &omni::ui::Mapping::dataModelChanged, [this]() {
