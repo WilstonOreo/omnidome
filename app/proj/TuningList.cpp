@@ -97,6 +97,7 @@ namespace omni {
             void TuningList::addTuning()
             {
                 omni::proj::Projector _projector;
+                _projector.scale(dataModel()->scene().size());
                 if (dataModel()->tunings().current())
                 {
                     // Set setup id from last tuning
