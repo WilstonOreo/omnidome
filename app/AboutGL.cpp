@@ -65,7 +65,6 @@ bool AboutGL::initialize()
     shader_->link();
 
     QImage _image(QString(":/omnicredits.png"));//, QImage::Format_ARGB32);
-    
     tex_.reset(new QOpenGLTexture(_image.rgbSwapped().mirrored()));
 
     _.glFinish();

@@ -367,35 +367,3 @@ QScrollBar::sub-line:horizontal:hover {
     border-image: url(:/arrows/f8f8f8_180.png);
 }
 
-
-/* Slider */
-QSlider {
-    background-color: #3d3d3d;
-    border: 2.5px solid #3d3d3d;
-    color: #5e5e5e
-}
-
-QSlider::groove:horizontal {
-    border: 0px solid #3d3d3d;
-    background: #00F472;
-    margin: 2.5px 0;
-    border-radius: 1px;
-}
-
-QSlider::handle:horizontal {
-    background: #3d3d3d;
-    border: none;
-    width: 0px;
-    height: 14px;
-    margin: -4px 0;
-    border-radius: 1px;
-}
-
-
-QSlider::add-page:horizontal {
-    background: #3d3d3d;
-}
-
-QSlider::sub-page:horizontal {
-    background: #00F472;
-}

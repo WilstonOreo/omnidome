@@ -30,8 +30,6 @@ namespace omni {
       QString _fragmentSrc =
         ShaderCompiler::compile(":/shaders/" + QString(_filename) + ".frag");
 
-      qDebug() << _vertSrc << _fragmentSrc;
-
       _s.addShaderFromSourceCode(QOpenGLShader::Vertex,
                                  _vertSrc);
       _s.addShaderFromSourceCode(QOpenGLShader::Fragment,

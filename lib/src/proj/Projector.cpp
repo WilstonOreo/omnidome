@@ -208,10 +208,10 @@ namespace omni {
       _map("fov", fov_);
       _map("keystone", keystone_);
       _map("aspectRatio", aspectRatio_);
-      _map("deltaYaw",deltaYaw_)
-          ("distanceCenter",distanceCenter_)
-          ("towerHeight",towerHeight_)
-          ("shift",shift_);
+      _map("deltaYaw",deltaYaw_);
+      _map("distanceCenter",distanceCenter_);
+      _map("towerHeight",towerHeight_);
+      _map("shift",shift_);
       _os << _map;
     }
 
@@ -228,6 +228,7 @@ namespace omni {
       _map.get("distanceCenter",distanceCenter_);
       _map.get("towerHeight",towerHeight_);
       _map.get("shift",shift_);
+
       update();
     }
 

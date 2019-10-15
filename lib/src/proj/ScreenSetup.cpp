@@ -43,7 +43,7 @@ namespace omni {
           QSize(1280,   1024),
           QSize(1920,   1080),
           QSize(1920,   1200),
-          QSize(2560, 1440)
+          QSize(2560,   1440)
         };
 
       return _sizes;

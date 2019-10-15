@@ -174,12 +174,9 @@ namespace omni {
 
                     double _recMinimum = - 1.0 / minimum();
                     double _max = maximum();
-                    double _posOne = valueToPos(1.0);
 
                     double _v = (_pos - _rect.left()) / _rect.width() *
                             (maximum() - _recMinimum) + _recMinimum;
-
-                    qDebug() << "valueFromPos: "<< _v;
 
                     if (_v < 0.0) {
                         _v = (_v - minimum()) * (1.0 / minimum() + maximum() /
@@ -188,16 +185,6 @@ namespace omni {
                         _v = (_v + 1.0) / (_max - minimum() + 1.0) * (_max - minimum());
                     }
                     return _v;
-
-                    qDebug() << "valueFromPos: " << _recMinimum << " " << _max << " " << _posOne << " " << _pos;
-                    if (_pos < _posOne) {
-                        return - 1.0 / (_pos - _rect.left()) / _rect.width() *
-                                    (_max - _recMinimum) + _recMinimum;
-                    } else {
-                        return ((_pos - _posOne) - _rect.left()) / (_rect.width() - _posOne) *
-                            (maximum() - minimum()) + minimum();
-                    }
-                    ///@todo Handle RECIPROCAL mode
                 }
             }
 
