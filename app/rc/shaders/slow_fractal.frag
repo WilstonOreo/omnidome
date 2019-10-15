@@ -40,7 +40,10 @@ void main()
 
   uv += vec2( - aspect / tex_aspect * 0.5 + 0.5,0.0);
   uv = clamp(uv,0.0,1.0);
-  col += vec4(5.0*vec3(1.0 - texture2D(tex,uv).r),0.0);
 
-	gl_FragColor = col;
+  float val = texture2D(tex,uv).r;
+
+  col = vec4(mix(vec3(2.0),col.rgb * 0.8,vec3(val)),1.0);
+
+  gl_FragColor = col;
 }
