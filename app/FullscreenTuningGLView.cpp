@@ -39,9 +39,6 @@ namespace omni {
 
       QWidget::setGeometry(_screen->geometry());
       this->hide();
-
-      connect(QGuiApplication::instance(),SIGNAL(screenRemoved(QScreen*)),
-          this,SLOT(deleteIfScreenRemoved(QScreen*)));      
     }
 
     FullscreenTuningGLView::~FullscreenTuningGLView() {
