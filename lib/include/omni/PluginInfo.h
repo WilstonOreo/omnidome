@@ -112,7 +112,7 @@ namespace omni {
   Q_CLASSINFO("type", T)
 
 #define OMNI_PLUGIN_INFO(NAME, DESC)             \
-  Q_CLASSINFO("version", OMNIDOME_VERSION_STRING) \
+  Q_CLASSINFO("version", OMNI_VERSION_STRING) \
   OMNI_PLUGIN_AUTHOR("Michael Winkelmann")                     \
   OMNI_PLUGIN_URL("http://omnido.me")        \
   OMNI_PLUGIN_NAME(NAME)                          \

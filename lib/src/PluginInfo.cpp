@@ -50,7 +50,7 @@ namespace omni {
     }
 
     QString PluginInfo::versionString() const {
-        return QString("%1.%2.%3.%4")
+        return QString("%1.%2.%3")
             .arg(majorVersion())
             .arg(minorVersion())
             .arg(revision())

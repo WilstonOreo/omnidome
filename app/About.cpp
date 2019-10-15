@@ -28,6 +28,8 @@ About::About(QWidget *_parent) :
   ui_(new Ui::About())
 {
   ui_->setupUi(this);
+  ui_->lbVersion->setText(QString("Version %1").arg(OMNI_VERSION_STRING));
+  ui_->lbRevision->setText(QString("From revision %1").arg(OMNI_GIT_REVISION));
 }
 
 About::~About()

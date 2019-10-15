@@ -32,7 +32,7 @@ namespace omni {
             QApplication(ac, av)
         {
             QCoreApplication::setApplicationName("Omnidome");
-            QCoreApplication::setApplicationVersion(OMNIDOME_VERSION_STRING);
+            QCoreApplication::setApplicationVersion(OMNI_VERSION_STRING);
             QCoreApplication::setOrganizationName("Michael Winkelmann");
             QCoreApplication::setOrganizationDomain("Michael Winkelmann.org / omnido.me");
             loadPlugins();

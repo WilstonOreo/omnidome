@@ -107,8 +107,7 @@ MainWindow::MainWindow(QMainWindow *parent) :
     ui_->pages->setLayout(_layout);
   }
 
-  ui_->statusbar->showMessage(QString("Omnidome VR") +
-                              QString(OMNIDOME_VERSION_STRING));
+  ui_->statusbar->showMessage(QString("Omnidome %1").arg(OMNI_VERSION_STRING));
 
   // Setup add projector template menu
   {

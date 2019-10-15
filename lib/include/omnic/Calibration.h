@@ -43,7 +43,7 @@ namespace omnic {
 
     Calibration() {
       // Set read-only header string
-      std::string header_ = std::string("OMNIC_generated_by_omnidome_v" + std::string(OMNICALIBRATION_VERSION_STRING));
+      std::string header_ = std::string("OMNIC_generated_by_omnidome_v" + std::string(OMNI_VERSION_STRING));
       header_.resize(headerSize(),' ');
     }
 

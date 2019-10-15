@@ -173,13 +173,13 @@ namespace omni
 
   void Session::toStream(QDataStream& _os) const {
       PropertyMap _map;
-      _map("version",OMNIDOME_VERSION_STRING);
-      _map("tunings",tunings_)
+      _map("version",OMNI_VERSION_STRING);
+      _map("scene",scene_)
+          ("tunings",tunings_)
           ("mapping",mapping_)
           ("inputs",inputs_)
           ("canvas",canvas_)
           ("mode",mode_)
-          ("scene",scene_)
           ("blendSettings",blendSettings_)
           ("exportSettings",exportSettings_);
       _os << _map;
@@ -191,6 +191,7 @@ namespace omni
 
       PropertyMap _map;
       _is >> _map;
+      _map.get("scene",scene_);
       _map.get("tunings",tunings_);
       _map.getPtr("mapping",[&](Id const& _id) {
          return setMapping(_id);
@@ -200,7 +201,6 @@ namespace omni
           return setCanvas(_id);
       });
       _map.get("mode",mode_);
-      _map.get("scene",scene_);
       _map.get("blendSettings",blendSettings_);
       _map.get("exportSettings",exportSettings_);
   }

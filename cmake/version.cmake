@@ -28,26 +28,35 @@
 ################################################################################
 
 
-FUNCTION(omni_set_version_for_project MINOR MAJOR PATCH PROJECT_NAME) 
-  string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
-
-  set( ${PROJECT_NAME}_MAJOR_VERSION ${MINOR} CACHE STRING "Major Version for ${PROJECT_NAME}")
-  set( ${PROJECT_NAME}_MINOR_VERSION ${MAJOR} CACHE STRING "Minor Version for ${PROJECT_NAME}")
-  set( ${PROJECT_NAME}_PATCH_VERSION ${PATCH} CACHE STRING "Patch Version for ${PROJECT_NAME}")
-  set( ${PROJECT_NAME}_VERSION_STRING 
-      "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${${PROJECT_NAME}_PATCH_VERSION}" CACHE STRING "${PROJECT_NAME} Version String")
+FUNCTION(omni_set_version MINOR MAJOR PATCH)
+  set( OMNI_MAJOR_VERSION ${MINOR} CACHE STRING "Major Version for Omnidome")
+  set( OMNI_MINOR_VERSION ${MAJOR} CACHE STRING "Minor Version for Omnidome")
+  set( OMNI_PATCH_VERSION ${PATCH} CACHE STRING "Patch Version for Omnidome")
+  set( OMNI_VERSION_STRING
+      "${OMNI_MAJOR_VERSION}.${OMNI_MINOR_VERSION}.${OMNI_PATCH_VERSION}" CACHE STRING "Omnidome Version String")
   
-  add_definitions(
-    -D${PROJECT_NAME_UPPER}_VERSION_STRING="${${PROJECT_NAME}_VERSION_STRING}"
-    -D${PROJECT_NAME_UPPER}_MAJOR_VERSION=${${PROJECT_NAME}_MAJOR_VERSION}
-    -D${PROJECT_NAME_UPPER}_MINOR_VERSION=${${PROJECT_NAME}_MINOR_VERSION}
-    -D${PROJECT_NAME_UPPER}_PATCH_VERSION=${${PROJECT_NAME}_PATCH_VERSION}
-  )
+  add_compile_definitions(OMNI_VERSION_STRING="${OMNI_VERSION_STRING}")
+  add_compile_definitions(OMNI_MAJOR_VERSION=${OMNI_MAJOR_VERSION})
+  add_compile_definitions(OMNI_MINOR_VERSION=${OMNI_MINOR_VERSION})
+  add_compile_definitions(OMNI_PATCH_VERSION=${OMNI_PATCH_VERSION})
+  MESSAGE(STATUS "Omnidome ${OMNI_VERSION_STRING}")
 ENDFUNCTION()
 
+find_package(Git)
 
-# Set version of the main app
-FUNCTION (omni_set_version MINOR MAJOR PATCH)
-  omni_set_version_for_project(${MINOR} ${MAJOR} ${PATCH} Omnidome)
-  MESSAGE(STATUS "${OMNI_PROJECT_NAME} ${${OMNI_PROJECT_NAME}_VERSION_STRING}")
-ENDFUNCTION()
+if(GIT_FOUND)
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} -C ${CMAKE_SOURCE_DIR} rev-list --max-count=1 HEAD
+        OUTPUT_VARIABLE OMNI_GIT_REVISION
+        ERROR_QUIET
+        )
+    if(NOT ${OMNI_GIT_REVISION} STREQUAL "")
+        string(STRIP ${OMNI_GIT_REVISION} OMNI_GIT_REVISION)
+    endif()
+    message(STATUS "Current git revision is ${OMNI_GIT_REVISION}")
+    set(OMNI_GIT_REVISION CACHE STRING "Git revision string")
+    add_compile_definitions(OMNI_GIT_REVISION="${OMNI_GIT_REVISION}")
+
+else()
+    set(OMNI_GIT_REVISION "unknown")
+endif()

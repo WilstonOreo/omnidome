@@ -28,26 +28,6 @@
 #ifndef OMNIC_VERSION_H_
 #define OMNIC_VERSION_H_
 
-#ifndef OMNICALIBRATION_MAJOR_VERSION 
-  #define OMNICALIBRATION_MAJOR_VERSION 1
-#endif
-
-#ifndef OMNICALIBRATION_MINOR_VERSION 
-  #define OMNICALIBRATION_MINOR_VERSION 0
-#endif
-
-#ifndef OMNICALIBRATION_PATCH_VERSION 
-  #define OMNICALIBRATION_PATCH_VERSION 0
-#endif
-
-#ifndef OMNICALIBRATION_VERSION
-  #define OMNICALIBRATION_VERSION OMNICALIBRATION_MAJOR_VERSION.OMNICALIBRATION_MINOR_VERSION.OMNICALIBRATION_PATCH_VERSION
-#endif 
-
-#ifndef OMNICALIBRATION_VERSION_STRING 
-  #define OMNICALIBRATION_VERSION_STRING std::string(#OMNICALIBRATION_VERSION)
-#endif 
-
 #include <omnic/util.h>
 
 namespace omnic {
@@ -55,9 +35,9 @@ namespace omnic {
   struct Version {
     /// Construct with latest version by default
     Version(
-        uint8_t _major = OMNICALIBRATION_MAJOR_VERSION,
-        uint8_t _minor = OMNICALIBRATION_MINOR_VERSION,
-        uint16_t _patch = OMNICALIBRATION_PATCH_VERSION) : 
+        uint8_t _major = OMNI_MAJOR_VERSION,
+        uint8_t _minor = OMNI_MINOR_VERSION,
+        uint16_t _patch = OMNI_PATCH_VERSION) :
       major_(_major),
       minor_(_minor),
       patch_(_patch) {}

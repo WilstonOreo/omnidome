@@ -29,7 +29,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="omni::ui::AboutGL" name="tabAbout">
       <attribute name="title">
@@ -42,6 +42,20 @@
        <string>Plugins</string>
       </attribute>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lbVersion">
+     <property name="text">
+      <string>Version %1</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lbRevision">
+     <property name="text">
+      <string>From revision %1</string>
+     </property>
     </widget>
    </item>
    <item>

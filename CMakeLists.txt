@@ -38,8 +38,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
       ENDIF("${isSystemDir}" STREQUAL "-1")
 ENDIF()
 
-omni_set_version_for_project(1 0 0 OMNICALIBRATION)
-omni_set_version(2 0 0)
+omni_set_version(1 1 0)
 
 add_subdirectory(lib)
 add_subdirectory(widgetlib)
