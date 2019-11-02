@@ -110,7 +110,14 @@ ADD_CUSTOM_TARGET(
         VERBATIM
 )
 ELSE()
+
 add_executable(omnidome ${SOURCES})
+if (WIN32)
+    target_sources(omnidome PRIVATE omnidome.rc)
+endif()
+
+
+
 ENDIF()
 
 target_include_directories(omnidome
