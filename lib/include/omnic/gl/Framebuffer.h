@@ -59,9 +59,8 @@ namespace omnic {
 
         /// Initialize with width and height
         void initialize(int _w, int _h) {
-#if OMNIC_USE_QT_GL 
           initializeOpenGLFunctions();
-#endif
+
           if (width_ == _w && height_ == _h) return;
 
           destroy();
