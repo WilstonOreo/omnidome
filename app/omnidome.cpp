@@ -72,7 +72,7 @@ int main(int ac, char *av[])
 
 //  _format.setVersion(3,3);
   _format.setProfile(QSurfaceFormat::CompatibilityProfile);
-#ifdef DEBUG
+#ifdef QT_DEBUG
   _format.setOption(QSurfaceFormat::DebugContext);
 #endif
   QSurfaceFormat::setDefaultFormat(_format);
@@ -81,7 +81,7 @@ int main(int ac, char *av[])
   omni::ui::Application _a(ac, av);
 
   /// Command line parser is only available in debug mode
-#ifdef DEBUG
+#ifdef QT_DEBUG
   CommandLineParser parser;
   parser.parse(_a);
 
@@ -94,10 +94,11 @@ int main(int ac, char *av[])
   ui::MainWindow _w;
   _w.move(QApplication::primaryScreen()->geometry().topLeft());
 
+#if !defined (Q_OS_WIN)
   Q_INIT_RESOURCE(libomni);
-
+#endif
   // Load mapping session from given commandline argument when in release mode
-#ifndef DEBUG
+#ifndef QT_DEBUG
 
   if (ac == 2)
   {
