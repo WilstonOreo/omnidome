@@ -20,12 +20,17 @@
 #include <omni/input/Interface.h>
 
 #include <omni/util.h>
-//#include "InputPreview.h"
 
 namespace omni {
   namespace input {
+    Interface::factory_type Interface::factory_;
+
     QWidget * Interface::widget() {
-      return nullptr; // new ui::InputPreview(this);
+      return nullptr;
+    }
+
+    Interface::factory_type& Interface::factory() {
+        return factory_;
     }
   }
 }

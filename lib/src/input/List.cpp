@@ -63,7 +63,7 @@ namespace omni {
 
     Input * List::addInput(Id const& _typeId)
     {
-      std::unique_ptr<Input> _input(Factory::create(_typeId));
+      std::unique_ptr<Input> _input(Input::factory().create(_typeId));
 
       if (!_input) return nullptr;
 

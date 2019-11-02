@@ -53,7 +53,7 @@ namespace omni
 
   Mapping* Session::setMapping(Id const& _id)
   {
-    mapping_.reset(MappingFactory::create(_id));
+    mapping_.reset(Mapping::factory().create(_id));
     if (mapping_) {
       mapping_->setScene(&scene_);
     }
@@ -82,7 +82,7 @@ namespace omni
 
   Canvas* Session::setCanvas(Id const& _id)
   {
-    canvas_.reset(canvas::Factory::create(_id));
+    canvas_.reset(Canvas::factory().create(_id));
     return canvas_.get();
   }
 

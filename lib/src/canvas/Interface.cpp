@@ -26,6 +26,8 @@
 
 namespace omni {
     namespace canvas {
+        Interface::factory_type Interface::factory_;
+
         Interface::Interface() {
             // Disable scaling and translation by default
             transform_.setTranslationEnabled(false);
@@ -100,6 +102,10 @@ namespace omni {
         /// Read mapping from stream
         void Interface::fromPropertyMap(PropertyMap const& _map) {
             _map.get("transform",transform_);
+        }
+
+        Interface::factory_type& Interface::factory() {
+            return factory_;
         }
     }
 }

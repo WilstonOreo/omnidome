@@ -36,7 +36,7 @@ namespace omni {
             this->setup(ui_);
 
             // Add canvas types from Factory
-            for (auto& _idCanvasClass : omni::canvas::Factory::classes())
+            for (auto& _idCanvasClass : omni::canvas::Interface::factory().classes())
             {
                 QString _id = _idCanvasClass.first.str();
                 ui_->boxCanvasSelect->addItem(QIcon(QString(":/canvas/") + _id +

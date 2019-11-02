@@ -61,9 +61,9 @@ namespace omni
     {
       std::map<QString,QMenu*> _categoryMenus;
       /// Find all categories
-      for (auto& _idInputClass : omni::input::Factory::classes())
+      for (auto& _idInputClass : omni::input::Interface::factory().classes())
       {
-        auto* _input = omni::input::Factory::create(_idInputClass.first);
+        auto* _input = omni::input::Interface::factory().create(_idInputClass.first);
         if (!_input) continue;
 
         auto _id = _idInputClass.first.str();

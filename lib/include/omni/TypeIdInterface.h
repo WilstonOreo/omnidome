@@ -43,7 +43,7 @@ namespace omni {
 #define OMNI_REGISTER_CLASS(FACTORY, CLASS_NAME) \
   OMNI_TYPEID(# CLASS_NAME)                      \
   virtual void registerInFactory() const override {       \
-    FACTORY::template reg<CLASS_NAME>();         \
+    factory().template reg<CLASS_NAME>(); \
   }
 
 #endif /* OMNI_TYPEIDINTERFACE_H_ */

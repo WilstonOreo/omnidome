@@ -45,6 +45,8 @@ namespace omni {
         typedef std::function<void ()>                        callback_type;
         typedef std::set<QString> categoryset_type;
 
+        using factory_type = AbstractFactory<Interface>;
+
         Interface() {}
 
         /// Virtual destructor
@@ -118,6 +120,8 @@ namespace omni {
         /// Deserialize from property map
         virtual void          fromPropertyMap(PropertyMap const&) {}
 
+        static factory_type& factory();
+
       private:
         inline virtual void activate() {
         }
@@ -136,6 +140,7 @@ namespace omni {
 
         Interface const *parent_ = nullptr;
         std::map<int,callback_type>  updatedCallbacks_;
+        static factory_type factory_;
     };
 
     /// Input Factory typedef

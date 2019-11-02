@@ -27,6 +27,8 @@
 
 namespace omni {
     namespace mapping {
+        Interface::factory_type Interface::factory_;
+
         Interface::Interface()
         {
             // Disable scaling and translation by default
@@ -132,10 +134,10 @@ namespace omni {
         {
             IdSet _ids;
 
-            for (auto& _mappingId : Factory::classes())
+            for (auto& _mappingId : factory().classes())
             {
                 auto& _id = _mappingId.first;
-                std::unique_ptr<Mapping> _mapping(Factory::create(_id));
+                std::unique_ptr<Mapping> _mapping(factory().create(_id));
 
                 if (_mapping->isUVW()) _ids.insert(_id);
             }
@@ -146,10 +148,10 @@ namespace omni {
         {
             IdSet _ids;
 
-            for (auto& _mappingId : Factory::classes())
+            for (auto& _mappingId : factory().classes())
             {
                 auto& _id = _mappingId.first;
-                std::unique_ptr<Mapping> _mapping(Factory::create(_id));
+                std::unique_ptr<Mapping> _mapping(factory().create(_id));
 
                 if (!_mapping->isUVW()) _ids.insert(_id);
             }
@@ -215,6 +217,10 @@ namespace omni {
                 .get("boundToCanvas",boundToCanvas_)
                 .get("flipHorizontal",flipHorizontal_)
                 .get("flipVertical",flipVertical_);
+        }
+
+        Interface::factory_type& Interface::factory() {
+            return factory_;
         }
     }
 }

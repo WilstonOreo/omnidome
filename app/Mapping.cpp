@@ -35,7 +35,7 @@ namespace omni {
                                               QString)), this,
               SLOT(selectMappingType(QString)));
 
-      for (auto& _idMappingClass : omni::mapping::Factory::classes()) {
+      for (auto& _idMappingClass : omni::mapping::Interface::factory().classes()) {
         QString _id = _idMappingClass.first.str();
         ui_->boxMappingSelect->addItem(QIcon(QString(":/mapping/") + _id +
                                              QString(".png")), _id);

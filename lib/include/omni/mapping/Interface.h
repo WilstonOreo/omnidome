@@ -56,6 +56,8 @@ namespace omni {
       public PropertyMapSerializer,
       public visual::Interface {
       public:
+        using factory_type = AbstractFactory<Interface>;
+
         Interface();
 
         virtual ~Interface();
@@ -147,6 +149,8 @@ namespace omni {
          **/
         void               setScene(visual::Scene const*);
 
+        static factory_type& factory();
+
       protected:
         std::unique_ptr<QOpenGLShaderProgram> shader_;
 
@@ -168,6 +172,7 @@ namespace omni {
         bool flipVertical_   = false;
 
         visual::Scene const* scene_ = nullptr;
+        static factory_type factory_;
     };
 
     /// Abstract mapping factory

@@ -48,6 +48,8 @@ namespace omni {
       public PropertyMapSerializer,
       public visual::Interface {
       public:
+        using factory_type = AbstractFactory<Interface>;
+
         Interface();
 
         /// Virtual destructor
@@ -103,12 +105,15 @@ namespace omni {
         /// Read mapping from stream
         virtual void       fromPropertyMap(PropertyMap const&);
 
+        static factory_type& factory();
+
       protected:
         bool needsUpdate_ = true;
 
       private:
         AffineTransform transform_;
         ViewMode viewMode_ = ViewMode::BOTH;
+        static factory_type factory_;
     };
 
     /// Our canvas factory
