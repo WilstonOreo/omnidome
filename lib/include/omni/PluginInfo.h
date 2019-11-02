@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QString>
 #include <QMetaClassInfo>
+#include <omni/global.h>
 
 namespace omni {
   class PluginLoader;
@@ -30,7 +31,7 @@ namespace omni {
   /**@brief Holds meta information about a plugins
      @detail Only plugin loader can construct a plugin info
    **/
-  class PluginInfo {
+  class OMNI_EXPORT PluginInfo {
     public:
       /// Only plugin loader can construct a plugin info
       friend class PluginLoader;

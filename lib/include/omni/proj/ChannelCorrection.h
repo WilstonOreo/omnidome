@@ -19,12 +19,12 @@
 #ifndef OMNI_PROJ_CHANNELCORRECTION_H_
 #define OMNI_PROJ_CHANNELCORRECTION_H_
 
-#include <qglobal.h>
+#include <omni/global.h>
 
 namespace omni {
   namespace proj {
     /// Brightness, contrast and gamma correction for a single color channel
-    class ChannelCorrection {
+    class OMNI_EXPORT ChannelCorrection {
       public:
         /// Return gamma value
         double      gamma() const;

@@ -34,7 +34,7 @@ namespace omni {
     }
 
     /// A widget for editing an affine transformation
-    class AffineTransform :
+    class OMNIWIDGET_EXPORT AffineTransform :
       public QWidget,
       public mixin::UnsharedDataModel<AffineTransform,omni::AffineTransform>,
       private mixin::Scale<RangedFloat>{

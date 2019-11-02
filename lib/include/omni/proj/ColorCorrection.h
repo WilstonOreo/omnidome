@@ -27,7 +27,7 @@
 namespace omni {
   namespace proj {
     /// Color correction for RGB color space
-    class ColorCorrection {
+    class OMNI_EXPORT ColorCorrection {
       public:
         bool                     isUsed() const;
         void                     setUsed(bool _isUsed);

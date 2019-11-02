@@ -34,7 +34,7 @@ namespace omni {
   namespace ui {
     /**@brief A widget which holds sub-widgets for manipulating parameters
     **/
-    class ParameterWidget :
+    class OMNIWIDGET_EXPORT ParameterWidget :
       public QWidget,
       public mixin::Scale<omni::ui::RangedFloat>{
         Q_OBJECT

@@ -21,11 +21,12 @@
 #define OMNI_VISUAL_RECTANGLE_H_
 
 #include <QRectF>
+#include <omni/global.h>
 
 namespace omni {
   namespace visual {
     /// Visualizer helper class for drawing a rectangle in an OpenGL context
-    struct Rectangle
+    struct OMNI_EXPORT Rectangle
     {
       /// Draw rectangle from border coordinates
       static void draw(float _left = -0.5,

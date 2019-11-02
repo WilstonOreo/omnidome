@@ -27,7 +27,7 @@
 namespace omni {
   namespace media {
     /// Base interface for loading external media files
-    class Location {
+    class OMNI_EXPORT Location {
       public:
         Location();
         Location(QString const&);
@@ -82,9 +82,9 @@ namespace omni {
   }
 }
 
-QDataStream& operator>>(QDataStream&,
+QDataStream& OMNI_EXPORT operator>>(QDataStream&,
                         omni::media::Location&);
-QDataStream& operator<<(QDataStream&,
+QDataStream& OMNI_EXPORT operator<<(QDataStream&,
                         omni::media::Location const&);
 
 

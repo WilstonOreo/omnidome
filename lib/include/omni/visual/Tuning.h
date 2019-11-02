@@ -37,7 +37,7 @@ namespace omni
     class Session;
 
     /// Tuning visualizer
-    class Tuning
+    class OMNI_EXPORT Tuning
     {
     public:
       Tuning(omni::proj::Tuning&);

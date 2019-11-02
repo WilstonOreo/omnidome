@@ -30,7 +30,7 @@ namespace omni {
   namespace ui {
     /**@brief Parameter widget for getting and setting canvas parameters
     **/
-    class CanvasParameters :
+    class OMNIWIDGET_EXPORT CanvasParameters :
       public ParameterWidget,
       public mixin::UnsharedDataModel<CanvasParameters,Session>{
         Q_OBJECT

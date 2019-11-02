@@ -35,7 +35,7 @@ namespace omni {
      Input List is the root input of a session's input tree.
      Input List is serializable via QDataStream.
      **/
-    class List : 
+    class OMNI_EXPORT List :
       public PropertyMapSerializer,
       private std::vector< std::unique_ptr< Input > >
     {

@@ -29,7 +29,7 @@
 namespace omni {
   namespace proj {
     /// A projector with a transformation matrix and setup
-    class Projector : public EulerAngles {
+    class OMNI_EXPORT Projector : public EulerAngles {
       public:
         enum Setup {
           PERIPHERAL,

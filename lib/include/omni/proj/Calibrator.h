@@ -34,7 +34,7 @@
 namespace omni {
   namespace proj {
     /// Calibration data generator
-    class Calibrator : public omnic::CalibratorInterface {
+    class OMNI_EXPORT Calibrator : public omnic::CalibratorInterface {
     public:
       /// Create calibration from session
       Calibrator(Session const&);

@@ -25,13 +25,14 @@
 #include <QDataStream>
 #include <boostx/type_info.hpp>
 #include <boostx/factory.hpp>
+#include <omni/global.h>
 
 namespace omni {
   /**@brief Id type for classes
    * @detail An Id must only contain alpha numerical characters
    *         and must begin with a letter
    **/
-  struct Id
+  struct OMNI_EXPORT Id
   {
     /// Default constructor
     Id();
@@ -98,11 +99,9 @@ namespace std {
 
 
 /// Serialize omni::Id to stream
-QDataStream& operator<<(QDataStream&,
-                        omni::Id const&);
+OMNI_EXPORT QDataStream& operator<<(QDataStream&, omni::Id const&);
 
 /// Deserialize omni::Id from stream
-QDataStream& operator>>(QDataStream&,
-                        omni::Id&);
+OMNI_EXPORT QDataStream& operator>>(QDataStream&, omni::Id&);
 
 #endif /* OMNI_ID_H_ */

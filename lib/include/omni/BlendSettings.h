@@ -24,7 +24,7 @@
 
 namespace omni {
   /// Common blend mask settings for the all tunings in a session
-  class BlendSettings {
+  class OMNI_EXPORT BlendSettings {
     public:
       /// Blend Mask display colorColorMode
       enum class ColorMode

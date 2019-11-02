@@ -21,12 +21,13 @@
 #define OMNI_GEOMETRY_VERTEX2D_H_
 
 #include <QVector2D>
+#include <omni/global.h>
 
 namespace omni {
   namespace geometry {
     /// A Warp vertex is a geometry entity with a position, normal and texture
     // coordinates
-    struct Vertex2D {
+    struct OMNI_EXPORT Vertex2D {
       /// Default constructor
       Vertex2D();
 

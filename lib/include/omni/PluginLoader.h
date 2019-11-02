@@ -10,7 +10,7 @@ namespace omni {
   /**@brief PluginLoader singleton to load plugins from multiple directories
      @detail Plugins have the extension omnix
    **/
-  class PluginLoader {
+  class OMNI_EXPORT PluginLoader {
     public:
       PluginLoader(
         std::vector<QDir>const& _paths = std::vector<QDir>(),

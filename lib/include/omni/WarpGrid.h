@@ -29,7 +29,7 @@ namespace omni {
   /**@brief A warp grid is a 2D bezier grid with MxN points
      @detail Default size 6x6 points. Selected points are also stored:
    **/
-  class WarpGrid {
+  class OMNI_EXPORT WarpGrid {
     public:
       enum class Interpolation {
         BICUBIC,

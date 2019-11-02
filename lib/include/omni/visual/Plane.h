@@ -30,7 +30,7 @@ namespace omni {
        @detail Vertex data is not stored on host, it is copied to GPU directly.
                Plane has dimensions [-0.5,-0.5] - [0.5,0.5]
      **/
-    class Plane : public visual::Interface {
+    class OMNI_EXPORT Plane : public visual::Interface {
       public:
         typedef std::function<void (QVector2D&, size_t, size_t)>
           texcoord_transform_functor_type;

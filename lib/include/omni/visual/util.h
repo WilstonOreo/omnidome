@@ -37,7 +37,7 @@ namespace omni {
   namespace visual {
     namespace util {
       /// Get current time in nano seconds
-      double now();
+      double OMNI_EXPORT now();
 
 
       template<typename F>
@@ -53,7 +53,7 @@ namespace omni {
 
 
       /// Calculate view rectangle on 2D OpenGL surface
-      QRectF viewRect(int _imageWidth,
+      QRectF OMNI_EXPORT   viewRect(int _imageWidth,
                                     int _imageHeight,
                                     int _canvasWidth,
                                     int _canvasHeight,
@@ -91,11 +91,11 @@ namespace omni {
       }
 
       /// Reset openGL state to its defaults
-      void resetOpenGLState();
+      void OMNI_EXPORT resetOpenGLState();
 
 
       /// Convenience function for handling glGetError()
-      void checkOpenGLError();
+      void OMNI_EXPORT checkOpenGLError();
       
       /// Draw into QOpenGLFramebufferObject with given projection and model
       // view operations

@@ -27,7 +27,7 @@
 namespace omni {
   namespace canvas {
     /// A basic dome canvas width a radius/diameter and offset
-    class Dome : public Envelope {
+    class OMNI_EXPORT Dome : public Envelope {
       public:
 
         Dome();

@@ -22,18 +22,19 @@
 
 #include <functional>
 #include <QOpenGLContext>
+#include <omni/global.h>
 
 namespace omni {
   namespace visual {
     using ContextFunctor = std::function<void (QOpenGLFunctions&)>;
 
     /// Do OpenGL operations with current context, if it exists
-    void withCurrentContext(ContextFunctor);
+    void OMNI_EXPORT withCurrentContext(ContextFunctor);
 
-    void contextSwitch(QOpenGLContext*, ContextFunctor);
+    void OMNI_EXPORT contextSwitch(QOpenGLContext*, ContextFunctor);
 
     /// Switch to primary context to create OpenGL objects like textures etc
-    void primaryContextSwitch(ContextFunctor);
+    void OMNI_EXPORT primaryContextSwitch(ContextFunctor);
   }
 
   using visual::withCurrentContext;

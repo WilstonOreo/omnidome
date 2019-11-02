@@ -32,7 +32,7 @@ namespace omni {
     /**@brief Tuning List contains a list of tunings
      *@detail Tuning List is serializable via QDataStream
      **/
-    class TuningList : private std::vector<std::unique_ptr<Tuning> >{
+    class OMNI_EXPORT TuningList : private std::vector<std::unique_ptr<Tuning> >{
       public:
         TuningList(Session const&);
 

@@ -30,7 +30,7 @@ namespace omni
   {
     /**@brief Parameter widget for getting and setting mapping parameters
      **/
-    class MappingParameters :
+    class OMNIWIDGET_EXPORT MappingParameters :
         public ParameterWidget,
         public mixin::UnsharedDataModel<MappingParameters,mapping::Interface>
     {

@@ -27,7 +27,7 @@
 namespace omni {
   namespace ui {
     /// A slider with float value within a minimum and maximum
-    class RangedFloat :
+    class OMNIWIDGET_EXPORT RangedFloat :
       public AbstractInputWidget,
       private mixin::RangedValue<RangedFloat, double>{
         Q_OBJECT
@@ -126,7 +126,6 @@ namespace omni {
         void setScale(Scale);
 
       signals:
-        void   valueChanged();
         void   rangeChanged();
 
       protected:

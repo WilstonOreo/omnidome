@@ -21,11 +21,12 @@
 #define OMNI_VISUAL_INTERFACE_H_
 
 #include <QOpenGLFunctions>
+#include <omni/global.h>
 
 namespace omni {
   namespace visual {
     /// Basic visual interface
-    class Interface {
+    class OMNI_EXPORT Interface {
       public:
         virtual ~Interface() {}
 

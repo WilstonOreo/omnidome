@@ -27,7 +27,7 @@
 namespace omni {
   namespace input {
     /// Still image input
-    class Image : public QObject, public Interface {
+    class OMNIPLUGIN_EXPORT Image : public QObject, public Interface {
         Q_OBJECT
         Q_PLUGIN_METADATA(IID OMNI_INPUT_INTERFACE_IID)
         Q_INTERFACES(omni::input::Interface)

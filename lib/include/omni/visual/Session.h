@@ -30,7 +30,7 @@
 namespace omni {
   namespace visual {
     /// Base class for drawing a session
-    class Session {
+    class OMNI_EXPORT Session {
       public:
         /// Construct with reference to session
         Session(omni::Session const&);

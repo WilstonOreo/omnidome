@@ -51,7 +51,7 @@ namespace omni {
     /**@brief Mapping interface with one or several inputs and shader
      * @detail Holds inputs and shader
      */
-    class Interface :
+    class OMNI_EXPORT Interface :
       public TypeIdInterface,
       public PropertyMapSerializer,
       public visual::Interface {

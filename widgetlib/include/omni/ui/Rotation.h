@@ -26,7 +26,7 @@
 namespace omni {
   namespace ui {
     /// Rotation widget has three dials for rotation in X,Y,Z direction
-    class Rotation :
+    class OMNIWIDGET_EXPORT Rotation :
       public QWidget {
         Q_OBJECT
 

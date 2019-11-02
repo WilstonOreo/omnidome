@@ -27,7 +27,7 @@
 namespace omni {
   namespace ui {
     /// Input widget with an editor widget
-    class AbstractInputWidget :
+    class OMNIWIDGET_EXPORT AbstractInputWidget :
       public Widget,
       protected mixin::Editor<AbstractInputWidget, QWidget>{
       Q_OBJECT

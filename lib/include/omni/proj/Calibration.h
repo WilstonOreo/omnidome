@@ -23,6 +23,7 @@
 #include <QImage>
 #include <QRect>
 #include <QSize>
+#include <omni/global.h>
 #include <omnic/CalibratedProjector.h>
 #include <omnic/gl/Framebuffer.h>
 #include <omni/proj/ColorCorrection.h>
@@ -35,7 +36,7 @@ namespace omni {
     /**@brief Calibration generated from a tuning
        @detail Calibration has output mode with either UVW or TEXCOORDS
      **/
-    class Calibration {
+    class OMNI_EXPORT Calibration {
       public:
         typedef omnic::PixelData pixeldata_type;
 

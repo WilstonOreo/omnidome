@@ -36,7 +36,7 @@ namespace omni {
   namespace serialization {
     namespace exception {
       /// Checksum exception which is raids when checksums mismatch
-      class ChecksumError : public Error {
+      class OMNI_EXPORT ChecksumError : public Error {
         public:
           OMNI_EXCEPTION(ChecksumError)
 
@@ -62,7 +62,7 @@ namespace omni {
           QString id_;
       };
 
-      class PropertyExisting : public Error {
+      class OMNI_EXPORT PropertyExisting : public Error {
         public:
           OMNI_EXCEPTION(PropertyExisting)
 
@@ -76,7 +76,7 @@ namespace omni {
           QString id_;
       };
 
-      class PropertyNotExisting : public Error {
+      class OMNI_EXPORT PropertyNotExisting : public Error {
         public:
           OMNI_EXCEPTION(PropertyNotExisting)
 
@@ -93,7 +93,7 @@ namespace omni {
 
     /**@brief Property map to store properties in a QBuffer with an id
     **/
-    class PropertyMap : public Interface {
+    class OMNI_EXPORT PropertyMap : public Interface {
       public:
         PropertyMap();
 

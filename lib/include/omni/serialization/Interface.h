@@ -28,7 +28,7 @@ namespace omni {
     /**@brief Abstract interface for serialization
      * @detail Holds two member functions for serialization and deserialization
      */
-    class Interface {
+    class OMNI_EXPORT Interface {
       public:
         virtual ~Interface() {}
 

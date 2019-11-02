@@ -22,12 +22,13 @@
 
 #include <QVector2D>
 #include <QVector3D>
+#include <omni/global.h>
 
 namespace omni {
   namespace geometry {
     /// A vertex is a geometry entity with a position, normal and texture
     // coordinates
-    struct Vertex
+    struct OMNI_EXPORT Vertex
     {
       /// Default constructor
       Vertex();

@@ -32,7 +32,7 @@ namespace omni {
   }
 
   namespace render {
-    class Renderer {
+    class OMNI_EXPORT Renderer {
       public:
         Renderer(Session const& _session);
 

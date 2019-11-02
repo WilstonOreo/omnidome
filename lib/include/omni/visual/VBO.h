@@ -26,7 +26,7 @@
 namespace omni {
   namespace visual {
     /// A small Vertex Buffer Object class
-    struct VBO
+    struct OMNI_EXPORT VBO
     {
       VBO();
 

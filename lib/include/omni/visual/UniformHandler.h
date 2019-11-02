@@ -22,6 +22,7 @@
 #include <set>
 #include <functional>
 #include <QOpenGLShaderProgram>
+#include <omni/global.h>
 
 class QOpenGLFunctions;
 
@@ -31,7 +32,7 @@ namespace omni {
        @detail Cares about bind and releasing shaders and texture uniforms.
                Should only be used with the visual::useShader function.
      **/
-    struct UniformHandler {
+    struct OMNI_EXPORT UniformHandler {
       UniformHandler(QOpenGLFunctions& _gl,
                      QOpenGLShaderProgram& _shader);
 

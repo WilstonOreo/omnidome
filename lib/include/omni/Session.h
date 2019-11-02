@@ -38,7 +38,7 @@ namespace omni {
   /**@brief A session consists of a canvas, a mapping, a list of tunings and one
      or several inputs
    */
-  class Session {
+  class OMNI_EXPORT Session {
     public:
       typedef omni::visual::Session visualizer_type;
 

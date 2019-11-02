@@ -33,7 +33,7 @@ namespace omni {
   namespace visual {
     /**@brief A cartesian grid with lining adapted to distance
     **/
-    class Grid : public visual::Interface {
+    class OMNI_EXPORT Grid : public visual::Interface {
       public:
         Grid(CameraInterface const*);
         ~Grid();

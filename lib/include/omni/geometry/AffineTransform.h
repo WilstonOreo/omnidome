@@ -28,7 +28,7 @@ namespace omni {
   namespace geometry {
     /**@brief An affine linear transform with rotation, scale and translation
     **/
-    class AffineTransform {
+    class OMNI_EXPORT AffineTransform {
       public:
         AffineTransform();
 

@@ -34,7 +34,7 @@ namespace omni {
   namespace input {
 
     /// Generic input interface
-    class Interface :
+    class OMNI_EXPORT Interface :
       public TypeIdInterface,
       public PropertyMapSerializer {
       public:

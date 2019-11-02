@@ -27,7 +27,7 @@
 namespace omni {
   namespace visual {
     /// Visualizer for drawing a bounding box from bounds
-    class BoundingBox : public Interface {
+    class OMNI_EXPORT BoundingBox : public Interface {
       public:
         BoundingBox(omni::Box const& _box);
         ~BoundingBox();

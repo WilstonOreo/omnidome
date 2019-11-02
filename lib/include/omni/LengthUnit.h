@@ -25,7 +25,7 @@
 
 namespace omni {
   /// An encapsulation for length units
-  class LengthUnit {
+  class OMNI_EXPORT LengthUnit {
     public:
       /// Supported unit types
       enum Type {

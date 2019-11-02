@@ -21,11 +21,12 @@
 #define OMNI_GEOMETRY_BOX_H_
 
 #include <QVector3D>
+#include <omni/global.h>
 
 namespace omni {
   namespace geometry {
     /// A box defines a 3D bounding box with a min and max point
-    class Box {
+    class OMNI_EXPORT Box {
       public:
         /// Default constructor
         Box();

@@ -26,7 +26,7 @@
 
 namespace omni {
   namespace render {
-    class CalibratedProjector {
+    class OMNI_EXPORT CalibratedProjector {
       private:
         CalibratedProjector(proj::Tuning const *);
 

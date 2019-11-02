@@ -25,6 +25,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QPointF>
+#include <omni/ui/global.h>
 
 namespace omni {
 
@@ -32,7 +33,7 @@ namespace omni {
     /**@brief GLView for visualizing tunings or session
        @detail Holds shared_ptr to session as data model
      **/
-    class GLView :
+    class OMNIWIDGET_EXPORT GLView :
       public QOpenGLWidget,
       protected QOpenGLFunctions {
         Q_OBJECT

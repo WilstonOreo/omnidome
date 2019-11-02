@@ -30,7 +30,7 @@
 namespace omni {
   namespace ui {
     /// Circular dial widget with range value and editor
-    class Dial :
+    class OMNIWIDGET_EXPORT Dial :
       public QWidget,
       public mixin::RangedValue<Dial, double>,
       protected mixin::Editor<Dial, QDoubleSpinBox>{

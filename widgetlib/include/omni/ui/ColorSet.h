@@ -22,11 +22,12 @@
 
 #include <QWidget>
 #include <QPalette>
+#include <omni/ui/global.h>
 
 namespace omni {
   namespace ui {
     /// Simplies color access from a palette for a widget
-    struct ColorSet
+    struct OMNIWIDGET_EXPORT ColorSet
     {
       /**@brief Default constructor
          @param _parent Pointer to parent widget

@@ -33,7 +33,7 @@ namespace omni
   namespace visual
   {
     /// Visualizer for drawing a projector with halo
-    class Projector : public Interface
+    class OMNI_EXPORT Projector : public Interface
     {
     public:
       Projector(const proj::Projector&);

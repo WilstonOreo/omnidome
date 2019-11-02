@@ -31,7 +31,7 @@
 namespace omni {
   namespace visual {
     /// Draw Handler for WarpGrid
-    class WarpGrid : public Interface {
+    class OMNI_EXPORT WarpGrid : public Interface {
       public:
         WarpGrid(omni::WarpGrid const& _warpGrid);
         ~WarpGrid();

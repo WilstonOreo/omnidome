@@ -47,7 +47,7 @@ namespace omni {
           correction.
                It holds a color as well. It can render a projector calibration
      **/
-    class Tuning {
+    class OMNI_EXPORT Tuning {
       public:
         typedef omni::visual::Tuning visualizer_type;
 

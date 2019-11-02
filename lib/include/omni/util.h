@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QByteArray>
 #include <QString>
+#include <omni/global.h>
 #include <omni/exception.h>
 
 namespace omni {
@@ -72,13 +73,13 @@ namespace omni {
     }
 
     /// Return content of file from a file name
-    QString fileToStr(const QString& _filename);
+    QString OMNI_EXPORT fileToStr(const QString& _filename);
 
     /// Remove file extension and return string without file extension
-    QString removeFileExt(QString const& _filename);
+    QString OMNI_EXPORT removeFileExt(QString const& _filename);
 
     /// Checks if file exists and is actually a file and not a directory
-    bool fileExists(QString const&);
+    bool OMNI_EXPORT fileExists(QString const&);
 
     /// Test if two instances (which inherit from SerializationInterface) have
     // equal data

@@ -25,7 +25,7 @@
 namespace omni {
   /// Abstract Interface with a single virtual member function which returns
   // type id
-  class TypeIdInterface {
+  class OMNI_EXPORT TypeIdInterface {
     public:
       virtual ~TypeIdInterface() = default;
 

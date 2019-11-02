@@ -29,7 +29,7 @@ namespace omni
   namespace ui
   {
     /// GLView for visualizing an input
-    class InputPreview : public GLView
+    class OMNIWIDGET_EXPORT InputPreview : public GLView
     {
       Q_OBJECT
     public:

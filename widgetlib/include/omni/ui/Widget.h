@@ -28,7 +28,7 @@
 namespace omni {
   namespace ui {
     /// A single parameter widget with a label and color set
-    class Widget : public QWidget {
+    class OMNIWIDGET_EXPORT Widget : public QWidget {
       Q_OBJECT
 
       public:

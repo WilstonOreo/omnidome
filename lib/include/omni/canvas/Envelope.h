@@ -26,7 +26,7 @@ namespace omni {
   namespace canvas {
     /// An enveloped canvas can enclose the viewer and can be projected from
     // inside or outside
-    class Envelope :
+    class OMNI_EXPORT Envelope :
       public Canvas {
       public:
         Envelope();

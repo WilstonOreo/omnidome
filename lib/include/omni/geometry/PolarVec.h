@@ -30,7 +30,7 @@ namespace omni {
     /** @brief polar 3D vector defined by th two angles phi, theta and a radial
        distance
      **/
-    struct PolarVec
+    struct OMNI_EXPORT PolarVec
     {
       public:
         /// default constructor

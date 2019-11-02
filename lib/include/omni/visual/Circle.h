@@ -26,7 +26,7 @@
 namespace omni {
   namespace visual {
     /// Visualizer for drawing a circle with VBO
-    class Circle {
+    class OMNI_EXPORT Circle {
       public:
         Circle();
 

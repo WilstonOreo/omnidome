@@ -60,7 +60,7 @@ namespace omni {
        visualization
        @detail Belongs to a session
      **/
-    class Scene {
+    class OMNI_EXPORT Scene {
       public:
         typedef std::map<QString,std::unique_ptr<CameraInterface>> camera_map_type;
 

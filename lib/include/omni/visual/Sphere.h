@@ -28,7 +28,7 @@ namespace omni
   namespace visual
   {
     /// Draw Handler for visualizing a centered sphere
-    class Sphere : public Interface
+    class OMNI_EXPORT Sphere : public Interface
     {
     public:
       enum TexCoordsMode {

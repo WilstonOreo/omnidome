@@ -26,7 +26,7 @@
 namespace omni {
   namespace visual {
     /// A perspective camera
-    class PerspectiveCamera: public CameraInterface
+    class OMNI_EXPORT PerspectiveCamera: public CameraInterface
     {
       public:
         PerspectiveCamera(qreal _fov = 30.0);

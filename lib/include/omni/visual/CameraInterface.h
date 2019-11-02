@@ -26,7 +26,7 @@
 namespace omni {
   namespace visual {
     /// A generic camera interface
-    class CameraInterface : public Tracker
+    class OMNI_EXPORT CameraInterface : public Tracker
     {
       public:
         CameraInterface();

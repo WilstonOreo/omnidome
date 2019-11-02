@@ -23,6 +23,7 @@
 #include <set>
 #include <vector>
 #include <QScreen>
+#include <omni/global.h>
 
 namespace omni {
   class Session;
@@ -31,7 +32,7 @@ namespace omni {
     class Tuning;
 
     /// Singleton class which manages the current screen setup
-    class ScreenSetup {
+    class OMNI_EXPORT ScreenSetup {
       public:
         ScreenSetup(Session const *_session);
 

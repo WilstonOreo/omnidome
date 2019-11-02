@@ -28,22 +28,22 @@
 namespace omni {
   namespace visual {
       /// Use shader with and do uniform assignment and drawing inside functor
-      void useShader(QOpenGLShaderProgram& _s, std::function<void(UniformHandler&)> f);
+      void OMNI_EXPORT useShader(QOpenGLShaderProgram& _s, std::function<void(UniformHandler&)> f);
 
       /// Initialize shader: load from file and compile.
-      void initShader(QOpenGLShaderProgram& _s, const char* _filename);
+      void OMNI_EXPORT initShader(QOpenGLShaderProgram& _s, const char* _filename);
 
       /// Initialize shader: load from file and compile.
-      void initShader(std::unique_ptr<QOpenGLShaderProgram>& _s, const char* _filename);
+      void OMNI_EXPORT initShader(std::unique_ptr<QOpenGLShaderProgram>& _s, const char* _filename);
 
       /// Initialize shader: load from file and compile.
-      void initShader(ContextBoundPtr<QOpenGLShaderProgram>& _s, const char* _filename);
+      void OMNI_EXPORT initShader(ContextBoundPtr<QOpenGLShaderProgram>& _s, const char* _filename);
 
       /**@brief Adds #include functionality to shader source code
          @detail Compiles source code file with included files or
                  compiles a shader
        **/
-      class ShaderCompiler {
+      class OMNI_EXPORT ShaderCompiler {
       public:
 
         static QString compile(QString const& _sourceFile);

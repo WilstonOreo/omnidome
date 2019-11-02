@@ -32,7 +32,7 @@ namespace omni {
   /**@brief A blend mask consists of an edge mask and stroke mask with a brush
    * @detail Edge mask and stroke mask are stored in different buffers
    */
-  class BlendMask {
+  class OMNI_EXPORT BlendMask {
     public:
       /// Resolution of blend mask
       inline static constexpr int resolution() {

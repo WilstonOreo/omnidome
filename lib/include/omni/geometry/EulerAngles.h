@@ -26,7 +26,7 @@
 namespace omni {
   namespace geometry {
     /// Mixin class for a zyx Euler Angle Rotation system
-    struct EulerAngles
+    struct OMNI_EXPORT EulerAngles
     {
       /// Default constructor, all angles are zero
       EulerAngles();

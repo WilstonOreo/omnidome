@@ -26,7 +26,7 @@ namespace omni {
   namespace visual {
     /**@brief Box with subdivisions for drawing
     **/
-    class Box : public Interface {
+    class OMNI_EXPORT Box : public Interface {
       public:
         Box();
         ~Box();

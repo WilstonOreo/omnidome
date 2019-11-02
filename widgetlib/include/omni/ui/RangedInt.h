@@ -27,7 +27,7 @@
 namespace omni {
   namespace ui {
     /// Integer slider
-    class RangedInt :
+    class OMNIWIDGET_EXPORT RangedInt :
       public AbstractInputWidget,
       public mixin::RangedValue<RangedInt, int>{
         Q_OBJECT
@@ -62,7 +62,6 @@ namespace omni {
         void   setDrawTicks(bool);
 
       signals:
-        void   valueChanged();
         void   rangeChanged();
 
       protected:

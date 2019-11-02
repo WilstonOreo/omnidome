@@ -43,7 +43,7 @@ namespace omni {
      *performed.
      *         It might be a dome or a planar surface.
      **/
-    class Interface :
+    class OMNI_EXPORT Interface :
       public TypeIdInterface,
       public PropertyMapSerializer,
       public visual::Interface {

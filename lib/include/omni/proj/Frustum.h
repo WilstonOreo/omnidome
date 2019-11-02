@@ -22,13 +22,14 @@
 
 #include <QVector3D>
 #include <QRectF>
+#include <omni/global.h>
 
 namespace omni {
   namespace proj {
     class Projector;
 
     /// Frustum helper struct constructed from a projector
-    class Frustum {
+    class OMNI_EXPORT Frustum {
       public:
         /// Frustum must be constructed from a projector
         Frustum(Projector const&);

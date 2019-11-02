@@ -28,7 +28,7 @@
 namespace omni {
   namespace visual {
     /// A light with position and phong shader attributes
-    struct Light : Tracker
+    struct OMNI_EXPORT Light : Tracker
     {
       public:
         Light(const Tracker& _tracker = Tracker(),

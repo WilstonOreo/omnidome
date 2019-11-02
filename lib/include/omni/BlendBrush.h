@@ -30,7 +30,7 @@ namespace omni {
   /**@brief BlendBrush for drawing on the blendmask
    * @detail Holds an internal pixel buffer
    **/
-  class BlendBrush {
+  class OMNI_EXPORT BlendBrush {
     public:
       /// Default constructor
       BlendBrush();

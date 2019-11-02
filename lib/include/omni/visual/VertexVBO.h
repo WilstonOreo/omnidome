@@ -27,7 +27,7 @@
 namespace omni {
   namespace visual {
     /// Utility class for storing and drawing VBO data
-    class VertexVBO {
+    class OMNI_EXPORT VertexVBO {
       public:
         /// Vertex buffer type
         typedef std::vector<Vertex>vertex_buffer_type;

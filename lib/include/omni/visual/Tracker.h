@@ -24,7 +24,7 @@
 
 namespace omni {
   namespace visual {
-    struct Tracker
+    struct OMNI_EXPORT Tracker
     {
       public:
         Tracker();

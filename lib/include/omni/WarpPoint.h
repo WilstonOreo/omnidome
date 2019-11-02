@@ -27,7 +27,7 @@ namespace omni {
   /**@brief A Warp defines a bezier point with one position and two handles
      / *@detail Also stores flag if it is selected
    **/
-  class WarpPoint {
+  class OMNI_EXPORT WarpPoint {
     public:
       /// Default constructor
       WarpPoint();

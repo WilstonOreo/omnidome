@@ -17,9 +17,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include <memory>
-#include <omni/exception.h>
 #include <QDialog>
 #include <QStandardItemModel>
+#include <omni/ui/global.h>
+#include <omni/exception.h>
 
 namespace omni {
   namespace ui {
@@ -28,7 +29,7 @@ namespace omni {
     }
 
     /// A list of all exceptions occured during a process
-    class ExceptionList : public QDialog {
+    class OMNIWIDGET_EXPORT ExceptionList : public QDialog {
       Q_OBJECT
 
       public:

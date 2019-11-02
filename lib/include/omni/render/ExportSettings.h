@@ -40,7 +40,7 @@ namespace omni {
     };
 
     /// Class for defining render options for calibration data
-    class ExportSettings {
+    class OMNI_EXPORT ExportSettings {
       public:
         /**@brief Mapping output mode
            @detail Determines if uvw map, texture coordinates or the actual

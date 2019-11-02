@@ -27,7 +27,7 @@
 namespace omni {
   namespace input {
     /// Input object that is renderer to a framebuffer
-    class Framebuffer : public input::Interface {
+    class OMNI_EXPORT Framebuffer : public input::Interface {
     public:
       Framebuffer();
       virtual ~Framebuffer() {};

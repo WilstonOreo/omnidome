@@ -26,12 +26,12 @@
 
 namespace omni {
   /// Base class for all exception. Throws a message with QString type
-  class Exception : public QException {
+  class OMNI_EXPORT Exception : public QException {
     public:
       enum Type {
-        WARNING,
-        ERROR,
-        FATAL
+        EX_WARNING,
+        EX_ERROR,
+        EX_FATAL
       };
 
       /// This is the method which throw the message string
@@ -42,11 +42,11 @@ namespace omni {
 
       inline virtual QString typeAsString() const {
         switch (type()) {
-        case WARNING: return "WARNING";
+        case EX_WARNING: return "WARNING";
 
-        case ERROR: return "ERROR";
+        case EX_ERROR: return "ERROR";
 
-        case FATAL: return "FATAL";
+        case EX_FATAL: return "FATAL";
         }
         return "INVALID";
       }
@@ -64,21 +64,21 @@ namespace omni {
     class Warning : public Exception {
       public:
         inline Type type() const {
-          return WARNING;
+          return EX_WARNING;
         }
     };
 
     class Error : public Exception {
       public:
         inline Type type() const {
-          return ERROR;
+          return EX_ERROR;
         }
     };
 
     class Fatal : public Exception {
       public:
         inline Type type() const {
-          return FATAL;
+          return EX_FATAL;
         }
     };
 

@@ -20,12 +20,12 @@
 #ifndef OMNI_GEOMETRY_ANGLE_H_
 #define OMNI_GEOMETRY_ANGLE_H_
 
-#include <QtGlobal>
+#include <omni/global.h>
 
 namespace omni {
   namespace geometry {
     /// Struct for representing an angle (stored in degrees internally)
-    struct Angle
+    struct OMNI_EXPORT Angle
     {
       /// Default constructor
       Angle();
