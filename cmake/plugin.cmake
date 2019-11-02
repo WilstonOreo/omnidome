@@ -28,12 +28,16 @@
 ################################################################################
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
-FIND_LIBRARY(GL_LIBRARIES OpenGL )
+find_package(OpenGL REQUIRED)
 
 set(OMNI_PLUGIN_PATH ${CMAKE_SOURCE_DIR}/plugins )
 
 function(omni_plugin BUILD_TARGET SOURCES)
-    set(OUTPUT_PATH ../../../app/omnidome.app/Contents/PlugIns)
+    if(APPLE)
+      set(OUTPUT_PATH ../../../app/omnidome.app/Contents/PlugIns)
+    elseif(WIN32)
+      set(OUTPUT_PATH ../../../app/plugins)
+    endif()
 
     add_library(${BUILD_TARGET} SHARED ${SOURCES})
     target_include_directories(${BUILD_TARGET}
@@ -65,10 +69,15 @@ function(omni_plugin BUILD_TARGET SOURCES)
             Qt5::Core
             Qt5::Gui
             Qt5::Widgets
-            ${GL_LIBRARIES}
+            opengl32
             omni
             omniwidget
     )
+
+    target_compile_definitions(${BUILD_TARGET}
+        PUBLIC
+        OMNIPLUGIN_LIBRARY)
+
 
     # Make install target for linux in /usr/share/${PROJECT_NAME}/plugins
 # IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")

@@ -3,7 +3,7 @@ file(GLOB HEADERS_PUB_ROOT "include/omni/*.h")
 file(GLOB HEADERS_PUB_SUB "include/omni/**/*.h")
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
-FIND_LIBRARY(GL_LIBRARIES OpenGL )
+find_package(OpenGL REQUIRED)
 
 set(SOURCES
         ${HEADERS_PUB_ROOT}
@@ -36,5 +36,19 @@ target_link_libraries(omniwidget
     PUBLIC
         omni
         Qt5::Widgets
-        ${GL_LIBRARIES}
+        opengl32
 )
+
+target_compile_definitions(omniwidget
+    PUBLIC
+        OMNIWIDGET_LIBRARY)
+
+if(WIN32)
+  SET(OUTPUT_PATH ../app)
+
+  SET_TARGET_PROPERTIES(omniwidget
+      PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_PATH}
+      LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_PATH}
+  )
+endif()

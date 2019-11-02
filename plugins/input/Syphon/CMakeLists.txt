@@ -1,3 +1,7 @@
+if (NOT APPLE)
+    return()
+endif()
+
 include(${CMAKE_SOURCE_DIR}/cmake/plugin.cmake)
 
 FIND_PATH(COCOA_INCLUDE_DIR Cocoa/Cocoa.h)

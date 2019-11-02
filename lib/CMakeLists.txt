@@ -4,7 +4,7 @@ file(GLOB HEADERS_PUB_ROOT "include/omni/*.h")
 file(GLOB HEADERS_PUB_SUB "include/omni/**/*.h")
 
 find_package(Qt5 COMPONENTS Core Gui REQUIRED)
-FIND_LIBRARY(GL_LIBRARIES OpenGL )
+find_package(OpenGL REQUIRED)
 
 set(SOURCES
         ${HEADERS_PUB_ROOT}
@@ -84,5 +84,19 @@ target_link_libraries(omni
     PUBLIC
         Qt5::Core
         Qt5::Gui
-        ${GL_LIBRARIES}
+        opengl32
 )
+
+target_compile_definitions(omni
+    PUBLIC
+        OMNI_LIBRARY)
+
+if(WIN32)
+    SET(OUTPUT_PATH ../app)
+
+    SET_TARGET_PROPERTIES(omni
+          PROPERTIES
+          RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_PATH}
+          LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_PATH}
+      )
+endif()

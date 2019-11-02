@@ -65,7 +65,7 @@ set(SOURCES
     )
 
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+IF(APPLE)
 add_executable(omnidome MACOSX_BUNDLE ${SOURCES})
 
     SET(MACOSX_BUNDLE_INFO_STRING "${BUILD_TARGET}")
