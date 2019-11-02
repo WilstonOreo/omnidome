@@ -21,6 +21,9 @@
 
 #include <QColor>
 
+#undef IN
+#undef OUT
+
 namespace omni {
   /// RGBA float pixel type
   struct RGBAFloat

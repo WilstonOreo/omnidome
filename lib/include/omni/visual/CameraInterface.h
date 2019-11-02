@@ -23,6 +23,11 @@
 #include <QOpenGLFunctions>
 #include "Tracker.h"
 
+#if defined(Q_OS_WIN)
+#undef near
+#undef far
+#endif
+
 namespace omni {
   namespace visual {
     /// A generic camera interface
