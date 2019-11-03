@@ -30,17 +30,17 @@ namespace omni {
     class OMNI_EXPORT Framebuffer : public input::Interface {
     public:
       Framebuffer();
-      virtual ~Framebuffer() {};
+      virtual ~Framebuffer() override {}
 
-      virtual QSize size() const;
+      virtual QSize size() const override;
       virtual void setSize(QSize const&);
 
-      GLuint  textureId() const;
+      GLuint  textureId() const override;
 
       virtual void destroy();
 
-      virtual void     toPropertyMap(PropertyMap&) const;
-      virtual void     fromPropertyMap(PropertyMap const&);
+      virtual void toPropertyMap(PropertyMap&) const override;
+      virtual void fromPropertyMap(PropertyMap const&) override;
 
     protected:
       QOpenGLFramebufferObject* framebuffer();
