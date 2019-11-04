@@ -3,7 +3,7 @@ file(GLOB HEADERS_PUB_ROOT "include/omni/*.h")
 file(GLOB HEADERS_PUB_SUB "include/omni/**/*.h")
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
-find_package(OpenGL REQUIRED)
+include(${CMAKE_SOURCE_DIR}/cmake/gl.cmake)
 
 set(SOURCES
         ${HEADERS_PUB_ROOT}
@@ -36,7 +36,7 @@ target_link_libraries(omniwidget
     PUBLIC
         omni
         Qt5::Widgets
-        opengl32
+        ${GL_LIBRARIES}
 )
 
 target_compile_definitions(omniwidget

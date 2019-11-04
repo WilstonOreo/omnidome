@@ -28,7 +28,8 @@
 ################################################################################
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
-find_package(OpenGL REQUIRED)
+include(${CMAKE_SOURCE_DIR}/cmake/gl.cmake)
+
 
 set(OMNI_PLUGIN_PATH ${CMAKE_SOURCE_DIR}/plugins )
 
@@ -69,7 +70,7 @@ function(omni_plugin BUILD_TARGET SOURCES)
             Qt5::Core
             Qt5::Gui
             Qt5::Widgets
-            opengl32
+            ${GL_LIBRARIES}
             omni
             omniwidget
     )
