@@ -4,7 +4,7 @@ file(GLOB HEADERS_PUB_ROOT "include/omni/*.h")
 file(GLOB HEADERS_PUB_SUB "include/omni/**/*.h")
 
 find_package(Qt5 COMPONENTS Core Gui REQUIRED)
-include(${CMAKE_SOURCE_DIR}/cmake/gl.cmake)
+find_package(OpenGL REQUIRED)
 
 set(SOURCES
         ${HEADERS_PUB_ROOT}
@@ -84,7 +84,7 @@ target_link_libraries(omni
     PUBLIC
         Qt5::Core
         Qt5::Gui
-        ${GL_LIBRARIES}
+        ${OPENGL_LIBRARIES}
 )
 
 target_compile_definitions(omni
