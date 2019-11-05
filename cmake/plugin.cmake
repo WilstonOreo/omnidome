@@ -36,8 +36,9 @@ function(omni_plugin BUILD_TARGET SOURCES)
       set(OUTPUT_PATH ../../../app/omnidome.app/Contents/PlugIns)
     elseif(WIN32)
       set(OUTPUT_PATH ../../../app/plugins)
+    elseif(UNIX)
+      set(OUTPUT_PATH ../../../app/plugins)
     endif()
-
     add_library(${BUILD_TARGET} SHARED ${SOURCES})
     target_include_directories(${BUILD_TARGET}
         PUBLIC
@@ -60,9 +61,9 @@ function(omni_plugin BUILD_TARGET SOURCES)
     )
 
     # Make directory for icon and copy it to Contents/Resources
-    add_custom_command(TARGET ${BUILD_TARGET} PRE_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E make_directory
-                      ${OUTPUT_PATH})
+ #   add_custom_command(TARGET ${BUILD_TARGET} PRE_BUILD
+ #                     COMMAND ${CMAKE_COMMAND} -E make_directory
+ #                     ${OUTPUT_PATH})
     target_link_libraries(${BUILD_TARGET}
         PUBLIC
             omni

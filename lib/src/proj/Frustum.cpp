@@ -18,6 +18,8 @@
  */
 
 #include <omni/proj/Frustum.h>
+
+#include <cmath>
 #include <omni/proj/Projector.h>
 
 namespace omni {

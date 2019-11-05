@@ -19,6 +19,7 @@
 
 #include <omni/proj/Projector.h>
 
+#include <cmath>
 #include <QVector2D>
 #include <omni/proj/ScreenSetup.h>
 #include <omni/util.h>
