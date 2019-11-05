@@ -1,5 +1,5 @@
 # cmake requirements
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.14)
 
 # project id
 PROJECT(Omnidome)
