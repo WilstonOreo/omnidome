@@ -21,6 +21,7 @@
 #ifndef OMNI_VISUAL_PROJECTORVIEWMODE_H_
 #define OMNI_VISUAL_PROJECTORVIEWMODE_H_
 
+#include <QDataStream>
 #include <omni/serialization/Interface.h>
 
 namespace omni {

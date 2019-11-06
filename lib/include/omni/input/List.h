@@ -22,7 +22,7 @@
 
 #include <memory>
 #include <vector>
-#include <omni/Id.h>
+#include <omni/Factory.h>
 #include <omni/input/Interface.h>
 #include <omni/serialization/PropertyMapSerializer.h>
 

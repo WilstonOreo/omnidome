@@ -17,10 +17,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OMNI_TYPEIDINTERFACE_H_
-#define OMNI_TYPEIDINTERFACE_H_
+#pragma once
 
-#include <omni/Id.h>
+#include <omni/Factory.h>
 
 namespace omni {
   /// Abstract Interface with a single virtual member function which returns
@@ -37,8 +36,9 @@ namespace omni {
   };
 }
 
-#define OMNI_TYPEID(type_id) \
-  BOOSTX_TYPE_ID(omni::Id, type_id, typeId, getTypeId)
+#define OMNI_TYPEID(TYPEID) \
+   inline static omni::Id typeId() { return TYPEID; }\
+   inline virtual omni::Id getTypeId() const override { return typeId(); }
 
 #define OMNI_REGISTER_CLASS(FACTORY, CLASS_NAME) \
   OMNI_TYPEID(# CLASS_NAME)                      \
@@ -46,4 +46,3 @@ namespace omni {
     factory().template reg<CLASS_NAME>(); \
   }
 
-#endif /* OMNI_TYPEIDINTERFACE_H_ */

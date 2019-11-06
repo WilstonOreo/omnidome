@@ -66,7 +66,7 @@ namespace omni
         auto* _input = omni::input::Interface::factory().create(_idInputClass.first);
         if (!_input) continue;
 
-        auto _id = _idInputClass.first.str();
+        auto& _id = _idInputClass.first;
 
         auto _categories = _input->categories();
         if (_categories.empty())
@@ -110,7 +110,7 @@ namespace omni
     {
       if (!dataModel()) return;
 
-      auto _idInput = dataModel()->inputs().addInput(_action->text());
+      auto _idInput = dataModel()->inputs().addInput(_action->text().toLatin1());
       auto& _input = _idInput;
 
       if (!_input) return;
@@ -231,7 +231,7 @@ namespace omni
         _row << _item;
       };
 
-      _addItem(_input->getTypeId().str());
+      _addItem(_input->getTypeId());
       _addItem(_input->infoText());
 
       model_->invisibleRootItem()->appendRow(_row);

@@ -21,6 +21,7 @@
 
 #include <map>
 #include <QString>
+#include <QDataStream>
 #include <omni/serialization/Interface.h>
 
 namespace omni {

@@ -26,7 +26,7 @@
 #include <QByteArray>
 #include <QBuffer>
 #include <QDataStream>
-#include <omni/Id.h>
+#include <omni/Factory.h>
 #include <omni/exception.h>
 #include <omni/serialization/traits.h>
 #include <omni/serialization/pointer.h>

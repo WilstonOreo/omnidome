@@ -22,7 +22,7 @@
 
 #include <QException>
 #include <QString>
-#include <omni/Id.h>
+#include <omni/Factory.h>
 
 namespace omni {
   /// Base class for all exception. Throws a message with QString type
@@ -93,7 +93,7 @@ namespace omni {
 
         QString message() const throw()
         {
-          return QString("Serialization Exception. Invalid Id: ") + id_.str();
+          return QString("Serialization Exception. Invalid Id: ") + id_;
         }
 
       private:

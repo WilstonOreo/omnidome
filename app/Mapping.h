@@ -51,7 +51,7 @@ namespace omni {
         void dataModelChanged();
 
       public slots:
-        void selectMappingType(QString const&);
+        void selectMappingType(const QByteArray &);
 
       private:
         /// Update widgets from current mapping

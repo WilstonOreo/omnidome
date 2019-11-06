@@ -199,7 +199,7 @@ namespace omni {
             return
                 visual::ShaderCompiler::compile(":/shaders/mapping/Template.frag") +
                 visual::ShaderCompiler::compile(QString(
-                                    ":/shaders/mapping/") + getTypeId().str() +
+                                    ":/shaders/mapping/") + getTypeId() +
                                 ".frag");
         }
 

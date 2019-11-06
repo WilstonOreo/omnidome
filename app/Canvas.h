@@ -53,7 +53,7 @@ namespace omni {
 
       public slots:
         /// Select canvas type with id
-        void selectCanvasType(QString);
+        void selectCanvasType(QByteArray const&);
 
         /// Set size of scene for canvas parameter widget
         void updateSceneSize(bool);

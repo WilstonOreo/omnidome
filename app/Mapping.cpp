@@ -31,12 +31,13 @@ namespace omni {
     {
       this->setup(ui_);
 
-      connect(ui_->boxMappingSelect, SIGNAL(currentIndexChanged(
-                                              QString)), this,
-              SLOT(selectMappingType(QString)));
+      connect(ui_->boxMappingSelect,
+              qOverload<int>(&QComboBox::currentIndexChanged),
+              [this](){ this->selectMappingType(
+                      ui_->boxMappingSelect->currentText().toLatin1()); });
 
       for (auto& _idMappingClass : omni::mapping::Interface::factory().classes()) {
-        QString _id = _idMappingClass.first.str();
+        auto& _id = _idMappingClass.first;
         ui_->boxMappingSelect->addItem(QIcon(QString(":/mapping/") + _id +
                                              QString(".png")), _id);
       }
@@ -58,8 +59,7 @@ namespace omni {
       for (int i = 0; i < ui_->boxMappingSelect->count(); ++i)
       {
         QString _id = ui_->boxMappingSelect->itemData(i).toString();
-
-        if (_id == dataModel()->mapping()->getTypeId().str())
+        if (_id == dataModel()->mapping()->getTypeId())
         {
           _index = i;
         }
@@ -75,7 +75,7 @@ namespace omni {
       return false;
     }
 
-    void Mapping::selectMappingType(QString const& _id)
+    void Mapping::selectMappingType(QByteArray const& _id)
     {
       if (!dataModel() || signalsBlocked()) return;
 

@@ -22,7 +22,7 @@
 
 #include <memory>
 #include <QColor>
-#include <omni/Id.h>
+#include <omni/Factory.h>
 #include <omni/WarpGrid.h>
 #include <omni/BlendMask.h>
 #include <omni/proj/CalibrationMode.h>

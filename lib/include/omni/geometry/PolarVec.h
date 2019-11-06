@@ -22,6 +22,7 @@
 
 #include <QVector3D>
 #include <QVector4D>
+#include <QDataStream>
 #include <omni/geometry/Angle.h>
 #include <omni/serialization/Interface.h>
 

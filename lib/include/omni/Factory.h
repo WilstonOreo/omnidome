@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2015 "Omnidome" by Michael Winkelmann
+/* Copyright (c) 2014-2019 "Omnidome" by Michael Winkelmann
  * Dome Mapping Projection Software (http://omnido.me).
  * Omnidome was created by Michael Winkelmann aka Wilston Oreo (@WilstonOreo)
  *
@@ -17,33 +17,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BOOSTX_FACTORY_HPP_
-#define BOOSTX_FACTORY_HPP_
 
+#pragma once
+
+#include <set>
+#include <QByteArray>
 #include <unordered_map>
 #include <functional>
 #include <type_traits>
 #include <omni/global.h>
 
-namespace boostx
+namespace omni
 {
+  using Id = QByteArray;
+
+  /// Id set typedef
+  typedef std::set<Id>IdSet;
+
+  template<typename T>
+  struct TypeInfo
+  {
+    using typeid_type = Id;\
+    typeid_type operator()() const
+    {
+      return T::typeId();
+    }
+    template<typename PTR>
+    typeid_type operator()(PTR&& _ptr) const
+    {
+      return _ptr->getTypeId();
+    }
+  };
+
   /**@brief The central factory class.
    * @tparam INTERFACE Typename of the abstract interface
-   * @tparam TYPEINFO Template template parameter for the typeinfo
    * @tparam ...ARGS Template parameter which comply to the constructor signature of the interface
    */
-  template<typename INTERFACE, template<class> class TYPEINFO, typename...ARGS>
-  struct factory
+  template<typename INTERFACE, typename...ARGS>
+  struct AbstractFactory
   {
     /// Typedef for our abstract interface
     typedef INTERFACE interface_type;
 
     /// Typedef for this factory type
-    typedef factory<interface_type,TYPEINFO,ARGS...> type;
+    typedef AbstractFactory<interface_type,ARGS...> type;
 
     /// Template alias for typeinfo type
     template<typename T>
-    using typeinfo_type = TYPEINFO<T>;
+    using typeinfo_type = TypeInfo<T>;
 
     /// Get key type from typeinfo struct
     typedef typename typeinfo_type<interface_type>::typeid_type key_type;
@@ -99,17 +120,15 @@ namespace boostx
     }
 
     /// Gives readonly access to registered classes
-    class_map_type const& classes()
+    class_map_type const& classes() const
     {
       return _classes;
     }
 
-
-
   private:
     /// Checks if key types are the same
     template<typename T>
-    void key_type_check()
+    static void key_type_check()
     {
       // Check if T is a base class of interface
       static_assert(std::is_base_of<interface_type,T>::value,
@@ -123,15 +142,25 @@ namespace boostx
 
     template<typename T>
     /// Return type id by calling the call operator of type info template
-    decltype(typeinfo_type<T>()()) type_id() const
+    static decltype(typeinfo_type<T>()()) type_id()
     {
       return typeinfo_type<T>()();
     }
 
     class_map_type _classes;
-
   };
 }
 
+namespace std {
+  /// Template specialization for Id to make it hashable
+  template<>
+  struct hash<omni::Id>
+  {
+    /// Use hash<std::string> to produce hash value
+    inline size_t operator()(const omni::Id& _id) const
+    {
+      return hash<std::string>()(_id.toStdString());
+    }
+  };
+}
 
-#endif /* BOOSTX_FACTORY_HPP_ */

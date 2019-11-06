@@ -38,7 +38,7 @@ namespace omni {
             // Add canvas types from Factory
             for (auto& _idCanvasClass : omni::canvas::Interface::factory().classes())
             {
-                QString _id = _idCanvasClass.first.str();
+                auto& _id = _idCanvasClass.first;
                 ui_->boxCanvasSelect->addItem(QIcon(QString(":/canvas/") + _id +
                                                     QString(
                                                         ".png")), _id,
@@ -66,7 +66,7 @@ namespace omni {
             {
                 QString _id = ui_->boxCanvasSelect->itemData(i).toString();
 
-                if (_id == dataModel()->canvas()->getTypeId().str())
+                if (_id == dataModel()->canvas()->getTypeId())
                 {
                     _index = i;
                 }
@@ -98,7 +98,7 @@ namespace omni {
           }
         }
 
-        void Canvas::selectCanvasType(QString _id)
+        void Canvas::selectCanvasType(QByteArray const& _id)
         {
             if (!dataModel() || signalsBlocked()) return;
 
@@ -106,7 +106,7 @@ namespace omni {
               canvasMemory_.store(dataModel()->canvas());
 
               /// Dont do anything if type id has not changed
-              if (dataModel()->canvas()->getTypeId().str() == _id) {
+              if (dataModel()->canvas()->getTypeId() == _id) {
                 return;
               }
 

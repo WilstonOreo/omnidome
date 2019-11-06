@@ -15,7 +15,6 @@ set(SOURCES
         src/canvas/Dome.cpp
         src/canvas/Envelope.cpp
         src/canvas/Interface.cpp
-        src/Id.cpp
         src/LengthUnit.cpp
         src/PluginInfo.cpp
         src/PluginLoader.cpp

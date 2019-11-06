@@ -21,7 +21,7 @@
 
 #include <memory>
 #include <functional>
-#include <omni/Id.h>
+#include <omni/Factory.h>
 #include <omni/serialization/traits.h>
 
 namespace omni {
