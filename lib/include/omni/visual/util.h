@@ -20,6 +20,7 @@
 #ifndef OMNI_VISUAL_UTIL_H_
 #define OMNI_VISUAL_UTIL_H_
 
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <QDebug>
 #include <QPointF>
