@@ -6,7 +6,7 @@ Fulldome Projection Calibration Software Framework
 How to build Omnidome For Windows
 =======================
 
-Omnidome uses the Qt Framework (minimum Version 5.9) and C++11 standard library and language standard.
+Omnidome uses the Qt Framework and C++14 standard library and language standard.
 This repository is forked from Omnidome project for Windows build.
 
 This forked repository has currently been successfully build on Windows 10.
