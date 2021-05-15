@@ -20,6 +20,10 @@
 #include <omni/visual/ContextSwitch.h>
 #include <QOpenGLFunctions>
 
+#ifdef WIN32
+#define OMNI_DISABLE_CONTEXT_SWITCH 1
+#endif
+
 namespace omni {
   namespace visual {
     void contextSwitch(QOpenGLContext *_context, ContextFunctor f) {
