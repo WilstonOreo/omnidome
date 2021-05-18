@@ -53,6 +53,7 @@ namespace omni {
 
         /// Constructor
         Tuning(Session const&);
+        ~Tuning();
 
         /// Assign virtual screen to tuning
         void assignVirtualScreen();

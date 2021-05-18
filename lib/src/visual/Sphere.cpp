@@ -22,6 +22,9 @@
 #include <omni/visual/util.h>
 #include <QDebug>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 namespace omni {
   namespace visual {
     Sphere::Sphere(qreal _radius) :

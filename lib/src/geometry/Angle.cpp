@@ -19,7 +19,8 @@
 
 #include <omni/geometry/Angle.h>
 
-#include <cmath>
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <QDataStream>
 #include <omni/util.h>
 

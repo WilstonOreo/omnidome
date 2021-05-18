@@ -40,6 +40,10 @@ namespace omni {
         {
         }
 
+        Tuning::~Tuning()
+        {
+        }
+
         void Tuning::assignVirtualScreen() {
           setScreen(nullptr,0);
         }

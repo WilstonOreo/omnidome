@@ -151,6 +151,7 @@ namespace omni
   };
 }
 
+#ifndef WIN32
 namespace std {
   /// Template specialization for Id to make it hashable
   template<>
@@ -163,4 +164,4 @@ namespace std {
     }
   };
 }
-
+#endif
