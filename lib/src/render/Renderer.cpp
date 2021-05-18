@@ -169,9 +169,14 @@ namespace omni {
       omnic::Calibration _calibration;
       proj::Calibrator _calibrator(session_);
       _calibrator.calibrate(_calibration);
-
+      
+#ifdef WIN32
+      std::ofstream _file(_filename.toStdString(),std::ofstream::binary);
+      _calibration.save(_file);
+#else
       std::ofstream _file(_filename.toStdString(),std::ofstream::out);
       _calibration.save(_file);
+#endif
     }
   }
 }

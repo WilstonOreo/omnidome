@@ -37,11 +37,19 @@ namespace omni {
             QCoreApplication::setOrganizationDomain("Michael Winkelmann.org / omnido.me");
             loadPlugins();
 
+#ifdef WIN32
+            std::vector<QString> _fonts = {
+                ":/fonts/SourceSansPro-Bold.ttf",
+                ":/fonts/SourceSansPro-Light.ttf",
+                ":/fonts/SourceSansPro-Regular.ttf"
+            };
+#else
             std::vector<QString> _fonts = {
                 ":/fonts/Dosis-Bold.ttf",
                 ":/fonts/Dosis-Light.ttf",
                 ":/fonts/Dosis-Regular.ttf"
             };
+#endif
 
             for (auto& _font : _fonts) {
                 int id = QFontDatabase::addApplicationFont(_font);
